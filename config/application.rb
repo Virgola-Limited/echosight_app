@@ -25,6 +25,16 @@ module EchosightApp
     # config.eager_load_paths << Rails.root.join("extras")
 
     # Don't generate system test files.
-    config.generators.system_tests = nil
+    # config.generators.system_tests = nil
+    config.generators do |g|
+      g.test_framework :rspec, fixture: false
+      g.fixture_replacement :factory_bot, dir: 'spec/factories'
+      g.helper false
+      g.assets false
+      g.view_specs false
+      g.helper_specs false
+      g.routing_specs false
+      g.controller_specs false
+    end
   end
 end
