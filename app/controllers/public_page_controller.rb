@@ -18,4 +18,8 @@ class PublicPageController < ApplicationController
 
        # Rest of your index action
   end
+
+  def loftwah
+    # Add logic if you need it
+  end
 end
