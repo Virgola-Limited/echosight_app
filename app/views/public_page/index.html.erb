@@ -56,3 +56,192 @@
     <div class="percentage-change">▲ 1.7%</div>
   </div>
 </div>
+
+<h2>Followers</h2>
+
+<div id="chart-container">
+  <%= line_chart @followers_cumulative, id: 'followers-chart' %>
+</div>
+
+<button id="toggle-chart">Toggle Bar/Line Chart</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var chart = new Chartkick.LineChart("followers-chart", <%= @followers_cumulative.to_json.html_safe %>);
+    var chartContainer = document.getElementById("chart-container");
+    var toggleButton = document.getElementById("toggle-chart");
+
+    toggleButton.addEventListener('click', function() {
+      var chartType = chart.getChartObject().config.type;
+
+      if (chartType === 'line') {
+        chart = new Chartkick.BarChart("followers-chart", <%= @followers_daily.to_json.html_safe %>);
+        toggleButton.textContent = "Show Cumulative Line Chart";
+      } else {
+        chart = new Chartkick.LineChart("followers-chart", <%= @followers_cumulative.to_json.html_safe %>);
+        toggleButton.textContent = "Show Daily Bar Chart";
+      }
+    });
+  });
+</script>
+
+<style>
+  .chart-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-size: 24px;
+    color: #333;
+  }
+  .chart-stats {
+    font-size: 18px;
+    color: #333;
+    display: inline-block;
+    margin-top: 5px;
+  }
+  .chart-percentage {
+    font-size: 18px;
+    color: #4caf50; /* Adjust color based on increase (green) or decrease (red) */
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    width: 100%;
+    height: 300px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .bar {
+    width: 12%;
+    background-color: #007bff;
+    margin: 0 1%;
+    transition: height 0.3s ease;
+  }
+  /* Adjust the heights according to the values/percentages you have */
+  .bar-1 { height: 10%; }
+  .bar-2 { height: 20%; }
+  .bar-3 { height: 30%; }
+  .bar-4 { height: 80%; }
+  .bar-5 { height: 50%; }
+  .bar-6 { height: 25%; }
+  .bar-7 { height: 15%; }
+</style>
+<div class="chart-header">
+  <div class="chart-title">Impressions</div>
+  <span class="chart-stats">1,605,875</span>
+  <span class="chart-percentage">&#x25B2; 47.2%</span> <!-- Triangle up for increase -->
+</div>
+<div class="chart-container">
+  <div class="bar bar-1"></div>
+  <div class="bar bar-2"></div>
+  <div class="bar bar-3"></div>
+  <div class="bar bar-4"></div>
+  <div class="bar bar-5"></div>
+  <div class="bar bar-6"></div>
+  <div class="bar bar-7"></div>
+</div>
+
+<div class="chart-header">
+  <div class="chart-title">Engagement Rate</div>
+  <span class="chart-stats">1%</span>
+  <span class="chart-percentage">&#x25B2; 26.8%</span> <!-- Triangle up for increase -->
+</div>
+<div class="chart-container">
+  <div class="bar bar-1"></div>
+  <div class="bar bar-2"></div>
+  <div class="bar bar-3"></div>
+  <div class="bar bar-4"></div>
+  <div class="bar bar-5"></div>
+  <div class="bar bar-6"></div>
+  <div class="bar bar-7"></div>
+</div>
+
+<div class="chart-header">
+  <div class="chart-title">Profile Convertion Rate</div>
+  <span class="chart-stats">12.6%</span>
+  <span class="chart-percentage">&#x25B2; 22.1%</span> <!-- Triangle up for increase -->
+</div>
+<div class="chart-container">
+  <div class="bar bar-1"></div>
+  <div class="bar bar-2"></div>
+  <div class="bar bar-3"></div>
+  <div class="bar bar-4"></div>
+  <div class="bar bar-5"></div>
+  <div class="bar bar-6"></div>
+  <div class="bar bar-7"></div>
+</div>
+
+<style>
+  .posts-container {
+    width: 90%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .post-header {
+    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .post-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  .post-row:last-child {
+    border-bottom: none;
+  }
+  .post-title {
+    flex: 3; /* Adjust the flex ratio to allocate space */
+  }
+  .post-metric {
+    flex: 1;
+    text-align: center;
+  }
+  .post-date {
+    flex: 1;
+    text-align: right;
+  }
+</style>
+
+<div class="posts-container">
+  <div class="post-header">
+    <div class="post-title">Posts</div>
+    <div class="post-metric">Likes</div>
+    <div class="post-metric">Retweets</div>
+    <div class="post-metric">Replies</div>
+    <div class="post-metric">Impressions</div>
+    <div class="post-date"></div> <!-- Placeholder for alignment -->
+  </div>
+
+  <!-- Example post row -->
+  <div class="post-row">
+    <div class="post-title">why did we let airbnb have such an influence in tech</div>
+    <div class="post-metric">53</div>
+    <div class="post-metric">16</div>
+    <div class="post-metric">770</div>
+    <div class="post-metric">47</div>
+    <div class="post-date">Nov 13, 2023</div>
+  </div>
+  <!-- Repeat for each post... -->
+  <div class="post-row">
+    <div class="post-title">is partial pre-rendering a nextjs feature or a triangle company feature</div>
+    <div class="post-metric">19</div>
+    <div class="post-metric">1</div>
+    <div class="post-metric">34</div>
+    <div class="post-metric">4</div>
+    <div class="post-date">Nov 13, 2023</div>
+  </div>
+  <!-- Add more post rows as needed... -->
+</div>
+
