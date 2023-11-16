@@ -1,0 +1,18 @@
+{
+    "followersOverTime": {
+      "labels": ["January", "February", "March", "April", "May", "June", "July"],
+      "data": [1200, 1900, 3000, 5000, 6000, 7000, 8000]
+    },
+    "engagementRate": {
+      "labels": ["Likes", "Retweets", "Replies"],
+      "data": [65, 59, 80]
+    },
+    "impressionsOverTime": {
+      "labels": ["Week 1", "Week 2", "Week 3", "Week 4"],
+      "data": [200, 400, 300, 500]
+    },
+    "profileConversionRate": {
+      "labels": ["Conversion"],
+      "data": [8.3]
+    }
+}
