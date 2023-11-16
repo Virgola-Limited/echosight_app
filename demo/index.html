@@ -11,28 +11,43 @@
   <style>
     /* Custom styles for a more polished look */
     .card-title {
-      color: #22d3ee;
-      /* Tailwind's cyan-400 for a pop of color */
+      color: #22d3ee; /* Tailwind's cyan-400 for a pop of color */
     }
 
     .stat-value {
-      color: #e0f2fe;
-      /* Tailwind's light blue-50 for visibility */
+      color: #e0f2fe; /* Tailwind's light blue-50 for visibility */
     }
 
     .stat-desc {
-      color: #bae6fd;
-      /* Tailwind's light blue-200 for contrast */
+      color: #bae6fd; /* Tailwind's light blue-200 for contrast */
     }
 
     .highlight-bg {
-      background-color: #0ea5e9;
-      /* Tailwind's blue-500 for highlighting sections */
+      background-color: #0ea5e9; /* Tailwind's blue-500 for highlighting sections */
     }
 
     .highlight-text {
-      color: #fde047;
-      /* Tailwind's yellow-400 for important numbers */
+      color: #fde047; /* Tailwind's yellow-400 for important numbers */
+    }
+
+    /* Responsive font sizes for stat values and titles */
+    .stat-value {
+      @apply text-2xl md:text-4xl font-bold; /* Responsive text size with bold font */
+    }
+
+    .stat-title {
+      @apply text-lg md:text-xl font-semibold; /* Slightly larger and bolder font for titles */
+    }
+
+    /* Hover state for interactive elements */
+    .stat:hover {
+      background-color: #1f2937; /* Dark grey for hover */
+      cursor: pointer;
+    }
+
+    /* Improve accessibility with higher contrast on stats description */
+    .stat-desc {
+      @apply text-gray-300; /* Lighter text for better contrast */
     }
   </style>
 </head>
@@ -54,28 +69,27 @@
   <main class="container mx-auto px-4 py-5 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
     <!-- Top Metrics -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-center">
-      <div class="stat">
+      <!-- Stat items with hover and responsive text -->
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
         <div class="stat-title">Posts</div>
         <div class="stat-value">20</div>
         <div class="stat-desc">+5 since last week</div>
       </div>
-
-      <div class="stat">
+      <!-- ... repeat for other stats ... -->
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
         <div class="stat-title">Impressions</div>
         <div class="stat-value">1.62M</div>
-        <div class="stat-desc">+30.3%</div>
+        <div class="stat-desc">30.3% increase</div>
       </div>
-
-      <div class="stat">
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
         <div class="stat-title">Profile Clicks</div>
         <div class="stat-value">7.23K</div>
-        <div class="stat-desc">+142%</div>
+        <div class="stat-desc">142% increase</div>
       </div>
-
-      <div class="stat">
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
         <div class="stat-title">Followers</div>
         <div class="stat-value">20.46K</div>
-        <div class="stat-desc">+2.3%</div>
+        <div class="stat-desc">2.3% increase</div>
       </div>
     </div>
 
