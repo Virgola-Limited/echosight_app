@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Exit script on any error
+set -e
+
+# Check if Postgres is running
+if ! pg_isready -q; then
+  echo "PostgreSQL is not running. Please start the database server."
+  exit 1
+fi
+
+# Install dependencies
+echo "Installing dependencies..."
+bundle install
+
+# Set up the database
+echo "Setting up the database..."
+bin/rails db:setup
+
+# Run any other setup tasks here
+# ...
+
+# Start the Rails server
+echo "Starting Rails server..."
+bundle exec rails server
