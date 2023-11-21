@@ -1,2 +1,3 @@
-app: bin/rails s -b 0.0.0.0 -p 3000
+app: bin/rails s
 mail: mailcatcher --foreground
+vite: bin/vite dev
