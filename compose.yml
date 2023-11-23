@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+    environment:
+      - RAILS_ENV=development
+    command: bin/rails s -b 0.0.0.0 -p 3000
+    depends_on:
+      - db
+
+  mail:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+    command: mailcatcher --foreground --ip=0.0.0.0
+
+  vite:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/rails
+    command: bin/vite dev
+    ports:
+      - "3035:3035"
+    environment:
+      - RAILS_ENV=development
+    depends_on:
+      - app
+
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: echosight_app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: echosight_app_development
+
+volumes:
+  bundle_cache:
+  postgres_data:
