@@ -1,4 +1,19 @@
 {
+  "name": "echosight_app",
+  "version": "1.0.0",
+  "description": "Echosight App: A Twitter analytics dashboard providing insights on user engagement and content performance.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Virgola-Limited/echosight_app.git"
+  },
+  "author": "",
+  "license": "MIT",
   "devDependencies": {
     "sass": "^1.69.5",
     "vite": "^5.0.0",
