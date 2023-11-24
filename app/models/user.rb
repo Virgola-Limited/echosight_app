@@ -13,5 +13,13 @@ class User < ApplicationRecord
       user.name = auth.info.name
       # Twitter does not provide email by default so you may need to prompt users for their email on the first login.
     end
+
+    # do we want to automatically confirm the user email if:after =>
+    # A. come from twitter and doesnt existing in our database
+    # B. Can they sign up without using Twitter to start with - perhaps we disable normal sign up for now?
+
+    # Save the user record if it's new or has been changed
+    user.save if user.new_record? || user.changed?
+    user
   end
 end
