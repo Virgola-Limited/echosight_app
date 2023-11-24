@@ -10,9 +10,9 @@ Welcome to the definitive guide for the Echosight user journey. This document ðŸ
 graph TD
     A("Landing on echosight.io: User arrives at the homepage.") --> B("Create Account: User chooses to create a new account.")
     B --> C{"Account Creation Method: User selects a method to create an account."}
-    C -->|Email| D("Sign up with Email: User provides email address and optionally, sets a password.")
+    C -->|Email| D("Sign up with Email: User provides email address and depending on how we do things, sets a password.")
     C -->|Twitter| E("Sign up with Twitter: User authorizes via Twitter, and their email is retrieved.")
-    D --> F("Email Confirmation: System sends a confirmation or sign-in code via email. *")
+    D --> F("Email Confirmation: System sends a confirmation or sign-in code via email.")
     E --> F
     F --> G("Access Dashboard: User gains access to the main dashboard upon confirmation.")
     G --> H{"Integration Added? User decides whether to integrate a Twitter account."}
