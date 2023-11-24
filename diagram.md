@@ -12,7 +12,7 @@ graph TD
     B --> C{"Account Creation Method: User selects a method to create an account."}
     C -->|Email| D("Sign up with Email: User provides email address and optionally, sets a password.")
     C -->|Twitter| E("Sign up with Twitter: User authorizes via Twitter, and their email is retrieved.")
-    D --> F("Email Confirmation: System sends a confirmation or sign-in code via email.")
+    D --> F("Email Confirmation: System sends a confirmation or sign-in code via email. *")
     E --> F
     F --> G("Access Dashboard: User gains access to the main dashboard upon confirmation.")
     G --> H{"Integration Added? User decides whether to integrate a Twitter account."}
@@ -53,6 +53,8 @@ graph TD
     style T fill:#fff,stroke:#333,stroke-width:1px,color:#333
 ```
 
+> **Note**: *The email confirmation process is designed to be flexible, with the option to use a magic link or a sign-in code. The diagram above depicts the sign-in code option. We should only implement this if it is a quick and easy addition. Otherwise, we can stick with the traditional email confirmation process.
+
 ## Detailed User Journey Breakdown 🔍
 
 ### 1. Landing on echosight.io
@@ -62,13 +64,13 @@ graph TD
 
 ### 2. Account Creation Process
 
-- **What Happens**: Users choose to create a new account using either their email 📧 or through their Twitter/X account 🐦.
-- **Behind the Scenes**: Using Devise with Omniauth, the platform secures the sign-up process. The email address becomes the primary user identifier 🔐.
+* **What Happens**: Users arrive at a crossroads where they must decide how to establish their Echosight identity. They have the choice to register using their email address 📧, offering a familiar approach, or to leverage their Twitter/X account 🐦 for a quicker, social media-integrated experience.
+* **Behind the Scenes**: The platform employs Devise with Omniauth to weave a secure tapestry of authentication processes. This robust framework not only fortifies the sign-up procedure but also anchors the user's identity to their email address, establishing it as a pivotal point of reference within the Echosight ecosystem 🔐.
 
 ### 3. Email Signup
 
-- **What Happens**: For email signup, users input their email address, with a passwordless entry option sending a sign-in code directly to their email for quick access 🔑.
-- **Behind the Scenes**: A unique token is sent via email, ensuring secure sign-in ✉️.
+* **What Happens**: In the realm of email signup, users are invited to enter the gateway to Echosight with just their email address – no traditional password needed. Instead, a magic link or a time-sensitive sign-in code is dispatched to their inbox 💌, which upon their click, grants them entry into their new account. This modern take on account access emphasizes ease and efficiency, letting users bypass the often cumbersome step of creating and remembering a new password 🔑.
+* **Behind the Scenes**: When a user opts for this route, the system generates a unique, one-time-use token, encapsulated within the link or code sent to the user's email. This token is a cryptographic handshake between the user and the platform, ensuring that only the person with access to that email can unlock their Echosight account. The token's ephemeral nature boosts security, as it loses its power after use or after a short period, whichever comes first. This process is engineered to mesh seamlessly with the user's experience, harmonizing security with convenience ✉️.
 
 ### 4. Twitter/X Signup
 
