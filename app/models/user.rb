@@ -6,12 +6,21 @@ class User < ApplicationRecord
          :confirmable, :lockable, :timeoutable, :trackable, :omniauthable, omniauth_providers: [:twitter]
 
   def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0, 20]
-      # Assume the user model has a name
-      user.name = auth.info.name
-      # Twitter does not provide email by default so you may need to prompt users for their email on the first login.
+    user = nil
+
+    # Check if the user's email exists in the database
+    if auth.info.email && (existing_user = User.find_by_email(auth.info.email))
+      existing_user.provider = auth.provider
+      existing_user.uid = auth.uid
+      user = existing_user
+    else
+      user = where(provider: auth.provider, uid: auth.uid).first_or_initialize
+      user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
+      user.name = auth.info.name if user.name.blank?
     end
+
+    # Save the user record if it's new or has been changed
+    user.save if user.new_record? || user.changed?
+    user
   end
 end
