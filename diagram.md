@@ -110,3 +110,41 @@ graph TD
 ## Conclusion 🎉
 
 The detailed flowchart and breakdown provide a vivid and comprehensive view of the Echosight user journey 🛤️. It outlines not just the sequence of interactions but also the functionalities and systems operating backstage. This document is designed to guide the development of Echosight, ensuring that our team delivers a user-centric, robust, and intuitive experience that empowers our users through insightful analytics 📈.
+
+## Dashboard
+
+```mermaid
+graph TD
+    A[Login Page] --> B[Connect Twitter Account]
+    B --> C[Dashboard Overview]
+    C --> D[Profile Summary]
+    C --> E[Follower Growth Analytics]
+    C --> F[Post Analytics]
+    C --> G[Engagement & Conversion Stats]
+    C --> H[Public Page Settings]
+    D --> I[Basic Profile Stats]
+    E --> J[Growth Charts]
+    E --> K[Demographics & Behavior Insights]
+    F --> L[Tweet Performance]
+    F --> M[Sort/Filter Options]
+    G --> N[Engagement Details]
+    G --> O[Conversion Tracking]
+    H --> P[Appearance Customization]
+    H --> Q[Data Display Settings]
+    C --> R[User Preferences & Settings]
+    C --> S[Support & Help]
+    R --> T[Notification Settings]
+    R --> U[Account Details]
+    R --> V[Accessibility Settings]
+    S --> W[FAQs & Guides]
+    S --> X[Contact Support]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#ccf,stroke:#333,stroke-width:2px
+    style C fill:#fcf,stroke:#333,stroke-width:2px
+    style H fill:#cfc,stroke:#333,stroke-width:2px
+    style R fill:#cff,stroke:#333,stroke-width:2px
+    style S fill:#ffc,stroke:#333,stroke-width:2px
+```
+
+This diagram visually represents the structure and navigation flow of the Echosight dashboard. It starts with the login page, leading to connecting the Twitter account, and then branches out into various analytics and settings sections. Each node represents a different page or section of the dashboard, with connections showing the typical flow or navigation path a user might take. The color-coding highlights different categories like settings, analytics, and support. This mockup is a basic representation and can be further detailed based on specific requirements and functionalities of the Echosight platform.
