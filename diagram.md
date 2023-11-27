@@ -139,12 +139,9 @@ graph TD
     S --> W[FAQs & Guides]
     S --> X[Contact Support]
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#ccf,stroke:#333,stroke-width:2px
-    style C fill:#fcf,stroke:#333,stroke-width:2px
-    style H fill:#cfc,stroke:#333,stroke-width:2px
-    style R fill:#cff,stroke:#333,stroke-width:2px
-    style S fill:#ffc,stroke:#333,stroke-width:2px
+    style A fill:#fff,stroke:#333,stroke-width:2px,color:#333
+    style B fill:#fff,stroke:#333,stroke-width:2px,color:#333
+    style C fill:#fff,stroke:#333,stroke-width:2px,color:#333
 ```
 
 This diagram visually represents the structure and navigation flow of the Echosight dashboard. It starts with the login page, leading to connecting the Twitter account, and then branches out into various analytics and settings sections. Each node represents a different page or section of the dashboard, with connections showing the typical flow or navigation path a user might take. The color-coding highlights different categories like settings, analytics, and support. This mockup is a basic representation and can be further detailed based on specific requirements and functionalities of the Echosight platform.
