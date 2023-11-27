@@ -1,5 +1,7 @@
 class DashboardController < ApplicationController
   def index
+    authenticate_user!
+
     # Initialize the followers_data hash
     followers_data = {}
 

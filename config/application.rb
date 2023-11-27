@@ -8,6 +8,8 @@ Bundler.require(*Rails.groups)
 
 module EchosightApp
   class Application < Rails::Application
+    config.action_view.default_form_builder = 'CustomFormBuilder'
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
 
