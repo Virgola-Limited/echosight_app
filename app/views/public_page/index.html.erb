@@ -65,25 +65,7 @@
 
 <button id="toggle-chart">Toggle Bar/Line Chart</button>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var chart = new Chartkick.LineChart("followers-chart", <%= @followers_cumulative.to_json.html_safe %>);
-    var chartContainer = document.getElementById("chart-container");
-    var toggleButton = document.getElementById("toggle-chart");
 
-    toggleButton.addEventListener('click', function() {
-      var chartType = chart.getChartObject().config.type;
-
-      if (chartType === 'line') {
-        chart = new Chartkick.BarChart("followers-chart", <%= @followers_daily.to_json.html_safe %>);
-        toggleButton.textContent = "Show Cumulative Line Chart";
-      } else {
-        chart = new Chartkick.LineChart("followers-chart", <%= @followers_cumulative.to_json.html_safe %>);
-        toggleButton.textContent = "Show Daily Bar Chart";
-      }
-    });
-  });
-</script>
 
 <style>
   .chart-header {
