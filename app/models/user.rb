@@ -12,8 +12,17 @@ class User < ApplicationRecord
       u.name = auth.info.name if u.name.blank?
     end
 
-    identity = user.build_identity(provider: auth.provider, uid: auth.uid)
-    user.save if user.new_record? || user.changed? || identity.changed?
+    # Check if the user already has an identity and update it, or build a new one
+    identity = user.identity || user.build_identity
+    identity.provider = auth.provider
+    identity.uid = auth.uid
+
+    # Save user and identity if needed
+    ActiveRecord::Base.transaction do
+      user.save! if user.new_record? || user.changed?
+      identity.save! if identity.new_record? || identity.changed?
+    end
+
     user
   end
 end

@@ -38,6 +38,35 @@
             <!-- fix this styling issue later so we can uncomment above -->
             <button type="submit" class="w-full px-5 py-3 text-base font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Login to your account</button>
           </div>
+        <% end %>
+
+          <%- if devise_mapping.omniauthable? %>
+            <!-- Divider (optional) -->
+            <div class="relative my-4">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                  or continue with
+                </span>
+              </div>
+            </div>
+
+             <%- if devise_mapping.omniauthable? %>
+              <%- resource_class.omniauth_providers.each do |provider| %>
+                <%= button_to omniauth_authorize_path(resource_name, provider), data: { turbo: false } do %>
+                <button type="submit" class="w-full px-5 py-3 text-base font-medium text-center text-blue-100 transition duration-150 ease-in-out bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                  <svg class="w-6 h-6 inline-block mr-2 -mt-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M23.954 4.569c-.885.39-1.83.653-2.825.774 1.017-.609 1.798-1.574 2.165-2.723-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.556-3.594-1.556-2.72 0-4.92 2.2-4.92 4.92 0 .386.044.762.128 1.122-4.09-.205-7.719-2.166-10.141-5.144-.424.729-.666 1.574-.666 2.476 0 1.71.869 3.213 2.19 4.096-.806-.026-1.566-.248-2.228-.616v.062c0 2.386 1.698 4.374 3.946 4.828-.413.111-.848.171-1.296.171-.314 0-.62-.03-.917-.086.62 1.934 2.422 3.345 4.557 3.385-1.67 1.309-3.778 2.089-6.066 2.089-.394 0-.78-.023-1.158-.067 2.165 1.389 4.743 2.2 7.548 2.2 9.055 0 14.007-7.496 14.007-14.007 0-.213-.005-.425-.015-.636.962-.695 1.796-1.562 2.457-2.549z"></path>
+                  </svg>
+                  Sign in with <%= OmniAuth::Utils.camelize(provider) %>
+                </button>
+              <% end %>
+
+              <% end %>
+            <% end %>
+
           <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
               Not registered? <%= link_to "Create account", new_registration_path(resource_name), class: "text-primary-700 hover:underline dark:text-primary-500" %>
@@ -49,4 +78,10 @@
 </div>
 
 <strong>Decide if we want the rest of these for MVP</strong><br />
-<%= render "devise/shared/links" %>
+<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+  <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+<% end %>
+
+<%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+  <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+<% end %>
