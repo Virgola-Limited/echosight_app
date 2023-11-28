@@ -2,6 +2,8 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    authenticate_user!
+
     # Initialize the followers_data hash
     followers_data = {}
 
