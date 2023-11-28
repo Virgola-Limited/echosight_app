@@ -1,26 +1,19 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :confirmable, :lockable, :timeoutable, :trackable, :omniauthable, omniauth_providers: [:twitter]
+         :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
+         omniauth_providers: [:twitter]
+
+  has_one :identity
 
   def self.from_omniauth(auth)
-    user = nil
-
-    # Check if the user's email exists in the database
-    if auth.info.email && (existing_user = User.find_by_email(auth.info.email))
-      existing_user.provider = auth.provider
-      existing_user.uid = auth.uid
-      user = existing_user
-    else
-      user = where(provider: auth.provider, uid: auth.uid).first_or_initialize
-      user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
-      user.name = auth.info.name if user.name.blank?
+    user = User.find_or_initialize_by(email: auth.info.email) do |u|
+      u.password = Devise.friendly_token[0, 20] if u.encrypted_password.blank?
+      u.name = auth.info.name if u.name.blank?
     end
 
-    # Save the user record if it's new or has been changed
-    user.save if user.new_record? || user.changed?
+    identity = user.build_identity(provider: auth.provider, uid: auth.uid)
+    user.save if user.new_record? || user.changed? || identity.changed?
     user
   end
 end
