@@ -22,7 +22,11 @@
   </head>
 
   <body>
-  <% if notice.present? %>
+  <%= render 'layouts/nav_bar' %>
+  <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+
+  <div id="main-content" class="relative w-full max-w-screen-2xl mx-auto h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <% if notice.present? %>
     <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
       <%= notice %>
     </div>
@@ -33,6 +37,11 @@
       <%= alert %>
     </div>
   <% end %>
-    <%= yield %>
+    <main>
+      <%= yield %>
+    </main>
+    <%= render 'layouts/footer' %>
+  </div>
+</div>
   </body>
 </html>
