@@ -36,7 +36,7 @@
           <div class="actions">
             <%# f.submit "Login to your account" %>
             <!-- fix this styling issue later so we can uncomment above -->
-            <button type="submit" class="w-full px-5 py-3 text-base font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Login to your account</button>
+            <button type="submit" class="w-full px-5 py-3 text-base font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in with email</button>
           </div>
         <% end %>
 
@@ -69,19 +69,16 @@
 
           <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
             <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Not registered? <%= link_to "Create account", new_registration_path(resource_name), class: "text-primary-700 hover:underline dark:text-primary-500" %>
-            </div>
+              Not registered? <%= link_to "Create account", new_registration_path(resource_name) %><br />
           <% end %>
+          <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+              <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+            <% end %>
 
+            <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
+              <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+            <% end %>
+            </div>
         <% end %>
     </div>
 </div>
-
-<strong>Decide if we want the rest of these for MVP</strong><br />
-<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-  <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
-<% end %>
-
-<%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
-  <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
-<% end %>
