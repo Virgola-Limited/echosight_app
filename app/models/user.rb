@@ -4,7 +4,7 @@ class User < ApplicationRecord
          :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
          omniauth_providers: [:twitter]
 
-  has_one :identity
+  has_one :identity, dependent: :destroy
 
   def self.from_omniauth(auth)
     user = User.find_or_initialize_by(email: auth.info.email) do |u|
