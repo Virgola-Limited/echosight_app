@@ -16,6 +16,8 @@ class User < ApplicationRecord
     identity = user.identity || user.build_identity
     identity.provider = auth.provider
     identity.uid = auth.uid
+    identity.image_url = auth.info.image
+
 
     # Save user and identity if needed
     ActiveRecord::Base.transaction do
