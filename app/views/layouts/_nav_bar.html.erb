@@ -135,7 +135,6 @@
                     <% if current_user.identity && current_user.identity.image_url.present? %>
                       <img class="w-8 h-8 rounded-full" src="<%= current_user.identity.image_url %>" alt="user photo">
                     <% else %>
-                      <!-- Fallback image if Twitter image not available -->
                       <img class="w-8 h-8 rounded-full" src="<%= image_url("default-avatar") %>" alt="user photo">
                     <% end %>
 
