@@ -45,6 +45,7 @@ gem "devise", "~> 4.9"
 gem 'omniauth-twitter'
 gem 'omniauth-rails_csrf_protection'
 gem 'vite_rails'
+gem 'premailer-rails'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

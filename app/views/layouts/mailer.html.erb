@@ -3,30 +3,83 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <style>
-    /* Inline your compiled Tailwind CSS here */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      text-align: center; /* Centers the content */
+    }
+    .header img {
+      height: auto; /* Logo height */
+      margin-top: auto;
+      margin-bottom: auto;
+      display: inline;
+    }
+    .header h1 {
+      color: #374151; /* Dark blue color */
+      display: inline;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .header{
+      border: 1px solid;
+    }
+    .content {
+      padding: 20px;
+      background-color: #ffffff;
+      margin: 20px auto; /* Centers the content div */
+      width: 100%; /* Full width */
+      max-width: 600px; /* Maximum width of the content area */
+    }
+    .content p {
+      margin-bottom: 20px; /* Paragraph spacing */
+    }
+    .footer {
+      font-size: 0.875em;
+      color: #666;
+      text-align: center;
+      padding: 20px;
+      background-color: #ffffff; /* White background for the footer */
+      margin-top: 20px; /* Space above the footer */
+    }
+    .footer p {
+      margin: 10px 0; /* Spacing between paragraphs */
+    }
+    a {
+      color: #4299e1; /* Blue color for links */
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <!-- Header -->
-  <a href="ROOT_URL_PLACEHOLDER" class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
-    <img src="LOGO_URL_PLACEHOLDER" height="32" width="32" alt="Echosight">
-    <span>&nbsp;Echosight</span>
-  </a>
+  <div class="header">
+    <%= image_tag("logo.gif", height: '32', width: '32', alt: "Echosight") %>
+    <h1>Echosight</h1>
+  </div>
 
   <!-- Email Content -->
-  <%= yield %>
+  <div class="content">
+    <%= yield %>
+  </div>
 
   <!-- Footer -->
-  <div class="text-sm mt-10 mb-4">
-    <p>If you no longer wish to receive these emails, you can <a href="UNSUBSCRIBE_URL_PLACEHOLDER" class="text-blue-500 underline">unsubscribe here</a>.</p>
-    <p class="mt-4">
+  <div class="footer">
+    <p>If you no longer wish to receive these emails, you can <a href="UNSUBSCRIBE_URL_PLACEHOLDER">unsubscribe here</a>.</p>
+    <p>
       Echosight Inc.<br>
       1234 Example Street<br>
       City, State, Zip Code<br>
       United States
     </p>
-    <p class="mt-4">
-      This email was sent to EMAIL_ADDRESS_PLACEHOLDER.
+    <p>
+      This email was sent to EMAIL_ADDRESS_PLACEHOLDER.<br>
       If you did not sign up for this subscription, please ignore this email.
     </p>
   </div>
