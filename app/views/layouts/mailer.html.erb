@@ -1,13 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      /* Email styles need to be inline */
-    </style>
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <style>
+    /* Inline your compiled Tailwind CSS here */
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <a href="ROOT_URL_PLACEHOLDER" class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+    <img src="LOGO_URL_PLACEHOLDER" height="32" width="32" alt="Echosight">
+    <span>&nbsp;Echosight</span>
+  </a>
 
-  <body>
-    <%= yield %>
-  </body>
+  <!-- Email Content -->
+  <%= yield %>
+
+  <!-- Footer -->
+  <div class="text-sm mt-10 mb-4">
+    <p>If you no longer wish to receive these emails, you can <a href="UNSUBSCRIBE_URL_PLACEHOLDER" class="text-blue-500 underline">unsubscribe here</a>.</p>
+    <p class="mt-4">
+      Echosight Inc.<br>
+      1234 Example Street<br>
+      City, State, Zip Code<br>
+      United States
+    </p>
+    <p class="mt-4">
+      This email was sent to EMAIL_ADDRESS_PLACEHOLDER.
+      If you did not sign up for this subscription, please ignore this email.
+    </p>
+  </div>
+</body>
 </html>
