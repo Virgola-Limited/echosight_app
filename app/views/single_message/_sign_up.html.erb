@@ -1,0 +1,20 @@
+<div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Welcome to Echosight!
+        </h2>
+
+        <div class="mt-6 text-center">
+            <p class="text-lg text-gray-700 dark:text-gray-200">
+                Thank you for signing up with Echosight! We're thrilled to have you on board.
+            </p>
+            <p class="text-lg text-gray-700 mt-4 dark:text-gray-200">
+                To complete your registration, please check your email inbox for a confirmation link from us. Clicking this link will activate your Echosight account, and you'll be all set to explore our exciting features.
+            </p>
+            <p class="text-lg text-gray-700 mt-4 dark:text-gray-200">
+                Didn't receive the email? Please check your spam folder or <%= link_to "resend the confirmation email", new_confirmation_path(:user) %>.
+            </p>
+            <p class="text-lg text-gray-700 mt-4 dark:text-gray-200">
+                We can't wait for you to get started!
+            </p>
+        </div>
+    </div>
