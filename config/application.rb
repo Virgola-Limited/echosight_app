@@ -38,5 +38,10 @@ module EchosightApp
       g.routing_specs false
       g.controller_specs false
     end
+
+    config.autoload_paths += %W(#{config.root}/lib)
+    config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
+
+    config.action_mailer.asset_host = ENV['ASSET_HOST'] || 'https://echosight.io'
   end
 end
