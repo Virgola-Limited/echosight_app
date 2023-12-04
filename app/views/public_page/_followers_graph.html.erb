@@ -21,7 +21,7 @@
       },
       series: [{
         name: "Followers",
-        data: [1000, 2000, 3200, 4500, 5600, 6200, 7000]
+        data: [1000, 2000, 1900, 4500, 5600, 6200, 7000]
       }],
       xaxis: {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
@@ -37,7 +37,8 @@
         }
       },
       stroke: {
-        curve: 'smooth'
+        curve: 'smooth',
+        width: 4 // Makes the line thicker
       },
       grid: {
         show: true,
@@ -47,7 +48,7 @@
         enabled: true,
       },
       dataLabels: {
-        enabled: false,
+        enabled: true,
       },
     };
 
