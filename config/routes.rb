@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   resources :dashboard, only: :index
   resources :public_page, only: :index
-  get '/loftwah', to: 'public_page#loftwah'
 
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'users/registrations' }
 
