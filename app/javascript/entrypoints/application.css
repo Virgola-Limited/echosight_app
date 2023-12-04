@@ -9,7 +9,13 @@ body {
   padding-right: 100px;
 }
 
-.logo-container {
-  text-align: left;
-  font-size: 120%; /* Increase text size by 20% */
+.logo-container a {
+  display: flex;
+  align-items: center;
+  font-size: 170%; /* Increase text size by 20% */
+  padding-bottom: 25px;
+}
+
+.profile-container img {
+  align-self: start; /* Align the top of the image with the container */
 }
