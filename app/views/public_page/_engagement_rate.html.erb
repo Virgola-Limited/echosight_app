@@ -1,4 +1,4 @@
-<h2 class="text-2xl font-bold text-gray-900 dark:text-white">Engagement Rate</h2>
+<h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Engagement Rate</h2>
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
   <div id="engagement-chart"></div>
 </div>
@@ -33,24 +33,21 @@
       },
       plotOptions: {
         bar: {
-          horizontal: false,
+          distributed: true, // This makes the colors apply to individual bars
+          borderRadius: 5,
           columnWidth: '55%',
-          borderRadius: 5, // Rounded corners for the bars
-          dataLabels: {
-            position: 'top', // Data labels will be on top of the bars
-          },
         },
       },
       dataLabels: {
         enabled: false,
       },
       fill: {
-        colors: ['#1A56DB', '#7E3AF2', '#FEB019'], // Different color for each bar
+        colors: ['#1A56DB', '#7E3AF2', '#FEB019'], // Colors for each bar
       },
       stroke: {
         show: true,
         width: 2,
-        colors: ['#ffffff'], // White border for the bars
+        colors: ['#ffffff'],
       },
       tooltip: {
         enabled: true,

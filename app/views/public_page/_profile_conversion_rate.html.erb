@@ -1,0 +1,70 @@
+<h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Profile Conversion Rate</h2>
+
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
+  <div id="conversion-rate-chart"></div>
+</div>
+
+<script>
+  window.addEventListener("load", function() {
+    let options = {
+      chart: {
+        height: '400px',
+        type: 'line',
+        fontFamily: 'Inter, sans-serif',
+        toolbar: {
+          show: false
+        },
+      },
+      series: [{
+        name: 'Profile Conversion Rate',
+        data: [10, 12, 15, 18, 20, 22] // The conversion rates for each month
+      }],
+      xaxis: {
+        categories: ['January', 'February', 'March', 'April', 'May', 'June']
+      },
+      yaxis: {
+        min: 0,
+        max: 25,
+        tickAmount: 5 // Ticks at intervals of 5%
+      },
+      tooltip: {
+        enabled: true,
+        y: {
+          formatter: function (val) {
+            return val + "%";
+          }
+        }
+      },
+      grid: {
+        show: true,
+        strokeDashArray: 4,
+      },
+      stroke: {
+        curve: 'smooth'
+      },
+      markers: {
+        size: 4,
+        colors: ['#1C64F2'],
+        strokeColors: '#fff',
+        strokeWidth: 2,
+        hover: {
+          size: 7,
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.3,
+          opacityTo: 0.4,
+          stops: [0, 90, 100]
+        }
+      }
+    };
+
+    if (document.getElementById("conversion-rate-chart") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.getElementById("conversion-rate-chart"), options);
+      chart.render();
+    }
+  });
+</script>
