@@ -3,3 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  padding-top: 25px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.logo-container {
+  text-align: left;
+  font-size: 120%; /* Increase text size by 20% */
+}

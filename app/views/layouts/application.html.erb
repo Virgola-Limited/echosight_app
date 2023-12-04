@@ -34,6 +34,12 @@
       <%= alert %>
     </div>
   <% end %>
+  <div class="logo-container">
+    <a href="<%= root_url %>" class="flex items-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+      <%= image_tag("logo.gif", height: '32', width: '32', alt: "Echosight") %>
+      <span>&nbsp;Echosight</span>
+    </a>
+  </div>
 
     <%= yield %>
   </body>
