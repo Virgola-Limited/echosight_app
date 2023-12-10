@@ -1,13 +1,88 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      /* Email styles need to be inline */
-    </style>
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      text-align: center; /* Centers the content */
+      border: 1px solid #e5e5e5; /* Subtle border */
+    }
+    .header {
+      padding: 20px 30px;
+      background-color: #f9fafb; /* Light gray background */
+      border-bottom: 1px solid #e5e5e5; /* Subtle border */
+    }
+    .header img {
+      width: 100px; /* Adjust as needed */
+      height: auto;
+    }
+    .content {
+      padding: 30px;
+      text-align: left; /* Left align for readability */
+    }
+    .footer {
+      font-size: 0.875em;
+      color: #6b7280; /* Gray text for the footer */
+      background-color: #f9fafb; /* Light gray background */
+      padding: 20px 30px;
+      border-top: 1px solid #e5e5e5; /* Subtle border */
+    }
+    a {
+      color: #3b82f6; /* Blue color for links */
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px 0;
+      color: #ffffff; /* White text */
+      background-color: #3b82f6; /* Blue background */
+      border-radius: 5px; /* Rounded corners */
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <!-- Header -->
+    <div class="header">
+      <%= image_tag("logo.gif", height: '32', width: '32', alt: "Echosight") %>
+    </div>
 
-  <body>
+  <!-- Email Content -->
+  <div class="content">
     <%= yield %>
-  </body>
+  </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>If you no longer wish to receive these emails, you can <a href="UNSUBSCRIBE_URL_PLACEHOLDER">unsubscribe here</a>.</p>
+      <p>
+        Echosight Inc.<br>
+        1234 Example Street<br>
+        City, State, Zip Code<br>
+        United States
+      </p>
+      <p>
+        This email was sent to EMAIL_ADDRESS_PLACEHOLDER.<br>
+        If you did not sign up for this subscription, please ignore this email.
+      </p>
+    </div>
+  </div>
+</body>
 </html>

@@ -1,7 +1,9 @@
-<p>Hello <%= @resource.email %>!</p>
+<p>🔓 Hello, <%= @resource.email %>! 🔓</p>
 
-<p>Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
+<p>Oops! Looks like your Echosight account got a bit too secure and locked itself up! 🙈</p>
 
-<p>Click the link below to unlock your account:</p>
+<p>No worries, just click the link below and you'll be back in action:</p>
 
-<p><%= link_to 'Unlock my account', unlock_url(@resource, unlock_token: @token) %></p>
+<p>🔗 <strong><%= link_to 'Unlock Your Account', unlock_url(@resource, unlock_token: @token) %></strong> 🔗</p>
+
+<p>Ready to dive back in? Let's go! 🌊</p>
