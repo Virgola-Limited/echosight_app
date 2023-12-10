@@ -1,229 +1,86 @@
-<style>
-  .profile-stats {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: #f3f3f3;
-    padding: 20px;
-    border-radius: 8px;
-    font-family: Arial, sans-serif;
-  }
+<div class="flex flex-wrap">
+  <!-- Posts -->
+  <a href="#" class="block w-full md:w-1/2 lg:w-1/4 p-2">
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Posts</h5>
+      <p class="font-normal text-gray-700 dark:text-gray-400">20</p>
+      <p class="font-normal text-green-600 dark:text-green-400">+5 since last week</p>
+    </div>
+  </a>
+  <!-- Impressions -->
+  <a href="#" class="block w-full md:w-1/2 lg:w-1/4 p-2">
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Impressions</h5>
+      <p class="font-normal text-gray-700 dark:text-gray-400">1.62M</p>
+      <p class="font-normal text-green-600 dark:text-green-400">30.3% increase</p>
+    </div>
+  </a>
+  <!-- Profile Clicks -->
+  <a href="#" class="block w-full md:w-1/2 lg:w-1/4 p-2">
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Profile Clicks</h5>
+      <p class="font-normal text-gray-700 dark:text-gray-400">7.23K</p>
+      <p class="font-normal text-green-600 dark:text-green-400">142% increase</p>
+    </div>
+  </a>
+  <!-- Followers -->
+  <a href="#" class="block w-full md:w-1/2 lg:w-1/4 p-2">
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Followers</h5>
+      <p class="font-normal text-gray-700 dark:text-gray-400">20.46K</p>
+      <p class="font-normal text-blue-600 dark:text-blue-400">2.3% decrease</p>
+    </div>
+  </a>
+</div>
 
-  .stat-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
 
-  .stat-value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
+<%= render "public_page/followers_graph" %>
+<%= render "public_page/engagement_rate" %>
+<%= render "public_page/impressions_over_time" %>
+<%= render "public_page/profile_conversion_rate" %>
 
-  .stat-label {
-    font-size: 14px;
-    color: #666;
-  }
 
-  .percentage-change {
-    font-size: 12px;
-    color: #4CAF50; /* Green for positive values */
-  }
-</style>
-</head>
-<body>
-
-<div class="profile-stats">
-  <div class="stat-container">
-    <div class="stat-value">19</div>
-    <div class="stat-label">Posts</div>
-    <div class="percentage-change">▲ 40.6%</div>
+<section class="py-8 px-4">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Posts</h2>
+    <div class="space-y-4">
+      <!-- Begin Tweet -->
+      <div class="p-4 border rounded-lg bg-white">
+        <div class="flex items-center space-x-4">
+          <img class="w-10 h-10 rounded-full" src="https://placekitten.com/g/200/300" alt="Profile image">
+          <div class="flex-1">
+            <div class="font-bold text-gray-900">Echosight</div>
+            <div class="text-sm text-gray-500">@echosight</div>
+          </div>
+          <div class="text-sm text-gray-500">2h ago</div>
+        </div>
+        <p class="mt-3 text-gray-700">
+          Just posted a new article on our site! Check it out for the latest updates. #newpost #updates
+        </p>
+      </div>
+      <!-- End Tweet -->
+      <!-- Repeat for each tweet -->
+    </div>
   </div>
-  <div class="stat-container">
-    <div class="stat-value">1.01M</div>
-    <div class="stat-label">Impressions</div>
-    <div class="percentage-change">▲ 14%</div>
+</section>
+
+
+<section class="bg-gray-100 text-gray-800 py-8 px-4 sm:px-6 lg:px-8 rounded-xl w-full">
+  <div class="w-full mx-auto text-center">
+    <h2 class="text-3xl font-extrabold sm:text-4xl">
+      Want to Stand Out?
+    </h2>
+    <p class="mt-4 text-lg leading-6">
+      Get your own public page with private dashboard and join the community of Echosight trendsetters.
+    </p>
+    <div class="mt-8 flex justify-center">
+      <div class="inline-flex rounded-md shadow">
+        <a href="<%=new_registration_path(:user) %>" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+          Join Echosight Now
+        </a>
+      </div>
+    </div>
   </div>
-  <div class="stat-container">
-    <div class="stat-value">3.34K</div>
-    <div class="stat-label">Profile Clicks</div>
-    <div class="percentage-change">▲ 64.4%</div>
-  </div>
-  <div class="stat-container">
-    <div class="stat-value">20.14K</div>
-    <div class="stat-label">Followers</div>
-    <div class="percentage-change">▲ 1.7%</div>
-  </div>
-</div>
+</section>
 
-<h2>Followers</h2>
-
-<div id="chart-container">
-  <%= line_chart @followers_cumulative, id: 'followers-chart' %>
-</div>
-
-<button id="toggle-chart">Toggle Bar/Line Chart</button>
-
-
-
-<style>
-  .chart-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .chart-title {
-    font-size: 24px;
-    color: #333;
-  }
-  .chart-stats {
-    font-size: 18px;
-    color: #333;
-    display: inline-block;
-    margin-top: 5px;
-  }
-  .chart-percentage {
-    font-size: 18px;
-    color: #4caf50; /* Adjust color based on increase (green) or decrease (red) */
-    display: inline-block;
-    margin-left: 10px;
-  }
-  .chart-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    width: 100%;
-    height: 300px;
-    background-color: #f4f4f4;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-  .bar {
-    width: 12%;
-    background-color: #007bff;
-    margin: 0 1%;
-    transition: height 0.3s ease;
-  }
-  /* Adjust the heights according to the values/percentages you have */
-  .bar-1 { height: 10%; }
-  .bar-2 { height: 20%; }
-  .bar-3 { height: 30%; }
-  .bar-4 { height: 80%; }
-  .bar-5 { height: 50%; }
-  .bar-6 { height: 25%; }
-  .bar-7 { height: 15%; }
-</style>
-<div class="chart-header">
-  <div class="chart-title">Impressions</div>
-  <span class="chart-stats">1,605,875</span>
-  <span class="chart-percentage">&#x25B2; 47.2%</span> <!-- Triangle up for increase -->
-</div>
-<div class="chart-container">
-  <div class="bar bar-1"></div>
-  <div class="bar bar-2"></div>
-  <div class="bar bar-3"></div>
-  <div class="bar bar-4"></div>
-  <div class="bar bar-5"></div>
-  <div class="bar bar-6"></div>
-  <div class="bar bar-7"></div>
-</div>
-
-<div class="chart-header">
-  <div class="chart-title">Engagement Rate</div>
-  <span class="chart-stats">1%</span>
-  <span class="chart-percentage">&#x25B2; 26.8%</span> <!-- Triangle up for increase -->
-</div>
-<div class="chart-container">
-  <div class="bar bar-1"></div>
-  <div class="bar bar-2"></div>
-  <div class="bar bar-3"></div>
-  <div class="bar bar-4"></div>
-  <div class="bar bar-5"></div>
-  <div class="bar bar-6"></div>
-  <div class="bar bar-7"></div>
-</div>
-
-<div class="chart-header">
-  <div class="chart-title">Profile Convertion Rate</div>
-  <span class="chart-stats">12.6%</span>
-  <span class="chart-percentage">&#x25B2; 22.1%</span> <!-- Triangle up for increase -->
-</div>
-<div class="chart-container">
-  <div class="bar bar-1"></div>
-  <div class="bar bar-2"></div>
-  <div class="bar bar-3"></div>
-  <div class="bar bar-4"></div>
-  <div class="bar bar-5"></div>
-  <div class="bar bar-6"></div>
-  <div class="bar bar-7"></div>
-</div>
-
-<style>
-  .posts-container {
-    width: 90%;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  .post-header {
-    font-weight: bold;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-  }
-  .post-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-  }
-  .post-row:last-child {
-    border-bottom: none;
-  }
-  .post-title {
-    flex: 3; /* Adjust the flex ratio to allocate space */
-  }
-  .post-metric {
-    flex: 1;
-    text-align: center;
-  }
-  .post-date {
-    flex: 1;
-    text-align: right;
-  }
-</style>
-
-<div class="posts-container">
-  <div class="post-header">
-    <div class="post-title">Posts</div>
-    <div class="post-metric">Likes</div>
-    <div class="post-metric">Retweets</div>
-    <div class="post-metric">Replies</div>
-    <div class="post-metric">Impressions</div>
-    <div class="post-date"></div> <!-- Placeholder for alignment -->
-  </div>
-
-  <!-- Example post row -->
-  <div class="post-row">
-    <div class="post-title">why did we let airbnb have such an influence in tech</div>
-    <div class="post-metric">53</div>
-    <div class="post-metric">16</div>
-    <div class="post-metric">770</div>
-    <div class="post-metric">47</div>
-    <div class="post-date">Nov 13, 2023</div>
-  </div>
-  <!-- Repeat for each post... -->
-  <div class="post-row">
-    <div class="post-title">is partial pre-rendering a nextjs feature or a triangle company feature</div>
-    <div class="post-metric">19</div>
-    <div class="post-metric">1</div>
-    <div class="post-metric">34</div>
-    <div class="post-metric">4</div>
-    <div class="post-date">Nov 13, 2023</div>
-  </div>
-  <!-- Add more post rows as needed... -->
-</div>
 

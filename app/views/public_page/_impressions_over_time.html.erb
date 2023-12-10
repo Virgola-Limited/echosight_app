@@ -1,0 +1,73 @@
+<h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Impressions Over Time</h2>
+
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
+  <div id="impressions-chart"></div>
+</div>
+
+<script>
+  window.addEventListener("load", function() {
+    let options = {
+      chart: {
+        height: '600px',
+        type: 'area',
+        fontFamily: 'Inter, sans-serif',
+        toolbar: {
+          show: false
+        },
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: [{
+        name: 'Impressions',
+        data: [200, 350, 150, 450] // Random data for the impressions
+      }],
+      xaxis: {
+        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
+      },
+      yaxis: {
+        min: 0,
+        max: 500,
+        tickAmount: 10 // This will give us increments of 50 (500/10)
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          opacityFrom: 0.55,
+          opacityTo: 0,
+          shadeIntensity: 0.5,
+          type: 'horizontal',
+          colorStops: [
+            {
+              offset: 0,
+              color: "#4D9FEB",
+              opacity: 1
+            },
+            {
+              offset: 100,
+              color: "#1C64F2",
+              opacity: 0.55
+            }
+          ]
+        },
+      },
+      tooltip: {
+        x: {
+          format: 'dd/MM/yy HH:mm'
+        },
+      },
+      grid: {
+        show: true
+      }
+    };
+
+    if (document.getElementById("impressions-chart") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.getElementById("impressions-chart"), options);
+      chart.render();
+    }
+  });
+</script>
+

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Echosight Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/daisyui/dist/full.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Custom styles for a more polished look */
+    .card-title {
+      color: #22d3ee; /* Tailwind's cyan-400 for a pop of color */
+    }
+
+    .stat-value {
+      color: #e0f2fe; /* Tailwind's light blue-50 for visibility */
+    }
+
+    .stat-desc {
+      color: #bae6fd; /* Tailwind's light blue-200 for contrast */
+    }
+
+    .highlight-bg {
+      background-color: #0ea5e9; /* Tailwind's blue-500 for highlighting sections */
+    }
+
+    .highlight-text {
+      color: #fde047; /* Tailwind's yellow-400 for important numbers */
+    }
+
+    /* Responsive font sizes for stat values and titles */
+    .stat-value {
+      @apply text-2xl md:text-4xl font-bold; /* Responsive text size with bold font */
+    }
+
+    .stat-title {
+      @apply text-lg md:text-xl font-semibold; /* Slightly larger and bolder font for titles */
+    }
+
+    /* Hover state for interactive elements */
+    .stat:hover {
+      background-color: #1f2937; /* Dark grey for hover */
+      cursor: pointer;
+    }
+
+    /* Improve accessibility with higher contrast on stats description */
+    .stat-desc {
+      @apply text-gray-300; /* Lighter text for better contrast */
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+  <header class="bg-gray-800">
+    <div class="container mx-auto flex justify-between items-center p-5 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+      <div class="text-3xl font-bold">Echosight</div>
+      <div class="flex items-center space-x-4">
+        <img src="https://github.com/loftwah.png" alt="Profile" class="rounded-full max-h-10" />
+        <div>
+          <div class="font-medium">Loftwah</div>
+          <div class="text-sm text-gray-400">@loftwah</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-5 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+    <!-- Top Metrics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-center">
+      <!-- Stat items with hover and responsive text -->
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
+        <div class="stat-title">Posts</div>
+        <div class="stat-value">20</div>
+        <div class="stat-desc">+5 since last week</div>
+      </div>
+      <!-- ... repeat for other stats ... -->
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
+        <div class="stat-title">Impressions</div>
+        <div class="stat-value">1.62M</div>
+        <div class="stat-desc">30.3% increase</div>
+      </div>
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
+        <div class="stat-title">Profile Clicks</div>
+        <div class="stat-value">7.23K</div>
+        <div class="stat-desc">142% increase</div>
+      </div>
+      <div class="stat hover:bg-gray-700 transition duration-300 ease-in-out p-4 rounded-lg shadow-xl">
+        <div class="stat-title">Followers</div>
+        <div class="stat-value">20.46K</div>
+        <div class="stat-desc">2.3% increase</div>
+      </div>
+    </div>
+
+    <!-- Graphs - Full width for each chart -->
+    <div class="space-y-6 mb-6">
+      <div class="bg-gray-800 shadow-2xl p-4 rounded-lg overflow-hidden border border-gray-700">
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-500 p-1">
+          <div class="bg-gray-900 p-3 rounded">
+            <h2 class="card-title text-center text-white text-xl mb-2">Followers</h2>
+            <canvas id="followersChart" class="w-full"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6 mb-6">
+      <div class="bg-gray-800 shadow-2xl p-4 rounded-lg overflow-hidden border border-gray-700">
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-500 p-1">
+          <div class="bg-gray-900 p-3 rounded">
+            <h2 class="card-title text-center text-white text-xl mb-2">Engagement Rate</h2>
+            <canvas id="engagementChart" class="w-full"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6 mb-6">
+      <div class="bg-gray-800 shadow-2xl p-4 rounded-lg overflow-hidden border border-gray-700">
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-500 p-1">
+          <div class="bg-gray-900 p-3 rounded">
+            <h2 class="card-title text-center">Impressions Over Time</h2>
+            <canvas id="impressionsChart" class="w-full"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-6 mb-6">
+      <div class="bg-gray-800 shadow-2xl p-4 rounded-lg overflow-hidden border border-gray-700">
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-500 p-1">
+          <div class="bg-gray-900 p-3 rounded">
+            <h2 class="card-title text-center">Profile Conversion Rate</h2>
+            <canvas id="profileConversionChart" class="w-full"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts Section -->
+    <div class="space-y-6 mb-6">
+      <div class="bg-gray-800 shadow-2xl p-4 rounded-lg overflow-hidden border border-gray-700">
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-500 p-1">
+          <div class="bg-gray-900 p-3 rounded">
+            <h2 class="card-title text-center">Recent Posts</h2>
+            <div class="space-y-4">
+              <div class="bg-gray-700 p-4 rounded">
+                <p>
+                  "Any sufficiently advanced technology is equivalent to magic."
+                </p>
+                <div class="text-sm text-gray-400">Nov 16, 2023</div>
+              </div>
+              <!-- Additional posts... -->
+            </div>
+          </div>
+        </div>
+      </div>
+  </main>
+
+  <footer class="bg-gray-800 text-center p-5 mt-6">
+    <p>Want your own? Join Echosight now!</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/daisyui/dist/full.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
