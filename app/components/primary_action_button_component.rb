@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+
+class PrimaryActionButtonComponent < ViewComponent::Base
+  attr_reader :user, :url, :link_text
+  # Rules to confirm with Dean
+  # A. On own public page
+  # 1. Logged In Paid user:  button will show a link to the dashboard?
+  # 2. Logged In Trial User: button will show a link to subscription page?
+  # 3. Not logged in: button will show link to "Want one of these"?
+
+  # B. On someone elses public page
+  # 1. Logged In Paid user: Perhaps show nothing as its a bit confusing linking to your dashboard from someone else's public page?
+  # 2. Logged In Trial User: button will show a link to subscription page? Think about the copy -
+  # 3. Not logged in: button will show link to "get their public page"?
+
+  # C. On dashboard page
+  # 1. Logged In Paid user: Share Echosight? )(make it clear its not sharing their dashboard values)
+  # 2. Logged In Trial User: button will show a link to subscription page?
+  # 3. Logged In with no trial or active subscription:
+  # a: Could have a link to a 7 days free trial (if they havent had one recently)
+  # b: Otherwise link to subscription page?
+
+  # NOTE: Paid users can disable the button on their profile page so no button shows
+
+  def initialize(user:, url: nil)
+    @user = user
+    @url = url || sign_up_url
+    @link_text = sign_up_text.sample
+    super
+  end
+
+  private
+
+  def sign_up_url
+    # new_user_registration_url
+    '#'
+  end
+
+  # could rotate the text on the button (like Netflix does with the tv show images)
+  def sign_up_text
+    # From ChatGTP:
+    [
+      'Get Your Personal Stats Dashboard',
+      'Start Tracking Your Twitter Impact',
+      'Launch Your Twitter Analytics',
+      'Unveil Your Twitter Insights',
+      'Build Your Twitter Stats Page'
+    ]
+  end
+
+  # this is temporary until we decide what to show on the button when they are logged in
+  # see rules at the top
+  def show_button?
+    Rails.logger.debug('paul' + user.inspect)
+    user.guest?
+  end
+end

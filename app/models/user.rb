@@ -27,4 +27,8 @@ class User < ApplicationRecord
 
     user
   end
+
+  def guest?
+    !persisted?
+  end
 end
