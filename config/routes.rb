@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   resources :public_page, only: :index
 
   resources :single_message, only: :index
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', registrations: 'users/registrations', confirmations: 'users/confirmations' }
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    registrations: 'users/registrations',
+    confirmations: 'users/confirmations'
+  }
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
