@@ -7,19 +7,24 @@ class User < ApplicationRecord
   has_one :identity, dependent: :destroy
 
   def self.from_omniauth(auth)
-    user = User.find_or_initialize_by(email: auth.info.email) do |u|
-      u.password = Devise.friendly_token[0, 20] if u.encrypted_password.blank?
-      u.name = auth.info.name if u.name.blank?
+    identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
+
+    if identity
+      user = identity.user
+    else
+      user = User.find_or_initialize_by(email: auth.info.email)
+      user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
     end
 
-    # Check if the user already has an identity and update it, or build a new one
-    identity = user.identity || user.build_identity
-    identity.provider = auth.provider
-    identity.uid = auth.uid
-    identity.image_url = auth.info.image
+    # Update user's attributes
+    user.name = auth.info.name if user.name.blank?
+    user.email = auth.info.email if user.email.blank?
 
+    # Update or build identity
+    identity ||= user.build_identity
+    identity.assign_attributes(provider: auth.provider, uid: auth.uid, image_url: auth.info.image)
 
-    # Save user and identity if needed
+    # Save user and identity
     ActiveRecord::Base.transaction do
       user.save! if user.new_record? || user.changed?
       identity.save! if identity.new_record? || identity.changed?

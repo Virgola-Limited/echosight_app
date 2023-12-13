@@ -1,0 +1,8 @@
+<div class="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
+    <a href="<%= root_url %>" class="flex items-center justify-center mb-8 text-2xl font-semibold lg:mb-10 dark:text-white">
+        <%= image_tag("logo.gif", height: '32', width: '32', alt: "Echosight") %>
+        <span>&nbsp;Echosight</span>
+    </a>
+
+    <%= render(@single_message_partial) %>
+</div>

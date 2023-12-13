@@ -1,3 +1,16 @@
+<%= content_for :profile_container do %>
+<div class="profile-container">
+  <div class="flex items-center space-x-3">
+    <%= render PrimaryActionButtonComponent.new(user: current_or_guest_user) %>
+    <img class="h-12 w-12 rounded-full" src="https://placekitten.com/g/200/300" alt="Profile picture">
+    <div class="flex flex-col justify-center">
+      <div class="text-lg font-medium leading-6 text-gray-900">Loftwah</div>
+      <div class="text-sm font-medium leading-5 text-gray-500">@loftwah</div>
+    </div>
+  </div>
+</div>
+<% end %>
+
 <div class="flex flex-wrap">
   <!-- Posts -->
   <a href="#" class="block w-full md:w-1/2 lg:w-1/4 p-2">
