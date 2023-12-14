@@ -24,17 +24,15 @@ class PrimaryActionButtonComponent < ViewComponent::Base
 
   def initialize(user:, url: nil)
     @user = user
-    @url = url || sign_up_url
     @link_text = sign_up_text.sample
     super
   end
 
-  private
-
-  def sign_up_url
-    # new_user_registration_url
-    '#'
+  def before_render
+    @url ||= new_user_registration_url
   end
+
+  private
 
   # could rotate the text on the button (like Netflix does with the tv show images)
   def sign_up_text
