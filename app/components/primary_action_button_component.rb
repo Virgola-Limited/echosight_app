@@ -2,8 +2,8 @@
 
 class PrimaryActionButtonComponent < ViewComponent::Base
   attr_reader :user, :url, :link_text
-  # Rules to confirm with Dean
-  # A. On own public page
+  # Rules to confirm with Dean about dashboard not button.
+  # A. On own public page (not frequent)
   # 1. Logged In Paid user:  button will show a link to the dashboard?
   # 2. Logged In Trial User: button will show a link to subscription page?
   # 3. Not logged in: button will show link to "Want one of these"?
@@ -20,8 +20,11 @@ class PrimaryActionButtonComponent < ViewComponent::Base
   # a: Could have a link to a 7 days free trial (if they havent had one recently)
   # b: Otherwise link to subscription page?
 
-  # NOTE: Paid users can disable the button on their profile page so no button shows
+  # BUTTON:
+  # not sign in then link to sign up page
+  # otherwise link to dashboard
 
+  # NOTE: Paid users can disable the button on their profile page so no button shows
   def initialize(user:, url: nil)
     @user = user
     @link_text = sign_up_text.sample
@@ -49,7 +52,8 @@ class PrimaryActionButtonComponent < ViewComponent::Base
   # this is temporary until we decide what to show on the button when they are logged in
   # see rules at the top
   def show_button?
-    Rails.logger.debug('paul' + user.inspect)
-    user.guest?
+    return true if user.guest?
+
+
   end
 end
