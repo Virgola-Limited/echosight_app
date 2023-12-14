@@ -2,43 +2,24 @@
 
 class PrimaryActionButtonComponent < ViewComponent::Base
   attr_reader :user, :url, :link_text
-  # Rules to confirm with Dean about dashboard not button.
-  # A. On own public page (not frequent)
-  # 1. Logged In Paid user:  button will show a link to the dashboard?
-  # 2. Logged In Trial User: button will show a link to subscription page?
-  # 3. Not logged in: button will show link to "Want one of these"?
 
-  # B. On someone elses public page
-  # 1. Logged In Paid user: Perhaps show nothing as its a bit confusing linking to your dashboard from someone else's public page?
-  # 2. Logged In Trial User: button will show a link to subscription page? Think about the copy -
-  # 3. Not logged in: button will show link to "get their public page"?
 
-  # C. On dashboard page
-  # 1. Logged In Paid user: Share Echosight? )(make it clear its not sharing their dashboard values)
-  # 2. Logged In Trial User: button will show a link to subscription page?
-  # 3. Logged In with no trial or active subscription:
-  # a: Could have a link to a 7 days free trial (if they havent had one recently)
-  # b: Otherwise link to subscription page?
-
-  # BUTTON:
-  # not sign in then link to sign up page
-  # otherwise link to dashboard
-
-  # NOTE: Paid users can disable the button on their profile page so no button shows
+  # TODO Paid users can disable the button on their profile page so no button shows
   def initialize(user:, url: nil)
     @user = user
-    @link_text = sign_up_text.sample
+    @link_text = button_text.sample
     super
   end
 
   def before_render
-    @url ||= new_user_registration_url
+    @url ||= button_url
   end
 
   private
 
   # could rotate the text on the button (like Netflix does with the tv show images)
-  def sign_up_text
+  def button_text
+    return ['Dashboard'] unless user.guest?
     # From ChatGTP:
     [
       'Get Your Personal Stats Dashboard',
@@ -49,11 +30,8 @@ class PrimaryActionButtonComponent < ViewComponent::Base
     ]
   end
 
-  # this is temporary until we decide what to show on the button when they are logged in
-  # see rules at the top
-  def show_button?
-    return true if user.guest?
-
-
+  def button_url
+    return dashboard_index_path unless user.guest?
+    new_user_registration_path
   end
 end
