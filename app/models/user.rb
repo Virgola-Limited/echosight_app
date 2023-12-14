@@ -23,7 +23,7 @@ class User < ApplicationRecord
     # Update or build identity
     identity ||= user.build_identity
     identity.assign_attributes(provider: auth.provider, uid: auth.uid, image_url: auth.info.image, description: auth.info.description)
-    # Get banner from twitter to show on the top of the public page
+    # TODO: Get banner from twitter to show on the top of the public page
 
     # Save user and identity
     ActiveRecord::Base.transaction do
