@@ -19,3 +19,10 @@ body {
 .profile-container img {
   align-self: start; /* Align the top of the image with the container */
 }
+
+.call-to-action-button {
+  @apply inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white;
+}
+.call-to-action-button-indigo {
+  @apply bg-indigo-600 hover:bg-indigo-700;
+}
