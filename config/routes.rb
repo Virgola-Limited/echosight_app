@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :dashboard, only: :index
-  resources :public_page, only: :index
+  get 'public_page/:twitter_handle', to: 'public_pages#show', as: :public_page
+
 
   resources :single_message, only: :index
   devise_for :users, controllers: {

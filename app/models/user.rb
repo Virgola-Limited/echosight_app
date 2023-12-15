@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   has_one :identity, dependent: :destroy
 
+  delegate :twitter_handle, to: :identity, allow_nil: true
+
   def self.from_omniauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
@@ -19,10 +21,15 @@ class User < ApplicationRecord
     # Update user's attributes
     user.name = auth.info.name if user.name.blank?
     user.email = auth.info.email if user.email.blank?
-
     # Update or build identity
     identity ||= user.build_identity
-    identity.assign_attributes(provider: auth.provider, uid: auth.uid, image_url: auth.info.image, description: auth.info.description)
+    identity.assign_attributes(
+      provider: auth.provider,
+      uid: auth.uid,
+      image_url: auth.info.image,
+      description: auth.info.description,
+      twitter_handle: auth.extra.raw_info.screen_name
+    )
     # TODO: Get banner from twitter to show on the top of the public page
 
     # Save user and identity

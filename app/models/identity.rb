@@ -4,4 +4,5 @@ class Identity < ApplicationRecord
 
   validates :provider, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }
+  validates :twitter_handle, uniqueness: true, presence: true
 end
