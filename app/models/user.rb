@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_one :identity, dependent: :destroy
 
   delegate :twitter_handle, to: :identity, allow_nil: true
+  delegate :banner_url, to: :identity, allow_nil: true
+  delegate :image_url, to: :identity, allow_nil: true
 
   def self.from_omniauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
@@ -28,9 +30,9 @@ class User < ApplicationRecord
       uid: auth.uid,
       image_url: auth.info.image,
       description: auth.info.description,
-      twitter_handle: auth.extra.raw_info.screen_name
+      twitter_handle: auth.extra.raw_info.screen_name,
+      banner_url: auth.extra.raw_info.profile_banner_url
     )
-    # TODO: Get banner from twitter to show on the top of the public page
 
     # Save user and identity
     ActiveRecord::Base.transaction do
@@ -44,4 +46,5 @@ class User < ApplicationRecord
   def guest?
     !persisted?
   end
+
 end
