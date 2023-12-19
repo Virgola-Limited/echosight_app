@@ -11,6 +11,7 @@ class User < ApplicationRecord
   delegate :image_url, to: :identity, allow_nil: true
 
   def self.from_omniauth(auth)
+    # byebug
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
     if identity
@@ -31,7 +32,9 @@ class User < ApplicationRecord
       image_url: auth.info.image,
       description: auth.info.description,
       twitter_handle: auth.extra.raw_info.screen_name,
-      banner_url: auth.extra.raw_info.profile_banner_url
+      banner_url: auth.extra.raw_info.profile_banner_url,
+      token: auth.credentials.token,
+      secret: auth.credentials.secret
     )
 
     # Save user and identity
