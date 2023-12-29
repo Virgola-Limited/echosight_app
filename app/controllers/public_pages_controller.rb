@@ -9,7 +9,6 @@ class PublicPagesController < ApplicationController
     @tweets_count = query.this_weeks_tweets_count
     @tweets_change_since_last_week = query.calculate_tweets_change
 
-    # Handle the case where the user isn't found
-    # ...
+    raise 'Missing user' unless @user
   end
 end
