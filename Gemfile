@@ -42,7 +42,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "devise", "~> 4.9"
-gem 'omniauth-twitter'
+gem 'omniauth-twitter2'
 gem 'omniauth-rails_csrf_protection'
 gem 'vite_rails'
 gem 'apexcharts'

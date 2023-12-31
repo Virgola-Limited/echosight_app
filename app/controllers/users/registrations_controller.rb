@@ -13,6 +13,7 @@ module Users
 
     # Override update_resource method
     def update_resource(resource, params)
+      # check this doesnt break with twitter 2
       if resource.identity.nil? || resource.identity.provider != 'twitter'
         resource.update_with_password(params)
       else

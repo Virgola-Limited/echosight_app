@@ -28,11 +28,11 @@ class TweetCountsQuery
 # Fetch tweets from the last two weeks and memoize
 def fetch_tweets_from_last_two_weeks
   # doesnt like two weeks ago?
-  start_time = 1.weeks.ago
+  start_time = 2.weeks.ago
   # memo_key = start_time.to_i.to_s
   # return @memoized_counts[memo_key] if @memoized_counts[memo_key]
 
-  endpoint = 'tweets/search/recent'
+  endpoint = 'tweets/search/all'
   params = {
     'query' => "from:#{user.twitter_handle}",
     'start_time' => start_time.utc.iso8601,
