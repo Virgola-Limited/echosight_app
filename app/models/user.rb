@@ -47,8 +47,10 @@ class User < ApplicationRecord
       twitter_handle: auth.extra.raw_info.data.username,
       # this disappeared from auth when we moved to omniauth2 ???
       # banner_url: auth.extra.raw_info.profile_banner_url,
+      bearer_token: auth.credentials.token,
+      # these might not be needed any longer if we arent using Oauth1
       token: auth.credentials.token,
-      secret: auth.credentials.secret
+      secret: auth.credentials.secret,
     )
 
     # Save user and identity

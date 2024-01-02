@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_19_220505) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_31_222146) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_19_220505) do
     t.string "banner_url"
     t.string "token"
     t.string "secret"
+    t.string "bearer_token"
     t.index ["twitter_handle"], name: "index_identities_on_twitter_handle", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
