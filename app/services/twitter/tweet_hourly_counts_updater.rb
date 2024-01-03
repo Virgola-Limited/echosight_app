@@ -1,5 +1,19 @@
 module Twitter
   class TweetHourlyCountsUpdater
+    # need to discuss when we should run this
+    # currently its run when the user confirms their account
+    # we cant run it automatically from their public page as we hit
+    # api limits
+    # however we need to run it periodically so their data isnt stale
+    # we could have a temporary refresh button on the page
+    # notifies them when their data is ready
+    # but the api limit is 5 an hour :(
+    # a few active users and we max out the basic plan.
+    # so we might need more basic plan licences or the pro plan
+    # https://developer.twitter.com/en/docs/twitter-api/rate-limits
+    # we should probably call this when the log in
+    # however data will be stale if the public page is viewed and they havent logged in
+    # recently
     attr_reader :user, :start_time
 
     def initialize(user, start_time)
