@@ -4,12 +4,13 @@ module Twitter
 
     def initialize(user, start_time)
       @user = user
-      @start_time = start_time
+      @start_time = start_time ? DateTime.parse(start_time) : 1.week.ago.utc
+
     end
 
     def call
       return if up_to_date?
-
+      Rails.logger.debug('paul' + 'not up to date'.inspect)
       counts = fetch_tweet_counts
       store_hourly_counts(counts)
     end
@@ -17,12 +18,14 @@ module Twitter
     private
 
     def up_to_date?
-      return false
-      # Implement logic to check if the database has the complete and latest data
-      # Example: Check if there's a record for the last hour
-      last_count = TweetHourlyCount.where(user: @user).order(end_time: :desc).first
-      last_count.present? && last_count.pulled_at > @start_time
+      last_hour = Time.current.beginning_of_hour
+      expected_hours = ((last_hour - @start_time) / 1.hour).round
+      Rails.logger.debug('paul' + expected_hours.inspect)
+      recent_counts = TweetHourlyCount.where(identity: @user.identity, start_time: @start_time..last_hour)
+      Rails.logger.debug('paul recent_counts.count == expected_hours' + (recent_counts.count == expected_hours).inspect)
+      recent_counts.count == expected_hours && recent_counts.all? { |count| count.pulled_at > count.end_time }
     end
+
 
     def fetch_tweet_counts
       query = Twitter::TweetCountsQuery.new(@user, start_time)
