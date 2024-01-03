@@ -15,7 +15,6 @@ class TwitterAuthenticatorService
     end
 
     # Parse and return the bearer token from the response body
-    Rails.logger.debug('paul response.body' + response.body.inspect)
     JSON.parse(response.body)['access_token']
   end
 end

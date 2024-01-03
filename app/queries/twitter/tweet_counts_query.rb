@@ -2,25 +2,19 @@ module Twitter
   class TweetCountsQuery
     attr_reader :user
 
-    def initialize(user)
+    def initialize(user, start_time)
       @user = user
+      @start_time = start_time || 1.week.ago.utc.iso8601
     end
 
     def this_weeks_tweets_count
-      fetch_tweet_counts_from_last_week
-    end
-
-    private
-
-    def fetch_tweet_counts_from_last_week
       endpoint = 'tweets/counts/recent'
       params = {
         'query' => "from:#{user.twitter_handle}",
-        'start_time' => 1.week.ago.utc.iso8601
+        'start_time' =>  @start_time,
       }
 
-      response = x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
-      response.is_a?(Hash) && response.key?('meta') ? response['meta']['total_tweet_count'] : 0
+      x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
 
     def x_client

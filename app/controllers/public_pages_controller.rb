@@ -5,8 +5,7 @@ class PublicPagesController < ApplicationController
 
     raise 'Missing user' unless @user
 
-    query = Twitter::TweetCountsQuery.new(@user)
-    @tweets_count = query.this_weeks_tweets_count
+    @tweets_count = Twitter::TweetCountsQuery.new(@user).this_weeks_tweets_count
     @tweets_change_since_last_week = 'TBC'
 
     raise 'Missing user' unless @user
