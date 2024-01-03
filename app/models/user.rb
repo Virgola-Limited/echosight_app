@@ -10,6 +10,9 @@ class User < ApplicationRecord
   delegate :banner_url, to: :identity, allow_nil: true
   delegate :image_url, to: :identity, allow_nil: true
 
+  after_commit :enqueue_tweet_hourly_counts_update, on: [:create, :update]
+
+
   def self.from_omniauth(auth)
     Rails.logger.debug('paul auth' + auth.inspect)
     # We arent getting email from Twitter even though its set up in:
@@ -64,6 +67,14 @@ class User < ApplicationRecord
 
   def guest?
     !persisted?
+  end
+
+  private
+
+  def enqueue_tweet_hourly_counts_update
+    if confirmed_at_changed? && confirmed_at_was.nil?
+      Twitter::TweetHourlyCountsUpdater.perform_async(self.id, nil)
+    end
   end
 
 end

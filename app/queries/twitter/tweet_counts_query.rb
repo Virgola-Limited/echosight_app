@@ -2,7 +2,7 @@ module Twitter
   class TweetCountsQuery
     attr_reader :user
 
-    def initialize(user, start_time)
+    def initialize(user, start_time = nil)
       @user = user
       @start_time = start_time || 1.week.ago.utc.iso8601
     end
