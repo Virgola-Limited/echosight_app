@@ -10,7 +10,12 @@ class PublicPagesController < ApplicationController
       @tweets_count = tweet_count_query.this_weeks_tweets_count
     end
 
-    @tweets_change_since_last_week = 'TBC'
+    @tweets_change_since_last_week = tweet_count_query.tweets_change_since_last_week
+    if @tweets_change_since_last_week.is_a?(Integer)
+      @tweets_change_since_last_week = "#{@tweets_change_since_last_week}"
+    else
+      'bb'
+    end
 
     raise 'Missing user' unless @user
   end
