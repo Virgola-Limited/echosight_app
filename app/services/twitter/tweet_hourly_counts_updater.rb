@@ -42,7 +42,7 @@ module Twitter
 
 
     def fetch_tweet_counts
-      query = Twitter::TweetCountsQuery.new(@user, start_time)
+      query = Twitter::TweetCountsQuery.new(user: @user, start_time: start_time)
       Rails.logger.debug('paul' + query.this_weeks_tweets_count.inspect)
       query.this_weeks_tweets_count
     end

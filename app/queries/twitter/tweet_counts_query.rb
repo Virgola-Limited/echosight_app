@@ -2,23 +2,20 @@ module Twitter
   class TweetCountsQuery
     attr_reader :user
 
-    def initialize(user, start_time = nil)
+    def initialize(user:, start_time: nil)
       @user = user
-      @start_time = start_time || 1.week.ago.utc.iso8601
+      @start_time = start_time || 1.week.ago.utc
     end
 
     def this_weeks_tweets_count
-      endpoint = 'tweets/counts/recent'
-      params = {
-        'query' => "from:#{user.twitter_handle}",
-        'start_time' =>  @start_time,
-      }
-
-      x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
+      TweetHourlyCount.where('identity_id = ? AND start_time >= ?', @user.identity.id, @start_time)
+                      .sum(:tweet_count)
     end
 
-    def x_client
-      @x_client ||= TwitterClientService.new.client
+    def data_stale?
+      last_updated_time = TweetHourlyCount.where(identity_id: @user.identity.id).maximum(:pulled_at)
+      last_updated_time.blank? || Time.current - last_updated_time > 24.hours
     end
+
   end
 end
