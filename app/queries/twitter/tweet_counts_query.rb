@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Twitter
   class TweetCountsQuery
     attr_reader :user
@@ -18,15 +20,18 @@ module Twitter
 
     def last_weeks_tweets_count
       TweetHourlyCount.where('identity_id = ? AND start_time >= ? AND start_time < ?',
-                              @user.identity.id,
-                              @start_time - 1.week,
-                              @start_time)
+                             @user.identity.id,
+                             @start_time - 1.week,
+                             @start_time)
                       .sum(:tweet_count)
     end
 
-    def data_stale?
-      last_updated_time = TweetHourlyCount.where(identity_id: @user.identity.id).maximum(:pulled_at)
-      last_updated_time.blank? || Time.current - last_updated_time > 24.hours
+    def days_until_last_weeks_data_available
+      earliest_data_date = TweetHourlyCount.where(identity_id: @user.identity.id).minimum(:start_time)
+      return 7 unless earliest_data_date # If no data, assume a full week is needed.
+
+      days_of_data = (Time.current.beginning_of_day - earliest_data_date.to_date).to_i
+      [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
   end
 end

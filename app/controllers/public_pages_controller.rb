@@ -1,20 +1,20 @@
+# frozen_string_literal: true
+
 class PublicPagesController < ApplicationController
   def show
     identity = Identity.find_by(twitter_handle: params[:twitter_handle])
     @user = identity.user if identity.present?
 
     raise 'Missing user' unless @user
-    if tweet_count_query.data_stale?
-      @tweets_count = "Data is being fetched. Check back later."
-    else
-      @tweets_count = tweet_count_query.this_weeks_tweets_count
-    end
+
+    @tweets_count = tweet_count_query.this_weeks_tweets_count
 
     @tweets_change_since_last_week = tweet_count_query.tweets_change_since_last_week
     if @tweets_change_since_last_week.is_a?(Integer)
-      @tweets_change_since_last_week = "#{@tweets_change_since_last_week}"
+      @tweets_change_since_last_week = @tweets_change_since_last_week.to_s
     else
-      'bb'
+      @days_until_last_weeks_data_available = tweet_count_query.days_until_last_weeks_data_available
+      "Collecting data. Check back later in #{@days_until_last_weeks_data_available} days."
     end
 
     raise 'Missing user' unless @user
