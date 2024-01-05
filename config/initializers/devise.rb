@@ -27,7 +27,7 @@ Devise.setup do |config|
   config.mailer_sender = 'noreply@echosight.com'
 
   # Configure the class responsible to send e-mails.
-  config.mailer = "DeviseMailer"
+  config.mailer = 'DeviseMailer'
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
@@ -272,7 +272,8 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
-  config.omniauth :twitter2, ENV['TWITTER_OAUTH2_CLIENT_ID'], ENV['TWITTER_OAUTH_2_CLIENT_SECRET'], callback_path: '/users/auth/twitter2/callback', scope: "tweet.read users.read"
+  config.omniauth :twitter2, ENV['TWITTER_OAUTH2_CLIENT_ID'], ENV['TWITTER_OAUTH_2_CLIENT_SECRET'],
+                  callback_path: '/users/auth/twitter2/callback', scope: 'tweet.read users.read'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

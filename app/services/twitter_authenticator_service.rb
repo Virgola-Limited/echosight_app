@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Not used as we store the bearer token in the .env file
 # Could be useful later
 class TwitterAuthenticatorService

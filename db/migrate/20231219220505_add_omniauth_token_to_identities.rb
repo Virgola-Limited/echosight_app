@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddOmniauthTokenToIdentities < ActiveRecord::Migration[7.1]
   def change
     add_column :identities, :token, :string

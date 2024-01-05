@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTweetDailyCounts < ActiveRecord::Migration[7.1]
   def change
     create_table :tweet_daily_counts do |t|

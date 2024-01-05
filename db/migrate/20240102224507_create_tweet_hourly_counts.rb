@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTweetHourlyCounts < ActiveRecord::Migration[7.1]
   def change
     create_table :tweet_hourly_counts do |t|

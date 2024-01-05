@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/identity.rb
 class Identity < ApplicationRecord
   belongs_to :user
