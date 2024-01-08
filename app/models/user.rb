@@ -14,15 +14,11 @@ class User < ApplicationRecord
 
   after_commit :enqueue_tweet_hourly_counts_update, on: %i[create update]
 
+  scope :confirmed, -> { where.not(confirmed_at: nil) }
+  has_one :latest_tweet_hourly_count, -> { order(start_time: :desc) }, through: :identity, source: :tweet_hourly_counts
+
   def self.from_omniauth(auth)
     Rails.logger.debug("paul auth#{auth.inspect}")
-    # We arent getting email from Twitter even though its set up in:
-
-    # https://developer.twitter.com/en/portal/projects/1722744715408449536/apps/28231960/auth-settings
-
-    # <OmniAuth::AuthHash credentials=#<OmniAuth::AuthHash expires=true expires_at=1704066405 token="dlJRS2hNdlRValZYay1SWEtQSzIySmFwYjRzaVI2UU5rY1IySnJORHRfRGhGOjE3MDQwNTkyMDUxNjc6MTowOmF0OjE"> extra=#<OmniAuth::AuthHash raw_info=#<SnakyHash::StringKeyed data=#<SnakyHash::StringKeyed created_at="2023-08-16T21:52:25.000Z" description="\"Any sufficiently advanced technology is equivalent to magic.” - Arthur C. Clarke" id="1691930809756991488" name="Topher" profile_image_url="https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg" protected=false public_metrics=#<SnakyHash::StringKeyed followers_count=1 following_count=12 like_count=0 listed_count=0 tweet_count=2> username="Topher179412184" verified=false>>> info=#<OmniAuth::AuthHash::InfoHash description="\"Any sufficiently advanced technology is equivalent to magic.” - Arthur C. Clarke" email=nil image="https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg" name="Topher" nickname="Topher179412184" urls=#<OmniAuth::AuthHash Twitter="https://twitter.com/Topher179412184" Website=nil>> provider="twitter2" uid="1691930809756991488">
-
-    # might be an intermittent Twitter bug so hack in a fake email for now but fix soon if not intermittent.
 
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
@@ -36,6 +32,7 @@ class User < ApplicationRecord
     # Update user's attributes
     user.name = auth.info.name if user.name.blank?
     user.email = auth.info.email if user.email.blank?
+    # OAUTH2 doesnt support getting email address need to move back to OAUTH1 or ask user for email
     ##########################  TODO REMOVE THIS BEFORE LAUNCH
     user.email = "fake_email_#{rand(252...4350)}@echosight.io" if user.email.blank?
     ##########################  TODO REMOVE THIS BEFORE LAUNCH

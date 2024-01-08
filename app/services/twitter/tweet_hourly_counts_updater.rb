@@ -2,14 +2,6 @@
 
 module Twitter
   class TweetHourlyCountsUpdater
-    # TODO: make this a background job with these rules
-    # https://developer.twitter.com/en/docs/twitter-api/rate-limits
-    # use up allowance every 15 minutes
-    # set clear expectations about the delays on the API
-    # get the old user identities and update them
-    # consider not getting data for users who haven't logged in in a while (more relaxed)
-    # or nobody is visiting their public page (active public page is more important to have up to date)
-    # try and update the data for the public page once every 24 hours if possible
     attr_reader :user, :start_time
 
     def initialize(user, start_time)
@@ -18,20 +10,28 @@ module Twitter
     end
 
     def call
-      counts = fetch_tweet_counts
-      store_hourly_counts(counts)
+      store_hourly_counts
     end
 
     private
 
-    def fetch_tweet_counts
-      query = Twitter::TweetCountsQuery.new(user: @user, start_time:)
-      Rails.logger.debug("paul#{query.this_weeks_tweets_count.inspect}")
-      query.this_weeks_tweets_count
+    # TO-DO: push twitter API calls to own class
+    def fetch_tweet_counts_from_last_week
+      endpoint = 'tweets/counts/recent'
+      params = {
+        'query' => "from:#{user.twitter_handle}",
+        'start_time' => 1.week.ago.utc.iso8601
+      }
+
+      x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
 
-    def store_hourly_counts(counts)
-      counts['data'].each do |count_data|
+    def x_client
+      @x_client ||= TwitterClientService.new.client
+    end
+
+    def store_hourly_counts
+      fetch_tweet_counts_from_last_week['data'].each do |count_data|
         TweetHourlyCount.find_or_initialize_by(
           identity: @user.identity,
           start_time: DateTime.parse(count_data['start']),

@@ -4,7 +4,7 @@ class UpdateTweetHourlyCountsWorker
   def perform
     confirmed_users.each do |user|
       if needs_update?(user)
-        TweetHourlyCountsUpdater.new(user, nil).call
+        Twitter::TweetHourlyCountsUpdater.new(user, nil).call
       end
     end
   end
@@ -12,7 +12,7 @@ class UpdateTweetHourlyCountsWorker
   private
 
   def confirmed_users
-    TwitterIdentity.where(is_confirmed: true).map(&:user)
+    User.confirmed.joins(:identity).merge(Identity.valid_identity)
   end
 
   def needs_update?(user)

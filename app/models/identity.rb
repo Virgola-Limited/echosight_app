@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-# app/models/identity.rb
 class Identity < ApplicationRecord
   belongs_to :user
   has_many :tweet_hourly_counts, dependent: :destroy
@@ -9,4 +7,8 @@ class Identity < ApplicationRecord
   validates :uid, presence: true, uniqueness: { scope: :provider }
   # should probably be just called handle (should be social network agnostic)
   validates :twitter_handle, uniqueness: true, presence: true
+
+  scope :valid_identity, -> {
+    where(provider: "twitter2")
+  }
 end
