@@ -45,7 +45,6 @@ gem 'bootsnap', require: false
 
 gem 'apexcharts'
 gem 'devise', '~> 4.9'
-gem 'fakeredis'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'premailer-rails'

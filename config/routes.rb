@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+
+  # Basic HTTP Authentication for Sidekiq Web UI
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    # TODO: Move to ENV variables or just disable in production
+    username == 'admin' && password == 'l0ftw@h'
+  end
+  mount Sidekiq::Web => '/sidekiq'
+
   resources :dashboard, only: :index
   get 'public_page/:twitter_handle', to: 'public_pages#show', as: :public_page
 
