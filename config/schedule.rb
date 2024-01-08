@@ -18,7 +18,7 @@
 # end
 
 every 12.minutes do
-  runner "UpdateTweetHourlyCountsWorker.call"
+  runner "UpdateTweetHourlyCountsWorker.perform_async"
 end
 
 # Learn more: http://github.com/javan/whenever
