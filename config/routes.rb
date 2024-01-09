@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   resources :dashboard, only: :index
-  get 'public_page/:twitter_handle', to: 'public_pages#show', as: :public_page
+  get 'public_page/:handle', to: 'public_pages#show', as: :public_page
 
   resources :single_message, only: :index
   devise_for :users, controllers: {

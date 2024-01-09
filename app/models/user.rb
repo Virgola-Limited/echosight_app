@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   has_one :identity, dependent: :destroy
 
-  delegate :twitter_handle, to: :identity, allow_nil: true
+  delegate :handle, to: :identity, allow_nil: true
   delegate :banner_url, to: :identity, allow_nil: true
   delegate :image_url, to: :identity, allow_nil: true
 
@@ -44,7 +44,7 @@ class User < ApplicationRecord
       uid: auth.uid,
       image_url: auth.info.image,
       description: auth.info.description,
-      twitter_handle: auth.extra.raw_info.data.username,
+      handle: auth.extra.raw_info.data.username,
       # this disappeared from auth when we moved to omniauth2 ???
       # banner_url: auth.extra.raw_info.profile_banner_url,
     )

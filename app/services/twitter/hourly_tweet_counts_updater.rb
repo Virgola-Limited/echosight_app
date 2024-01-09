@@ -19,7 +19,7 @@ module Twitter
     def fetch_tweet_counts_from_last_week
       endpoint = 'tweets/counts/recent'
       params = {
-        'query' => "from:#{user.twitter_handle}",
+        'query' => "from:#{user.handle}",
         'start_time' => 1.week.ago.utc.iso8601
       }
 

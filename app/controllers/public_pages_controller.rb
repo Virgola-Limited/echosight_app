@@ -2,7 +2,7 @@
 
 class PublicPagesController < ApplicationController
   def show
-    identity = Identity.find_by(twitter_handle: params[:twitter_handle])
+    identity = Identity.find_by(handle: params[:handle])
     @user = identity.user if identity.present?
 
     raise 'Missing user' unless @user

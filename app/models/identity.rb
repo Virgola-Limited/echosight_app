@@ -6,7 +6,7 @@ class Identity < ApplicationRecord
   validates :provider, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }
   # should probably be just called handle (should be social network agnostic)
-  validates :twitter_handle, uniqueness: true, presence: true
+  validates :handle, uniqueness: true, presence: true
 
   scope :valid_identity, -> {
     where(provider: "twitter2")
