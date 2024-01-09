@@ -5,6 +5,6 @@ class TweetCountsUpdaterWorker
 
   def perform(user_id)
     user = User.find(user_id)
-    Twitter::TweetHourlyCountsUpdater.new(user, nil).call
+    Twitter::HourlyTweetCountsUpdater.new(user, nil).call
   end
 end

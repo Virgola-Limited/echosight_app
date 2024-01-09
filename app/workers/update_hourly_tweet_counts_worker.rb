@@ -1,10 +1,10 @@
-class UpdateTweetHourlyCountsWorker
+class UpdateHourlyTweetCountsWorker
   include Sidekiq::Worker
 
   def perform
     confirmed_users.each do |user|
       if needs_update?(user)
-        Twitter::TweetHourlyCountsUpdater.new(user, nil).call
+        Twitter::HourlyTweetCountsUpdater.new(user, nil).call
       end
     end
   end

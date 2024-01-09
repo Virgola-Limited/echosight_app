@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateTweetHourlyCounts < ActiveRecord::Migration[7.1]
+class CreateHourlyTweetCounts < ActiveRecord::Migration[7.1]
   def change
     create_table :tweet_hourly_counts do |t|
       t.references :identity, null: false, foreign_key: true

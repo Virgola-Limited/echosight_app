@@ -10,7 +10,7 @@ module Twitter
     end
 
     def this_weeks_tweets_count
-      TweetHourlyCount.where('identity_id = ? AND start_time >= ?', @user.identity.id, @start_time)
+      HourlyTweetCount.where('identity_id = ? AND start_time >= ?', @user.identity.id, @start_time)
                       .sum(:tweet_count)
     end
 
@@ -19,7 +19,7 @@ module Twitter
     end
 
     def last_weeks_tweets_count
-      TweetHourlyCount.where('identity_id = ? AND start_time >= ? AND start_time < ?',
+      HourlyTweetCount.where('identity_id = ? AND start_time >= ? AND start_time < ?',
                              @user.identity.id,
                              @start_time - 1.week,
                              @start_time)
@@ -27,7 +27,7 @@ module Twitter
     end
 
     def days_until_last_weeks_data_available
-      earliest_data_date = TweetHourlyCount.where(identity_id: @user.identity.id).minimum(:start_time)
+      earliest_data_date = HourlyTweetCount.where(identity_id: @user.identity.id).minimum(:start_time)
       return 7 unless earliest_data_date # If no data, assume a full week is needed.
 
       days_of_data = (Time.current.beginning_of_day - earliest_data_date.to_date).to_i

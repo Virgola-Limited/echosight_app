@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class TweetHourlyCount < ApplicationRecord
+class HourlyTweetCount < ApplicationRecord
   belongs_to :identity
 end

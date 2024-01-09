@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_03_190722) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_09_032018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "hourly_tweet_counts", force: :cascade do |t|
+    t.bigint "identity_id", null: false
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer "tweet_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "pulled_at"
+    t.index ["identity_id"], name: "index_hourly_tweet_counts_on_identity_id"
+  end
 
   create_table "identities", force: :cascade do |t|
     t.string "provider"
@@ -26,17 +37,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_190722) do
     t.string "banner_url"
     t.index ["twitter_handle"], name: "index_identities_on_twitter_handle", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
-  end
-
-  create_table "tweet_hourly_counts", force: :cascade do |t|
-    t.bigint "identity_id", null: false
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.integer "tweet_count"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "pulled_at"
-    t.index ["identity_id"], name: "index_tweet_hourly_counts_on_identity_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -67,6 +67,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_03_190722) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
-  add_foreign_key "tweet_hourly_counts", "identities"
 end
