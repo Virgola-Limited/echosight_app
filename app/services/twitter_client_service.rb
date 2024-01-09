@@ -23,11 +23,12 @@ class TwitterClientService
 
   #  not sure this is working. will leave comments in until
   def user_context_credentials(version)
+    raise 'Not working'
     version == :v1_1 ? 'https://api.twitter.com/1.1/' : 'https://api.twitter.com/2/'
     {
       # api_key: ENV['TWITTER_CONSUMER_API_KEY'],
       # api_key_secret: ENV['TWITTER_CONSUMER_API_SECRET'],
-      bearer_token: user.identity.bearer_token
+      # bearer_token: user.identity.bearer_token
       # base_url: base_url
     }
   end
