@@ -2,11 +2,10 @@
 
 module Twitter
   class HourlyTweetCountsUpdater
-    attr_reader :user, :start_time
+    attr_reader :user
 
-    def initialize(user, start_time)
+    def initialize(user)
       @user = user
-      @start_time = start_time ? DateTime.parse(start_time) : 1.week.ago.utc
     end
 
     def call
@@ -33,7 +32,7 @@ module Twitter
     def store_hourly_counts
       fetch_tweet_counts_from_last_week['data'].each do |count_data|
         HourlyTweetCount.find_or_initialize_by(
-          identity: @user.identity,
+          identity: user.identity,
           start_time: DateTime.parse(count_data['start']),
           end_time: DateTime.parse(count_data['end'])
         ).update(
