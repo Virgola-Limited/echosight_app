@@ -27,7 +27,7 @@ module Twitter
     end
 
     def x_client
-      @x_client ||= TwitterClientService.new.client
+      @x_client ||= ClientService.new.client
     end
 
     def store_hourly_counts

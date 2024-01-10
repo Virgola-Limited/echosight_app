@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class TwitterClientService
+module Twitter
+class ClientService
   attr_reader :user
 
   def initialize(user = nil)
@@ -40,4 +41,5 @@ class TwitterClientService
       base_url:
     }
   end
+end
 end

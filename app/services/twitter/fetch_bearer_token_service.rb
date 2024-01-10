@@ -2,7 +2,8 @@
 
 # Not used as we store the bearer token in the .env file
 # Could be useful later
-class TwitterAuthenticatorService
+module Twitter
+class FetchBearerTokenService
   def self.fetch_bearer_token
     consumer_key = ENV['TWITTER_CONSUMER_API_KEY']
     consumer_secret = ENV['TWITTER_CONSUMER_API_SECRET']
@@ -19,4 +20,5 @@ class TwitterAuthenticatorService
     # Parse and return the bearer token from the response body
     JSON.parse(response.body)['access_token']
   end
+end
 end
