@@ -15,7 +15,7 @@ class User < ApplicationRecord
   after_commit :enqueue_tweet_hourly_counts_update, on: %i[create update]
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  has_one :latest_tweet_hourly_count, -> { order(start_time: :desc) }, through: :identity, source: :tweet_hourly_counts
+  has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 
   def self.from_omniauth(auth)
     Rails.logger.debug("paul auth#{auth.inspect}")
