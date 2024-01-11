@@ -17,6 +17,10 @@ class PublicPagesController < ApplicationController
       "Collecting data. Check back later in #{@days_until_last_weeks_data_available} days."
     end
 
+    # @impressions_count = Twitter::ImpressionsQuery.new(@user, params[:tweet_id]).fetch_impressions
+    @followers_count = Twitter::FollowersQuery.new(@user).followers_count
+    @followers_count_change_percentage_text = Twitter::FollowersQuery.new(@user).followers_count_change_percentage
+
     raise 'Missing user' unless @user
   end
 
