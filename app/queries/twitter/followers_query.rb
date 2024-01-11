@@ -9,7 +9,7 @@ module Twitter
     end
 
     def followers_count
-      latest_follower_count = TwitterFollowerCount.where(identity_id: @user.identity.id)
+      latest_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
                                                   .order(date: :desc)
                                                   .first
                                                   Rails.logger.debug('paul latest_follower_count' + latest_follower_count.inspect)
@@ -19,10 +19,10 @@ module Twitter
     end
 
     def followers_count_change_percentage
-      latest_follower_count = TwitterFollowerCount.where(identity_id: @user.identity.id)
+      latest_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
                                                   .order(date: :desc)
                                                   .first
-      previous_follower_count = TwitterFollowerCount.where(identity_id: @user.identity.id)
+      previous_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
                                                     .where('date < ?', latest_follower_count.date)
                                                     .order(date: :desc)
                                                     .first
@@ -34,7 +34,7 @@ module Twitter
     end
 
     def followers_data_for_graph
-      data = TwitterFollowerCount.where(identity_id: @user.identity.id)
+      data = TwitterFollowersCount.where(identity_id: @user.identity.id)
                                  .where('date >= ?', 12.months.ago)
                                  .order(date: :asc)
       format_for_graph(data)

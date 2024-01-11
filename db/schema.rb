@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_11_011452) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_11_215627) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,15 +40,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_011452) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
-  create_table "twitter_follower_counts", force: :cascade do |t|
-    t.string "followers_count"
-    t.bigint "identity_id", null: false
-    t.date "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["identity_id"], name: "index_twitter_follower_counts_on_identity_id"
-  end
-
   create_table "twitter_followers", force: :cascade do |t|
     t.bigint "twitter_user_id", null: false
     t.string "follower_id", null: false
@@ -61,6 +52,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_011452) do
     t.index ["follower_id"], name: "index_twitter_followers_on_follower_id"
     t.index ["identity_id"], name: "index_twitter_followers_on_identity_id"
     t.index ["twitter_user_id"], name: "index_twitter_followers_on_twitter_user_id"
+  end
+
+  create_table "twitter_followers_count", force: :cascade do |t|
+    t.string "followers_count"
+    t.bigint "identity_id", null: false
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_twitter_followers_count_on_identity_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -93,6 +93,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_011452) do
 
   add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
-  add_foreign_key "twitter_follower_counts", "identities"
   add_foreign_key "twitter_followers", "identities"
+  add_foreign_key "twitter_followers_count", "identities"
 end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class TwitterFollowerCount < ApplicationRecord
+class TwitterFollowersCount < ApplicationRecord
   belongs_to :identity
 end

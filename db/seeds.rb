@@ -14,7 +14,7 @@ def create_follower_count_data(identity_id, start_date, end_date, start_follower
 
   (start_date..end_date).each do |date|
     follower_count = start_followers + (date - start_date).to_i * daily_increment
-    TwitterFollowerCount.create!(
+    TwitterFollowersCount.create!(
       identity_id: identity_id,
       followers_count: follower_count.to_s,
       date: date
@@ -25,7 +25,7 @@ end
 
 # Identity ID from the first user's identity
 identity_id = User.first.identity.id
-TwitterFollowerCount.where(identity_id: identity_id).delete_all
+TwitterFollowersCount.where(identity_id: identity_id).delete_all
 # Generate data for 7 days
 # create_follower_count_data(identity_id, 7.days.ago.to_date, Date.today, 1000, 1070)
 
