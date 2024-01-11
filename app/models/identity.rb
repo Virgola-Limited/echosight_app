@@ -2,6 +2,7 @@
 class Identity < ApplicationRecord
   belongs_to :user
   has_many :tweet_hourly_counts, dependent: :destroy
+  has_many :twitter_follower_counts, dependent: :destroy
 
   validates :provider, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }

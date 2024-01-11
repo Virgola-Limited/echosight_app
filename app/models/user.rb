@@ -47,6 +47,7 @@ class User < ApplicationRecord
       handle: auth.extra.raw_info.data.username,
       # this disappeared from auth when we moved to omniauth2 ???
       # banner_url: auth.extra.raw_info.profile_banner_url,
+      bearer_token: auth.credentials.token
     )
 
     # Save user and identity

@@ -1,45 +1,52 @@
 # frozen_string_literal: true
 
 module Twitter
-class ClientService
-  attr_reader :user
+  class ClientService
+    attr_reader :user
 
-  def initialize(user = nil)
-    @user = user
-  end
+    def initialize(user = nil)
+      @user = user
+    end
 
-  def client(version: :v2)
-    X::Client.new(**credentials(version))
-  end
+    def client(version: :v2, auth: :oauth2)
+      X::Client.new(**credentials(version, auth))
+    end
 
-  private
+    private
 
-  def credentials(version)
-    if user
-      user_context_credentials(version)
-    else
-      application_context_credentials(version)
+    def credentials(version, auth)
+      if user
+        user_context_credentials(version)
+      else
+        application_context_credentials(version, auth)
+      end
+    end
+
+    #  Not sure this is working. Assume its not when you first use it
+    def user_context_credentials(version)
+      results = {
+        bearer_token: user.identity.bearer_token, # OAUTH2
+        base_url: base_url(version)
+      }
+      results
+    end
+
+    def application_context_credentials(version, auth)
+      credentials = { base_url: base_url(version) }
+
+      case auth
+      when :oauth2
+        credentials[:bearer_token] = ENV['TWITTER_BEARER_TOKEN']
+      when :oauth1
+        credentials[:api_key] = ENV['TWITTER_CONSUMER_API_KEY']
+        credentials[:api_key_secret] = ENV['TWITTER_CONSUMER_API_SECRET']
+      end
+
+      credentials
+    end
+
+    def base_url(version = :v2)
+      version == :v1_1 ? 'https://api.twitter.com/1.1/' : 'https://api.twitter.com/2/'
     end
   end
-
-  #  not sure this is working. will leave comments in until
-  def user_context_credentials(version)
-    raise 'Not working'
-    version == :v1_1 ? 'https://api.twitter.com/1.1/' : 'https://api.twitter.com/2/'
-    {
-      # api_key: ENV['TWITTER_CONSUMER_API_KEY'],
-      # api_key_secret: ENV['TWITTER_CONSUMER_API_SECRET'],
-      # bearer_token: user.identity.bearer_token
-      # base_url: base_url
-    }
-  end
-
-  def application_context_credentials(version)
-    base_url = version == :v1_1 ? 'https://api.twitter.com/1.1/' : 'https://api.twitter.com/2/'
-    {
-      bearer_token: ENV['TWITTER_BEARER_TOKEN'],
-      base_url:
-    }
-  end
-end
 end
