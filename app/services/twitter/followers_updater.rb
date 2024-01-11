@@ -25,7 +25,6 @@ module Twitter
       params = {
         'user.fields' => 'public_metrics'
       }
-      Rails.logger.debug('paul ' + "#{endpoint}?#{URI.encode_www_form(params)}".inspect)
       # {"data"=>{"public_metrics"=>{"followers_count"=>2, "following_count"=>11, "tweet_count"=>7, "listed_count"=>0, "like_count"=>4}, "id"=>"1691930809756991488", "username"=>"Topher179412184", "name"=>"Topher"}}
       x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
@@ -42,7 +41,7 @@ module Twitter
         followers_count = response['data']['public_metrics']['followers_count']
         TwitterFollowerCount.find_or_initialize_by(
           identity_id: user.identity.id,
-          date_time: DateTime.current
+          date: Date.current
         ).update(
           followers_count: followers_count
         )

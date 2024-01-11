@@ -1,60 +1,64 @@
 <!-- followers -->
 <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Followers</h2>
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-  <div id="followers-chart"></div>
+  <% if @followers_data_for_graph.count < 2 %>
+    <p>We are awaiting more data to show the followers graph.</p>
+  <% else %>
+    <div id="followers-chart"></div>
+  <% end %>
 </div>
 
 <script>
   window.addEventListener("load", function() {
-    let options = {
-      chart: {
-        height: '600px',
-        maxWidth: "100%",
-        type: "line",
-        fontFamily: "Inter, sans-serif",
-        dropShadow: {
-          enabled: false,
+    <% unless @followers_data_for_graph.count < 2 %>
+      let options = {
+        chart: {
+          height: '600px',
+          maxWidth: "100%",
+          type: "line",
+          fontFamily: "Inter, sans-serif",
+          dropShadow: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false,
+          },
         },
-        toolbar: {
-          show: false,
+        series: [{
+          name: "Followers",
+          data: <%= @followers_data_for_graph.map { |point| point[1] } %>
+        }],
+        xaxis: {
+          categories: <%= @followers_data_for_graph.map { |point| point[0] }.to_json.html_safe %>,
         },
-      },
-      series: [{
-        name: "Followers",
-        data: [1000, 2000, 1900, 4500, 5600, 6200, 7000]
-      }],
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-      },
-      yaxis: {
-        min: 1000,
-        max: 8000,
-        tickAmount: 7,
-        labels: {
-          formatter: function (val) {
-            return val.toFixed(0);
+        yaxis: {
+          // Adjust according to your data
+          labels: {
+            formatter: function (val) {
+              return val.toFixed(0);
+            }
           }
-        }
-      },
-      stroke: {
-        curve: 'smooth',
-        width: 4 // Makes the line thicker
-      },
-      grid: {
-        show: true,
-        strokeDashArray: 4,
-      },
-      tooltip: {
-        enabled: true,
-      },
-      dataLabels: {
-        enabled: true,
-      },
-    };
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 4 // Makes the line thicker
+        },
+        grid: {
+          show: true,
+          strokeDashArray: 4,
+        },
+        tooltip: {
+          enabled: true,
+        },
+        dataLabels: {
+          enabled: true,
+        },
+      };
 
-    if (document.getElementById("followers-chart") && typeof ApexCharts !== 'undefined') {
-      const chart = new ApexCharts(document.getElementById("followers-chart"), options);
-      chart.render();
-    }
+      if (document.getElementById("followers-chart") && typeof ApexCharts !== 'undefined') {
+        const chart = new ApexCharts(document.getElementById("followers-chart"), options);
+        chart.render();
+      }
+    <% end %>
   });
 </script>

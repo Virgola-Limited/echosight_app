@@ -20,7 +20,7 @@ class PublicPagesController < ApplicationController
     # @impressions_count = Twitter::ImpressionsQuery.new(@user, params[:tweet_id]).fetch_impressions
     @followers_count = Twitter::FollowersQuery.new(@user).followers_count
     @followers_count_change_percentage_text = Twitter::FollowersQuery.new(@user).followers_count_change_percentage
-
+    @followers_data_for_graph = Twitter::FollowersQuery.new(@user).followers_data_for_graph
     raise 'Missing user' unless @user
   end
 

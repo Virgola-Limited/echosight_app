@@ -43,7 +43,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_11_011452) do
   create_table "twitter_follower_counts", force: :cascade do |t|
     t.string "followers_count"
     t.bigint "identity_id", null: false
-    t.datetime "date_time"
+    t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_twitter_follower_counts_on_identity_id"
