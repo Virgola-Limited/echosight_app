@@ -10,8 +10,9 @@ module Twitter
 
     def followers_count
       latest_follower_count = TwitterFollowerCount.where(identity_id: @user.identity.id)
-                                                  .order(created_at: :desc)
+                                                  .order(date: :desc)
                                                   .first
+                                                  Rails.logger.debug('paul latest_follower_count' + latest_follower_count.inspect)
       raise 'No follower data available' unless latest_follower_count
 
       latest_follower_count.followers_count
@@ -19,11 +20,11 @@ module Twitter
 
     def followers_count_change_percentage
       latest_follower_count = TwitterFollowerCount.where(identity_id: @user.identity.id)
-                                                  .order(created_at: :desc)
+                                                  .order(date: :desc)
                                                   .first
       previous_follower_count = TwitterFollowerCount.where(identity_id: @user.identity.id)
-                                                    .where('created_at < ?', latest_follower_count.created_at)
-                                                    .order(created_at: :desc)
+                                                    .where('date < ?', latest_follower_count.date)
+                                                    .order(date: :desc)
                                                     .first
 
       return 'No sufficient data' unless latest_follower_count && previous_follower_count
@@ -61,16 +62,16 @@ module Twitter
     def weekly_format(data)
       data.group_by { |record| record.date.to_date.cweek }
           .map do |week, records|
-            followers_sum = records.map { |r| r.followers_count.to_i }.sum
-            ["Week #{week}", followers_sum]
+            average_followers = (records.map { |r| r.followers_count.to_i }.sum.to_f / records.size).round
+            ["Week #{week}", average_followers]
           end
     end
 
     def monthly_format(data)
       data.group_by { |record| record.date.beginning_of_month }
           .map do |month, records|
-            followers_sum = records.map { |r| r.followers_count.to_i }.sum
-            [month.strftime('%b %Y'), followers_sum]
+            average_followers = (records.map { |r| r.followers_count.to_i }.sum.to_f / records.size).round
+            [month.strftime('%b %Y'), average_followers]
           end
     end
 
