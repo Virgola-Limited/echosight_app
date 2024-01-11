@@ -1,4 +1,4 @@
-class UpdateHourlyTweetCountsWorker
+class UpdateTwitterDataWorker
   include Sidekiq::Worker
 
   def perform
@@ -6,6 +6,8 @@ class UpdateHourlyTweetCountsWorker
       if needs_update?(user)
         Twitter::HourlyTweetCountsUpdater.new(user, nil).call
       end
+      # Later on we should check if the data needs updating to conserve API usage
+      FollowersUpdater.new(user).call
     end
   end
 
@@ -16,7 +18,7 @@ class UpdateHourlyTweetCountsWorker
   end
 
   def needs_update?(user)
-    latest_count_time = user.latest_tweet_hourly_count&.start_time || 1.day.ago.utc
+    latest_count_time = user.latest_hourly_tweet_count&.start_time || 1.day.ago.utc
     latest_count_time < 24.hours.ago.utc
   end
 end
