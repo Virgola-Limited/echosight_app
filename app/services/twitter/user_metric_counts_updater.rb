@@ -50,10 +50,7 @@ module Twitter
     end
 
     def store_likes
-      Rails.logger.debug('paul' + 'store_likes'.inspect)
       response = fetch_user_data
-      Rails.logger.debug('paul' + response.inspect)
-      Rails.logger.debug('paul tes' + response['data']['public_metrics']['like_count'].inspect)
       if response['data'] && response['data']['public_metrics']
         likes_count = response['data']['public_metrics']['like_count']
         ::TwitterLikesCount.find_or_initialize_by(

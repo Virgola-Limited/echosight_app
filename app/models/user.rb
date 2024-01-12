@@ -18,8 +18,6 @@ class User < ApplicationRecord
   has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 
   def self.from_omniauth(auth)
-    Rails.logger.debug("paul auth#{auth.inspect}")
-
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
     if identity

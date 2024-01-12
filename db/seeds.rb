@@ -22,25 +22,18 @@ def create_follower_count_data(identity_id, start_date, end_date, start_follower
   end
 end
 
+# Days required in follower seed data
+# days_required_in_follower_seed_data = 7.days.ago.to_date
+# days_required_in_follower_seed_data = 14.days.ago.to_date unless days_required_in_follower_seed_data
+days_required_in_follower_seed_data = 31.days.ago.to_date unless days_required_in_follower_seed_data
+days_required_in_follower_seed_data = 60.days.ago.to_date unless days_required_in_follower_seed_data
+days_required_in_follower_seed_data = 6.months.ago.to_date unless days_required_in_follower_seed_data
+days_required_in_follower_seed_data = 13.months.ago.to_date unless days_required_in_follower_seed_data
 
-# Identity ID from the first user's identity
-identity_id = User.first.identity.id
-TwitterFollowersCount.where(identity_id: identity_id).delete_all
-# Generate data for 7 days
-# create_follower_count_data(identity_id, 7.days.ago.to_date, Date.today, 1000, 1070)
-
-# Generate data for 14 days
-# create_follower_count_data(identity_id, 14.days.ago.to_date, Date.today, 1070, 1140)
-
-# Generate data for 31 days
-# create_follower_count_data(identity_id, 31.days.ago.to_date, Date.today, 1140, 1310)
-
-# Generate data for 60 days
-# create_follower_count_data(identity_id, 60.days.ago.to_date, Date.today, 1310, 1670)
-
-# Generate data for 6 months
-# create_follower_count_data(identity_id, 6.months.ago.to_date, Date.today, 1670, 2670)
-
-# Generate data for more than 12 months
-create_follower_count_data(identity_id, 13.months.ago.to_date, Date.today, 2670, 5270)
+if(days_required_in_follower_seed_data && User.count.positive?)
+  # Identity ID from the first user's identity
+  identity_id = User.first.identity.id
+  TwitterFollowersCount.where(identity_id: identity_id).delete_all
+  create_follower_count_data(identity_id, days_required_in_follower_seed_data, Date.today, 1000, 1070)
+end
 
