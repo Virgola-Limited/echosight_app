@@ -1,7 +1,7 @@
 <!-- followers -->
 <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Followers</h2>
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-  <% if @followers_data_for_graph.count < 2 %>
+  <% if @daily_data_points_for_graph.count < 2 %>
     <p>We are awaiting more data to show the followers graph.</p>
   <% else %>
     <div id="followers-chart"></div>
@@ -10,7 +10,7 @@
 
 <script>
   window.addEventListener("load", function() {
-    <% unless @followers_data_for_graph.count < 2 %>
+    <% unless @daily_data_points_for_graph.count < 2 %>
       let options = {
         chart: {
           height: '600px',
@@ -21,18 +21,28 @@
             enabled: false,
           },
           toolbar: {
-            show: false,
+            show: true, // Consider enabling toolbar for zooming and panning
+            tools: {
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true
+            },
           },
         },
         series: [{
           name: "Followers",
-          data: <%= @followers_data_for_graph.map { |point| point[1] } %>
+          data: <%= @daily_data_points_for_graph.map { |point| point[1] } %>
         }],
         xaxis: {
-          categories: <%= @followers_data_for_graph.map { |point| point[0] }.to_json.html_safe %>,
+          categories: <%= @formatted_labels_for_graph.to_json.html_safe %>,
+          type: 'category',
+          labels: {
+            rotate: -45
+          }
         },
         yaxis: {
-          // Adjust according to your data
           labels: {
             formatter: function (val) {
               return val.toFixed(0);
@@ -41,7 +51,7 @@
         },
         stroke: {
           curve: 'smooth',
-          width: 4 // Makes the line thicker
+          width: 2
         },
         grid: {
           show: true,
@@ -49,9 +59,14 @@
         },
         tooltip: {
           enabled: true,
+          y: {
+            formatter: function (val) {
+              return val + ' followers';
+            }
+          }
         },
         dataLabels: {
-          enabled: true,
+          enabled: false,
         },
       };
 

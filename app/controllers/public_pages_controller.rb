@@ -18,9 +18,18 @@ class PublicPagesController < ApplicationController
     end
 
     # @impressions_count = Twitter::ImpressionsQuery.new(@user, params[:tweet_id]).fetch_impressions
-    @followers_count = Twitter::FollowersQuery.new(@user).followers_count
-    @followers_count_change_percentage_text = Twitter::FollowersQuery.new(@user).followers_count_change_percentage
-    @followers_data_for_graph = Twitter::FollowersQuery.new(@user).followers_data_for_graph
+    followers_query = Twitter::FollowersQuery.new(@user)
+    @followers_count = followers_query.followers_count
+    @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
+
+    formatted_data, daily_data_points = followers_query.followers_data_for_graph
+    formatted_data, daily_data_points = followers_query.followers_data_for_graph
+    Rails.logger.debug("paul Controller - Formatted Labels: #{@formatted_labels_for_graph}")
+    Rails.logger.debug("paul Controller - Daily Data Points: #{@daily_data_points_for_graph}")
+    @formatted_labels_for_graph = formatted_data
+    @daily_data_points_for_graph = daily_data_points
+    Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
+    Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
   end
 
   def tweet_count_query

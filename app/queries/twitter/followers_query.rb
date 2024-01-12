@@ -12,7 +12,6 @@ module Twitter
       latest_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
                                                   .order(date: :desc)
                                                   .first
-                                                  Rails.logger.debug('paul latest_follower_count' + latest_follower_count.inspect)
       raise 'No follower data available' unless latest_follower_count
 
       latest_follower_count.followers_count
@@ -35,46 +34,50 @@ module Twitter
 
     def followers_data_for_graph
       data = TwitterFollowersCount.where(identity_id: @user.identity.id)
-                                 .where('date >= ?', 12.months.ago)
-                                 .order(date: :asc)
-      format_for_graph(data)
+                                  .where('date >= ?', 12.months.ago)
+                                  .order(date: :asc)
+                                  .pluck(:date, :followers_count)
+      formatted_data, daily_data_points = format_for_graph(data)
+
+      Rails.logger.debug("Fetched Data: #{data.inspect}")
+      Rails.logger.debug("Formatted Labels: #{formatted_data.inspect}")
+      Rails.logger.debug("Daily Data Points: #{daily_data_points.inspect}")
+
+      [formatted_data, daily_data_points]
     end
 
     private
 
     def format_for_graph(data)
-      case data.count
-      when 0
-        raise 'No data available'
-      when 1..30
-        daily_format(data)
-      when 31..60
-        weekly_format(data)
-      else
-        monthly_format(data)
-      end
+      formatted_data = case data.count
+                       when 0
+                         raise 'No data available'
+                       when 1..30
+                         daily_format(data)
+                       when 31..60
+                         weekly_format(data)
+                       else
+                         monthly_format(data)
+                       end
+      # Ensure daily data points are kept
+      [formatted_data, data.map { |record| [record.first.strftime('%d %b'), record.last.to_i] }]
     end
 
     def daily_format(data)
-      data.map { |record| [record.date.strftime('%d %b'), record.followers_count.to_i] }
+      data.map { |record| record.first.strftime('%d %b') }
     end
 
     def weekly_format(data)
-      data.group_by { |record| record.date.to_date.cweek }
-          .map do |week, records|
-            average_followers = (records.map { |r| r.followers_count.to_i }.sum.to_f / records.size).round
-            ["Week #{week}", average_followers]
-          end
+      data.group_by { |record| record.first.to_date.cweek }
+          .keys
+          .map { |week| "Week #{week}" }
     end
 
     def monthly_format(data)
-      data.group_by { |record| record.date.beginning_of_month }
-          .map do |month, records|
-            average_followers = (records.map { |r| r.followers_count.to_i }.sum.to_f / records.size).round
-            [month.strftime('%b %Y'), average_followers]
-          end
+      data.group_by { |record| record.first.to_date.beginning_of_month }
+          .keys
+          .map { |month| month.strftime('%b %Y') }
     end
-
 
     def calculate_percentage_change(old_value, new_value)
       return 0 if old_value == 0
