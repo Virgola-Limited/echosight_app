@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Twitter
-  class FollowersUpdater # change name as it stores likes as well
+  class UserMetricCountsUpdater # change name as it stores likes as well
     attr_reader :user, :user_data
 
     def initialize(user)

@@ -3,11 +3,12 @@ class UpdateTwitterDataWorker
 
   def perform
     confirmed_users.each do |user|
+      # Broken but might need to be changed to aggregate data into daily counts anyway
       # if needs_update?(user)
         # Twitter::HourlyTweetCountsUpdater.new(user, nil).call
       # end
       # Later on we should check if the data needs updating to conserve API usage
-      Twitter::FollowersUpdater.new(user).call
+      Twitter::UserMetricCountsUpdater.new(user).call
     end
   end
 
