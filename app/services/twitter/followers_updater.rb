@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Twitter
-  class FollowersUpdater
-    attr_reader :user
+  class FollowersUpdater # change name as it stores likes as well
+    attr_reader :user, :user_data
 
     def initialize(user)
       @user = user
@@ -10,6 +10,7 @@ module Twitter
 
     def call
       store_followers
+      store_likes
     end
 
     private
@@ -20,13 +21,14 @@ module Twitter
     # PER USER
     # 500 requests / 24 hours
 
-    def fetch_recent_followers
+    # Response: {"data"=>{"public_metrics"=>{"followers_count"=>2, "following_count"=>11, "tweet_count"=>7, "listed_count"=>0, "like_count"=>4}, "id"=>"1691930809756991488", "username"=>"Topher179412184", "name"=>"Topher"}}
+    def fetch_user_data
+      return user_data if user_data
       endpoint = "users/#{user.identity.uid}"
       params = {
         'user.fields' => 'public_metrics'
       }
-      # {"data"=>{"public_metrics"=>{"followers_count"=>2, "following_count"=>11, "tweet_count"=>7, "listed_count"=>0, "like_count"=>4}, "id"=>"1691930809756991488", "username"=>"Topher179412184", "name"=>"Topher"}}
-      x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
+      @user_data = x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
 
     def x_client
@@ -34,16 +36,31 @@ module Twitter
     end
 
     def store_followers
-      response = fetch_recent_followers
-      Rails.logger.debug('paul response' + response.inspect)
+      response = fetch_user_data
 
       if response['data'] && response['data']['public_metrics']
         followers_count = response['data']['public_metrics']['followers_count']
-        TwitterFollowerCount.find_or_initialize_by(
+        ::TwitterFollowersCount.find_or_initialize_by(
           identity_id: user.identity.id,
           date: Date.current
         ).update(
           followers_count: followers_count
+        )
+      end
+    end
+
+    def store_likes
+      Rails.logger.debug('paul' + 'store_likes'.inspect)
+      response = fetch_user_data
+      Rails.logger.debug('paul' + response.inspect)
+      Rails.logger.debug('paul tes' + response['data']['public_metrics']['like_count'].inspect)
+      if response['data'] && response['data']['public_metrics']
+        likes_count = response['data']['public_metrics']['like_count']
+        ::TwitterLikesCount.find_or_initialize_by(
+          identity_id: user.identity.id,
+          date: Date.current
+        ).update(
+          likes_count: likes_count
         )
       end
     end
