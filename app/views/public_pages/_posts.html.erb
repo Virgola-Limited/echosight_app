@@ -34,99 +34,42 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    Excited about our new product launch! #Innovation
-                </td>
-                <td class="px-6 py-4">
-                    150
-                </td>
-                <td class="px-6 py-4">
-                    30
-                </td>
-                <td class="px-6 py-4">
-                    1200
-                </td>
-                <td class="px-6 py-4">
-                    95K
-                </td>
-                <td class="px-6 py-4">
-                    200
-                </td>
-                <td class="px-6 py-4">
-                    75
-                </td>
-                <td class="px-6 py-4">
-                    1.8%
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="text-blue-600 hover:text-blue-900">
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 14"><path d="M16 2H1a1 1 0 0 1 0-2h15a1 1 0 1 1 0 2Zm0 6H1a1 1 0 0 1 0-2h15a1 1 0 1 1 0 2Zm0 6H1a1 1 0 0 1 0-2h15a1 1 0 0 1 0 2Z"></path></svg>
+          <% @top_tweets.each do |tweet| %>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                      <%= tweet.text %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.retweet_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.quote_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.like_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.impression_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      X <!-- Placeholder for Engagement -->
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.reply_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      X <!-- Placeholder for Engagement Rate -->
+                  </td>
+                  <td class="px-6 py-4">
+                    <a href="https://twitter.com/user/status/<%= tweet.twitter_id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
+                      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                          <path d="M17 0h-5.768a1 1 0 1 0 0 2h3.354L8.4 8.182A1.003 1.003 0 1 0 9.818 9.6L16 3.414v3.354a1 1 0 0 0 2 0V1a1 1 0 0 0-1-1Z"></path>
+                          <path d="m14.258 7.985-3.025 3.025A3 3 0 1 1 6.99 6.768l3.026-3.026A3.01 3.01 0 0 1 8.411 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V9.589a3.011 3.011 0 0 1-1.742-1.604Z"></path>
+                      </svg>
                     </a>
-                </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    A throwback to our early days... #TBT
-                </td>
-                <td class="px-6 py-4">
-                    90
-                </td>
-                <td class="px-6 py-4">
-                    25
-                </td>
-                <td class="px-6 py-4">
-                    800
-                </td>
-                <td class="px-6 py-4">
-                    60K
-                </td>
-                <td class="px-6 py-4">
-                    150
-                </td>
-                <td class="px-6 py-4">
-                    40
-                </td>
-                <td class="px-6 py-4">
-                    1.2%
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="text-blue-600 hover:text-blue-900">
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 14"><path d="M16 2H1a1 1 0 0 1 0-2h15a1 1 0 1 1 0 2Zm0 6H1a1 1 0 0 1 0-2h15a1 1 0 1 1 0 2Zm0 6H1a1 1 0 0 1 0-2h15a1 1 0 0 1 0 2Z"></path></svg>
-                    </a>
-                </td>
-            </tr>
-            <tr class="bg-white dark:bg-gray-800">
-                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    We're hiring! Join our passionate team. #JobAlert
-                </td>
-                <td class="px-6 py-4">
-                    200
-                </td>
-                <td class="px-6 py-4">
-                    45
-                </td>
-                <td class="px-6 py-4">
-                    950
-                </td>
-                <td class="px-6 py-4">
-                    110K
-                </td>
-                <td class="px-6 py-4">
-                    250
-                </td>
-                <td class="px-6 py-4">
-                    100
-                </td>
-                <td class="px-6 py-4">
-                    2.1%
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="text-blue-600 hover:text-blue-900">
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 14"><path d="M16 2H1a1 1 0 0 1 0-2h15a1 1 0 1 1 0 2Zm0 6H1a1 1 0 0 1 0-2h15a1 1 0 1 1 0 2Zm0 6H1a1 1 0 0 1 0-2h15a1 1 0 0 1 0 2Z"></path></svg>
-                    </a>
-                </td>
-            </tr>
-        </tbody>
+                  </td>
+              </tr>
+          <% end %>
+      </tbody>
     </table>
 </div>

@@ -30,7 +30,19 @@ class PublicPagesController < ApplicationController
     @daily_data_points_for_graph = daily_data_points
     Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
     Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
+    @top_tweets = fetch_top_tweets_for_user(@user)
   end
+
+  private
+
+  def fetch_top_tweets_for_user(user)
+    user.identity.tweets
+        .select('tweets.*, (coalesce(retweet_count, 0) + coalesce(quote_count, 0) + coalesce(like_count, 0) + coalesce(impression_count, 0) + coalesce(reply_count, 0) + coalesce(bookmark_count, 0)) AS total_engagement')
+        .where('retweet_count > 0 OR quote_count > 0 OR like_count > 0 OR impression_count > 0 OR reply_count > 0 OR bookmark_count > 0')
+        .order('total_engagement DESC')
+        .limit(10)
+  end
+
 
   def tweet_count_query
     Twitter::TweetCountsQuery.new(user: @user)
