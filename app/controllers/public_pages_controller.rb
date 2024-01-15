@@ -17,7 +17,7 @@ class PublicPagesController < ApplicationController
       "Collecting data. Check back later in #{@days_until_last_weeks_data_available} days."
     end
 
-    @impressions_count = Twitter::ImpressionsQuery.new(@user, params[:tweet_id]).fetch_impressions
+    @impressions_count = impressions_query.impressions_count
     followers_query = Twitter::FollowersQuery.new(@user)
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
@@ -30,21 +30,16 @@ class PublicPagesController < ApplicationController
     @daily_data_points_for_graph = daily_data_points
     Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
     Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
-    @top_tweets = fetch_top_tweets_for_user(@user)
+    @top_tweets = impressions_query.top_tweets_for_user
   end
 
   private
 
-  def fetch_top_tweets_for_user(user)
-    user.identity.tweets
-        .select('tweets.*, (coalesce(retweet_count, 0) + coalesce(quote_count, 0) + coalesce(like_count, 0) + coalesce(impression_count, 0) + coalesce(reply_count, 0) + coalesce(bookmark_count, 0)) AS total_engagement')
-        .where('retweet_count > 0 OR quote_count > 0 OR like_count > 0 OR impression_count > 0 OR reply_count > 0 OR bookmark_count > 0')
-        .order('total_engagement DESC')
-        .limit(10)
-  end
-
-
   def tweet_count_query
     Twitter::TweetCountsQuery.new(user: @user)
+  end
+
+  def impressions_query
+    Twitter::ImpressionsQuery.new(@user)
   end
 end

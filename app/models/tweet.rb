@@ -2,6 +2,7 @@
 
 class Tweet < ApplicationRecord
   belongs_to :identity
+  has_many :tweet_counts, dependent: :destroy
 
   validates :twitter_id, presence: true, uniqueness: true
   validates :identity_id, presence: true

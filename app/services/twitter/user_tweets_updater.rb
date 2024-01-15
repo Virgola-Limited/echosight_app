@@ -38,15 +38,21 @@ module Twitter
 
         tweets.each do |tweet_data|
           metrics = tweet_data['public_metrics']
-          Tweet.find_or_initialize_by(twitter_id: tweet_data['id']).update(
+          tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
+          tweet.update(
             text: tweet_data['text'],
-            retweet_count: metrics['retweet_count'],
-            reply_count: metrics['reply_count'],
-            like_count: metrics['like_count'],
-            quote_count: metrics['quote_count'],
-            impression_count: metrics['impression_count'],
-            bookmark_count: metrics['bookmark_count'],
             identity_id: user.identity.id
+          )
+
+          TweetCount.create(
+            tweet: tweet,
+            retweet_count: metrics['retweet_count'],
+            quotes_count: metrics['quote_count'],
+            like_count: metrics['like_count'],
+            impression_count: metrics['impression_count'],
+            reply_count: metrics['reply_count'],
+            bookmark_count: metrics['bookmark_count'],
+            pulled_at: DateTime.now.utc # could consider using the user time zone?
           )
         end
 
