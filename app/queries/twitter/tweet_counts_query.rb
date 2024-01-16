@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Might delete this or rename it
+# need to think about HourlyTweetCounts over TweetCount data
+
 module Twitter
   class TweetCountsQuery
     attr_reader :user
