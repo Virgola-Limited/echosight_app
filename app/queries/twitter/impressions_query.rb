@@ -48,8 +48,29 @@ module Twitter
            .limit(5)
     end
 
+    def impressions_change_since_last_week
+      current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
+      previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
+
+      return false if previous_week_impressions.zero? # No data from last week
+
+      if previous_week_impressions.positive?
+        percentage_change = ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
+        percentage_change.round(2)
+      else
+        0 # No change if both current and previous week impressions are zero
+      end
+    end
 
     private
+
+    def total_impressions_for_period(start_time, end_time)
+      TweetCount.joins(:tweet)
+                .where(tweets: { identity_id: user.identity.id })
+                .where(pulled_at: start_time..end_time)
+                .sum(:impression_count)
+    end
+
 
     def sum_last_tweet_counts_per_day_for_tweet(tweet_id)
       TweetCount.where(tweet_id: tweet_id)

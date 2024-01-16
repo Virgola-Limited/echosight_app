@@ -7,6 +7,7 @@ class PublicPagesController < ApplicationController
 
     raise 'Missing user' unless @user
 
+    # Posts/Tweet Counts
     @tweets_count = tweet_count_query.this_weeks_tweets_count
 
     @tweets_change_since_last_week = tweet_count_query.tweets_change_since_last_week
@@ -14,10 +15,26 @@ class PublicPagesController < ApplicationController
       @tweets_change_since_last_week = @tweets_change_since_last_week.to_s
     else
       @days_until_last_weeks_data_available = tweet_count_query.days_until_last_weeks_data_available
-      "Collecting data. Check back later in #{@days_until_last_weeks_data_available} days."
+      @tweets_change_since_last_week = "Collecting data. Check back later in #{@days_until_last_weeks_data_available} days."
     end
+    ############################
 
+    # Impressions
     @impressions_count = impressions_query.impressions_count
+    @impressions_change_since_last_week = impressions_query.impressions_change_since_last_week
+
+    if @impressions_change_since_last_week == false
+      @impressions_change_since_last_week = 'Collecting data. Check back later.'
+    elsif @impressions_change_since_last_week > 0
+      @impressions_change_since_last_week = "#{@impressions_change_since_last_week}% increase"
+    elsif @impressions_change_since_last_week < 0
+      @impressions_change_since_last_week = "#{@impressions_change_since_last_week.abs}% decrease"
+    else
+      @impressions_change_since_last_week = 'No change'
+    end
+    ############################
+
+    # Followers
     followers_query = Twitter::FollowersQuery.new(@user)
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
@@ -30,7 +47,11 @@ class PublicPagesController < ApplicationController
     @daily_data_points_for_graph = daily_data_points
     Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
     Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
+    ############################
+
+    # Top Posts / Tweets
     @top_tweets = impressions_query.top_tweets_for_user
+    ############################
   end
 
   private
