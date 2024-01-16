@@ -11,14 +11,6 @@ class CreateTweets < ActiveRecord::Migration[7.1]
       t.integer :reply_count
       t.integer :bookmark_count
       t.references :identity, null: false, foreign_key: true
-
-      # RETWEETS
-      # QUOTES
-      # LIKES
-      # IMPRESSIONS
-      # ENGAGEMENT
-      # REPLIES
-      # ENGAGEMENT RATE
       t.timestamps
     end
     add_index :tweets, :twitter_id, unique: true

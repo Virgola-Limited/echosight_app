@@ -59,6 +59,15 @@ class PublicPagesController < ApplicationController
     Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
     ############################
 
+
+    # Engagement Graph
+
+    engagement_query = Twitter::EngagementQuery.new(@user)
+    @total_retweets = engagement_query.total_retweets
+
+    ############################
+
+
     # Top Posts / Tweets
     @top_tweets = impressions_query.top_tweets_for_user
     ############################
