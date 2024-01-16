@@ -22,11 +22,11 @@ module Twitter
                                                   .order(date: :desc)
                                                   .first
       previous_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
-                                                    .where('date < ?', latest_follower_count.date)
+                                                    .where('date < ?', latest_follower_count&.date)
                                                     .order(date: :desc)
                                                     .first
 
-      return 'No sufficient data' unless latest_follower_count && previous_follower_count
+      return false unless latest_follower_count && previous_follower_count
 
       change_percentage = calculate_percentage_change(previous_follower_count.followers_count.to_i, latest_follower_count.followers_count.to_i)
       format_change_percentage(change_percentage)

@@ -38,11 +38,17 @@ class PublicPagesController < ApplicationController
     end
     ############################
 
-    # Followers
+    # Followers Counts
     followers_query = Twitter::FollowersQuery.new(@user)
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
 
+    if @followers_count_change_percentage_text == false
+      @followers_count_change_percentage_text = 'Collecting data. Check back later.'
+    end
+    ############################
+
+    # Followers Graph
     formatted_data, daily_data_points = followers_query.followers_data_for_graph
     formatted_data, daily_data_points = followers_query.followers_data_for_graph
     Rails.logger.debug("paul Controller - Formatted Labels: #{@formatted_labels_for_graph}")
