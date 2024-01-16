@@ -15,6 +15,7 @@ module Twitter
     private
 
     # TO-DO: push twitter API calls to own class
+    # BASIC PLAN LIMIT GET_2_tweets_counts_recent	5/15 minutes
     def fetch_tweet_counts_from_last_week
       endpoint = 'tweets/counts/recent'
       params = {
