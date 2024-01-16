@@ -9,15 +9,19 @@ class PublicPagesController < ApplicationController
 
     # Posts/Tweet Counts
     @tweets_count = tweet_count_query.this_weeks_tweets_count
-
     @tweets_change_since_last_week = tweet_count_query.tweets_change_since_last_week
-    if @tweets_change_since_last_week.is_a?(Integer)
-      @tweets_change_since_last_week = @tweets_change_since_last_week.to_s
+
+    if @tweets_change_since_last_week == false
+      @tweets_change_since_last_week = 'Collecting data. Check back later.'
+    elsif @tweets_change_since_last_week > 0
+      @tweets_change_since_last_week = "#{@tweets_change_since_last_week} increase"
+    elsif @tweets_change_since_last_week < 0
+      @tweets_change_since_last_week = "#{@tweets_change_since_last_week.abs} decrease"
     else
-      @days_until_last_weeks_data_available = tweet_count_query.days_until_last_weeks_data_available
-      @tweets_change_since_last_week = "Collecting data. Check back later in #{@days_until_last_weeks_data_available} days."
+      @tweets_change_since_last_week = 'No change'
     end
     ############################
+
 
     # Impressions
     @impressions_count = impressions_query.impressions_count

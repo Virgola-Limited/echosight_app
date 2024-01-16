@@ -15,8 +15,14 @@ module Twitter
     end
 
     def tweets_change_since_last_week
-      this_weeks_tweets_count - last_weeks_tweets_count
+      current_week_count = this_weeks_tweets_count
+      last_week_count = last_weeks_tweets_count
+
+      return false if last_week_count.zero? # No data from last week
+
+      current_week_count - last_week_count
     end
+
 
     def last_weeks_tweets_count
       HourlyTweetCount.where('identity_id = ? AND start_time >= ? AND start_time < ?',
