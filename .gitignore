@@ -45,4 +45,5 @@ node_modules
 .overmind.env
 .byebug_history
 
-/config/credentials/development.key
+/config/credentials/*.key
+
