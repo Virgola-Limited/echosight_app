@@ -103,10 +103,6 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    dotenv (2.8.1)
-    dotenv-rails (2.8.1)
-      dotenv (= 2.8.1)
-      railties (>= 3.2)
     drb (2.2.0)
       ruby2_keywords
     dry-cli (1.0.0)
@@ -337,7 +333,6 @@ DEPENDENCIES
   byebug (~> 11.1)
   debug
   devise (~> 4.9)
-  dotenv-rails
   jbuilder
   omniauth-rails_csrf_protection
   omniauth-twitter2

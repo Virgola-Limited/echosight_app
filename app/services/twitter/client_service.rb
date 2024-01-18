@@ -36,10 +36,10 @@ module Twitter
 
       case auth
       when :oauth2
-        credentials[:bearer_token] = ENV['TWITTER_BEARER_TOKEN']
+        credentials[:bearer_token] = Rails.application.credentials.dig(:twitter, :bearer_token)
       when :oauth1
-        credentials[:api_key] = ENV['TWITTER_CONSUMER_API_KEY']
-        credentials[:api_key_secret] = ENV['TWITTER_CONSUMER_API_SECRET']
+        credentials[:api_key] = Rails.application.credentials.dig(:twitter, :consumer_api_key)
+        credentials[:api_key_secret] = Rails.application.credentials.dig(:twitter, :consumer_api_secret)
       end
 
       credentials
