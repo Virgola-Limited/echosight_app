@@ -274,7 +274,6 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :twitter2, Rails.application.credentials.dig(:twitter, :oauth2_client_id), Rails.application.credentials.dig(:twitter, :oauth2_client_secret),
                 callback_path: '/users/auth/twitter2/callback',
-                callback_url: 'https://echosight-staging-5808901fc793.herokuapp.com/users/auth/twitter2/callback',
                 scope: 'tweet.read users.read'
 
 
