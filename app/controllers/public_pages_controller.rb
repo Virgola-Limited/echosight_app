@@ -22,6 +22,12 @@ class PublicPagesController < ApplicationController
     end
     ############################
 
+    # Profile Clicks
+
+
+
+
+    ############################
 
     # Impressions
     @impressions_count = impressions_query.impressions_count
