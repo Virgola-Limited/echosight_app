@@ -65,6 +65,7 @@ class PublicPagesController < ApplicationController
     engagement_query = Twitter::EngagementQuery.new(@user)
     @total_retweets = engagement_query.total_retweets
     @total_replies = engagement_query.total_replies
+    @total_likes = engagement_query.total_likes
 
     ############################
 

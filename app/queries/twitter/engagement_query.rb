@@ -44,5 +44,22 @@ module Twitter
 
       total_replies
     end
+
+    def total_likes
+      # Reuse the subquery to get the latest TweetCount record for each tweet
+      latest_tweet_counts_subquery = TweetCount
+                                      .joins(tweet: { identity: :user })
+                                      .where(users: { id: user.id })
+                                      .select('DISTINCT ON (tweet_counts.tweet_id) tweet_counts.*')
+                                      .order('tweet_counts.tweet_id, tweet_counts.pulled_at DESC')
+                                      .to_sql
+
+      # Sum the like_count from these latest TweetCount records
+      total_likes = TweetCount
+                      .from("(#{latest_tweet_counts_subquery}) as latest_tweet_counts")
+                      .sum('latest_tweet_counts.like_count')
+
+      total_likes
+    end
   end
 end

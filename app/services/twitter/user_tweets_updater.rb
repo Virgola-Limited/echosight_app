@@ -14,6 +14,11 @@ module Twitter
 
     private
 
+    # GET /2/users/:id
+    # 500 requests / 24 hours
+    # PER APP
+    # 100 requests / 24 hours
+
     # Endpoint: GET /2/users/:id/tweets
     def fetch_tweets(next_token = nil)
       endpoint = "users/#{user.identity.uid}/tweets"

@@ -10,7 +10,7 @@ module Twitter
 
     def call
       store_followers
-      store_likes
+      # store_likes
     end
 
     private
@@ -49,17 +49,18 @@ module Twitter
       end
     end
 
-    def store_likes
-      response = fetch_user_data
-      if response['data'] && response['data']['public_metrics']
-        likes_count = response['data']['public_metrics']['like_count']
-        ::TwitterLikesCount.find_or_initialize_by(
-          identity_id: user.identity.id,
-          date: Date.current
-        ).update(
-          likes_count: likes_count
-        )
-      end
-    end
+    # lets aggrecate this data from tweets
+    # def store_likes
+    #   response = fetch_user_data
+    #   if response['data'] && response['data']['public_metrics']
+    #     likes_count = response['data']['public_metrics']['like_count']
+    #     ::TwitterLikesCount.find_or_initialize_by(
+    #       identity_id: user.identity.id,
+    #       date: Date.current
+    #     ).update(
+    #       likes_count: likes_count
+    #     )
+    #   end
+    # end
   end
 end

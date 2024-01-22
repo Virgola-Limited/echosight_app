@@ -16,7 +16,7 @@
       },
       series: [{
         name: "Engagement Rate",
-        data: [1, <%= @total_retweets %>,<%= @total_replies %>]
+        data: [<%= @total_likes %>, <%= @total_retweets %>,<%= @total_replies %>]
       }],
       xaxis: {
         categories: ['Likes', 'Retweets', 'Replies'],
