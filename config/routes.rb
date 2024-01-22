@@ -4,9 +4,10 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
 
   # Basic HTTP Authentication for Sidekiq Web UI
-  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    # TODO: Move to ENV variables or just disable in production
-    username == 'admin' && password == 'l0ftw@h'
+  unless Rails.env.development?
+    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+      username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
+    end
   end
   mount Sidekiq::Web => '/sidekiq'
 
