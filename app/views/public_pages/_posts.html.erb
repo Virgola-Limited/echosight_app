@@ -37,7 +37,7 @@
           <% @top_tweets.each do |tweet| %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                      <%= tweet.text %>
+                      <%= text_with_images(tweet.text) %>
                   </td>
                   <td class="px-6 py-4">
                       <%= tweet.retweet_count %>
