@@ -66,12 +66,12 @@ class PublicPagesController < ApplicationController
     # Followers Graph
     formatted_data, daily_data_points = followers_query.followers_data_for_graph
     formatted_data, daily_data_points = followers_query.followers_data_for_graph
-    Rails.logger.debug("paul Controller - Formatted Labels: #{@formatted_labels_for_graph}")
-    Rails.logger.debug("paul Controller - Daily Data Points: #{@daily_data_points_for_graph}")
+    # Rails.logger.debug("paul Controller - Formatted Labels: #{@formatted_labels_for_graph}")
+    # Rails.logger.debug("paul Controller - Daily Data Points: #{@daily_data_points_for_graph}")
     @formatted_labels_for_graph = formatted_data
     @daily_data_points_for_graph = daily_data_points
-    Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
-    Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
+    # Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
+    # Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
     ############################
 
 
