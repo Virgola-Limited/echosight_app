@@ -11,6 +11,7 @@ module Twitter
     def call
       store_followers
       # store_likes
+      # store_profile_clicks
     end
 
     private
@@ -32,7 +33,7 @@ module Twitter
     end
 
     def x_client
-      @x_client ||= ClientService.new.client
+      @x_client ||= ClientService.new(user).client(auth: :oauth1)
     end
 
     def store_followers
@@ -49,7 +50,7 @@ module Twitter
       end
     end
 
-    # lets aggrecate this data from tweets
+    # lets aggregate this data from tweets
     # def store_likes
     #   response = fetch_user_data
     #   if response['data'] && response['data']['public_metrics']
@@ -62,5 +63,20 @@ module Twitter
     #     )
     #   end
     # end
+
+    # Need enterprise solution to get https://developer.twitter.com/en/docs/twitter-api/enterprise/engagement-api/overview
+    def store_profile_clicks
+      response = fetch_user_data
+      if response['data'] && response['data']['non_public_metrics']
+        Rails.logger.debug('paul  response data' +  response['data'].inspect)
+        profile_clicks_count = response['data']['non_public_metrics']['user_profile_clicks']
+        # ::TwitterProfileClicksCount.find_or_initialize_by(
+        #   identity_id: user.identity.id,
+        #   date: Date.current
+        # ).update(
+        #   profile_clicks_count: profile_clicks_count
+        # )
+      end
+    end
   end
 end

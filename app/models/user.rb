@@ -12,7 +12,7 @@ class User < ApplicationRecord
   delegate :banner_url, to: :identity, allow_nil: true
   delegate :image_url, to: :identity, allow_nil: true
 
-  after_commit :enqueue_tweet_hourly_counts_update, on: %i[create update]
+  after_commit :enqueue_hourly_tweet_counts_update, on: %i[create update]
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
@@ -63,7 +63,7 @@ class User < ApplicationRecord
 
   private
 
-  def enqueue_tweet_hourly_counts_update
+  def enqueue_hourly_tweet_counts_update
     return unless confirmed_at_changed? && confirmed_at_was.nil?
 
     Twitter::HourlyTweetCountsUpdater.perform_async(id, nil)

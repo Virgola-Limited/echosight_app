@@ -12,7 +12,7 @@ module Twitter
       latest_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
                                                   .order(date: :desc)
                                                   .first
-      raise 'No follower data available' unless latest_follower_count
+      return 0 unless latest_follower_count
 
       latest_follower_count.followers_count
     end
@@ -50,9 +50,7 @@ module Twitter
 
     def format_for_graph(data)
       formatted_data = case data.count
-                       when 0
-                         raise 'No data available'
-                       when 1..30
+                       when 0..30
                          daily_format(data)
                        when 31..60
                          weekly_format(data)
