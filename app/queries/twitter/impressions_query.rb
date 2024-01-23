@@ -17,7 +17,7 @@ module Twitter
 
     def top_tweets_for_user
       tweets_table = Tweet.arel_table
-      tweet_counts_table = TweetCount.arel_table
+      tweet_counts_table = TweetMetric.arel_table
 
       # Define SQL for total engagement
       total_engagement_sql = <<-SQL
@@ -65,7 +65,7 @@ module Twitter
     private
 
     def total_impressions_for_period(start_time, end_time)
-      TweetCount.joins(:tweet)
+      TweetMetric.joins(:tweet)
                 .where(tweets: { identity_id: user.identity.id })
                 .where(pulled_at: start_time..end_time)
                 .sum(:impression_count)
@@ -73,7 +73,7 @@ module Twitter
 
 
     def sum_last_tweet_counts_per_day_for_tweet(tweet_id)
-      TweetCount.where(tweet_id: tweet_id)
+      TweetMetric.where(tweet_id: tweet_id)
                 .group("DATE(pulled_at)")
                 .order("DATE(pulled_at), pulled_at DESC")
                 .pluck("DISTINCT ON (DATE(pulled_at)) impression_count")
@@ -81,7 +81,7 @@ module Twitter
     end
 
     def sum_last_tweet_counts_per_day_for_all_user_tweets
-      TweetCount.joins(:tweet)
+      TweetMetric.joins(:tweet)
                 .where(tweets: { identity_id: user.identity.id })
                 .select('DISTINCT ON (tweet_counts.tweet_id, DATE(tweet_counts.pulled_at)) tweet_counts.*')
                 .order('tweet_counts.tweet_id', Arel.sql('DATE(tweet_counts.pulled_at)'), 'tweet_counts.pulled_at DESC')

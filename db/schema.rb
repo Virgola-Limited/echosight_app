@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_15_082752) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_23_014634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,7 +40,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_15_082752) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
-  create_table "tweet_counts", force: :cascade do |t|
+  create_table "tweet_metrics", force: :cascade do |t|
     t.integer "retweet_count"
     t.integer "quotes_count"
     t.integer "like_count"
@@ -52,7 +52,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_15_082752) do
     t.bigint "tweet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tweet_id"], name: "index_tweet_counts_on_tweet_id"
+    t.integer "user_profile_clicks"
+    t.index ["tweet_id"], name: "index_tweet_metrics_on_tweet_id"
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -113,7 +114,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_15_082752) do
 
   add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
-  add_foreign_key "tweet_counts", "tweets"
+  add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_followers_counts", "identities"
   add_foreign_key "twitter_likes_counts", "identities"

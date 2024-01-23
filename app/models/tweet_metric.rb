@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class TweetCount < ApplicationRecord
+class TweetMetric < ApplicationRecord
   belongs_to :tweet
 end

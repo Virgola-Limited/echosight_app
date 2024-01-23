@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 # Might delete this or rename it
-# need to think about HourlyTweetCounts over TweetCount data
+# need to think about HourlyTweetCounts over TweetMetric data
 
 module Twitter
-  class TweetCountsQuery
+  class TweetMetricsQuery
     attr_reader :user
 
     def initialize(user:, start_time: nil)

@@ -84,7 +84,7 @@ class PublicPagesController < ApplicationController
   private
 
   def tweet_count_query
-    Twitter::TweetCountsQuery.new(user: @user)
+    Twitter::TweetMetricsQuery.new(user: @user)
   end
 
   def impressions_query
