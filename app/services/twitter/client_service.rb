@@ -22,13 +22,11 @@ module Twitter
       end
     end
 
-    #  Not sure this is working. Assume its not when you first use it
     def user_context_credentials(version)
-      results = {
-        bearer_token: user.identity.bearer_token, # OAUTH2
+      {
+        bearer_token: user.identity.bearer_token,
         base_url: base_url(version)
       }
-      results
     end
 
     def application_context_credentials(version, auth)
