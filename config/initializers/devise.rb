@@ -277,6 +277,12 @@ Devise.setup do |config|
                 scope: 'tweet.read users.read'
 
 
+
+  # Twitter App Info
+  # Callback url http://localhost:3000/users/auth/twitter/callback
+  # Website url https://echosight.io
+  # https://echosight.io/privacypolicy/
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
