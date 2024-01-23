@@ -25,23 +25,13 @@ module LinkHelper
   # MVP: SUPER SLOW DO NOT USE IN PRODUCTION
   # TODO need to background this before we go into production
   ###########################################################
-  def image_link?(url, limit = 10)
-    raise ArgumentError, 'HTTP redirect too deep' if limit == 0
-
+  def image_link?(url)
     uri = URI.parse(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = (uri.scheme == 'https')
-    response = http.request_head(uri.path.empty? ? "/" : uri.path)
-    Rails.logger.debug('paul response' + response.inspect)
-    case response
-    when Net::HTTPSuccess then
-      response.content_type.start_with?('image/')
-    when Net::HTTPRedirection then
-      new_uri = URI.join(url, response['location']).to_s
-      image_link?(new_uri, limit - 1)
-    else
-      false
-    end
+    request = Net::HTTP.new(uri.host, uri.port)
+    request.use_ssl = (uri.scheme == 'https')
+    response = request.request_head(uri.path.empty? ? "/" : uri.path)
+    Rails.logger.debug('paul' + response.inspect)
+    response.content_type.start_with?('image/')
   rescue => e
     Rails.logger.error("Error checking image link: #{e.message}")
     false
