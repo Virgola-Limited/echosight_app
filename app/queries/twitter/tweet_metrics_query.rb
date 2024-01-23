@@ -100,11 +100,42 @@ module Twitter
     end
 
     def profile_clicks_count
+      TweetMetric.joins(:tweet)
+                 .where(tweets: { identity_id: user.identity.id })
+                 .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
+                 .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
+                 .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
+                 .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).user_profile_clicks }
+                 .sum
+    end
 
+    def profile_clicks_change_since_last_week
+      current_week_clicks = total_profile_clicks_for_period(7.days.ago.beginning_of_day, Time.current)
+      previous_week_clicks = total_profile_clicks_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
 
+      return false if previous_week_clicks.zero? # No data from last week
+
+      if previous_week_clicks.positive?
+        percentage_change = ((current_week_clicks - previous_week_clicks) / previous_week_clicks.to_f) * 100
+        percentage_change.round(2)
+      else
+        0 # No change if both current and previous week clicks are zero
+      end
     end
 
     private
+
+
+    def total_profile_clicks_for_period(start_time, end_time)
+      TweetMetric.joins(:tweet)
+                 .where(tweets: { identity_id: user.identity.id })
+                 .where(pulled_at: start_time..end_time)
+                 .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
+                 .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
+                 .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
+                 .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).user_profile_clicks }
+                 .sum
+    end
 
     def total_impressions_for_period(start_time, end_time)
       TweetMetric.joins(:tweet)
