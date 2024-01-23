@@ -9,7 +9,7 @@ class UpdateTwitterDataWorker
       # end
       # Later on we should check if the data needs updating to conserve API usage
       Twitter::FollowersUpdater.new(user).call
-      Twitter::TweetsAndMetricsUpdater.new(user).call
+      Twitter::TweetAndMetricsUpdater.new(user).call
     end
   end
 

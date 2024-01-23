@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Twitter
-  class TweetsAndMetricsUpdater
+  class TweetAndMetricsUpdater
     attr_reader :user
 
     def initialize(user)
