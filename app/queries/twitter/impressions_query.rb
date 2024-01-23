@@ -21,26 +21,26 @@ module Twitter
 
       # Define SQL for total engagement
       total_engagement_sql = <<-SQL
-        COALESCE(MAX(tweet_counts.retweet_count), 0) +
-        COALESCE(MAX(tweet_counts.quotes_count), 0) +
-        COALESCE(MAX(tweet_counts.like_count), 0) +
-        COALESCE(MAX(tweet_counts.quote_count), 0) +
-        COALESCE(MAX(tweet_counts.impression_count), 0) +
-        COALESCE(MAX(tweet_counts.reply_count), 0) +
-        COALESCE(MAX(tweet_counts.bookmark_count), 0) AS total_engagement
+        COALESCE(MAX(tweet_metrics.retweet_count), 0) +
+        COALESCE(MAX(tweet_metrics.quotes_count), 0) +
+        COALESCE(MAX(tweet_metrics.like_count), 0) +
+        COALESCE(MAX(tweet_metrics.quote_count), 0) +
+        COALESCE(MAX(tweet_metrics.impression_count), 0) +
+        COALESCE(MAX(tweet_metrics.reply_count), 0) +
+        COALESCE(MAX(tweet_metrics.bookmark_count), 0) AS total_engagement
       SQL
 
       # Define SQL for individual max count metrics
       metrics_sql = <<-SQL
-        MAX(tweet_counts.retweet_count) AS retweet_count,
-        MAX(tweet_counts.quotes_count) AS quotes_count,
-        MAX(tweet_counts.like_count) AS like_count,
-        MAX(tweet_counts.quote_count) AS quote_count,
-        MAX(tweet_counts.impression_count) AS impression_count,
-        MAX(tweet_counts.reply_count) AS reply_count
+        MAX(tweet_metrics.retweet_count) AS retweet_count,
+        MAX(tweet_metrics.quotes_count) AS quotes_count,
+        MAX(tweet_metrics.like_count) AS like_count,
+        MAX(tweet_metrics.quote_count) AS quote_count,
+        MAX(tweet_metrics.impression_count) AS impression_count,
+        MAX(tweet_metrics.reply_count) AS reply_count
       SQL
 
-      Tweet.joins(:tweet_counts)
+      Tweet.joins(:tweet_metrics)
            .where(tweets_table[:identity_id].eq(user.identity.id))
            .select("tweets.*, #{total_engagement_sql}, #{metrics_sql}")
            .group(tweets_table[:id])
@@ -83,10 +83,10 @@ module Twitter
     def sum_last_tweet_counts_per_day_for_all_user_tweets
       TweetMetric.joins(:tweet)
                 .where(tweets: { identity_id: user.identity.id })
-                .select('DISTINCT ON (tweet_counts.tweet_id, DATE(tweet_counts.pulled_at)) tweet_counts.*')
-                .order('tweet_counts.tweet_id', Arel.sql('DATE(tweet_counts.pulled_at)'), 'tweet_counts.pulled_at DESC')
+                .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
+                .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
                 .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
-                .map { |_, tweet_counts| tweet_counts.max_by(&:pulled_at).impression_count }
+                .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count }
                 .sum
     end
 

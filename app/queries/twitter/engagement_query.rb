@@ -15,8 +15,8 @@ module Twitter
       latest_tweet_counts_subquery = TweetMetric
                                       .joins(tweet: { identity: :user })
                                       .where(users: { id: user.id })
-                                      .select('DISTINCT ON (tweet_counts.tweet_id) tweet_counts.*')
-                                      .order('tweet_counts.tweet_id, tweet_counts.pulled_at DESC')
+                                      .select('DISTINCT ON (tweet_metrics.tweet_id) tweet_metrics.*')
+                                      .order('tweet_metrics.tweet_id, tweet_metrics.pulled_at DESC')
                                       .to_sql
 
       # Sum the retweet_count from these latest TweetMetric records
@@ -33,8 +33,8 @@ module Twitter
       latest_tweet_counts_subquery = TweetMetric
                                       .joins(tweet: { identity: :user })
                                       .where(users: { id: user.id })
-                                      .select('DISTINCT ON (tweet_counts.tweet_id) tweet_counts.*')
-                                      .order('tweet_counts.tweet_id, tweet_counts.pulled_at DESC')
+                                      .select('DISTINCT ON (tweet_metrics.tweet_id) tweet_metrics.*')
+                                      .order('tweet_metrics.tweet_id, tweet_metrics.pulled_at DESC')
                                       .to_sql
 
       # Sum the reply_count from these latest TweetMetric records
@@ -50,8 +50,8 @@ module Twitter
       latest_tweet_counts_subquery = TweetMetric
                                       .joins(tweet: { identity: :user })
                                       .where(users: { id: user.id })
-                                      .select('DISTINCT ON (tweet_counts.tweet_id) tweet_counts.*')
-                                      .order('tweet_counts.tweet_id, tweet_counts.pulled_at DESC')
+                                      .select('DISTINCT ON (tweet_metrics.tweet_id) tweet_metrics.*')
+                                      .order('tweet_metrics.tweet_id, tweet_metrics.pulled_at DESC')
                                       .to_sql
 
       # Sum the like_count from these latest TweetMetric records
