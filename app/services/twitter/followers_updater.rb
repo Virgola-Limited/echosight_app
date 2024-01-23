@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Twitter
-  class UserMetricCountsUpdater # change name as it stores likes as well
+  class FollowersUpdater # change name as it stores likes as well
     attr_reader :user, :user_data
 
     def initialize(user)
@@ -10,8 +10,6 @@ module Twitter
 
     def call
       store_followers
-      # store_likes
-      # store_profile_clicks
     end
 
     private
@@ -50,33 +48,5 @@ module Twitter
       end
     end
 
-    # lets aggregate this data from tweets
-    # def store_likes
-    #   response = fetch_user_data
-    #   if response['data'] && response['data']['public_metrics']
-    #     likes_count = response['data']['public_metrics']['like_count']
-    #     ::TwitterLikesCount.find_or_initialize_by(
-    #       identity_id: user.identity.id,
-    #       date: Date.current
-    #     ).update(
-    #       likes_count: likes_count
-    #     )
-    #   end
-    # end
-
-    # Need enterprise solution to get https://developer.twitter.com/en/docs/twitter-api/enterprise/engagement-api/overview
-    def store_profile_clicks
-      response = fetch_user_data
-      if response['data'] && response['data']['non_public_metrics']
-        Rails.logger.debug('paul  response data' +  response['data'].inspect)
-        profile_clicks_count = response['data']['non_public_metrics']['user_profile_clicks']
-        # ::TwitterProfileClicksCount.find_or_initialize_by(
-        #   identity_id: user.identity.id,
-        #   date: Date.current
-        # ).update(
-        #   profile_clicks_count: profile_clicks_count
-        # )
-      end
-    end
   end
 end

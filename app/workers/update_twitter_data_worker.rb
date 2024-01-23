@@ -8,8 +8,8 @@ class UpdateTwitterDataWorker
         # Twitter::HourlyTweetCountsUpdater.new(user, nil).call
       # end
       # Later on we should check if the data needs updating to conserve API usage
-      Twitter::UserMetricCountsUpdater.new(user).call
-      Twitter::UserTweetsUpdater.new(user).call
+      Twitter::FollowersUpdater.new(user).call
+      Twitter::TweetsAndMetricsUpdater.new(user).call
     end
   end
 

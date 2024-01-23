@@ -48,6 +48,7 @@ module Twitter
 
     private
 
+    # TODO: This is currently broken for any other format except daily
     def format_for_graph(data)
       formatted_data = case data.count
                        when 0..30

@@ -8,8 +8,8 @@ class PublicPagesController < ApplicationController
     raise 'Missing user' unless @user
 
     # Posts/Tweet Counts
-    @tweets_count = tweet_count_query.this_weeks_tweets_count
-    @tweets_change_since_last_week = tweet_count_query.tweets_change_since_last_week
+    @tweets_count = tweet_metrics_query.this_weeks_tweets_count
+    @tweets_change_since_last_week = tweet_metrics_query.tweets_change_since_last_week
 
     if @tweets_change_since_last_week == false
       @tweets_change_since_last_week = 'Collecting data. Check back later.'
@@ -23,15 +23,15 @@ class PublicPagesController < ApplicationController
     ############################
 
     # Profile Clicks
-
+    @profile_clicks = tweet_metrics_query.profile_clicks_count
 
 
 
     ############################
 
     # Impressions
-    @impressions_count = impressions_query.impressions_count
-    @impressions_change_since_last_week = impressions_query.impressions_change_since_last_week
+    @impressions_count = tweet_metrics_query.impressions_count
+    @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
 
     if @impressions_change_since_last_week == false
       @impressions_change_since_last_week = 'Collecting data. Check back later.'
@@ -77,17 +77,13 @@ class PublicPagesController < ApplicationController
 
 
     # Top Posts / Tweets
-    @top_tweets = impressions_query.top_tweets_for_user
+    @top_tweets = tweet_metrics_query.top_tweets_for_user
     ############################
   end
 
   private
 
-  def tweet_count_query
+  def tweet_metrics_query
     Twitter::TweetMetricsQuery.new(user: @user)
-  end
-
-  def impressions_query
-    Twitter::ImpressionsQuery.new(@user)
   end
 end
