@@ -1,19 +1,24 @@
 class UpdateTwitterDataWorker
   include Sidekiq::Worker
 
-  def perform
+  def perform(user_id: nil)
+    if user_id
+      user = User.find(user_id)
+      update_user(user)
+      return
+    end
+
     confirmed_users.each do |user|
-      # Broken but might need to be changed to aggregate data into daily counts anyway
-      # if needs_update?(user)
-        # Twitter::HourlyTweetCountsUpdater.new(user, nil).call
-      # end
-      # Later on we should check if the data needs updating to conserve API usage
-      Twitter::FollowersUpdater.new(user).call
-      Twitter::TweetAndMetricsUpdater.new(user).call
+      update_user(user)
     end
   end
 
   private
+
+  def update_user(user)
+    Twitter::FollowersUpdater.new(user).call
+    Twitter::TweetAndMetricsUpdater.new(user).call
+  end
 
   def confirmed_users
     User.confirmed.joins(:identity).merge(Identity.valid_identity)

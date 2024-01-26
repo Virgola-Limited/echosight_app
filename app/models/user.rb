@@ -66,6 +66,6 @@ class User < ApplicationRecord
   def enqueue_hourly_tweet_counts_update
     return unless confirmed_at_changed? && confirmed_at_was.nil?
 
-    Twitter::HourlyTweetCountsUpdater.perform_async(id, nil)
+    Twitter::UpdateTwitterDataWorker.perform_async(user_id: id)
   end
 end

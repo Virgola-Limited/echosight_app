@@ -1,11 +1,34 @@
 # frozen_string_literal: true
 
 module Twitter
-  class ClientService
+  class Client
     attr_reader :user
 
     def initialize(user = nil)
       @user = user
+    end
+
+    # https://developer.twitter.com/en/portal/products/basic
+    # GET /2/users
+    # 100 requests / 24 hours
+    # PER USER
+    # 500 requests / 24 hours
+
+    # Response: {"data"=>{"public_metrics"=>{"followers_count"=>2, "following_count"=>11, "tweet_count"=>7, "listed_count"=>0, "like_count"=>4}, "id"=>"1691930809756991488", "username"=>"Topher179412184", "name"=>"Topher"}}
+    def fetch_user_public_metrics
+      endpoint = "users/#{user.identity.uid}"
+      params = { 'user.fields' => 'public_metrics' }
+      client(auth: :oauth1).get("#{endpoint}?#{URI.encode_www_form(params)}")
+    end
+
+    def fetch_user_tweets(next_token = nil)
+      endpoint = "users/#{user.identity.uid}/tweets"
+      params = {
+        'tweet.fields' => 'created_at,public_metrics,non_public_metrics',
+        'pagination_token' => next_token,
+        'max_results' => 100
+      }.compact
+      client(auth: :oauth1).get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
 
     def client(version: :v2, auth: :oauth2)

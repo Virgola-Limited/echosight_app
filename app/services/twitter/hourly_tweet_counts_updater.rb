@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Twitter
+
+  # Might be useful if we go to the Pro plan.
   class HourlyTweetCountsUpdater
     attr_reader :user
 
@@ -23,11 +25,11 @@ module Twitter
         'start_time' => 1.week.ago.utc.iso8601
       }
 
-      x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
+      twitter_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
 
-    def x_client
-      @x_client ||= ClientService.new.client
+    def twitter_client
+      @twitter_client ||= Client.new.client
     end
 
     def store_hourly_counts

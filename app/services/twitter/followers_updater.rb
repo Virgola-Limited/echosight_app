@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 module Twitter
-  class FollowersUpdater # change name as it stores likes as well
-    attr_reader :user, :user_data
+  class FollowersUpdater
+    attr_reader :user, :user_data, :twitter_client
 
     def initialize(user)
       @user = user
+      @twitter_client = Twitter::Client.new(user)
     end
 
     def call
@@ -14,31 +15,16 @@ module Twitter
 
     private
 
-    # https://developer.twitter.com/en/portal/products/basic
-    # GET /2/users
-    # 100 requests / 24 hours
-    # PER USER
-    # 500 requests / 24 hours
 
-    # Response: {"data"=>{"public_metrics"=>{"followers_count"=>2, "following_count"=>11, "tweet_count"=>7, "listed_count"=>0, "like_count"=>4}, "id"=>"1691930809756991488", "username"=>"Topher179412184", "name"=>"Topher"}}
     def fetch_user_data
-      return user_data if user_data
-      endpoint = "users/#{user.identity.uid}"
-      params = {
-        'user.fields' => 'public_metrics'
-      }
-      @user_data = x_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
-    end
-
-    def x_client
-      @x_client ||= ClientService.new(user).client(auth: :oauth1)
+      @user_data ||= twitter_client.fetch_user_public_metrics
     end
 
     def store_followers
-      response = fetch_user_data
+      fetch_user_data
 
-      if response['data'] && response['data']['public_metrics']
-        followers_count = response['data']['public_metrics']['followers_count']
+      if user_data['data'] && user_data['data']['public_metrics']
+        followers_count = user_data['data']['public_metrics']['followers_count']
         ::TwitterFollowersCount.find_or_initialize_by(
           identity_id: user.identity.id,
           date: Date.current

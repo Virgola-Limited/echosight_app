@@ -16,13 +16,13 @@ module Twitter
 
     def fetch_rate_limit_data
       return rate_limit_data if rate_limit_data
-
+      # refactor to use twitter client
       endpoint = 'application/rate_limit_status.json'
-      @rate_limit_data = x_client.get(endpoint) # Assuming the client is configured for OAuth2
+      @rate_limit_data = twitter_client.get(endpoint) # Assuming the client is configured for OAuth2
     end
 
-    def x_client
-      @x_client ||= ClientService.new.client(version: :v1_1)
+    def twitter_client
+      @twitter_client ||= Client.new.client(version: :v1_1)
     end
 
     def process_rate_limit_data
