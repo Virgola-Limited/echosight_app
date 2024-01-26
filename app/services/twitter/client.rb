@@ -18,7 +18,7 @@ module Twitter
     def fetch_user_public_metrics
       endpoint = "users/#{user.identity.uid}"
       params = { 'user.fields' => 'public_metrics' }
-      client(auth: :oauth1).get("#{endpoint}?#{URI.encode_www_form(params)}")
+      make_api_call(endpoint, params, :oauth1)
     end
 
     def fetch_user_tweets(next_token = nil)
@@ -28,14 +28,40 @@ module Twitter
         'pagination_token' => next_token,
         'max_results' => 100
       }.compact
-      client(auth: :oauth1).get("#{endpoint}?#{URI.encode_www_form(params)}")
+      make_api_call(endpoint, params, :oauth1)
     end
+
+    private
 
     def client(version: :v2, auth: :oauth2)
       X::Client.new(**credentials(version, auth))
     end
 
-    private
+    def make_api_call(endpoint, params, auth_type)
+      response = client(auth: auth_type).get("#{endpoint}?#{URI.encode_www_form(params)}")
+      response
+    rescue X::Error => e # Assuming X::Error is the base class for errors from the X client
+      error_details = {
+        error: e.message,
+        auth_type: auth_type.to_s,
+        api_version: determine_api_version(endpoint),
+        endpoint: endpoint,
+        query_params: params,
+        user_info: user_info_for_error
+      }
+
+      # change this later to just log the error and not raise again.
+      raise StandardError.new("Twitter API Error: #{error_details.inspect}")
+    end
+
+    def determine_api_version(endpoint)
+      endpoint.include?('/1.1/') ? 'v1.1' : 'v2'
+    end
+
+    def user_info_for_error
+      return "User ID: #{user.identity.uid}, Email: #{user.email}" if user
+      'Application Context'
+    end
 
     def credentials(version, auth)
       if user
