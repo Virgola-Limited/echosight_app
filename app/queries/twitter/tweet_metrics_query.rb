@@ -130,7 +130,7 @@ module Twitter
                  .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
                  .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
                  .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
-                 .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).user_profile_clicks }
+                 .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).user_profile_clicks.to_i }
                  .sum
     end
 
