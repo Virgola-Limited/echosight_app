@@ -50,8 +50,10 @@ module Twitter
         user_info: user_info_for_error
       }
 
-      # change this later to just log the error and not raise again.
-      raise StandardError.new("Twitter API Error: #{error_details.inspect}")
+      ExceptionNotifier.notify_exception(
+        StandardError.new("Twitter API Error: #{e.message}"),
+        data: error_details
+      )
     end
 
     def determine_api_version(endpoint)
