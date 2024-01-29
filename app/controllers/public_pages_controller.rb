@@ -63,17 +63,27 @@ class PublicPagesController < ApplicationController
     end
     ############################
 
-    # Followers Graph
-    formatted_data, daily_data_points = followers_query.followers_data_for_graph
-    formatted_data, daily_data_points = followers_query.followers_data_for_graph
-    # Rails.logger.debug("paul Controller - Formatted Labels: #{@formatted_labels_for_graph}")
-    # Rails.logger.debug("paul Controller - Daily Data Points: #{@daily_data_points_for_graph}")
-    @formatted_labels_for_graph = formatted_data
-    @daily_data_points_for_graph = daily_data_points
-    # Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
-    # Rails.logger.debug('paul' + @formatted_labels_for_graph.inspect)
+   # Followers Graph
+   formatted_follower_data, follower_daily_data_points = followers_query.followers_data_for_graph
+   @follower_formatted_labels_for_graph = formatted_follower_data
+   @follower_daily_data_points_for_graph = follower_daily_data_points
+
     ############################
 
+    # Impressions over Time Graph
+
+    impressions_data = tweet_metrics_query.last_impression_counts_per_day
+
+    # Sort the data by date to ensure it's in chronological order
+    sorted_impressions_data = impressions_data.sort_by { |date, _| date }
+
+    # Prepare data for the impressions graph
+    @impression_formatted_labels_for_graph = sorted_impressions_data.map { |date, _| date.strftime('%b %d') }
+    @impression_daily_data_points_for_graph = sorted_impressions_data.map { |_, count| count }
+    Rails.logger.debug('paul @formatted_labels_for_graph' + @formatted_labels_for_graph.inspect)
+    Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
+
+    ############################
 
     # Engagement Graph
 
