@@ -129,6 +129,9 @@ module Twitter
                 .pluck('DATE(tweet_metrics.pulled_at)', 'MAX(tweet_metrics.impression_count)')
     end
 
+    def profile_conversion_rate
+    end
+
     private
 
 

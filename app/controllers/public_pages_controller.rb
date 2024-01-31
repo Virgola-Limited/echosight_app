@@ -70,6 +70,15 @@ class PublicPagesController < ApplicationController
 
     ############################
 
+    # Engagement Graph
+
+    engagement_query = Twitter::EngagementQuery.new(@user)
+    @total_retweets = engagement_query.total_retweets
+    @total_replies = engagement_query.total_replies
+    @total_likes = engagement_query.total_likes
+
+    ############################
+
     # Impressions over Time Graph
 
     impressions_data = tweet_metrics_query.last_impression_counts_per_day
@@ -85,12 +94,10 @@ class PublicPagesController < ApplicationController
 
     ############################
 
-    # Engagement Graph
+    # Profile Conversion Rate
 
-    engagement_query = Twitter::EngagementQuery.new(@user)
-    @total_retweets = engagement_query.total_retweets
-    @total_replies = engagement_query.total_replies
-    @total_likes = engagement_query.total_likes
+    @profile_conversion_rate = tweet_metrics_query.profile_conversion_rate
+
 
     ############################
 
