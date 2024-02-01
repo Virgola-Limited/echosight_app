@@ -11,8 +11,13 @@ module Twitter
     end
 
     def this_weeks_tweets_count
-      HourlyTweetCount.where('identity_id = ? AND start_time >= ?', @user.identity.id, @start_time)
-                      .sum(:tweet_count)
+      # Calculate the start of this week up to the current moment
+      start_of_this_week = Time.current.beginning_of_week
+
+      # Query the Tweet table using twitter_created_at from the start of this week to now
+      Tweet.where(identity_id: user.identity.id)
+           .where(twitter_created_at: start_of_this_week..Time.current)
+           .count
     end
 
     def tweets_change_since_last_week
@@ -22,15 +27,6 @@ module Twitter
       return false if last_week_count.zero? # No data from last week
 
       current_week_count - last_week_count
-    end
-
-
-    def last_weeks_tweets_count
-      HourlyTweetCount.where('identity_id = ? AND start_time >= ? AND start_time < ?',
-                             @user.identity.id,
-                             @start_time - 1.week,
-                             @start_time)
-                      .sum(:tweet_count)
     end
 
     def days_until_last_weeks_data_available
@@ -133,6 +129,17 @@ module Twitter
     end
 
     private
+
+
+    def last_weeks_tweets_count
+      start_of_last_week = 1.week.ago.beginning_of_week
+      end_of_last_week = 1.week.ago.end_of_week
+
+      # Query the Tweet table using twitter_created_at within the last week's range
+      Tweet.where(identity_id: user.identity.id)
+           .where(twitter_created_at: start_of_last_week..end_of_last_week)
+           .count
+    end
 
 
     def total_profile_clicks_for_period(start_time, end_time)

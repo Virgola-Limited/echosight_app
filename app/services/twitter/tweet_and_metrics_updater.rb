@@ -28,7 +28,6 @@ module Twitter
       next_token = nil
       loop do
         tweets, next_token = fetch_tweets(next_token)
-        Rails.logger.debug('paul tweets' + tweets.inspect)
         break if tweets.empty?
 
         tweets.each do |tweet_data|
@@ -43,9 +42,13 @@ module Twitter
       metrics = tweet_data['public_metrics']
       non_public_metrics = tweet_data['non_public_metrics']
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
+
+      # Parse Twitter API timestamp and assign to twitter_created_at
+      twitter_created_at = DateTime.parse(tweet_data['created_at'])
       tweet.update(
         text: tweet_data['text'],
-        identity_id: user.identity.id
+        identity_id: user.identity.id,
+        twitter_created_at: twitter_created_at # Assign parsed timestamp
       )
 
       TweetMetric.create(

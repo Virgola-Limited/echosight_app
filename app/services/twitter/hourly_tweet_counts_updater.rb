@@ -2,7 +2,7 @@
 
 module Twitter
 
-  # Might be useful if we go to the Pro plan.
+  # Currently not used might be useful if we go to the Pro plan.
   class HourlyTweetCountsUpdater
     attr_reader :user
 
