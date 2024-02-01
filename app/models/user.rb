@@ -18,7 +18,7 @@ class User < ApplicationRecord
   has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 
   def self.from_omniauth(auth)
-    # make this work when already logged in and adding twitter (check current user)
+    # TODO: make this work when already logged in and adding twitter (check current user)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
     if identity
