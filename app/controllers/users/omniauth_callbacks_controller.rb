@@ -8,6 +8,8 @@ module Users
 
       if @user.persisted?
         @user.confirm unless @user.confirmed?
+
+        @user.remember_me = true
         sign_in_and_redirect @user, event: :authentication
         set_flash_message(:notice, :success, kind: 'Twitter') if is_navigational_format?
       else
