@@ -53,9 +53,11 @@ gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
 gem 'stripe'
+gem 'activeadmin'
+gem 'sassc' # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
+gem 'exception_notification'
 
 group :production, :staging do
-  gem 'exception_notification'
   gem 'slack-notifier'
 end
 
@@ -66,7 +68,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'exception_notification'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'rubocop'
   gem 'web-console'

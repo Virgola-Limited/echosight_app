@@ -106,3 +106,5 @@ if User.count.positive?
     create_follower_count_data(identity_id, days_required_in_follower_seed_data, Date.today, 1000, 1070)
   end
 end
+
+AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
