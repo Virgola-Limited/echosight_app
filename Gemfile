@@ -52,6 +52,7 @@ gem 'sidekiq'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
+gem 'stripe'
 
 group :production, :staging do
   gem 'exception_notification'
