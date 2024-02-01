@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Echosight App: A Twitter analytics dashboard providing insights on user engagement and content performance.",
   "main": "index.js",
+  "engines": {
+    "node": "18.18.2"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -1,0 +1,75 @@
+<h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Top Posts</h2>
+
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
+    <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Post
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Retweets
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Quotes
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Likes
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Impressions
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Engagement
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Replies
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Engagement Rate
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+          <% @top_tweets.each do |tweet| %>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                      <%= text_with_images(tweet.text) %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.retweet_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.quote_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.like_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.impression_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      X <!-- Placeholder for Engagement -->
+                  </td>
+                  <td class="px-6 py-4">
+                      <%= tweet.reply_count %>
+                  </td>
+                  <td class="px-6 py-4">
+                      X <!-- Placeholder for Engagement Rate -->
+                  </td>
+                  <td class="px-6 py-4">
+                    <a href="https://twitter.com/user/status/<%= tweet.twitter_id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
+                      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                          <path d="M17 0h-5.768a1 1 0 1 0 0 2h3.354L8.4 8.182A1.003 1.003 0 1 0 9.818 9.6L16 3.414v3.354a1 1 0 0 0 2 0V1a1 1 0 0 0-1-1Z"></path>
+                          <path d="m14.258 7.985-3.025 3.025A3 3 0 1 1 6.99 6.768l3.026-3.026A3.01 3.01 0 0 1 8.411 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V9.589a3.011 3.011 0 0 1-1.742-1.604Z"></path>
+                      </svg>
+                    </a>
+                  </td>
+              </tr>
+          <% end %>
+      </tbody>
+    </table>
+</div>

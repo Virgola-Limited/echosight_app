@@ -5,6 +5,26 @@
 </div>
 
 <script>
+   let impressionData = <%= @impression_daily_data_points_for_graph.to_json.html_safe %>;
+    let maxYValue = Math.max(...impressionData);
+    let minYValue = Math.min(...impressionData);
+
+    // Find the range of your data
+let range = maxYValue - minYValue;
+
+// Determine a step size that gives you a good number of ticks, but rounds nicely
+let stepSize = Math.pow(10, range.toString().length - 1);
+
+// Calculate the number of ticks based on this step size
+let tickAmount = Math.ceil(range / stepSize);
+
+// Ensure you have a minimum number of ticks to make the graph readable
+tickAmount = Math.max(tickAmount, 5);
+
+// Now adjust minYValue and maxYValue to be multiples of stepSize
+minYValue = Math.floor(minYValue / stepSize) * stepSize;
+maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
+
   window.addEventListener("load", function() {
     let options = {
       chart: {
@@ -23,15 +43,15 @@
       },
       series: [{
         name: 'Impressions',
-        data: [200, 350, 150, 450] // Random data for the impressions
+        data: impressionData
       }],
       xaxis: {
-        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
+        categories: <%= @impression_formatted_labels_for_graph.to_json.html_safe %>
       },
       yaxis: {
-        min: 0,
-        max: 500,
-        tickAmount: 10 // This will give us increments of 50 (500/10)
+        min: minYValue,
+        max: maxYValue, // Set dynamically based on the largest data point
+        tickAmount: 10 // Adjust if necessary to make the graph look good
       },
       fill: {
         type: "gradient",

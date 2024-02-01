@@ -18,6 +18,7 @@ cd echosight_app
 * PostgreSQL (latest version)
 * Docker (for containerized environments)
 * Foreman or Overmind (for process management)
+* Redis: brew install redis
 
 ### Installation 💾
 

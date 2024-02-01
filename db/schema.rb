@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_14_023022) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_23_014634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "hourly_tweet_counts", force: :cascade do |t|
+    t.bigint "identity_id", null: false
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer "tweet_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "pulled_at"
+    t.index ["identity_id"], name: "index_hourly_tweet_counts_on_identity_id"
+  end
 
   create_table "identities", force: :cascade do |t|
     t.string "provider"
@@ -22,7 +33,55 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_023022) do
     t.datetime "updated_at", null: false
     t.string "image_url"
     t.string "description"
+    t.string "handle"
+    t.string "banner_url"
+    t.string "bearer_token"
+    t.index ["handle"], name: "index_identities_on_handle", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "tweet_metrics", force: :cascade do |t|
+    t.integer "retweet_count"
+    t.integer "quotes_count"
+    t.integer "like_count"
+    t.integer "quote_count"
+    t.integer "impression_count"
+    t.integer "reply_count"
+    t.integer "bookmark_count"
+    t.datetime "pulled_at"
+    t.bigint "tweet_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_profile_clicks"
+    t.index ["tweet_id"], name: "index_tweet_metrics_on_tweet_id"
+  end
+
+  create_table "tweets", force: :cascade do |t|
+    t.bigint "twitter_id", null: false
+    t.text "text", null: false
+    t.bigint "identity_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_tweets_on_identity_id"
+    t.index ["twitter_id"], name: "index_tweets_on_twitter_id", unique: true
+  end
+
+  create_table "twitter_followers_counts", force: :cascade do |t|
+    t.string "followers_count"
+    t.bigint "identity_id", null: false
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_twitter_followers_counts_on_identity_id"
+  end
+
+  create_table "twitter_likes_counts", force: :cascade do |t|
+    t.string "likes_count"
+    t.bigint "identity_id", null: false
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_twitter_likes_counts_on_identity_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -53,5 +112,10 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_023022) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
+  add_foreign_key "tweet_metrics", "tweets"
+  add_foreign_key "tweets", "identities"
+  add_foreign_key "twitter_followers_counts", "identities"
+  add_foreign_key "twitter_likes_counts", "identities"
 end

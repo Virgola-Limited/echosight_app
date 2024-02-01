@@ -1,0 +1,79 @@
+<!-- followers -->
+<h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Followers</h2>
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+  <% if @follower_daily_data_points_for_graph.count < 2 %>
+    <p>We are awaiting more data to show the followers graph.</p>
+  <% else %>
+    <div id="followers-chart"></div>
+  <% end %>
+</div>
+
+<script>
+  window.addEventListener("load", function() {
+    <% unless @follower_daily_data_points_for_graph.count < 2 %>
+      let options = {
+        chart: {
+          height: '600px',
+          maxWidth: "100%",
+          type: "line",
+          fontFamily: "Inter, sans-serif",
+          dropShadow: {
+            enabled: false,
+          },
+          toolbar: {
+            show: true, // Consider enabling toolbar for zooming and panning
+            tools: {
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true
+            },
+          },
+        },
+        series: [{
+          name: "Followers",
+          data: <%= (@follower_daily_data_points_for_graph.map { |point| point[1] }).to_json.html_safe %>
+        }],
+        xaxis: {
+          categories: <%= @follower_formatted_labels_for_graph.to_json.html_safe %>,
+          type: 'category',
+          labels: {
+            rotate: -45
+          }
+        },
+        yaxis: {
+          labels: {
+            formatter: function (val) {
+              return val.toFixed(0);
+            }
+          }
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 2
+        },
+        grid: {
+          show: true,
+          strokeDashArray: 4,
+        },
+        tooltip: {
+          enabled: true,
+          y: {
+            formatter: function (val) {
+              return val + ' followers';
+            }
+          }
+        },
+        dataLabels: {
+          enabled: false,
+        },
+      };
+
+      if (document.getElementById("followers-chart") && typeof ApexCharts !== 'undefined') {
+        const chart = new ApexCharts(document.getElementById("followers-chart"), options);
+        chart.render();
+      }
+    <% end %>
+  });
+</script>

@@ -13,7 +13,7 @@
                             <a href="<%= root_url %>" class="block rounded text-primary-700 dark:text-primary-500" aria-current="page">Dashboard</a>
                         </li>
                         <li>
-                            <a href="<%= public_page_index_url %>" class="block rounded text-primary-700 dark:text-primary-500" aria-current="page">My Public Page</a>
+                            <a target="_blank" href="<%= current_or_guest_user.handle ? public_page_url(current_or_guest_user.handle) : '#' %>" class="block rounded text-primary-700 dark:text-primary-500" aria-current="page">My Public Page</a>
                         </li>
                         <li>
                             <a href="#" class="block text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white">Leaderboards</a>

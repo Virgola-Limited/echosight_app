@@ -9,6 +9,7 @@
 
 # Ignore all environment files (except templates).
 /.env*
+!/.env.example
 !/.env*.erb
 
 # Ignore all logfiles and tempfiles.
@@ -43,3 +44,6 @@ node_modules
 
 .overmind.env
 .byebug_history
+
+/config/credentials/*.key
+
