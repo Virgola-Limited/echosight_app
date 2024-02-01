@@ -66,6 +66,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'exception_notification'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'rubocop'
   gem 'web-console'

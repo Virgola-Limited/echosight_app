@@ -49,7 +49,8 @@ if defined?(ExceptionNotification)
       channel: '#errors',
       additional_parameters: {
         mrkdwn: true
-      }
+      },
+      ignore_if: ->(env, exception) { Rails.env.development? } # This line is added to ignore Slack notifications in development
     }
 
   end

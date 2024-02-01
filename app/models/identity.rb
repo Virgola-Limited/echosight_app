@@ -5,6 +5,7 @@ class Identity < ApplicationRecord
   has_many :tweets, dependent: :destroy
   has_many :twitter_followers_counts, dependent: :destroy
   has_many :twitter_likes_counts, dependent: :destroy
+  has_many :user_twitter_data_updates, dependent: :destroy
 
   validates :provider, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }
