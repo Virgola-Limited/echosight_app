@@ -14,4 +14,8 @@ class Identity < ApplicationRecord
   scope :valid_identity, -> {
     where(provider: "twitter2")
   }
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["banner_url", "bearer_token", "created_at", "description", "handle", "id", "id_value", "image_url", "provider", "uid", "updated_at", "user_id"]
+  end
 end
