@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_01_184455) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_02_043014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,7 +68,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_01_184455) do
 
   create_table "tweet_metrics", force: :cascade do |t|
     t.integer "retweet_count"
-    t.integer "quotes_count"
     t.integer "like_count"
     t.integer "quote_count"
     t.integer "impression_count"

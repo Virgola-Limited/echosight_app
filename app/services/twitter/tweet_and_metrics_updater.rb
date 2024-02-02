@@ -54,7 +54,7 @@ module Twitter
       TweetMetric.create(
         tweet: tweet,
         retweet_count: metrics['retweet_count'],
-        quotes_count: metrics['quote_count'],
+        quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
         impression_count: metrics['impression_count'],
         reply_count: metrics['reply_count'],

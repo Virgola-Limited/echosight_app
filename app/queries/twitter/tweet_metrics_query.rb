@@ -52,7 +52,7 @@ module Twitter
       # Define SQL for total engagement
       total_engagement_sql = <<-SQL
         COALESCE(MAX(tweet_metrics.retweet_count), 0) +
-        COALESCE(MAX(tweet_metrics.quotes_count), 0) +
+        COALESCE(MAX(tweet_metrics.quote_count), 0) +
         COALESCE(MAX(tweet_metrics.like_count), 0) +
         COALESCE(MAX(tweet_metrics.quote_count), 0) +
         COALESCE(MAX(tweet_metrics.impression_count), 0) +
@@ -63,7 +63,7 @@ module Twitter
       # Define SQL for individual max count metrics
       metrics_sql = <<-SQL
         MAX(tweet_metrics.retweet_count) AS retweet_count,
-        MAX(tweet_metrics.quotes_count) AS quotes_count,
+        MAX(tweet_metrics.quote_count) AS quote_count,
         MAX(tweet_metrics.like_count) AS like_count,
         MAX(tweet_metrics.quote_count) AS quote_count,
         MAX(tweet_metrics.impression_count) AS impression_count,

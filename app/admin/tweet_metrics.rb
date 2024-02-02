@@ -8,9 +8,8 @@ ActiveAdmin.register TweetMetric do
       link_to tweet_metric.tweet.text.truncate(50), "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.twitter_id}", target: "_blank"
     end
     column :retweet_count
-    column :quotes_count
-    column :like_count
     column :quote_count
+    column :like_count
     column :impression_count
     column :reply_count
     column :bookmark_count
@@ -27,9 +26,8 @@ ActiveAdmin.register TweetMetric do
         link_to tweet_metric.tweet.text, "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.twitter_id}", target: "_blank"
       end
       row :retweet_count
-      row :quotes_count
-      row :like_count
       row :quote_count
+      row :like_count
       row :impression_count
       row :reply_count
       row :bookmark_count
