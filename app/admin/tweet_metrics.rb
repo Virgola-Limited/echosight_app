@@ -4,7 +4,9 @@ ActiveAdmin.register TweetMetric do
   filter :tweet_identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 
   index do
-    column :tweet_id
+    column "Tweet" do |tweet_metric|
+      link_to tweet_metric.tweet.text.truncate(50), "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.twitter_id}", target: "_blank"
+    end
     column :retweet_count
     column :quotes_count
     column :like_count
@@ -19,9 +21,11 @@ ActiveAdmin.register TweetMetric do
     actions
   end
 
-  show do
+  show do |tweet_metric|
     attributes_table do
-      row :tweet_id
+      row "Tweet" do
+        link_to tweet_metric.tweet.text, "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.twitter_id}", target: "_blank"
+      end
       row :retweet_count
       row :quotes_count
       row :like_count
