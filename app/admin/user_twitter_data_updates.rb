@@ -5,6 +5,13 @@ ActiveAdmin.register UserTwitterDataUpdate do
 
   index do
     column :identity_id
+    column "User Email" do |user_twitter_data_update|
+      if user_twitter_data_update.identity && user_twitter_data_update.identity.user
+        link_to user_twitter_data_update.identity.user.email, admin_user_path(user_twitter_data_update.identity.user)
+      else
+        "No User"
+      end
+    end
     column :started_at
     column :completed_at
     column :error_message
