@@ -22,7 +22,7 @@ class UpdateTwitterDataWorker
       update_user(user)
     rescue => e
       data_update_log.update(error_message: e.message)
-      Rails.logger.error "Failed to update user #{user.id}: #{e.message}"
+      raise "Failed to update user #{user.id} #{user.email}: #{e.message}"
       # No completed_at is set in case of error, indicating the update did not complete successfully.
     else
       data_update_log.update(completed_at: Time.current) # Set completed_at only if no errors occurred.
