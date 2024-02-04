@@ -1,5 +1,6 @@
 class UpdateTwitterDataWorker
   include Sidekiq::Worker
+  sidekiq_options retry: false
 
   def perform(user_id: nil)
     if user_id
@@ -21,8 +22,9 @@ class UpdateTwitterDataWorker
     begin
       update_user(user)
     rescue => e
-      data_update_log.update(error_message: e.message)
-      raise "Failed to update user #{user.id} #{user.email}: #{e.message}"
+      message = "Failed to update user #{user.id} #{user.email}: #{e.message}"
+      data_update_log.update(error_message: message)
+      raise messages
       # No completed_at is set in case of error, indicating the update did not complete successfully.
     else
       data_update_log.update(completed_at: Time.current) # Set completed_at only if no errors occurred.
