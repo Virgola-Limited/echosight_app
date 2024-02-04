@@ -349,4 +349,6 @@ ActiveAdmin.setup do |config|
   # You can switch to using Webpacker here.
   #
   # config.use_webpacker = true
+
+  config.sort_order = 'created_at_desc'
 end

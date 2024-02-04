@@ -4,6 +4,7 @@ ActiveAdmin.register UserTwitterDataUpdate do
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 
   index do
+    column :created_at
     column :identity_id
     column "User Email" do |user_twitter_data_update|
       if user_twitter_data_update.identity && user_twitter_data_update.identity.user
@@ -15,7 +16,6 @@ ActiveAdmin.register UserTwitterDataUpdate do
     column :started_at
     column :completed_at
     column :error_message
-    column :created_at
     column :updated_at
     actions
   end
