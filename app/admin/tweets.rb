@@ -5,6 +5,13 @@ ActiveAdmin.register Tweet do
 
   index do
     column :twitter_id
+    column "User Email" do |tweet|
+      if tweet.identity && tweet.identity.user
+        link_to tweet.identity.user.email, admin_user_path(tweet.identity.user)
+      else
+        "No User"
+      end
+    end
     column :text
     column :identity_id
     column :created_at

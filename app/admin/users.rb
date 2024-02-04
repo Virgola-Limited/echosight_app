@@ -1,5 +1,7 @@
 ActiveAdmin.register User do
-  actions :index, :show  # Makes the resource read-only
+  permit_params :name, :last_name, :email
+
+  actions :index, :show, :edit, :update
 
   filter :email
 
@@ -26,6 +28,27 @@ ActiveAdmin.register User do
       row :current_sign_in_at
       row :last_sign_in_at
       # Include other fields as needed
+    end
+  end
+
+  form do |f|
+    f.inputs 'User Details' do
+      f.input :name
+      f.input :last_name
+      f.input :email
+      # Add other inputs here if needed
+    end
+    f.actions
+  end
+
+  controller do
+    def update
+      super do |format|
+        if resource.valid? && resource.unconfirmed_email.present?
+          resource.confirm  # Manually confirm the new email
+          redirect_to admin_user_path(resource) and return if resource.errors.blank?
+        end
+      end
     end
   end
 end
