@@ -24,7 +24,7 @@ class UpdateTwitterDataWorker
     rescue => e
       message = "Failed to update user #{user.id} #{user.email}: #{e.message}"
       data_update_log.update(error_message: message)
-      raise messages
+      raise message
       # No completed_at is set in case of error, indicating the update did not complete successfully.
     else
       data_update_log.update(completed_at: Time.current) # Set completed_at only if no errors occurred.
