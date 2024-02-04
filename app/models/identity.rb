@@ -1,4 +1,30 @@
 # frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: identities
+#
+#  id           :bigint           not null, primary key
+#  banner_url   :string
+#  bearer_token :string
+#  description  :string
+#  handle       :string
+#  image_url    :string
+#  provider     :string
+#  uid          :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  user_id      :bigint           not null
+#
+# Indexes
+#
+#  index_identities_on_handle   (handle) UNIQUE
+#  index_identities_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 class Identity < ApplicationRecord
   belongs_to :user
   has_many :hourly_tweet_counts, dependent: :destroy
