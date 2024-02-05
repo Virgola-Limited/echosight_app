@@ -50,25 +50,42 @@ module Twitter
     end
 
     def refresh_oauth_token(oauth_credential)
-      endpoint = 'oauth2/token'
-      params = {
+      uri = URI('https://api.twitter.com/2/oauth2/token')
+      request = Net::HTTP::Post.new(uri)
+      request.content_type = 'application/x-www-form-urlencoded'
+
+      # Combine client ID and secret, then Base64-encode for Basic Auth
+      client_id = Rails.application.credentials.dig(:twitter, :oauth2_client_id)
+      client_secret = Rails.application.credentials.dig(:twitter, :oauth2_client_secret)
+      credentials = "#{client_id}:#{client_secret}"
+      encoded_credentials = Base64.strict_encode64(credentials)
+
+      # Include the encoded credentials in the Authorization header
+      request["Authorization"] = "Basic #{encoded_credentials}"
+
+      # Set the request body with the refresh token and grant type
+      request.body = URI.encode_www_form({
         'refresh_token' => oauth_credential.refresh_token,
-        'grant_type' => 'refresh_token',
-        'client_id' => Rails.application.credentials.dig(:twitter, :oauth2_client_id)
-      }
+        'grant_type' => 'refresh_token'
+      })
 
-      response = client(auth: :oauth2).post(endpoint, params)
+      # Perform the request
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+        http.request(request)
+      end
 
-      if response.success?
-        new_creds = response.parse_body
+      # Parse the response
+      if response.is_a?(Net::HTTPSuccess)
+        new_creds = JSON.parse(response.body)
 
-        # Update the oauth_credential with new token details
+        # Return the new token details
         {
           token: new_creds['access_token'],
           refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
-          expires_at: Time.now + new_creds['expires_in'].to_i # Calculate the new expiration time
+          expires_at: Time.now + new_creds['expires_in'].to_i
         }
       else
+        # Raise an error with the response body
         raise "Failed to refresh token: #{response.body}"
       end
     end
