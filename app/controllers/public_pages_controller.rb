@@ -72,10 +72,9 @@ class PublicPagesController < ApplicationController
 
     # Engagement Graph
 
-    engagement_query = Twitter::EngagementQuery.new(@user)
-    @total_retweets = engagement_query.total_retweets
-    @total_replies = engagement_query.total_replies
-    @total_likes = engagement_query.total_likes
+    @total_retweets = tweet_metrics_query.total_retweets
+    @total_replies = tweet_metrics_query.total_replies
+    @total_likes = tweet_metrics_query.total_likes
 
     ############################
 
