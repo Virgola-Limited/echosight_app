@@ -36,6 +36,12 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
+    def fetch_rate_limit_data
+      endpoint = 'application/rate_limit_status.json'
+      params = {} # Add necessary parameters if needed
+      make_api_call(endpoint, params, :oauth1, :v1_1) # Using OAuth1 for Twitter API v1.1
+    end
+
     private
 
     def refresh_token_if_needed(oauth_credential)
@@ -115,13 +121,13 @@ module Twitter
       end
     end
 
-    def client(version: :v2, auth: :oauth2)
+    def client(version:, auth: :oauth2)
       X::Client.new(**credentials(version, auth))
     end
 
-    def make_api_call(endpoint, params, auth_type)
+    def make_api_call(endpoint, params, auth_type, version = :v2)
       refresh_token_if_needed(user.identity.oauth_credential) if user
-      return client(auth: auth_type).get("#{endpoint}?#{URI.encode_www_form(params)}")
+      return client(auth: auth_type, version: version).get("#{endpoint}?#{URI.encode_www_form(params)}")
     rescue X::Error => e
       handle_api_error(e, endpoint, params, auth_type)
     end

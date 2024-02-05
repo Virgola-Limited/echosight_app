@@ -1,10 +1,9 @@
-# frozen_string_literal: true
-
 module Twitter
   class RateLimitChecker
-    attr_reader :rate_limit_data
+    attr_reader :rate_limit_data, :twitter_client
 
     def initialize
+      @twitter_client = Twitter::Client.new # Pass user if needed
     end
 
     def call
@@ -15,21 +14,14 @@ module Twitter
     private
 
     def fetch_rate_limit_data
-      return rate_limit_data if rate_limit_data
-      # refactor to use twitter client
-      endpoint = 'application/rate_limit_status.json'
-      @rate_limit_data = twitter_client.get(endpoint) # Assuming the client is configured for OAuth2
-    end
-
-    def twitter_client
-      @twitter_client ||= Client.new.client(version: :v1_1)
+      return @rate_limit_data if @rate_limit_data
+      @rate_limit_data = twitter_client.fetch_rate_limit_data
     end
 
     def process_rate_limit_data
-      response = fetch_rate_limit_data
+      response = @rate_limit_data
 
-      # Process the response to extract and display rate limit information
-      if response['resources']
+      if response && response['resources']
         response['resources'].each do |resource, endpoints|
           endpoints.each do |endpoint, data|
             if data['remaining'] == 0
@@ -37,8 +29,9 @@ module Twitter
             end
           end
         end
+      else
+        puts 'No rate limit data available'
       end
-      p 'Any maxed out results should show above'
     end
   end
 end
