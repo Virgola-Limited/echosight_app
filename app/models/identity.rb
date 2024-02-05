@@ -4,17 +4,16 @@
 #
 # Table name: identities
 #
-#  id           :bigint           not null, primary key
-#  banner_url   :string
-#  bearer_token :string
-#  description  :string
-#  handle       :string
-#  image_url    :string
-#  provider     :string
-#  uid          :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :bigint           not null
+#  id          :bigint           not null, primary key
+#  banner_url  :string
+#  description :string
+#  handle      :string
+#  image_url   :string
+#  provider    :string
+#  uid         :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  user_id     :bigint           not null
 #
 # Indexes
 #
@@ -32,6 +31,7 @@ class Identity < ApplicationRecord
   has_many :twitter_followers_counts, dependent: :destroy
   has_many :twitter_likes_counts, dependent: :destroy
   has_many :user_twitter_data_updates, dependent: :destroy
+  has_one :oauth_credential, dependent: :destroy
 
   validates :provider, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }

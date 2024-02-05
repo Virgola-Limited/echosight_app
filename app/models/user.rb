@@ -55,9 +55,7 @@ class User < ApplicationRecord
     ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_name", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
   end
 
-
   def self.from_omniauth(auth)
-    # TODO: make this work when already logged in and adding twitter (check current user)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
     if identity
@@ -70,10 +68,7 @@ class User < ApplicationRecord
     # Update user's attributes
     user.name = auth.info.name if user.name.blank?
     user.email = auth.info.email if user.email.blank?
-    # OAUTH2 doesnt support getting email address need to move back to OAUTH1 or ask user for email
-    ##########################  TODO REMOVE THIS BEFORE LAUNCH
     user.email = "fake_email_#{rand(252...4350)}@echosight.io" if user.email.blank?
-    ##########################  TODO REMOVE THIS BEFORE LAUNCH
 
     # Update or build identity
     identity ||= user.build_identity
@@ -83,19 +78,27 @@ class User < ApplicationRecord
       image_url: auth.info.image,
       description: auth.info.description,
       handle: auth.extra.raw_info.data.username,
-      # this disappeared from auth when we moved to omniauth2 ???
-      # banner_url: auth.extra.raw_info.profile_banner_url,
-      bearer_token: auth.credentials.token
     )
 
-    # Save user and identity
+    # Update or build oauth_credential
+    oauth_credential = identity.oauth_credential || identity.build_oauth_credential
+    oauth_credential.assign_attributes(
+      provider: auth.provider,
+      token: auth.credentials.token,
+      refresh_token: auth.credentials.refresh_token,
+      expires_at: Time.at(auth.credentials.expires_at)
+    )
+
+    # Save user, identity, and oauth_credential
     ActiveRecord::Base.transaction do
       user.save! if user.new_record? || user.changed?
       identity.save! if identity.new_record? || identity.changed?
+      oauth_credential.save! if oauth_credential.new_record? || oauth_credential.changed?
     end
 
     user
   end
+
 
   def guest?
     !persisted?
