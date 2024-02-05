@@ -38,27 +38,80 @@ module Twitter
 
     private
 
+    def refresh_token_if_needed(oauth_credential)
+      return unless oauth_credential.expires_at < Time.current + 5.minutes
+
+      refreshed_credentials = refresh_oauth_token(oauth_credential)
+      oauth_credential.update!(
+        token: refreshed_credentials[:token],
+        refresh_token: refreshed_credentials[:refresh_token],
+        expires_at: Time.at(refreshed_credentials[:expires_at])
+      )
+    end
+
+    def refresh_oauth_token(oauth_credential)
+      endpoint = 'oauth2/token'
+      params = {
+        'refresh_token' => oauth_credential.refresh_token,
+        'grant_type' => 'refresh_token',
+        'client_id' => Rails.application.credentials.dig(:twitter, :oauth2_client_id)
+      }
+
+      response = client(auth: :oauth2).post(endpoint, params)
+
+      if response.success?
+        new_creds = response.parse_body
+
+        # Update the oauth_credential with new token details
+        {
+          token: new_creds['access_token'],
+          refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
+          expires_at: Time.now + new_creds['expires_in'].to_i # Calculate the new expiration time
+        }
+      else
+        raise "Failed to refresh token: #{response.body}"
+      end
+    end
+
+    def handle_api_error(e, endpoint, params, auth_type)
+      # Your existing error handling logic
+      if e.message == 'Unauthorized' && user
+        refresh_token_if_needed(user.identity.oauth_credential)
+        retry_api_call(endpoint, params, auth_type) # Implement retry logic
+      else
+        error_details = {
+          error: e.message,
+          auth_type: auth_type.to_s,
+          api_version: determine_api_version(endpoint),
+          endpoint: endpoint,
+          query_params: params,
+          user_info: user_info_for_error
+        }
+
+        ExceptionNotifier.notify_exception(
+          StandardError.new("Twitter API Error: #{e.message}"),
+          data: error_details
+        )
+      end
+
+    end
+
     def client(version: :v2, auth: :oauth2)
       X::Client.new(**credentials(version, auth))
     end
 
     def make_api_call(endpoint, params, auth_type)
-      response = client(auth: auth_type).get("#{endpoint}?#{URI.encode_www_form(params)}")
-      response
-    rescue X::Error => e # Assuming X::Error is the base class for errors from the X client
-      error_details = {
-        error: e.message,
-        auth_type: auth_type.to_s,
-        api_version: determine_api_version(endpoint),
-        endpoint: endpoint,
-        query_params: params,
-        user_info: user_info_for_error
-      }
+      refresh_token_if_needed(user.identity.oauth_credential) if user
+      return client(auth: auth_type).get("#{endpoint}?#{URI.encode_www_form(params)}")
+    rescue X::Error => e
+      handle_api_error(e, endpoint, params, auth_type)
+    end
 
-      ExceptionNotifier.notify_exception(
-        StandardError.new("Twitter API Error: #{e.message}"),
-        data: error_details
-      )
+    def retry_api_call(endpoint, params, auth_type)
+      # Dont check refresh token this time
+      client(auth: auth_type).get("#{endpoint}?#{URI.encode_www_form(params)}")
+    rescue X::Error => e
+      handle_api_error(e, endpoint, params, auth_type)
     end
 
     def determine_api_version(endpoint)
