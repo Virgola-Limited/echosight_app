@@ -109,8 +109,10 @@ module Twitter
           StandardError.new("Twitter API Error: #{e.message}"),
           data: error_details
         )
-      end
 
+        e.instance_variable_set(:@error_details, error_details)
+        raise e
+      end
     end
 
     def client(version: :v2, auth: :oauth2)

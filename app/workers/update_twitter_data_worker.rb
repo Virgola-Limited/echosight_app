@@ -5,7 +5,7 @@ class UpdateTwitterDataWorker
   def perform(user_id: nil)
     if user_id
       user = User.find(user_id)
-      log_and_update_user(user)
+      fetch_and_log_twitter_data(user)
       return
     end
 
