@@ -80,7 +80,7 @@ module Twitter
 
     def user_context_credentials(version)
       {
-        bearer_token: user.identity.bearer_token,
+        bearer_token: user.identity.oauth_credential.token,
         base_url: base_url(version)
       }
     end
