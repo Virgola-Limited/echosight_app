@@ -39,7 +39,7 @@ module Twitter
     private
 
     def refresh_token_if_needed(oauth_credential)
-      return unless oauth_credential.expires_at < Time.current + 5.minutes
+      return unless oauth_credential.expired_or_expiring_soon?
 
       refreshed_credentials = refresh_oauth_token(oauth_credential)
       oauth_credential.update!(
