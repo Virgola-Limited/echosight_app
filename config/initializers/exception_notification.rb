@@ -21,9 +21,10 @@ if defined?(ExceptionNotification)
     # Email notifier sends notifications by email.
     config.add_notifier :email, {
       email_prefix: '[ERROR] ',
-      sender_address: %{"Notifier" <ctoynbee@gmail.com>},
+      sender_address: %{"Chris Toynbee" <chris@echosight.io>},
       exception_recipients: %w{ctoynbee@gmail.com}
-    }
+      ignore_if: ->(env, exception) { Rails.env.development? } # This line is added to ignore Slack notifications in development
+    },
 
     # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.
     # config.add_notifier :campfire, {
