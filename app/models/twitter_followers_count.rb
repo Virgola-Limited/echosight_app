@@ -21,4 +21,12 @@
 #
 class TwitterFollowersCount < ApplicationRecord
   belongs_to :identity
+
+  def self.ransackable_associations(auth_object = nil)
+    ["identity"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "date", "followers_count", "id", "id_value", "identity_id", "updated_at"]
+  end
 end
