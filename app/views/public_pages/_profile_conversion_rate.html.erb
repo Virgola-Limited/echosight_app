@@ -5,6 +5,9 @@
 </div>
 
 <script>
+  // Suppose `conversionRatesDataForGraph` is passed from the server as JSON:
+  const conversionRatesDataForGraph = <%= @conversion_rates_data_for_graph.to_json.html_safe %>;
+
   window.addEventListener("load", function() {
     let options = {
       chart: {
@@ -17,21 +20,33 @@
       },
       series: [{
         name: 'Profile Conversion Rate',
-        data: [10, 12, 15, 18, 20, 22] // The conversion rates for each month
+        data: conversionRatesDataForGraph.map(data => data.conversion_rate)
       }],
       xaxis: {
-        categories: ['January', 'February', 'March', 'April', 'May', 'June']
+        type: 'datetime',
+        categories: conversionRatesDataForGraph.map(data => new Date(data.date).getTime()),
+        tickAmount: 6,
+        labels: {
+          formatter: function (val) {
+            return new Date(val).toLocaleDateString();
+          }
+        }
       },
       yaxis: {
         min: 0,
-        max: 25,
+        max: Math.max(...conversionRatesDataForGraph.map(data => data.conversion_rate)) + 5, // Plus 5 for a bit of padding
         tickAmount: 5 // Ticks at intervals of 5%
       },
       tooltip: {
         enabled: true,
+        x: {
+          formatter: function (val) {
+            return new Date(val).toLocaleDateString();
+          }
+        },
         y: {
           formatter: function (val) {
-            return val + "%";
+            return val.toFixed(2) + "%"; // Fixed to 2 decimal places for percentage
           }
         }
       },

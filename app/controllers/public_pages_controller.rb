@@ -54,7 +54,6 @@ class PublicPagesController < ApplicationController
     ############################
 
     # Followers Counts
-    followers_query = Twitter::FollowersQuery.new(@user)
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
 
@@ -95,9 +94,22 @@ class PublicPagesController < ApplicationController
 
     # Profile Conversion Rate
 
-    @profile_conversion_rate = tweet_metrics_query.profile_conversion_rate
 
+    profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
 
+    # Fetch daily followers count from TwitterFollowersCount
+    followers_data = followers_query.daily_followers_count
+
+    # Calculate profile conversion rate per day
+    conversion_rates = profile_clicks_data.map do |date, clicks|
+      followers = followers_data[date] || 0
+      clicks > 0 ? (followers.to_f / clicks) * 100 : 0
+    end
+
+    # Format the data for the graph
+    @conversion_rates_data_for_graph = conversion_rates.map.with_index do |rate, index|
+      { date: profile_clicks_data.keys[index], conversion_rate: rate }
+    end
     ############################
 
 
@@ -110,5 +122,9 @@ class PublicPagesController < ApplicationController
 
   def tweet_metrics_query
     Twitter::TweetMetricsQuery.new(user: @user)
+  end
+
+  def followers_query
+    Twitter::FollowersQuery.new(@user)
   end
 end

@@ -46,6 +46,24 @@ module Twitter
       [formatted_data, daily_data_points]
     end
 
+    def daily_followers_count
+      # We first get the last followers count for each day
+      last_followers_count_per_day = TwitterFollowersCount
+                                       .where(identity_id: user.identity.id)
+                                       .where('date >= ?', 30.days.ago) # Adjust the range as needed
+                                       .select('DISTINCT ON (date) date, followers_count')
+                                       .order('date DESC, created_at DESC') # Assuming 'created_at' records when the data was pulled
+                                       .to_a
+
+      # Then we calculate the daily difference in follower count
+      daily_counts = {}
+      last_followers_count_per_day.each_cons(2) do |previous_day, current_day|
+        daily_counts[current_day.date] = current_day.followers_count.to_i - previous_day.followers_count.to_i
+      end
+
+      daily_counts
+    end
+
     private
 
     # TODO: This is currently broken for any other format except daily

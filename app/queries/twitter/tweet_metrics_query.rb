@@ -178,8 +178,17 @@ module Twitter
       total_likes
     end
 
-    def profile_conversion_rate
+    def profile_clicks_count_per_day
+      TweetMetric.joins(:tweet)
+                .where(tweets: { identity_id: user.identity.id })
+                .where('tweet_metrics.pulled_at >= ?', 30.days.ago) # Adjust the range as needed
+                .select('DATE(tweet_metrics.pulled_at) as pulled_date, MAX(tweet_metrics.user_profile_clicks) as profile_clicks')
+                .group('DATE(tweet_metrics.pulled_at)')
+                .order('DATE(tweet_metrics.pulled_at)')
+                .pluck('DATE(tweet_metrics.pulled_at)', 'MAX(tweet_metrics.user_profile_clicks)')
+                .to_h { |date, clicks| [date.to_date, clicks] }
     end
+
 
     private
 
