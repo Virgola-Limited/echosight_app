@@ -49,15 +49,16 @@ module Twitter
       tweets_table = Tweet.arel_table
       tweet_counts_table = TweetMetric.arel_table
 
-      # Define SQL for total engagement
-      total_engagement_sql = <<-SQL
-        COALESCE(MAX(tweet_metrics.retweet_count), 0) +
-        COALESCE(MAX(tweet_metrics.quote_count), 0) +
-        COALESCE(MAX(tweet_metrics.like_count), 0) +
-        COALESCE(MAX(tweet_metrics.quote_count), 0) +
-        COALESCE(MAX(tweet_metrics.impression_count), 0) +
-        COALESCE(MAX(tweet_metrics.reply_count), 0) +
-        COALESCE(MAX(tweet_metrics.bookmark_count), 0) AS total_engagement
+      # Define SQL for total engagement and calculate engagement rate directly, then round it
+      total_engagement_and_rate_sql = <<-SQL
+        ROUND((
+          COALESCE(MAX(tweet_metrics.retweet_count), 0) +
+          COALESCE(MAX(tweet_metrics.quote_count), 0) +
+          COALESCE(MAX(tweet_metrics.like_count), 0) +
+          COALESCE(MAX(tweet_metrics.reply_count), 0) +
+          COALESCE(MAX(tweet_metrics.user_profile_clicks), 0) +
+          COALESCE(MAX(tweet_metrics.bookmark_count), 0)
+        ) / NULLIF(MAX(tweet_metrics.impression_count), 0) * 100, 2) AS engagement_rate_percentage
       SQL
 
       # Define SQL for individual max count metrics
@@ -65,18 +66,20 @@ module Twitter
         MAX(tweet_metrics.retweet_count) AS retweet_count,
         MAX(tweet_metrics.quote_count) AS quote_count,
         MAX(tweet_metrics.like_count) AS like_count,
-        MAX(tweet_metrics.quote_count) AS quote_count,
-        MAX(tweet_metrics.impression_count) AS impression_count,
-        MAX(tweet_metrics.reply_count) AS reply_count
+        MAX(tweet_metrics.reply_count) AS reply_count,
+        MAX(tweet_metrics.user_profile_clicks) AS user_profile_clicks,
+        MAX(tweet_metrics.bookmark_count) AS bookmark_count,
+        MAX(tweet_metrics.impression_count) AS impression_count
       SQL
 
       Tweet.joins(:tweet_metrics)
            .where(tweets_table[:identity_id].eq(user.identity.id))
-           .select("tweets.*, #{total_engagement_sql}, #{metrics_sql}")
+           .select("tweets.*, #{total_engagement_and_rate_sql}, #{metrics_sql}")
            .group(tweets_table[:id])
-           .order(Arel.sql('total_engagement DESC'))
+           .order(Arel.sql('engagement_rate_percentage DESC'))
            .limit(5)
     end
+
 
     def impressions_change_since_last_week
       current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)

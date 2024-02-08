@@ -20,9 +20,6 @@
                     Impressions
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Engagement
-                </th>
-                <th scope="col" class="px-6 py-3">
                     Replies
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -52,13 +49,10 @@
                       <%= tweet.impression_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.total_engagement %>
-                  </td>
-                  <td class="px-6 py-4">
                       <%= tweet.reply_count %>
                   </td>
                   <td class="px-6 py-4">
-                      X <!-- Placeholder for Engagement Rate -->
+                      <%= tweet.engagement_rate_percentage %>
                   </td>
                   <td class="px-6 py-4">
                     <a href="https://twitter.com/user/status/<%= tweet.twitter_id %>" target="_blank" class="text-blue-600 hover:text-blue-900">

@@ -93,8 +93,6 @@ class PublicPagesController < ApplicationController
     ############################
 
     # Profile Conversion Rate
-
-
     profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
 
     # Fetch daily followers count from TwitterFollowersCount
@@ -111,7 +109,6 @@ class PublicPagesController < ApplicationController
       { date: profile_clicks_data.keys[index], conversion_rate: rate }
     end
     ############################
-
 
     # Top Posts / Tweets
     @top_tweets = tweet_metrics_query.top_tweets_for_user
