@@ -43,20 +43,20 @@ gem 'bootsnap', require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem 'activeadmin'
 gem 'apexcharts'
 gem 'devise', '~> 4.9'
+gem 'exception_notification'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'premailer-rails'
+gem 'sassc' # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sidekiq'
+gem 'sidekiq-scheduler'
+gem 'stripe'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
-gem 'stripe'
-gem 'activeadmin'
-gem 'sassc' # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
-gem 'exception_notification'
-
 group :production, :staging do
   gem 'slack-notifier'
 end

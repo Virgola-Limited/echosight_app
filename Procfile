@@ -1,2 +1,2 @@
 release: bundle exec rake db:migrate
-worker: bundle exec sidekiq
+worker: IS_SCHEDULER=true bundle exec sidekiq -q default
