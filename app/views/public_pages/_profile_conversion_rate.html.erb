@@ -33,6 +33,11 @@
         }
       },
       yaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2); // Limit the y-axis labels to 2 decimal places
+          }
+        },
         min: 0,
         max: Math.max(...conversionRatesDataForGraph.map(data => data.conversion_rate)) + 5, // Plus 5 for a bit of padding
         tickAmount: 5 // Ticks at intervals of 5%
