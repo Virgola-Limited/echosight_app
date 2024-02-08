@@ -18,7 +18,7 @@
 # end
 
 every 6.hours do
-  runner "UpdateTwitterDataWorker.perform_async"
+  runner 'UpdateTwitterDataJob.perform_async'
 end
 
 # Learn more: http://github.com/javan/whenever

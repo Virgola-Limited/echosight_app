@@ -1,5 +1,5 @@
-class UpdateTwitterDataWorker
-  include Sidekiq::Worker
+class UpdateTwitterDataJob
+  include Sidekiq::Job
   sidekiq_options retry: false
 
   def perform(user_id: nil)
@@ -21,7 +21,7 @@ class UpdateTwitterDataWorker
 
     begin
       update_user(user)
-    rescue => e
+    rescue StandardError => e
       message = "Failed to complete update user #{user.id} #{user.email}: #{e.message}"
       data_update_log.update(error_message: message)
       raise message
