@@ -4,6 +4,7 @@ ActiveAdmin.register TweetMetric do
   filter :tweet_identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 
   index do
+    column :id
     column "Tweet" do |tweet_metric|
       link_to tweet_metric.tweet.text.truncate(50), "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.twitter_id}", target: "_blank"
     end
