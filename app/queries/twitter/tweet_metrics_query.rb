@@ -47,19 +47,6 @@ module Twitter
 
     def top_tweets_for_user
       tweets_table = Tweet.arel_table
-      tweet_counts_table = TweetMetric.arel_table
-
-      # Define SQL for total engagement and calculate engagement rate directly, then round it
-      total_engagement_and_rate_sql = <<-SQL
-        ROUND((
-          COALESCE(MAX(tweet_metrics.retweet_count), 0) +
-          COALESCE(MAX(tweet_metrics.quote_count), 0) +
-          COALESCE(MAX(tweet_metrics.like_count), 0) +
-          COALESCE(MAX(tweet_metrics.reply_count), 0) +
-          COALESCE(MAX(tweet_metrics.user_profile_clicks), 0) +
-          COALESCE(MAX(tweet_metrics.bookmark_count), 0)
-        ) / NULLIF(MAX(tweet_metrics.impression_count), 0) * 100, 2) AS engagement_rate_percentage
-      SQL
 
       # Define SQL for individual max count metrics
       metrics_sql = <<-SQL
@@ -72,13 +59,39 @@ module Twitter
         MAX(tweet_metrics.impression_count) AS impression_count
       SQL
 
-      Tweet.joins(:tweet_metrics)
-           .where(tweets_table[:identity_id].eq(user.identity.id))
-           .select("tweets.*, #{total_engagement_and_rate_sql}, #{metrics_sql}")
-           .group(tweets_table[:id])
-           .order(Arel.sql('engagement_rate_percentage DESC'))
-           .limit(5)
+      # Select raw data without engagement rate calculation
+      query = Tweet.joins(:tweet_metrics)
+                   .where(tweets_table[:identity_id].eq(user.identity.id))
+                   .select("tweets.*, #{metrics_sql}")
+                   .group(tweets_table[:id])
+                   .limit(5)
+
+      # Convert the query to an array of tweets to calculate the engagement rate in Ruby
+      top_tweets = query.to_a
+      top_tweets.each do |tweet|
+        interactions = tweet.retweet_count.to_f +
+                       tweet.quote_count.to_f +
+                       tweet.like_count.to_f +
+                       tweet.reply_count.to_f +
+                       tweet.user_profile_clicks.to_f +
+                       tweet.bookmark_count.to_f
+        impressions = tweet.impression_count.to_f
+
+        # Calculate engagement rate in Ruby
+        tweet.engagement_rate_percentage = if impressions.zero?
+                                             0.0
+                                           else
+                                             (interactions / impressions) * 100
+                                           end.round(2)
+      end
+
+      # Sort tweets by engagement rate percentage in descending order
+      top_tweets.sort_by! { |tweet| -tweet.engagement_rate_percentage }
+
+      # Return the modified tweets with the engagement rate calculated
+      top_tweets
     end
+
 
 
     def impressions_change_since_last_week

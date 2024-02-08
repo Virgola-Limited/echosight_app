@@ -22,6 +22,8 @@
 #  fk_rails_...  (identity_id => identities.id)
 #
 class Tweet < ApplicationRecord
+  attr_accessor :engagement_rate_percentage
+
   belongs_to :identity
   has_many :tweet_metrics, dependent: :destroy
 
