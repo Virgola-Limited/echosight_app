@@ -13,10 +13,10 @@ ActiveAdmin.register TweetMetric do
     column :impression_count
     column :reply_count
     column :bookmark_count
+    column :user_profile_clicks
     column :pulled_at
     column :created_at
     column :updated_at
-    column :user_profile_clicks
     actions
   end
 
