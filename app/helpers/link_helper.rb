@@ -30,8 +30,7 @@ module LinkHelper
     request = Net::HTTP.new(uri.host, uri.port)
     request.use_ssl = (uri.scheme == 'https')
     response = request.request_head(uri.path.empty? ? "/" : uri.path)
-    Rails.logger.debug('paul' + response.inspect)
-    response.content_type.start_with?('image/')
+    response.content_type&.start_with?('image/')
   rescue => e
     Rails.logger.error("Error checking image link: #{e.message}")
     false
