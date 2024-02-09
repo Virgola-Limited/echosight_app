@@ -14,7 +14,7 @@ module Twitter
     private
 
     def fetch_tweets(next_token = nil)
-      response = twitter_client.fetch_user_tweets(next_token)
+      response = twitter_client.fetch_new_tweets(next_token)
 
       if response.is_a?(Hash) && response.key?('errors')
         error_messages = response['errors'].map { |error| error['detail'] }.join(', ')
@@ -31,6 +31,7 @@ module Twitter
         break if tweets.empty?
 
         tweets.each do |tweet_data|
+          break if Tweet.exists?(twitter_id: tweet_data['id']) # Stop if tweet is already stored
           process_tweet_data(tweet_data)
         end
 
