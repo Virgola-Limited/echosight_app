@@ -5,7 +5,9 @@
 </div>
 
 <script>
-  // Suppose `conversionRatesDataForGraph` is passed from the server as JSON:
+   // Suppose `profileClicksData` and `followersData` are passed from the server as JSON:
+  const profileClicksData = <%= @profile_clicks_data.to_json.html_safe %>;
+  const followersData = <%= @followers_data.to_json.html_safe %>;
   const conversionRatesDataForGraph = <%= @conversion_rates_data_for_graph.to_json.html_safe %>;
 
   window.addEventListener("load", function() {
@@ -53,6 +55,22 @@
           formatter: function (val) {
             return val.toFixed(2) + "%"; // Fixed to 2 decimal places for percentage
           }
+        },
+        custom: function({series, seriesIndex, dataPointIndex, w}) {
+          let date = new Date(w.globals.labels[dataPointIndex]).toLocaleDateString();
+          let dateKey = new Date(w.globals.labels[dataPointIndex]).toISOString().slice(0, 10); // Convert to YYY-MM-DD format
+          let followers = followersData[dateKey] || 0;
+          let clicks = profileClicksData[dateKey] || 0;
+          let rate = series[seriesIndex][dataPointIndex];
+          return (
+            '<div class="arrow_box">' +
+            '<span>Date: ' + date + '</span><br/>' +
+            '<span>Followers: ' + followers + '</span><br/>' +
+            '<span>Profile Clicks: ' + clicks + '</span><br/>' +
+            '<span>Conversion Rate: ' + rate.toFixed(2) + '%</span><br/>' +
+            '<span>Calculation: ' + followers + ' / ' + clicks + ' * 100</span>' +
+            '</div>'
+          );
         }
       },
       grid: {
