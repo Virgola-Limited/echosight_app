@@ -35,6 +35,7 @@ class UpdateTwitterDataJob
   def update_user(user)
     Twitter::FollowersUpdater.new(user).call
     Twitter::NewTweetsFetcher.new(user).call
+    Twitter::TweetMetricsRefresher.new(user).call
   end
 
   def confirmed_users

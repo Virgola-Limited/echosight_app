@@ -28,26 +28,27 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
-      tweet = Tweet.find_by(twitter_id: tweet_data['id'])
-      return unless tweet
-
       metrics = tweet_data['public_metrics']
-      non_public_metrics = tweet_data['non_public_metrics'] # Adjust according to available metrics
+      non_public_metrics = tweet_data['non_public_metrics']
+      tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
 
+      # Parse Twitter API timestamp and assign to twitter_created_at
+      twitter_created_at = DateTime.parse(tweet_data['created_at'])
       tweet.update(
         text: tweet_data['text'],
-        twitter_created_at: DateTime.parse(tweet_data['created_at'])
+        twitter_created_at: twitter_created_at
       )
 
-      # Create a new TweetMetric record for each update
       TweetMetric.create(
         tweet: tweet,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
+        impression_count: metrics['impression_count'],
         reply_count: metrics['reply_count'],
+        bookmark_count: metrics['bookmark_count'],
+        user_profile_clicks: non_public_metrics['user_profile_clicks'],
         pulled_at: DateTime.now.utc # Consider using user time zone
-        # Include other metrics as needed, note that non_public_metrics might not be available
       )
     end
   end
