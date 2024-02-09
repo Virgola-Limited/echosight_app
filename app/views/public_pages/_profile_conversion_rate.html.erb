@@ -61,13 +61,13 @@
           let dateKey = new Date(w.globals.labels[dataPointIndex]).toISOString().slice(0, 10); // Convert to YYY-MM-DD format
           let followers = followersData[dateKey] || 0;
           let clicks = profileClicksData[dateKey] || 0;
-          let rate = series[seriesIndex][dataPointIndex];
+          let rateCalculation = clicks > 0 ? (followers / clicks) * 100 : 0;
           return (
             '<div class="arrow_box">' +
             '<span>Date: ' + date + '</span><br/>' +
             '<span>Followers: ' + followers + '</span><br/>' +
             '<span>Profile Clicks: ' + clicks + '</span><br/>' +
-            '<span>Conversion Rate: ' + rate.toFixed(2) + '%</span><br/>' +
+            '<span>Conversion Rate: ' + rateCalculation.toFixed(2) + '%</span><br/>' +
             '<span>Calculation: ' + followers + ' / ' + clicks + ' * 100</span>' +
             '</div>'
           );
