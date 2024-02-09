@@ -22,17 +22,16 @@
       },
       series: [{
         name: 'Profile Conversion Rate',
-        data: conversionRatesDataForGraph.map(data => data.conversion_rate)
+        data: conversionRatesDataForGraph.map(data => {
+          return {
+            x: new Date(data.date).getTime(),
+            y: data.conversion_rate
+          };
+        })
       }],
       xaxis: {
         type: 'datetime',
-        categories: conversionRatesDataForGraph.map(data => new Date(data.date).getTime()),
-        tickAmount: 6,
-        labels: {
-          formatter: function (val) {
-            return new Date(val).toLocaleDateString();
-          }
-        }
+        // Remove categories and tickAmount for datetime type
       },
       yaxis: {
         labels: {
@@ -42,35 +41,45 @@
         },
         min: 0,
         max: Math.max(...conversionRatesDataForGraph.map(data => data.conversion_rate)) + 5, // Plus 5 for a bit of padding
-        tickAmount: 5 // Ticks at intervals of 5%
       },
       tooltip: {
         enabled: true,
         x: {
-          formatter: function (val) {
-            return new Date(val).toLocaleDateString();
+          formatter: function (val, opts) {
+            // Make sure to access the date using the dataPointIndex safely
+            let dataPoint = conversionRatesDataForGraph[opts.dataPointIndex];
+            if (dataPoint) {
+              let date = new Date(dataPoint.date).toLocaleDateString();
+              return date;
+            } else {
+              return 'N/A'; // Fallback if the data point is not found
+            }
           }
         },
         y: {
           formatter: function (val) {
-            return val.toFixed(2) + "%"; // Fixed to 2 decimal places for percentage
+            return val.toFixed(2) + "%";
           }
         },
         custom: function({series, seriesIndex, dataPointIndex, w}) {
-          let date = new Date(w.globals.labels[dataPointIndex]).toLocaleDateString();
-          let dateKey = new Date(w.globals.labels[dataPointIndex]).toISOString().slice(0, 10); // Convert to YYY-MM-DD format
-          let followers = followersData[dateKey] || 0;
-          let clicks = profileClicksData[dateKey] || 0;
-          let rateCalculation = clicks > 0 ? (followers / clicks) * 100 : 0;
-          return (
-            '<div class="arrow_box">' +
-            '<span>Date: ' + date + '</span><br/>' +
-            '<span>Followers: ' + followers + '</span><br/>' +
-            '<span>Profile Clicks: ' + clicks + '</span><br/>' +
-            '<span>Conversion Rate: ' + rateCalculation.toFixed(2) + '%</span><br/>' +
-            '<span>Calculation: ' + followers + ' / ' + clicks + ' * 100</span>' +
-            '</div>'
-          );
+          let dataPoint = conversionRatesDataForGraph[dataPointIndex];
+          if (dataPoint) {
+            let date = new Date(dataPoint.date).toLocaleDateString();
+            let followers = followersData[dataPoint.date] || 0;
+            let clicks = profileClicksData[dataPoint.date] || 0;
+            let rateCalculation = clicks > 0 ? (followers / clicks) * 100 : 0;
+            return (
+              '<div class="arrow_box">' +
+              '<span>Date: ' + date + '</span><br/>' +
+              '<span>Followers: ' + followers + '</span><br/>' +
+              '<span>Profile Clicks: ' + clicks + '</span><br/>' +
+              '<span>Conversion Rate: ' + rateCalculation.toFixed(2) + '%</span><br/>' +
+              '<span>Calculation: ' + followers + ' / ' + clicks + ' * 100</span>' +
+              '</div>'
+            );
+          } else {
+            return 'Data not available'; // Fallback if the data point is not found
+          }
         }
       },
       grid: {
