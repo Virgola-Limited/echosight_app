@@ -47,18 +47,20 @@ module Twitter
     end
 
     def daily_followers_count
-      # We first get the last followers count for each day
+      # Select the last record for each day based on the `created_at` timestamp
       last_followers_count_per_day = TwitterFollowersCount
                                        .where(identity_id: user.identity.id)
-                                       .where('date >= ?', 30.days.ago) # Adjust the range as needed
-                                       .select('DISTINCT ON (date) date, followers_count')
-                                       .order('date DESC, created_at DESC') # Assuming 'created_at' records when the data was pulled
-                                       .to_a
+                                       .where('date >= ?', 30.days.ago)
+                                       .select('DISTINCT ON (date) date, followers_count, created_at')
+                                       .order('date, created_at DESC')
+                                       .pluck(:date, :followers_count)
 
-      # Then we calculate the daily difference in follower count
+      # Calculate the daily follower count increase based on the last record for each day
       daily_counts = {}
       last_followers_count_per_day.each_cons(2) do |previous_day, current_day|
-        daily_counts[current_day.date] = current_day.followers_count.to_i - previous_day.followers_count.to_i
+        # Ensure that we do not have negative values
+        daily_increase = [current_day.second.to_i - previous_day.second.to_i, 0].max
+        daily_counts[current_day.first] = daily_increase
       end
 
       daily_counts

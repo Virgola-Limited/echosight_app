@@ -87,16 +87,18 @@ class PublicPagesController < ApplicationController
     # Prepare data for the impressions graph
     @impression_formatted_labels_for_graph = sorted_impressions_data.map { |date, _| date.strftime('%b %d') }
     @impression_daily_data_points_for_graph = sorted_impressions_data.map { |_, count| count }
-    Rails.logger.debug('paul @formatted_labels_for_graph' + @formatted_labels_for_graph.inspect)
-    Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
+    # Rails.logger.debug('paul @formatted_labels_for_graph' + @formatted_labels_for_graph.inspect)
+    # Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
 
     ############################
 
     # Profile Conversion Rate
     profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
+    Rails.logger.debug('paul profile_clicks_data' + profile_clicks_data.inspect)
 
     # Fetch daily followers count from TwitterFollowersCount
     followers_data = followers_query.daily_followers_count
+    Rails.logger.debug('paul followers_data' + followers_data.inspect)
 
     # Calculate profile conversion rate per day
     conversion_rates = profile_clicks_data.map do |date, clicks|
@@ -108,6 +110,7 @@ class PublicPagesController < ApplicationController
     @conversion_rates_data_for_graph = conversion_rates.map.with_index do |rate, index|
       { date: profile_clicks_data.keys[index], conversion_rate: rate }
     end
+    Rails.logger.debug('paul' + @conversion_rates_data_for_graph.inspect)
     ############################
 
     # Top Posts / Tweets
