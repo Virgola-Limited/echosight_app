@@ -86,7 +86,7 @@ module Twitter
       end
 
       # Sort tweets by engagement rate percentage in descending order
-      top_tweets.sort_by! { |tweet| -tweet.engagement_rate_percentage }
+      top_tweets.sort_by! { |tweet| -tweet.impression_count }
 
       # Return the modified tweets with the engagement rate calculated
       top_tweets
