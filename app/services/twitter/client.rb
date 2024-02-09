@@ -37,6 +37,11 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
+
+    # | Endpoint       | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
+    # |----------------|-----------|----------------|----------|-----------------------------|------------------------|
+    # | GET_2_tweets   | 900       | 15 minutes     | per user | yes                         | 2,592,000              |
+    # | GET_2_tweets   | 450       | 15 minutes     | per app  | yes                         | 1,296,000              |
     def fetch_tweets_by_ids(tweet_ids)
       endpoint = "tweets"
       params = {
