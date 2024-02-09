@@ -9,12 +9,12 @@ module Twitter
     end
 
     # https://developer.twitter.com/en/portal/products/basic
-    # GET /2/users
-    # 100 requests / 24 hours
-    # PER USER
-    # 500 requests / 24 hours
 
-    # Response: {"data"=>{"public_metrics"=>{"followers_count"=>2, "following_count"=>11, "tweet_count"=>7, "listed_count"=>0, "like_count"=>4}, "id"=>"1691930809756991488", "username"=>"Topher179412184", "name"=>"Topher"}}
+
+    # | Endpoint            | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
+    # |---------------------|-----------|----------------|----------|-----------------------------|------------------------|
+    # | GET_2_users_param   | 500       | 24 hours       | per user | no                          | 15,000                 |
+    # | GET_2_users_param   | 100       | 24 hours       | per app  | no                          | 3,000                  |
     def fetch_user_public_metrics
       endpoint = "users/#{user.identity.uid}"
       params = { 'user.fields' => 'public_metrics' }
