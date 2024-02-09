@@ -1,4 +1,4 @@
-:scheduler:
-  :schedule:
-    UpdateTwitterDataJob:
-      cron: '0 */6 * * *'   # Runs every 6 hours
+UpdateTwitterDataJob:
+  cron: '0 */6 * * *'   # Runs every 6 hours
+  class: 'UpdateTwitterDataJob'
+  queue: 'default'
