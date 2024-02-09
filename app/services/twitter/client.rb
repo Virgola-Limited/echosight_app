@@ -33,7 +33,20 @@ module Twitter
         'pagination_token' => next_token,
         'max_results' => 100
       }.compact
+
       make_api_call(endpoint, params, :oauth1)
+    end
+
+    def fetch_tweets_by_ids(tweet_ids)
+      endpoint = "tweets"
+      params = {
+        'ids' => tweet_ids.join(','), # Convert the list of IDs to a comma-separated string
+        'tweet.fields' => 'created_at,public_metrics,non_public_metrics'
+      }
+
+      bob = make_api_call(endpoint, params, :oauth1)
+      Rails.logger.debug('paul' + bob.inspect)
+      bob
     end
 
     def fetch_rate_limit_data
