@@ -17,7 +17,7 @@
 #   runner "AnotherModel.prune_old_records"
 # end
 
-every 1.hour do
+every 6.hour do
   runner 'UpdateTwitterDataJob.perform_async'
 end
 
