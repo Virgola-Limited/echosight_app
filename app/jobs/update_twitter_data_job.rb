@@ -34,7 +34,7 @@ class UpdateTwitterDataJob
   # TODO; Consider passing identity
   def update_user(user)
     Twitter::FollowersUpdater.new(user).call
-    Twitter::TweetAndMetricsUpdater.new(user).call
+    Twitter::NewTweetsFetcher.new(user).call
   end
 
   def confirmed_users

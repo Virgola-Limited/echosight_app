@@ -1,5 +1,5 @@
 module Twitter
-  class TweetAndMetricsUpdater
+  class NewTweetsFetcher
     attr_reader :user, :twitter_client
 
     def initialize(user)
