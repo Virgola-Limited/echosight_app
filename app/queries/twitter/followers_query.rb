@@ -103,6 +103,7 @@ module Twitter
       ((new_value - old_value) / old_value.to_f) * 100.0
     end
 
+    # TODO: this need changing to not show decrease if its zero
     def format_change_percentage(change_percentage)
       if change_percentage.positive?
         "#{change_percentage.round(1)}% increase"
