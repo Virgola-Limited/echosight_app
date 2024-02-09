@@ -26,3 +26,10 @@ body {
 .call-to-action-button-indigo {
   @apply bg-indigo-600 hover:bg-indigo-700;
 }
+
+.engagement-rate-cell {
+  display: flex;
+  align-items: center; /* Vertically center the content */
+  justify-content: center; /* Horizontally center the content, if needed */
+  /* Add more styling here as needed */
+}
