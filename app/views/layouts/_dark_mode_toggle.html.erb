@@ -1,0 +1,45 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM loaded and parsed');
+      var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+      var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+      var themeToggleBtn = document.getElementById('theme-toggle');
+
+      function setThemeFromLocalStorage() {
+        var storedTheme = localStorage.getItem('color-theme');
+        console.log('Stored theme:', storedTheme);
+
+        // If 'dark' is in local storage, set the icons and apply the dark class
+        if (storedTheme === 'dark') {
+          themeToggleLightIcon.classList.remove('hidden');
+          themeToggleDarkIcon.classList.add('hidden');
+          document.documentElement.classList.add('dark'); // Make sure this targets the right element
+          console.log('Applied dark theme from local storage');
+        } else {
+          themeToggleDarkIcon.classList.remove('hidden');
+          themeToggleLightIcon.classList.add('hidden');
+          document.documentElement.classList.remove('dark'); // Make sure this targets the right element
+          console.log('Applied light theme from local storage');
+        }
+      }
+
+      setThemeFromLocalStorage(); // Set theme on page load
+
+      themeToggleBtn.addEventListener('click', function () {
+        // Toggle icons inside button
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+
+        // Toggle theme mode
+        var isDarkMode = document.documentElement.classList.contains('dark');
+        if (isDarkMode) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+          console.log('User switched to light mode');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+          console.log('User switched to dark mode');
+        }
+      });
+    });</script>
