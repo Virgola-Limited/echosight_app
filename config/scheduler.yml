@@ -1,6 +1,4 @@
-:scheduler:
-  :schedule:
-    UpdateTwitterDataJob:
-    interval: ["6h"]
-    class: 'UpdateTwitterDataJob'
-    queue: 'default'
+UpdateTwitterDataJob:
+  interval: ["6h"]
+  class: 'UpdateTwitterDataJob'
+  queue: 'default'
