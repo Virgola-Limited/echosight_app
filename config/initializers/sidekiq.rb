@@ -1,5 +1,6 @@
 # config/initializers/sidekiq.rb
 require 'sidekiq'
+require 'sidekiq-scheduler'
 
 Sidekiq.logger.level = Logger::DEBUG
 
@@ -22,15 +23,19 @@ if !Rails.env.development? && !Rails.env.test?
     config.server_middleware do |chain|
       chain.add Sidekiq::ExceptionNotificationMiddleware
     end
-  end
-end
 
-if ENV.fetch("IS_SCHEDULER", false)
-  raise 'on the scheduler'
-  Sidekiq.configure_server do |config|
-    config.on(:startup) do
-      Sidekiq.schedule = YAML.load_file(File.expand_path("../scheduler.yml", File.dirname(__FILE__)))
-      Sidekiq::Scheduler.reload_schedule!
+    # Enable dynamic schedules
+    Sidekiq::Scheduler.dynamic = true
+
+    # Load the schedule from YAML file only if this is the scheduler instance
+    if ENV.fetch("IS_SCHEDULER", false)
+      config.on(:startup) do
+        schedule_file = File.expand_path("../scheduler.yml", File.dirname(__FILE__))
+        if File.exists?(schedule_file) && Sidekiq::Scheduler.dynamic
+          Sidekiq.schedule = YAML.load_file(schedule_file)
+          Sidekiq::Scheduler.reload_schedule!
+        end
+      end
     end
   end
 end
