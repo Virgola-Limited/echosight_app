@@ -145,6 +145,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
     hashie (5.0.0)
+    htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
@@ -403,6 +404,7 @@ DEPENDENCIES
   debug
   devise (~> 4.9)
   exception_notification
+  htmlbeautifier
   jbuilder
   omniauth-rails_csrf_protection
   omniauth-twitter2
