@@ -1,4 +1,4 @@
 UpdateTwitterDataJob:
-  interval: ["6h"]
+  interval: ["5m"]
   class: 'UpdateTwitterDataJob'
   queue: 'default'
