@@ -1,3 +1,5 @@
+require 'sidekiq-scheduler'
+
 class UpdateTwitterDataJob
   include Sidekiq::Job
   sidekiq_options retry: false

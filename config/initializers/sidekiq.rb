@@ -26,6 +26,7 @@ if !Rails.env.development? && !Rails.env.test?
 end
 
 if ENV.fetch("IS_SCHEDULER", false)
+  raise 'on the scheduler'
   Sidekiq.configure_server do |config|
     config.on(:startup) do
       Sidekiq.schedule = YAML.load_file(File.expand_path("../scheduler.yml", File.dirname(__FILE__)))
