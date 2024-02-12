@@ -94,7 +94,7 @@ if Rails.env.development?
       handle: 'DemoLoftwah',
       description: 'Tech enthusiast, music producer, and avid reader. Always exploring the intersection of technology and creativity.',
       image_url: 'https://github.com/loftwah.png',
-      banner_url: 'https://private-user-images.githubusercontent.com/19922556/298599750-cfc9eacb-4e9c-42a3-a3cb-695f685c03e7.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDc1MjUzMDQsIm5iZiI6MTcwNzUyNTAwNCwicGF0aCI6Ii8xOTkyMjU1Ni8yOTg1OTk3NTAtY2ZjOWVhY2ItNGU5Yy00MmEzLWEzY2ItNjk1ZjY4NWMwM2U3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAyMTAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMjEwVDAwMzAwNFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWYwY2JjMjQ3Y2E1ZDM2M2UzOWU4MWRjOTlhNzJjMDkzMGRiNjk3MjcyYWIzMGNiYjUwMWJkZDM5OGFlMmM3OGEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.b1dmswyna9tzuMy_UnkQpUMe1FXU-GAAQanzMSjjcws'
+      banner_url: 'https://ibb.co/2y89GkP'
     )
 
     create_follower_count_data(identity.id, 365.days.ago.to_date, Date.today, 1000000, 1200000)
