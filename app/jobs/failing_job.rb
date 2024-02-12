@@ -1,5 +1,5 @@
 class FailingJob
-  include Sidekiq::Worker
+  include Sidekiq::Job
 
   def perform
     raise 'Intentional Failure'
