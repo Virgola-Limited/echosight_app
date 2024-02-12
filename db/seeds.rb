@@ -18,18 +18,42 @@ def create_follower_count_data(identity_id, start_date, end_date, start_follower
   end
 end
 
-def create_fake_tweets(identity_id, start_date, end_date)
+def create_fake_tweets(identity_id, start_date, end_date, max_tweets_per_day: 15)
+  tweets = []
+  current_twitter_id = Tweet.maximum(:twitter_id) || 1_000_000_000
+
+  tweet_texts = [
+    "Just released a new track, check it out! #music #newrelease",
+    "Exploring the latest in tech. Ruby on Rails is amazing! #rubyonrails #tech",
+    "Diving into Golang has been a fantastic journey. #golang #programming",
+    "Had an incredible session in the studio today, new music coming soon! #studio #musicproduction",
+    "Tech, music, and innovation - that's what I live for. #innovation #lifestyle",
+    "Check out my latest blog post on web development trends. #webdev #trends",
+    "So excited to share my thoughts on the future of AI and machine learning. #AI #machinelearning",
+    "Reflecting on a great week of coding and creativity. #coding #creativity",
+    "Can't wait for everyone to hear my upcoming collaboration. Stay tuned! #collaboration #music",
+    "Exploring new sounds and rhythms has been an amazing experience. #sounddesign #music",
+    "Attended an incredible tech conference today, so much to learn! #techconference #learning",
+    "Working on a new project that combines tech and music in ways you wouldn't believe. #project #innovation",
+    "I believe in the power of technology to transform the music industry. #technology #musicindustry",
+    "Nothing beats a day of coding with my favorite playlist in the background. #coding #music",
+    "Stay curious, keep learning, and never stop creating. #motivation #lifegoals"
+  ]
+
   (start_date..end_date).each do |date|
-    rand(2..5).times do
-      tweet_text = ["Just released a new track, check it out!", "Exploring the latest in tech. Ruby on Rails is amazing!", "Diving into Golang has been a fantastic journey.", "Had an incredible session in the studio today, new music coming soon!", "Tech, music, and innovation - that's what I live for."].sample
-      Tweet.create!(
-        twitter_id: rand(1_000_000_000..9_999_999_999),
+    daily_tweet_texts = tweet_texts.shuffle.take(rand(6..max_tweets_per_day))
+    daily_tweet_texts.each do |tweet_text|
+      current_twitter_id += 1
+      tweets << {
+        twitter_id: current_twitter_id,
         text: tweet_text,
         identity_id: identity_id,
         twitter_created_at: date
-      )
+      }
     end
   end
+
+  Tweet.insert_all(tweets)
 end
 
 def create_tweet_metrics_data(identity_id, start_date, end_date)
