@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop :disable Metrics/ClassLength
 module Twitter
   class Client
     attr_reader :user
@@ -200,3 +201,5 @@ module Twitter
     end
   end
 end
+
+# rubocop :disable Metrics/ClassLength
