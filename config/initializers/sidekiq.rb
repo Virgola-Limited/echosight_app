@@ -31,9 +31,11 @@ if !Rails.env.development? && !Rails.env.test?
     if ENV.fetch("IS_SCHEDULER", false)
       config.on(:startup) do
         schedule_file = File.expand_path("../scheduler.yml", File.dirname(__FILE__))
-        if File.exists?(schedule_file) && Sidekiq::Scheduler.dynamic
+        if File.exist?(schedule_file) && Sidekiq::Scheduler.dynamic
           Sidekiq.schedule = YAML.load_file(schedule_file)
           Sidekiq::Scheduler.reload_schedule!
+        else
+          Sidekiq.logger.warn "No sidekiq schedule file at #{schedule_file} or not on dynamic mode."
         end
       end
     end
