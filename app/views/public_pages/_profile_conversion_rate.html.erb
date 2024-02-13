@@ -32,13 +32,25 @@
       xaxis: {
         type: 'datetime',
         // Remove categories and tickAmount for datetime type
+        labels: {
+            show: true,
+            style: {
+              fontFamily: "Inter, sans-serif",
+              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+            }
+          }
       },
       yaxis: {
         labels: {
           formatter: function (val) {
-            return val.toFixed(2); // Limit the y-axis labels to 2 decimal places
-          }
-        },
+            return val.toFixed(0); // Limit the y-axis labels to 2 decimal places
+          },
+            show: true,
+            style: {
+              fontFamily: "Inter, sans-serif",
+              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+            }
+          },
         min: 0,
         max: Math.max(...conversionRatesDataForGraph.map(data => data.conversion_rate)) + 5, // Plus 5 for a bit of padding
       },

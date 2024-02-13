@@ -11,14 +11,14 @@
 <script>
   window.addEventListener("load", function() {
     <% unless @follower_daily_data_points_for_graph.count < 2 %>
-      let options = {
+      let followerOptions = {
         chart: {
           height: '600px',
           maxWidth: "100%",
           type: "line",
           fontFamily: "Inter, sans-serif",
           dropShadow: {
-            enabled: false,
+            enabled: true,
           },
           toolbar: {
             show: true, // Consider enabling toolbar for zooming and panning
@@ -37,21 +37,26 @@
         }],
         xaxis: {
           categories: <%= @follower_formatted_labels_for_graph.to_json.html_safe %>,
-          type: 'category',
           labels: {
-            rotate: -45
+            show: true,
+            style: {
+              fontFamily: "Inter, sans-serif",
+              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+            }
           }
         },
         yaxis: {
           labels: {
-            formatter: function (val) {
-              return val.toFixed(0);
+            show: true,
+            style: {
+              fontFamily: "Inter, sans-serif",
+              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
             }
           }
         },
         stroke: {
           curve: 'smooth',
-          width: 2
+          width: 4
         },
         grid: {
           show: true,
@@ -71,7 +76,7 @@
       };
 
       if (document.getElementById("followers-chart") && typeof ApexCharts !== 'undefined') {
-        const chart = new ApexCharts(document.getElementById("followers-chart"), options);
+        const chart = new ApexCharts(document.getElementById("followers-chart"), followerOptions);
         chart.render();
       }
     <% end %>

@@ -19,10 +19,10 @@
 
       Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
     -->
-
+    <%= render 'layouts/dark_mode_toggle' %>
   </head>
 
-  <body>
+  <body class="dark:bg-gray-900">
   <% if notice.present? %>
     <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
       <%= notice %>
@@ -41,7 +41,15 @@
         <span class="align-middle">&nbsp;Echosight</span>
       </a>
     </div>
-    <%= content_for :profile_container %>
+    <% if content_for?(:profile_container) %>
+      <%= yield :profile_container %>
+    <% else %>
+      <div class="profile-container">
+        <div class="flex items-center space-x-3">
+            <%= render 'shared/dark_mode_toggle_button' %>
+        </div>
+      </div>
+    <% end %>
   </div>
     <%= yield %>
   </body>

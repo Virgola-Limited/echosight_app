@@ -42,10 +42,7 @@
             </div>
             <div class="flex justify-between items-center lg:order-2">
                 <%# render 'layouts/notifications' %>
-                <div id="tooltip-toggle" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip">
-                    Toggle dark mode
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
+                <%= render 'shared/dark_mode_toggle_button' %>
                 <button type="button" class="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 flex-shrink-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="userMenuDropdownButton" aria-expanded="false" data-dropdown-toggle="userMenuDropdown">
                     <span class="sr-only">Open user menu</span>
                     <% if current_or_guest_user.identity && current_or_guest_user.identity.image_url.present? %>
