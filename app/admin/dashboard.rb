@@ -33,24 +33,23 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
-    h2 "Tweet Metrics Needing Refresh"
+  h2 "Tweets Needing Metrics Refresh"
     section do
       div do
-        span "Total Tweet Metrics not updated in 24 hours: #{TweetMetric.joins(:tweet).where('tweet_metrics.updated_at < ?', 24.hours.ago).count}"
+        # Subquery to find tweet IDs with metrics updated in the last 24 hours
+        recent_metrics_subquery = TweetMetric.where('created_at >= ?', 24.hours.ago).select(:tweet_id)
+        # Count tweets that don't have a recent metric by using a WHERE NOT EXISTS clause
+        tweets_without_recent_metrics_count = Tweet.where.not(id: recent_metrics_subquery).count
+        span "Total Tweets without Metrics updated in 24 hours: #{tweets_without_recent_metrics_count}"
       end
-      table_for TweetMetric.joins(:tweet).where('tweet_metrics.updated_at < ?', 24.hours.ago).order('tweet_metrics.updated_at ASC').limit(10) do
-        column "Tweet ID", :tweet_id do |metric|
-          metric.tweet.twitter_id
+      table_for Tweet.includes(:identity).where.not(id: recent_metrics_subquery).order('tweets.created_at ASC').limit(10) do
+        column "Tweet ID", :twitter_id
+        column "User Email" do |tweet|
+          tweet.identity.user.email  # Adjust according to your user association
         end
-        column :retweet_count
-        column :like_count
-        column :updated_at
-        column "User Email", :tweet_id do |metric|
-          metric.tweet.identity.user.email  # Adjust according to your user association
-        end
+        column :created_at
+        # Other columns as needed
       end
     end
   end # content
-
-
 end
