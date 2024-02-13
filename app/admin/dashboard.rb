@@ -33,23 +33,26 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
-  h2 "Tweets Needing Metrics Refresh"
+    h2 "Tweets Needing Metrics Refresh"
     section do
       div do
-        # Subquery to find tweet IDs with metrics updated in the last 24 hours
+        # Define recent_metrics_subquery here to ensure it's in scope
         recent_metrics_subquery = TweetMetric.where('created_at >= ?', 24.hours.ago).select(:tweet_id)
-        # Count tweets that don't have a recent metric by using a WHERE NOT EXISTS clause
         tweets_without_recent_metrics_count = Tweet.where.not(id: recent_metrics_subquery).count
-        span "Total Tweets without Metrics updated in 24 hours: #{tweets_without_recent_metrics_count}"
+        span "Total Tweets without Metrics updated in the last 24 hours: #{tweets_without_recent_metrics_count}"
       end
-      table_for Tweet.includes(:identity).where.not(id: recent_metrics_subquery).order('tweets.created_at ASC').limit(10) do
-        column "Tweet ID", :twitter_id
-        column "User Email" do |tweet|
-          tweet.identity.user.email  # Adjust according to your user association
+      div do
+        # If you need to use recent_metrics_subquery again, ensure it's defined again in this scope
+        recent_metrics_subquery = TweetMetric.where('created_at >= ?', 24.hours.ago).select(:tweet_id)
+        table_for Tweet.includes(:identity).where.not(id: recent_metrics_subquery).order('tweets.created_at ASC').limit(10) do
+          column "Tweet ID", :twitter_id
+          column "User Email" do |tweet|
+            tweet.identity.user.email  # Adjust according to your user association
+          end
+          column :created_at
+          # Other columns as needed
         end
-        column :created_at
-        # Other columns as needed
       end
     end
-  end # content
+  end
 end
