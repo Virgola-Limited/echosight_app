@@ -26,7 +26,7 @@ module Twitter
 
     def update_tweets_and_metrics(tweet_ids)
       tweets_data = twitter_client.fetch_tweets_by_ids(tweet_ids)
-      return unless tweets_data.is_a?(Hash) && tweets_data.key?('data')
+      raise "Failed to fetch tweets by IDs" unless tweets_data.is_a?(Hash) && tweets_data.key?('data')
 
       tweets_data['data'].each do |tweet_data|
         process_tweet_data(tweet_data)
@@ -38,13 +38,9 @@ module Twitter
 
       metrics = tweet_data['public_metrics']
       non_public_metrics = tweet_data['non_public_metrics']  # Adjust according to available metrics
+      tweet.touch
 
-      tweet.update(
-        text: tweet_data['text'],
-        twitter_created_at: DateTime.parse(tweet_data['created_at'])
-      )
-
-      TweetMetric.create(
+      TweetMetric.create!(
         tweet: tweet,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
