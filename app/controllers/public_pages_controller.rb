@@ -71,9 +71,7 @@ class PublicPagesController < ApplicationController
 
     # Engagement Graph
 
-    @total_retweets = tweet_metrics_query.total_retweets
-    @total_replies = tweet_metrics_query.total_replies
-    @total_likes = tweet_metrics_query.total_likes
+    @engagement_rate_percentage_per_day = tweet_metrics_query.engagement_rate_percentage_per_day
 
     ############################
 

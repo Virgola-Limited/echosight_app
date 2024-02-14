@@ -141,57 +141,44 @@ module Twitter
                 .pluck('DATE(tweet_metrics.pulled_at)', 'MAX(tweet_metrics.impression_count)')
     end
 
-    # Fetches the sum of the most recent retweet counts for all tweets of the user
-    def total_retweets
-      # Define a subquery to get the latest TweetMetric record for each tweet
-      latest_tweet_counts_subquery = TweetMetric
-                                      .joins(tweet: { identity: :user })
-                                      .where(users: { id: user.id })
-                                      .select('DISTINCT ON (tweet_metrics.tweet_id) tweet_metrics.*')
-                                      .order('tweet_metrics.tweet_id, tweet_metrics.pulled_at DESC')
-                                      .to_sql
+    def engagement_rate_percentage_per_day
+      tweets_table = Tweet.arel_table
+      tweet_metrics_table = TweetMetric.arel_table
+      identities_table = Identity.arel_table
 
-      # Sum the retweet_count from these latest TweetMetric records
-      total_retweets = TweetMetric
-                        .from("(#{latest_tweet_counts_subquery}) as latest_tweet_counts")
-                        .sum('latest_tweet_counts.retweet_count')
+      # Define the subquery to select the latest tweet metric record per tweet per day
+      latest_metrics_subquery = TweetMetric.select(
+        tweet_metrics_table[:tweet_id],
+        tweet_metrics_table[:id].maximum.as('max_id')
+      ).group(
+        tweet_metrics_table[:tweet_id],
+        grouping_date.call(tweet_metrics_table) # Apply grouping_date directly to the Arel table
+      ).to_sql # Convert to SQL string
 
-      total_retweets
-    end
+      # Use the subquery in a JOIN clause with a raw SQL string
+      latest_metrics_join_clause = "INNER JOIN (#{latest_metrics_subquery}) latest_metrics_per_day ON tweet_metrics.id = latest_metrics_per_day.max_id"
 
-    # Fetches the sum of the most recent reply counts for all tweets of the user
-    def total_replies
-      # Reuse the subquery to get the latest TweetMetric record for each tweet
-      latest_tweet_counts_subquery = TweetMetric
-                                      .joins(tweet: { identity: :user })
-                                      .where(users: { id: user.id })
-                                      .select('DISTINCT ON (tweet_metrics.tweet_id) tweet_metrics.*')
-                                      .order('tweet_metrics.tweet_id, tweet_metrics.pulled_at DESC')
-                                      .to_sql
+      tweets_with_engagement = Tweet.joins(:tweet_metrics)
+                                    .joins(latest_metrics_join_clause) # Join using the subquery
+                                    .joins(:identity) # Join with identities to access the user
+                                    .where(identities_table[:user_id].eq(user.id)) # Use the user_id from the identities table
+                                    .where(tweets_table[:created_at].gteq(@start_time))
+                                    .select(
+                                      grouping_date.call(tweets_table).as('date'), # Apply grouping_date directly to the Arel table
+                                      Arel.sql('SUM(tweet_metrics.retweet_count + tweet_metrics.quote_count + tweet_metrics.like_count + tweet_metrics.reply_count + tweet_metrics.user_profile_clicks + tweet_metrics.bookmark_count) as interactions'),
+                                      Arel.sql('SUM(tweet_metrics.impression_count) as impressions')
+                                    )
+                                    .group('date')
 
-      # Sum the reply_count from these latest TweetMetric records
-      total_replies = TweetMetric
-                        .from("(#{latest_tweet_counts_subquery}) as latest_tweet_counts")
-                        .sum('latest_tweet_counts.reply_count')
+      # Map over the ActiveRecord Relation to calculate engagement rates
+      tweets_with_engagement.map do |record|
+        date = record.date
+        interactions = record.interactions.to_f
+        impressions = record.impressions.to_f
+        engagement_rate_percentage = impressions.zero? ? 0.0 : (interactions / impressions) * 100
 
-      total_replies
-    end
-
-    def total_likes
-      # Reuse the subquery to get the latest TweetMetric record for each tweet
-      latest_tweet_counts_subquery = TweetMetric
-                                      .joins(tweet: { identity: :user })
-                                      .where(users: { id: user.id })
-                                      .select('DISTINCT ON (tweet_metrics.tweet_id) tweet_metrics.*')
-                                      .order('tweet_metrics.tweet_id, tweet_metrics.pulled_at DESC')
-                                      .to_sql
-
-      # Sum the like_count from these latest TweetMetric records
-      total_likes = TweetMetric
-                      .from("(#{latest_tweet_counts_subquery}) as latest_tweet_counts")
-                      .sum('latest_tweet_counts.like_count')
-
-      total_likes
+        { date: date, engagement_rate_percentage: engagement_rate_percentage.round(2) }
+      end
     end
 
     def profile_clicks_count_per_day
@@ -205,9 +192,12 @@ module Twitter
                 .to_h { |date, clicks| [date.to_date, clicks] }
     end
 
-
     private
 
+    # Helper method to format the created_at timestamp for grouping by date
+    def grouping_date
+      ->(table) { Arel::Nodes::NamedFunction.new('DATE', [table[:created_at]]) }
+    end
 
     def last_weeks_tweets_count
       start_of_last_week = 1.week.ago.beginning_of_week

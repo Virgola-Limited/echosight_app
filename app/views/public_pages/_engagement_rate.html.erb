@@ -16,24 +16,34 @@
       },
       series: [{
         name: "Engagement Rate",
-        data: [<%= @total_likes %>, <%= @total_retweets %>,<%= @total_replies %>]
+        data: <%= @engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] }.to_json.html_safe %>
       }],
       xaxis: {
-        categories: ['Likes', 'Retweets', 'Replies'],
+        categories: <%= @engagement_rate_percentage_per_day.map { |entry| entry[:date].strftime('%b %d') }.to_json.html_safe %>,
+        labels: {
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+          }
+        }
       },
       yaxis: {
         min: 0,
-        max: 80,
-        tickAmount: 8,
+        // Adjust max value according to your data or leave it auto-calculated
         labels: {
           formatter: function (val) {
-            return val.toFixed(0);
+            return val.toFixed(2) + '%'; // Display y-axis values as percentages
+          },
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
           }
         }
       },
       plotOptions: {
         bar: {
-          distributed: true, // This makes the colors apply to individual bars
           borderRadius: 5,
           columnWidth: '55%',
         },
@@ -50,7 +60,11 @@
         colors: ['#ffffff'],
       },
       tooltip: {
-        enabled: true,
+        y: {
+          formatter: function (val) {
+            return val.toFixed(2) + '%'; // Format tooltip values as percentages
+          }
+        }
       },
       grid: {
         show: true,
