@@ -1,45 +1,29 @@
 <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Impressions Over Time</h2>
-
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
   <div id="impressions-chart"></div>
 </div>
 
 <script>
-   let impressionData = <%= @impression_daily_data_points_for_graph.to_json.html_safe %>;
-    let maxYValue = Math.max(...impressionData);
-    let minYValue = Math.min(...impressionData);
+  let impressionData = <%= @impression_daily_data_points_for_graph.to_json.html_safe %>;
+  let maxYValue = Math.max(...impressionData);
+  let minYValue = Math.min(...impressionData);
 
-    // Find the range of your data
-let range = maxYValue - minYValue;
-
-// Determine a step size that gives you a good number of ticks, but rounds nicely
-let stepSize = Math.pow(10, range.toString().length - 1);
-
-// Calculate the number of ticks based on this step size
-let tickAmount = Math.ceil(range / stepSize);
-
-// Ensure you have a minimum number of ticks to make the graph readable
-tickAmount = Math.max(tickAmount, 5);
-
-// Now adjust minYValue and maxYValue to be multiples of stepSize
-minYValue = Math.floor(minYValue / stepSize) * stepSize;
-maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
+  let range = maxYValue - minYValue;
+  let stepSize = Math.pow(10, range.toString().length - 1);
+  let tickAmount = Math.ceil(range / stepSize);
+  tickAmount = Math.max(tickAmount, 5);
+  minYValue = Math.floor(minYValue / stepSize) * stepSize;
+  maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
 
   window.addEventListener("load", function() {
     let options = {
       chart: {
         height: '600px',
-        type: 'area',
+        type: 'bar',
         fontFamily: 'Inter, sans-serif',
         toolbar: {
           show: false
-        },
-        zoom: {
-          enabled: false
         }
-      },
-      dataLabels: {
-        enabled: false
       },
       series: [{
         name: 'Impressions',
@@ -48,53 +32,51 @@ maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
       xaxis: {
         categories: <%= @impression_formatted_labels_for_graph.to_json.html_safe %>,
         labels: {
-            show: true,
-            style: {
-              fontFamily: "Inter, sans-serif",
-              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-            }
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
           }
+        }
       },
       yaxis: {
         min: minYValue,
-        max: maxYValue, // Set dynamically based on the largest data point
-        tickAmount: 10, // Adjust if necessary to make the graph look good
+        max: maxYValue,
         labels: {
-            show: true,
-            style: {
-              fontFamily: "Inter, sans-serif",
-              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-            }
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
           }
+        }
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 5,
+          columnWidth: '55%'
+        }
+      },
+      dataLabels: {
+        enabled: false
       },
       fill: {
-        type: "gradient",
-        gradient: {
-          opacityFrom: 0.55,
-          opacityTo: 0,
-          shadeIntensity: 0.5,
-          type: 'horizontal',
-          colorStops: [
-            {
-              offset: 0,
-              color: "#4D9FEB",
-              opacity: 1
-            },
-            {
-              offset: 100,
-              color: "#1C64F2",
-              opacity: 0.55
-            }
-          ]
-        },
+        colors: ['#1A56DB', '#7E3AF2', '#FEB019']
+      },
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ['#ffffff']
       },
       tooltip: {
-        x: {
-          format: 'dd/MM/yy HH:mm'
-        },
+        y: {
+          formatter: function (val) {
+            return val; // Display raw value without formatting
+          }
+        }
       },
       grid: {
-        show: true
+        show: true,
+        strokeDashArray: 4
       }
     };
 
@@ -104,4 +86,3 @@ maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
     }
   });
 </script>
-
