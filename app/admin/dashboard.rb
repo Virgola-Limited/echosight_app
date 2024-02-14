@@ -4,9 +4,11 @@ ActiveAdmin.register_page "Dashboard" do
   content title: proc { I18n.t("active_admin.dashboard") } do
     h2 "Incomplete User Twitter Data Updates"
     section do
-      table_for UserTwitterDataUpdate.joins(identity: :user).where(completed_at: nil).order('started_at DESC').limit(10) do
+      table_for UserTwitterDataUpdate.joins(identity: :user).where(completed_at: nil).where('user_twitter_data_updates.created_at > ?', 7.days.ago).order('user_twitter_data_updates.started_at DESC').limit(10) do
         column :started_at
-        column "Error Message", :error_message
+        column "Error Message", :error_message do |update|
+          span truncate(update.error_message, length: 300), title: update.error_message
+        end
         column "Identity UID", :identity_id do |update|
           update.identity.uid # Assuming `uid` is a column in your `identities` table
         end
