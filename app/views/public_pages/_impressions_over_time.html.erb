@@ -46,12 +46,26 @@ maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
         data: impressionData
       }],
       xaxis: {
-        categories: <%= @impression_formatted_labels_for_graph.to_json.html_safe %>
+        categories: <%= @impression_formatted_labels_for_graph.to_json.html_safe %>,
+        labels: {
+            show: true,
+            style: {
+              fontFamily: "Inter, sans-serif",
+              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+            }
+          }
       },
       yaxis: {
         min: minYValue,
         max: maxYValue, // Set dynamically based on the largest data point
-        tickAmount: 10 // Adjust if necessary to make the graph look good
+        tickAmount: 10, // Adjust if necessary to make the graph look good
+        labels: {
+            show: true,
+            style: {
+              fontFamily: "Inter, sans-serif",
+              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+            }
+          }
       },
       fill: {
         type: "gradient",
