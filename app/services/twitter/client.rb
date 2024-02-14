@@ -116,10 +116,22 @@ module Twitter
     end
 
     def handle_api_error(e, endpoint, params, auth_type)
-      # Your existing error handling logic
       if e.message == 'Unauthorized' && user
         refresh_token_if_needed(user.identity.oauth_credential)
-        retry_api_call(endpoint, params, auth_type) # Implement retry logic
+        retry_api_call(endpoint, params, auth_type)
+      elsif e.message.start_with?('Twitter API Error:')
+        error_details = {
+          error: e.message,
+          auth_type: auth_type.to_s,
+          api_version: determine_api_version(endpoint),
+          endpoint: endpoint,
+          query_params: params,
+          user_info: user_info_for_error
+        }
+
+        ExceptionNotifier.notify_exception(e, data: error_details)
+        e.instance_variable_set(:@error_details, error_details)
+        raise e
       else
         error_details = {
           error: e.message,
@@ -136,9 +148,9 @@ module Twitter
         )
 
         e.instance_variable_set(:@error_details, error_details)
-        raise e
       end
     end
+
 
     def client(version:, auth: :oauth2)
       X::Client.new(**credentials(version, auth))
@@ -146,7 +158,16 @@ module Twitter
 
     def make_api_call(endpoint, params, auth_type, version = :v2)
       refresh_token_if_needed(user.identity.oauth_credential) if user
-      return client(auth: auth_type, version: version).get("#{endpoint}?#{URI.encode_www_form(params)}")
+
+      response = client(auth: auth_type, version: version).get("#{endpoint}?#{URI.encode_www_form(params)}")
+
+      # Check for "errors" key in the response
+      if response.is_a?(Hash) && response.key?('errors')
+        error_messages = response['errors'].map { |error| error['detail'] }.join(', ')
+        handle_api_error(StandardError.new("Twitter API Error: #{error_messages}"), endpoint, params, auth_type)
+      end
+
+      response
     rescue X::Error => e
       handle_api_error(e, endpoint, params, auth_type)
     end

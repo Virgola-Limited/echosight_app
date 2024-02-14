@@ -26,7 +26,6 @@ module Twitter
 
     def update_tweets_and_metrics(tweet_ids)
       tweets_data = twitter_client.fetch_tweets_by_ids(tweet_ids)
-      raise "Failed to fetch tweets by IDs" unless tweets_data.is_a?(Hash) && tweets_data.key?('data')
 
       tweets_data['data'].each do |tweet_data|
         process_tweet_data(tweet_data)
