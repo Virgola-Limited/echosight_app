@@ -92,28 +92,25 @@ class PublicPagesController < ApplicationController
 
     # Profile Conversion Rate
     @profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
+    Rails.logger.debug('paul @profile_clicks_data' + @profile_clicks_data.inspect)
     @followers_data = followers_query.daily_followers_count
+    Rails.logger.debug('paul @followers_data' + @followers_data.inspect)
 
+    @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph
 
-
-    # Calculate profile conversion rate per day
-    @conversion_rates_data_for_graph = @profile_clicks_data.map do |date, clicks|
-      followers = @followers_data[date] || 0
-      conversion_rate = clicks > 0 ? (followers.to_f / clicks) * 100 : 0
-      {
-        date: date,
-        conversion_rate: conversion_rate,
-        followers: followers,
-        profile_clicks: clicks
-      }
-    end
-
+    ############################
     # Top Posts / Tweets
     @top_tweets = tweet_metrics_query.top_tweets_for_user
     ############################
+
+    Rails.logger.debug('paul @conversion_rates_data_for_graph' + @conversion_rates_data_for_graph.inspect)
   end
 
   private
+
+  def profile_conversion_rate_query
+    Twitter::ProfileConversionRateQuery.new(@user)
+  end
 
   def tweet_metrics_query
     Twitter::TweetMetricsQuery.new(user: @user)
