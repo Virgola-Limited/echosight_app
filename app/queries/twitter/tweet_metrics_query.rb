@@ -62,6 +62,7 @@ module Twitter
       # Select raw data without engagement rate calculation
       query = Tweet.joins(:tweet_metrics)
                    .where(tweets_table[:identity_id].eq(user.identity.id))
+                   .where(tweets_table[:created_at].gt(28.days.ago)) # Check only the last 28 days of tweets
                    .select("tweets.*, #{metrics_sql}")
                    .group(tweets_table[:id])
                    .limit(5)
@@ -91,7 +92,6 @@ module Twitter
       # Return the modified tweets with the engagement rate calculated
       top_tweets
     end
-
 
 
     def impressions_change_since_last_week
