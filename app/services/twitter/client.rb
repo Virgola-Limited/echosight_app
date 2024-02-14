@@ -43,16 +43,17 @@ module Twitter
     # |----------------|-----------|----------------|----------|-----------------------------|------------------------|
     # | GET_2_tweets   | 900       | 15 minutes     | per user | yes                         | 2,592,000              |
     # | GET_2_tweets   | 450       | 15 minutes     | per app  | yes                         | 1,296,000              |
-    def fetch_tweets_by_ids(tweet_ids)
+    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = true)
       endpoint = "tweets"
+      fields = 'created_at,public_metrics'
+      fields += ',non_public_metrics' if include_non_public_metrics
+
       params = {
-        'ids' => tweet_ids.join(','), # Convert the list of IDs to a comma-separated string
-        'tweet.fields' => 'created_at,public_metrics,non_public_metrics'
+        'ids' => tweet_ids.join(','),  # Convert to a comma-separated string
+        'tweet.fields' => fields
       }
 
-      bob = make_api_call(endpoint, params, :oauth1)
-      Rails.logger.debug('paul' + bob.inspect)
-      bob
+      make_api_call(endpoint, params, :oauth1)
     end
 
     def fetch_rate_limit_data
