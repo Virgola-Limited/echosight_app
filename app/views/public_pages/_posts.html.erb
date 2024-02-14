@@ -1,7 +1,16 @@
-<div data-tooltip-target="tooltip-default" class="inline-block">
-    <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Top Posts</h2>
+<div class="inline-block">
+  <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+    Top Posts
+    <span class="ml-1">
+      <div data-tooltip-target="top-posts-tooltip">
+        <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </span>
+  </h2>
 </div>
-<div id="tooltip-default" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+<div id="top-posts-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
     Last 28 days
     <div class="tooltip-arrow" data-popper-arrow></div>
 </div>

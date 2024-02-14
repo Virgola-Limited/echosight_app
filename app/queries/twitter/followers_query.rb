@@ -46,19 +46,16 @@ module Twitter
       [formatted_data, daily_data_points]
     end
 
-    def daily_followers_count
-      # Select the last record for each day based on the `created_at` timestamp
+    def daily_followers_count(days_ago = 28)
       last_followers_count_per_day = TwitterFollowersCount
                                        .where(identity_id: user.identity.id)
-                                       .where('date >= ?', 30.days.ago)
+                                       .where('date >= ?', days_ago.days.ago)
                                        .select('DISTINCT ON (date) date, followers_count, created_at')
                                        .order('date, created_at DESC')
                                        .pluck(:date, :followers_count)
 
-      # Calculate the daily follower count increase based on the last record for each day
       daily_counts = {}
       last_followers_count_per_day.each_cons(2) do |previous_day, current_day|
-        # Ensure that we do not have negative values
         daily_increase = [current_day.second.to_i - previous_day.second.to_i, 0].max
         daily_counts[current_day.first] = daily_increase
       end

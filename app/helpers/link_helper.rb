@@ -9,7 +9,6 @@ module LinkHelper
   def text_with_images(text)
     processed_text = text.dup
     processed_text.gsub!(URI.regexp(['http', 'https'])) do |url|
-      Rails.logger.debug('paul' + url.inspect)
       if image_link?(url)
         "<img src='#{url}' alt='Tweet Image' style='max-width:100%;'/>"
       else
