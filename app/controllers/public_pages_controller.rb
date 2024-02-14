@@ -7,6 +7,7 @@ class PublicPagesController < ApplicationController
 
     raise 'Missing user' unless @user
 
+    ############################
     # Posts/Tweet Counts
     @tweets_count = tweet_metrics_query.this_weeks_tweets_count
     @tweets_change_since_last_week = tweet_metrics_query.tweets_change_since_last_week
@@ -20,8 +21,8 @@ class PublicPagesController < ApplicationController
     else
       @tweets_change_since_last_week = 'No change'
     end
-    ############################
 
+    ############################
     # Profile Clicks
     @profile_clicks = tweet_metrics_query.profile_clicks_count
     @profile_clicks_change_since_last_week = tweet_metrics_query.profile_clicks_change_since_last_week
@@ -37,7 +38,6 @@ class PublicPagesController < ApplicationController
     end
 
     ############################
-
     # Impressions
     @impressions_count = tweet_metrics_query.impressions_count
     @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
@@ -51,8 +51,8 @@ class PublicPagesController < ApplicationController
     else
       @impressions_change_since_last_week = 'No change'
     end
-    ############################
 
+    ############################
     # Followers Counts
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
@@ -60,23 +60,19 @@ class PublicPagesController < ApplicationController
     if @followers_count_change_percentage_text == false
       @followers_count_change_percentage_text = 'Collecting data. Check back later.'
     end
-    ############################
-
-   # Followers Graph
-   formatted_follower_data, follower_daily_data_points = followers_query.followers_data_for_graph
-   @follower_formatted_labels_for_graph = formatted_follower_data
-   @follower_daily_data_points_for_graph = follower_daily_data_points
 
     ############################
+    # Followers Graph
+    formatted_follower_data, follower_daily_data_points = followers_query.followers_data_for_graph
+    @follower_formatted_labels_for_graph = formatted_follower_data
+    @follower_daily_data_points_for_graph = follower_daily_data_points
 
+    ############################
     # Engagement Graph
-
     @engagement_rate_percentage_per_day = tweet_metrics_query.engagement_rate_percentage_per_day
 
     ############################
-
     # Impressions over Time Graph
-
     impressions_data = tweet_metrics_query.last_impression_counts_per_day
 
     # Sort the data by date to ensure it's in chronological order
@@ -89,27 +85,27 @@ class PublicPagesController < ApplicationController
     # Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
 
     ############################
-
     # Profile Conversion Rate
     @profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
     Rails.logger.debug('paul @profile_clicks_data' + @profile_clicks_data.inspect)
     @followers_data = followers_query.daily_followers_count
     Rails.logger.debug('paul @followers_data' + @followers_data.inspect)
 
-    @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph
+    @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph(profile_clicks_data: @profile_clicks_data, followers_data: @followers_data)
+    Rails.logger.debug('paul @conversion_rates_data_for_graph' + @conversion_rates_data_for_graph.inspect)
 
     ############################
     # Top Posts / Tweets
     @top_tweets = tweet_metrics_query.top_tweets_for_user
+
     ############################
 
-    Rails.logger.debug('paul @conversion_rates_data_for_graph' + @conversion_rates_data_for_graph.inspect)
   end
 
   private
 
   def profile_conversion_rate_query
-    Twitter::ProfileConversionRateQuery.new(@user)
+    Twitter::ProfileConversionRateQuery.new
   end
 
   def tweet_metrics_query
