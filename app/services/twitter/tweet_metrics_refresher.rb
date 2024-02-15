@@ -60,7 +60,7 @@ module Twitter
       if include_non_public_metrics
         non_public_metrics = tweet_data['non_public_metrics']
         metric_attributes.merge!(
-          user_profile_clicks: non_public_metrics.get('user_profile_clicks', nil)  # Optional
+          user_profile_clicks: non_public_metrics.fetch('user_profile_clicks', nil)  # Optional
         )
       end
 
