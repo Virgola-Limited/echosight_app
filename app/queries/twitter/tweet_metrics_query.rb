@@ -2,12 +2,11 @@
 
 module Twitter
   class TweetMetricsQuery
-    attr_reader :user, :tweet_id
+    attr_reader :user
 
-    def initialize(user:, start_time: nil, tweet_id: nil)
+    def initialize(user:, start_time: nil)
       @user = user
       @start_time = start_time || 1.week.ago.utc
-      @tweet_id = tweet_id
     end
 
     def this_weeks_tweets_count
@@ -37,12 +36,15 @@ module Twitter
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
+    # should this be the last 7 days?
     def impressions_count
-      if tweet_id
-        sum_last_tweet_counts_per_day_for_tweet(tweet_id)
-      else
-        sum_last_tweet_counts_per_day_for_all_user_tweets
-      end
+      TweetMetric.joins(:tweet)
+      .where(tweets: { identity_id: user.identity.id })
+      .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
+      .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
+      .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
+      .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
+      .sum
     end
 
     def top_tweets_for_user
@@ -227,26 +229,5 @@ module Twitter
                 .where(pulled_at: start_time..end_time)
                 .sum(:impression_count)
     end
-
-
-    def sum_last_tweet_counts_per_day_for_tweet(tweet_id)
-      TweetMetric.where(tweet_id: tweet_id)
-                .group("DATE(pulled_at)")
-                .order("DATE(pulled_at), pulled_at DESC")
-                .pluck("DISTINCT ON (DATE(pulled_at)) impression_count")
-                .map(&:to_i)
-                .sum
-    end
-
-    def sum_last_tweet_counts_per_day_for_all_user_tweets
-      TweetMetric.joins(:tweet)
-                .where(tweets: { identity_id: user.identity.id })
-                .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
-                .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
-                .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
-                .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
-                .sum
-    end
-
   end
 end

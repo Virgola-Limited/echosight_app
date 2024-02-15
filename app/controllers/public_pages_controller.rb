@@ -9,7 +9,7 @@ class PublicPagesController < ApplicationController
 
     ############################
     # Posts/Tweet Counts
-    @tweets_count = tweet_metrics_query.this_weeks_tweets_count
+    @this_weeks_tweets_count = tweet_metrics_query.this_weeks_tweets_count
     @tweets_change_since_last_week = tweet_metrics_query.tweets_change_since_last_week
 
     if @tweets_change_since_last_week == false
