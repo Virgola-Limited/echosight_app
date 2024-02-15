@@ -37,6 +37,7 @@ gem 'bootsnap', require: false
 gem 'activeadmin'
 gem 'apexcharts'
 gem 'devise', '~> 4.9'
+gem 'devise_invitable'
 gem 'exception_notification'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
