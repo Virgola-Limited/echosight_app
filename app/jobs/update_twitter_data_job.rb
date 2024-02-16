@@ -40,6 +40,6 @@ class UpdateTwitterDataJob
   end
 
   def confirmed_users
-    User.confirmed.joins(:identity).merge(Identity.valid_identity)
+    User.confirmed.joins(:identity).merge(Identity.valid_identity).where(name: 'Loftwah')
   end
 end
