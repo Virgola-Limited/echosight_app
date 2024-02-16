@@ -31,10 +31,10 @@
         chart: {
           height: '600px',
           maxWidth: "100%",
-          type: "line",
+          type: "area",
           fontFamily: "Inter, sans-serif",
           dropShadow: {
-            enabled: true,
+            enabled: false,
           },
           toolbar: {
             show: true, // Consider enabling toolbar for zooming and panning
@@ -45,6 +45,15 @@
               pan: true,
               reset: true
             },
+          },
+        },
+        fill: {
+          type: "gradient",
+          gradient: {
+            opacityFrom: 0.55,
+            opacityTo: 0,
+            shade: "#1C64F2",
+            gradientToColors: ["#1C64F2"],
           },
         },
         series: [{
@@ -70,10 +79,9 @@
             }
           }
         },
-        stroke: {
-          curve: 'smooth',
-          width: 4
-        },
+  stroke: {
+    width: 6,
+  },
         grid: {
           show: true,
           strokeDashArray: 4,
