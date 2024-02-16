@@ -1,4 +1,3 @@
-require 'sidekiq-scheduler'
 
 class UpdateTwitterDataJob
   include Sidekiq::Job
