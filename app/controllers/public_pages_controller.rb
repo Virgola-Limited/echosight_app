@@ -73,16 +73,11 @@ class PublicPagesController < ApplicationController
 
     ############################
     # Impressions over Time Graph
-    impressions_data = tweet_metrics_query.last_impression_counts_per_day
-
-    # Sort the data by date to ensure it's in chronological order
-    sorted_impressions_data = impressions_data.sort_by { |date, _| date }
+    impression_counts_per_day = tweet_metrics_query.impression_counts_per_day
 
     # Prepare data for the impressions graph
-    @impression_formatted_labels_for_graph = sorted_impressions_data.map { |date, _| date.strftime('%b %d') }
-    @impression_daily_data_points_for_graph = sorted_impressions_data.map { |_, count| count }
-    # Rails.logger.debug('paul @formatted_labels_for_graph' + @formatted_labels_for_graph.inspect)
-    # Rails.logger.debug('paul @daily_data_points_for_graph' + @daily_data_points_for_graph.inspect)
+    @impression_formatted_labels_for_graph = impression_counts_per_day.map { |date, _| date.strftime('%b %d') }
+    @impression_daily_data_points_for_graph = impression_counts_per_day.map { |_, count| count }
 
     ############################
     # Profile Conversion Rate

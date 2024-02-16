@@ -134,9 +134,10 @@ module Twitter
       end
     end
 
-    def last_impression_counts_per_day
+    def impression_counts_per_day
       TweetMetric.joins(:tweet)
                 .where(tweets: { identity_id: user.identity.id })
+                .where('tweet_metrics.pulled_at > ?', 28.days.ago)
                 .select('DATE(tweet_metrics.pulled_at) as pulled_date, MAX(tweet_metrics.impression_count) as impression_count')
                 .group('DATE(tweet_metrics.pulled_at)')
                 .order('DATE(tweet_metrics.pulled_at)')
