@@ -161,6 +161,7 @@ module Twitter
       latest_metrics_join_clause = "INNER JOIN (#{latest_metrics_subquery}) latest_metrics_per_day ON tweet_metrics.id = latest_metrics_per_day.max_id"
 
       tweets_with_engagement = Tweet.joins(:tweet_metrics)
+                                    .where('tweets.twitter_created_at > ?', 28.days.ago)
                                     .joins(latest_metrics_join_clause) # Join using the subquery
                                     .joins(:identity) # Join with identities to access the user
                                     .where(identities_table[:user_id].eq(user.id)) # Use the user_id from the identities table
