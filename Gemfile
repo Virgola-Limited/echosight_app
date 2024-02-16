@@ -52,7 +52,7 @@ gem 'omniauth-twitter2'
 gem 'premailer-rails'
 gem 'sassc' # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sidekiq'
-gem 'sidekiq-scheduler'
+gem 'sidekiq-cron'
 gem 'stripe'
 gem 'view_component'
 gem 'vite_rails'

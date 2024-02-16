@@ -1,6 +1,6 @@
 # config/initializers/sidekiq.rb
 require 'sidekiq'
-require 'sidekiq-scheduler'
+require 'sidekiq-cron'
 
 Sidekiq.logger.level = Logger::DEBUG
 
@@ -24,20 +24,15 @@ if !Rails.env.development? && !Rails.env.test?
       chain.add Sidekiq::ExceptionNotificationMiddleware
     end
 
-    # Enable dynamic schedules
-    Sidekiq::Scheduler.dynamic = true
-
-    # Load the schedule from YAML file only if this is the scheduler instance
-    if ENV.fetch("IS_SCHEDULER", false)
-      config.on(:startup) do
-        schedule_file = File.expand_path("../scheduler.yml", File.dirname(__FILE__))
-        if File.exist?(schedule_file) && Sidekiq::Scheduler.dynamic
-          Sidekiq.schedule = YAML.load_file(schedule_file)
-          Sidekiq::Scheduler.reload_schedule!
-        else
-          Sidekiq.logger.warn "No sidekiq schedule file at #{schedule_file} or not on dynamic mode."
-        end
-      end
-    end
+    # Define your Sidekiq-Cron jobs here
+    Sidekiq::Cron::Job.load_from_array!([
+      {
+        'name'  => 'Update Twitter Data - every hour',
+        'cron'  => '0 * * * *', # Runs at the beginning of every hour
+        'class' => 'UpdateTwitterDataJob'
+        # Specify other job properties if needed
+      }
+      # Add more jobs here if needed
+    ])
   end
 end
