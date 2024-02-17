@@ -1,4 +1,5 @@
 module Twitter
+  # Could run this every 15 separate from the othe fetchers
   class NewTweetsFetcher
     attr_reader :user, :twitter_client
 
