@@ -21,7 +21,11 @@ module Twitter
 
     def fetch_and_store_tweets
       next_token = nil
+      counter = 0
+
       loop do
+        break if counter >= 5
+
         tweets, next_token = fetch_tweets(next_token)
         break if tweets.empty?
 
