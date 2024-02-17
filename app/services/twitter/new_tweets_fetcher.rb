@@ -16,11 +16,6 @@ module Twitter
     def fetch_tweets(next_token = nil)
       response = twitter_client.fetch_new_tweets(next_token)
 
-      if response.is_a?(Hash) && response.key?('errors')
-        error_messages = response['errors'].map { |error| error['detail'] }.join(', ')
-        raise StandardError, "Twitter API Error: #{error_messages}"
-      end
-
       [response['data'] || [], response.dig('meta', 'next_token')]
     end
 
