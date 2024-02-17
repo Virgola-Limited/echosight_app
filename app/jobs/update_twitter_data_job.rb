@@ -40,6 +40,7 @@ class UpdateTwitterDataJob
   end
 
   def confirmed_users
+    # TODO remove Loftwah from this query
     User.confirmed.joins(:identity).merge(Identity.valid_identity).where(name: 'Loftwah')
   end
 end
