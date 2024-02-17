@@ -25,7 +25,7 @@ module Twitter
       counter = 0
 
       loop do
-        break if counter >= 5
+        break if counter >= 4
 
         tweets, next_token = fetch_tweets(next_token)
         break if tweets.empty?
