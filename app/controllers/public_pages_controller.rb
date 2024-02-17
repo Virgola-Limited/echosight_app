@@ -42,12 +42,17 @@ class PublicPagesController < ApplicationController
       @impressions_change_since_last_week = 'No change'
     end
 
+    # this needs to change to be dynamic
     @impressions_comparison_days = 7
 
     ############################
     # Profile Clicks
     @profile_clicks = tweet_metrics_query.profile_clicks_count
     @profile_clicks_change_since_last_week = tweet_metrics_query.profile_clicks_change_since_last_week
+
+    if @profile_clicks == false
+      @profile_clicks = 'Collecting data. Check back later.'
+    end
 
     if @profile_clicks_change_since_last_week == false
       @profile_clicks_change_since_last_week = 'Collecting data. Check back later.'
@@ -58,6 +63,9 @@ class PublicPagesController < ApplicationController
     else
       @profile_clicks_change_since_last_week = 'No change'
     end
+
+    # this needs to change to be dynamic
+    @profile_clicks_comparison_days = 7
 
     ############################
     # Followers Counts
