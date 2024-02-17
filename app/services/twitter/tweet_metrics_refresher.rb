@@ -2,8 +2,8 @@ module Twitter
   class TweetMetricsRefresher
     attr_reader :user, :twitter_client
 
-    BATCH_SIZE = 100
-    MAX_TWEETS_TO_UPDATE = 500
+    BATCH_SIZE = 120
+    MAX_TWEETS_TO_UPDATE = 400
 
     def initialize(user)
       @user = user
