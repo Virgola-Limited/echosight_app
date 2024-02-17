@@ -9,23 +9,30 @@ module Twitter
       @start_time = start_time || 1.week.ago.utc
     end
 
-    def this_weeks_tweets_count
-      # Calculate the start of this week up to the current moment
-      start_of_this_week = Time.current.beginning_of_week
-
-      # Query the Tweet table using twitter_created_at from the start of this week to now
-      Tweet.where(identity_id: user.identity.id)
-           .where(twitter_created_at: start_of_this_week..Time.current)
-           .count
+    def tweet_count_over_available_time_period
+      staggered_tweets_count_difference[:recent_count]
     end
 
-    def tweets_change_since_last_week
-      current_week_count = this_weeks_tweets_count
-      last_week_count = last_weeks_tweets_count
+    def tweets_change_over_available_time_period
+      staggered_tweets_count_difference[:difference]
+    end
 
-      return false if last_week_count.zero? # No data from last week
+    def tweet_comparison_days
+      staggered_tweets_count_difference[:comparison_days]
+    end
 
-      current_week_count - last_week_count
+    def staggered_tweets_count_difference
+      days_of_data = (Time.current - @start_time.to_time) / 1.day
+      comparison_days = determine_comparison_days(days_of_data)
+      Rails.logger.debug('paul days_of_data' + days_of_data.inspect)
+
+      end_time = Time.current
+      start_time_recent = end_time - comparison_days.days
+
+      recent_count = tweets_count_between(start_time_recent, end_time)
+      difference = compare_tweets_count(comparison_days)
+
+      { recent_count: recent_count, difference: difference, comparison_days: comparison_days }
     end
 
     def days_until_last_weeks_data_available
@@ -33,10 +40,11 @@ module Twitter
       return 7 unless earliest_data_date # If no data, assume a full week is needed.
 
       days_of_data = (Time.current.beginning_of_day - earliest_data_date.to_date).to_i
+      Rails.logger.debug('pauldays_of_data' + days_of_data.inspect)
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
-    # should this be the last 7 days?
+    # this should this be the last 7 days
     def impressions_count
       TweetMetric.joins(:tweet)
       .where(tweets: { identity_id: user.identity.id })
@@ -197,6 +205,36 @@ module Twitter
     end
 
     private
+
+    def determine_comparison_days(days_of_data)
+      case days_of_data
+      when 2..3
+        1
+      when 4..5
+        2
+      when 6..13
+        (days_of_data / 2).floor
+      else
+        7
+      end
+    end
+
+    def compare_tweets_count(days)
+      end_time = Time.current
+      start_time_recent = end_time - days.days
+      start_time_previous = start_time_recent - days.days
+
+      recent_count = tweets_count_between(start_time_recent, end_time)
+      previous_count = tweets_count_between(start_time_previous, start_time_recent)
+
+      recent_count - previous_count
+    end
+
+    def tweets_count_between(start_time, end_time)
+      Tweet.where(identity_id: user.identity.id)
+           .where(twitter_created_at: start_time...end_time)
+           .count
+    end
 
     # Helper method to format the created_at timestamp for grouping by date
     def grouping_date

@@ -9,17 +9,18 @@ class PublicPagesController < ApplicationController
 
     ############################
     # Posts/Tweet Counts
-    @this_weeks_tweets_count = tweet_metrics_query.this_weeks_tweets_count
-    @tweets_change_since_last_week = tweet_metrics_query.tweets_change_since_last_week
+    @tweet_count_over_available_time_period = tweet_metrics_query.tweet_count_over_available_time_period
+    @tweets_change_over_available_time_period = tweet_metrics_query.tweets_change_over_available_time_period
+    @tweet_comparison_days = tweet_metrics_query.tweet_comparison_days
 
-    if @tweets_change_since_last_week == false
-      @tweets_change_since_last_week = 'Collecting data. Check back later.'
-    elsif @tweets_change_since_last_week > 0
-      @tweets_change_since_last_week = "#{@tweets_change_since_last_week} increase"
-    elsif @tweets_change_since_last_week < 0
-      @tweets_change_since_last_week = "#{@tweets_change_since_last_week.abs} decrease"
+    if @tweets_change_over_available_time_period == false
+      @tweets_change_over_available_time_period = 'Collecting data. Check back later.'
+    elsif @tweets_change_over_available_time_period > 0
+      @tweets_change_over_available_time_period = "#{@tweets_change_over_available_time_period} increase"
+    elsif @tweets_change_over_available_time_period < 0
+      @tweets_change_over_available_time_period = "#{@tweets_change_over_available_time_period.abs} decrease"
     else
-      @tweets_change_since_last_week = 'No change'
+      @tweets_change_over_available_time_period = 'No change'
     end
 
     ############################
@@ -82,12 +83,8 @@ class PublicPagesController < ApplicationController
     ############################
     # Profile Conversion Rate
     @profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
-    Rails.logger.debug('paul @profile_clicks_data' + @profile_clicks_data.inspect)
     @followers_data = followers_query.daily_followers_count
-    Rails.logger.debug('paul @followers_data' + @followers_data.inspect)
-
     @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph(profile_clicks_data: @profile_clicks_data, followers_data: @followers_data)
-    Rails.logger.debug('paul @conversion_rates_data_for_graph' + @conversion_rates_data_for_graph.inspect)
 
     ############################
     # Top Posts / Tweets
