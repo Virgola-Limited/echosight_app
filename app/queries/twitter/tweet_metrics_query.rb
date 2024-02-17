@@ -44,15 +44,33 @@ module Twitter
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
-    # this should this be the last 7 days
     def impressions_count
-      TweetMetric.joins(:tweet)
-      .where(tweets: { identity_id: user.identity.id })
-      .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
-      .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
-      .group_by { |tc| [tc.tweet_id, tc.pulled_at.to_date] }
-      .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
-      .sum
+      # Check if we have at least 14 days of data
+      earliest_record_date = TweetMetric.order(:pulled_at).first.pulled_at.to_date
+      return false if (Date.current - earliest_record_date).to_i < 14
+
+      # Calculate impressions for the last 7 days and the previous 7 days
+      current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
+      previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
+
+      # Return the difference in impressions between the last two 7-day periods
+      current_week_impressions - previous_week_impressions
+    end
+
+    def impressions_change_since_last_week
+      # Calculate impressions for the last 7 days and the previous 7 days
+      current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
+      previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
+
+      return false if previous_week_impressions.zero? # No data from last week
+
+      # Calculate the percentage change in impressions
+      percentage_change = if previous_week_impressions.positive?
+                            ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
+                          else
+                            0 # No change if both current and previous week impressions are zero
+                          end
+      percentage_change.round(2)
     end
 
     def top_tweets_for_user
@@ -101,21 +119,6 @@ module Twitter
 
       # Return the modified tweets with the engagement rate calculated
       top_tweets
-    end
-
-
-    def impressions_change_since_last_week
-      current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
-      previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
-
-      return false if previous_week_impressions.zero? # No data from last week
-
-      if previous_week_impressions.positive?
-        percentage_change = ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
-        percentage_change.round(2)
-      else
-        0 # No change if both current and previous week impressions are zero
-      end
     end
 
     def profile_clicks_count
@@ -265,9 +268,13 @@ module Twitter
 
     def total_impressions_for_period(start_time, end_time)
       TweetMetric.joins(:tweet)
-                .where(tweets: { identity_id: user.identity.id })
-                .where(pulled_at: start_time..end_time)
-                .sum(:impression_count)
+        .where(tweets: { identity_id: user.identity.id })
+        .where(pulled_at: start_time..end_time)
+        .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
+        .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
+        .group_by { |tm| [tm.tweet_id, tm.pulled_at.to_date] }
+        .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
+        .sum
     end
   end
 end

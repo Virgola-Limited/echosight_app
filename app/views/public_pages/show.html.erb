@@ -56,7 +56,16 @@
   <!-- Impressions -->
   <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
     <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Impressions (should this be the last 7 days currently its all impressions on each tweet we store?)</h5>
+      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
+        Impressions
+        <span class="ml-1">
+          <div data-tooltip-target="impressions-count-tooltip">
+            <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </span>
+      </h5>
       <p class="font-normal text-gray-700 dark:text-gray-400"><%= @impressions_count %></p>
       <p class="font-normal text-green-600 dark:text-green-400"><%= @impressions_change_since_last_week %></p>
     </div>
@@ -80,8 +89,13 @@
 </div>
 
 <div id="posts-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    This is the total number of tweets you have made in the last 7 days.
-    <div class="tooltip-arrow" data-popper-arrow></div>
+    This is the total number of tweets you have made in the last <%= @tweet_comparison_days %> days. Compared to the previous <%= @tweet_comparison_days %> days.
+    <%= (@tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
+</div>
+
+<div id="impressions-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+    This is the total number of times your tweets have been seen in the last <%= @impressions_comparison_days %> days. Compared to the previous <%= @impressions_comparison_days %> days.
+    <%= (@impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
 </div>
 
 

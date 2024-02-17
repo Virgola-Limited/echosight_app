@@ -24,6 +24,27 @@ class PublicPagesController < ApplicationController
     end
 
     ############################
+    # Impressions
+    @impressions_count = tweet_metrics_query.impressions_count
+    @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
+
+    if @impressions_count == false
+      @impressions_count = 'Collecting data. Check back later.'
+    end
+
+    if @impressions_change_since_last_week == false
+      @impressions_change_since_last_week = 'Collecting data. Check back later.'
+    elsif @impressions_change_since_last_week > 0
+      @impressions_change_since_last_week = "#{@impressions_change_since_last_week}% increase"
+    elsif @impressions_change_since_last_week < 0
+      @impressions_change_since_last_week = "#{@impressions_change_since_last_week.abs}% decrease"
+    else
+      @impressions_change_since_last_week = 'No change'
+    end
+
+    @impressions_comparison_days = 7
+
+    ############################
     # Profile Clicks
     @profile_clicks = tweet_metrics_query.profile_clicks_count
     @profile_clicks_change_since_last_week = tweet_metrics_query.profile_clicks_change_since_last_week
@@ -36,21 +57,6 @@ class PublicPagesController < ApplicationController
       @profile_clicks_change_since_last_week = "#{@profile_clicks_change_since_last_week.abs}% decrease"
     else
       @profile_clicks_change_since_last_week = 'No change'
-    end
-
-    ############################
-    # Impressions
-    @impressions_count = tweet_metrics_query.impressions_count
-    @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
-
-    if @impressions_change_since_last_week == false
-      @impressions_change_since_last_week = 'Collecting data. Check back later.'
-    elsif @impressions_change_since_last_week > 0
-      @impressions_change_since_last_week = "#{@impressions_change_since_last_week}% increase"
-    elsif @impressions_change_since_last_week < 0
-      @impressions_change_since_last_week = "#{@impressions_change_since_last_week.abs}% decrease"
-    else
-      @impressions_change_since_last_week = 'No change'
     end
 
     ############################
