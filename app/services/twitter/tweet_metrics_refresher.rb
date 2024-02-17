@@ -2,8 +2,9 @@ module Twitter
   class TweetMetricsRefresher
     attr_reader :user, :twitter_client
 
-    BATCH_SIZE = 120
-    MAX_TWEETS_TO_UPDATE = 400
+    BATCH_SIZE = 100
+    # DOnt think this is causing the too many requests (should be /tweets )
+    # MAX_TWEETS_TO_UPDATE = 500
 
     def initialize(user)
       @user = user
@@ -25,7 +26,7 @@ module Twitter
     private
 
     def outdated_tweet_ids(recent: true)
-      scope = Tweet.order(updated_at: :asc).limit(MAX_TWEETS_TO_UPDATE)
+      scope = Tweet.order(updated_at: :asc)#.limit(MAX_TWEETS_TO_UPDATE)
       if recent
         scope.where('twitter_created_at > ?', 30.days.ago).pluck(:twitter_id)
       else
