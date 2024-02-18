@@ -15,8 +15,8 @@ module Twitter
 
       return false unless followers_count_7_days_ago && latest_follower_count
 
-      # Calculate the difference in followers count over the last 7 days
-      latest_follower_count.followers_count - followers_count_7_days_ago.followers_count
+      # Convert followers_count values to integers before subtraction
+      latest_follower_count.followers_count.to_i - followers_count_7_days_ago.followers_count.to_i
     end
 
     def followers_count_change_percentage
@@ -26,14 +26,13 @@ module Twitter
 
       return false unless followers_count_14_days_ago && followers_count_7_days_ago
 
-      # Calculate the percentage change in followers count from the 7-day period two weeks ago to the last 7 days
-      old_count = followers_count_14_days_ago.followers_count
-      new_count = followers_count_7_days_ago.followers_count
+      # Convert followers_count values to integers before calculation
+      old_count = followers_count_14_days_ago.followers_count.to_i
+      new_count = followers_count_7_days_ago.followers_count.to_i
       change_percentage = calculate_percentage_change(old_count, new_count)
 
       format_change_percentage(change_percentage)
     end
-
 
     def followers_data_for_graph
       data = TwitterFollowersCount.where(identity_id: @user.identity.id)
