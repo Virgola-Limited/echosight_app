@@ -72,9 +72,16 @@ class PublicPagesController < ApplicationController
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
 
+    if @followers_count == false
+      @followers_count = 'Collecting data. Check back later.'
+    end
+
     if @followers_count_change_percentage_text == false
       @followers_count_change_percentage_text = 'Collecting data. Check back later.'
     end
+
+    # this needs to change to be dynamic
+    @followers_comparison_days = 7
 
     ############################
     # Followers Graph

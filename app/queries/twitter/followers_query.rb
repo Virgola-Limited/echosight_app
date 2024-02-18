@@ -9,28 +9,31 @@ module Twitter
     end
 
     def followers_count
-      latest_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
-                                                  .order(date: :desc)
-                                                  .first
-      return 0 unless latest_follower_count
+      # Fetch the followers count from 7 days ago and today
+      followers_count_7_days_ago = TwitterFollowersCount.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
+      latest_follower_count = TwitterFollowersCount.where(identity_id: user.identity.id).order(date: :desc).first
 
-      latest_follower_count.followers_count
+      return false unless followers_count_7_days_ago && latest_follower_count
+
+      # Calculate the difference in followers count over the last 7 days
+      latest_follower_count.followers_count - followers_count_7_days_ago.followers_count
     end
 
     def followers_count_change_percentage
-      latest_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
-                                                  .order(date: :desc)
-                                                  .first
-      previous_follower_count = TwitterFollowersCount.where(identity_id: @user.identity.id)
-                                                    .where('date < ?', latest_follower_count&.date)
-                                                    .order(date: :desc)
-                                                    .first
+      # Fetch the followers count for the last 14 days and 7 days ago
+      followers_count_14_days_ago = TwitterFollowersCount.where(identity_id: user.identity.id, date: 14.days.ago.to_date).first
+      followers_count_7_days_ago = TwitterFollowersCount.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
 
-      return false unless latest_follower_count && previous_follower_count
+      return false unless followers_count_14_days_ago && followers_count_7_days_ago
 
-      change_percentage = calculate_percentage_change(previous_follower_count.followers_count.to_i, latest_follower_count.followers_count.to_i)
+      # Calculate the percentage change in followers count from the 7-day period two weeks ago to the last 7 days
+      old_count = followers_count_14_days_ago.followers_count
+      new_count = followers_count_7_days_ago.followers_count
+      change_percentage = calculate_percentage_change(old_count, new_count)
+
       format_change_percentage(change_percentage)
     end
+
 
     def followers_data_for_graph
       data = TwitterFollowersCount.where(identity_id: @user.identity.id)
@@ -39,9 +42,9 @@ module Twitter
                                   .pluck(:date, :followers_count)
       formatted_data, daily_data_points = format_for_graph(data)
 
-      Rails.logger.debug("Fetched Data: #{data.inspect}")
-      Rails.logger.debug("Formatted Labels: #{formatted_data.inspect}")
-      Rails.logger.debug("Daily Data Points: #{daily_data_points.inspect}")
+      # Rails.logger.debug("Fetched Data: #{data.inspect}")
+      # Rails.logger.debug("Formatted Labels: #{formatted_data.inspect}")
+      # Rails.logger.debug("Daily Data Points: #{daily_data_points.inspect}")
 
       [formatted_data, daily_data_points]
     end
@@ -100,7 +103,6 @@ module Twitter
       ((new_value - old_value) / old_value.to_f) * 100.0
     end
 
-    # TODO: this need changing to not show decrease if its zero
     def format_change_percentage(change_percentage)
       if change_percentage.positive?
         "#{change_percentage.round(1)}% increase"
