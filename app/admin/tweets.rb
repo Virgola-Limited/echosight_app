@@ -4,6 +4,15 @@ ActiveAdmin.register Tweet do
   # Preload tweet_metrics association
   includes :identity, :tweet_metrics
 
+  scope :with_latest_metrics, default: true do |tweets|
+    tweets.joins("LEFT JOIN (
+                    SELECT tweet_id, MAX(pulled_at) as latest_pulled_at
+                    FROM tweet_metrics
+                    GROUP BY tweet_id
+                  ) latest_metrics ON tweets.id = latest_metrics.tweet_id")
+          .joins("LEFT JOIN tweet_metrics ON tweet_metrics.tweet_id = tweets.id AND tweet_metrics.pulled_at = latest_metrics.latest_pulled_at")
+  end
+
   index do
     column :id
     column "Tweet" do |tweet|
@@ -30,7 +39,7 @@ ActiveAdmin.register Tweet do
         column :like_count do |tweet|
           tweet.tweet_metrics.order(pulled_at: :desc).first&.like_count || "N/A"
         end
-        column :impression_count do |tweet|
+        column "Impression Count", sortable: 'tweet_metrics.impression_count' do |tweet|
           tweet.tweet_metrics.order(pulled_at: :desc).first&.impression_count || "N/A"
         end
         column :reply_count do |tweet|
@@ -52,44 +61,9 @@ ActiveAdmin.register Tweet do
     actions
   end
 
-  # controller do
-  #   def columns_for_tweet_metrics(tweet)
-  #     # Select the most recent TweetMetric based on `pulled_at`
-  #     recent_metric = tweet.tweet_metrics.order(pulled_at: :desc).first
-
-  #     if recent_metric
-  #       column :retweet_count do
-  #         recent_metric.retweet_count
-  #       end
-  #       column :quote_count do
-  #         recent_metric.quote_count
-  #       end
-  #       column :like_count do
-  #         recent_metric.like_count
-  #       end
-  #       column :impression_count do
-  #         recent_metric.impression_count
-  #       end
-  #       column :reply_count do
-  #         recent_metric.reply_count
-  #       end
-  #       column :bookmark_count do
-  #         recent_metric.bookmark_count
-  #       end
-  #       column :user_profile_clicks do
-  #         recent_metric.user_profile_clicks
-  #       end
-  #       column :pulled_at do
-  #         recent_metric.pulled_at
-  #       end
-  #     else
-  #       # Define columns with "N/A" if no metrics are available
-  #       %i[retweet_count quote_count like_count impression_count reply_count bookmark_count user_profile_clicks pulled_at].each do |metric|
-  #         column metric do
-  #           "N/A"
-  #         end
-  #       end
-  #     end
-  #   end
-  # end
+  controller do
+    def scoped_collection
+      super.includes :tweet_metrics
+    end
+  end
 end

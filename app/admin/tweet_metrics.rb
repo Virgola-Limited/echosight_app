@@ -2,6 +2,13 @@ ActiveAdmin.register TweetMetric do
   actions :index, :show  # Makes the resource read-only
 
   filter :tweet_identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
+  filter :retweet_count
+  filter :like_count
+  filter :quote_count
+  filter :impression_count
+  filter :reply_count
+  filter :bookmark_count
+  filter :pulled_at
 
   index do
     column :id
