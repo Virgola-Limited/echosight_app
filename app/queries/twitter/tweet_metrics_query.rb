@@ -93,6 +93,7 @@ module Twitter
                    .where(tweets_table[:created_at].gt(28.days.ago)) # Check only the last 28 days of tweets
                    .select("tweets.*, #{metrics_sql}")
                    .group(tweets_table[:id])
+                   .order('MAX(tweet_metrics.impression_count) DESC')
                    .limit(5)
 
       # Convert the query to an array of tweets to calculate the engagement rate in Ruby
@@ -114,8 +115,6 @@ module Twitter
                                            end.round(2)
       end
 
-      # Sort tweets by engagement rate percentage in descending order
-      top_tweets.sort_by! { |tweet| -tweet.impression_count }
 
       # Return the modified tweets with the engagement rate calculated
       top_tweets
