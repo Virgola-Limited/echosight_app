@@ -3,7 +3,7 @@ module Twitter
     attr_reader :user, :twitter_client
 
     BATCH_SIZE = 100
-    MAX_TWEETS_TO_UPDATE = 1500
+    MAX_TWEETS_TO_UPDATE = 1400
 
     def initialize(user)
       @user = user
