@@ -26,7 +26,7 @@ module Twitter
     private
 
     def outdated_tweet_ids(recent: true)
-      scope = Tweet.order(updated_at: :asc)#.limit(MAX_TWEETS_TO_UPDATE)
+      scope = user.identity.tweets.order(updated_at: :asc)
       if recent
         scope.where('twitter_created_at > ?', 30.days.ago).pluck(:twitter_id)
       else
