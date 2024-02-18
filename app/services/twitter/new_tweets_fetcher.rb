@@ -36,6 +36,7 @@ module Twitter
         end
 
         break unless next_token
+        counter += 1
       end
     end
 
