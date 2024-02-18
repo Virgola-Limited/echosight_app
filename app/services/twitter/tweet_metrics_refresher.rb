@@ -3,8 +3,7 @@ module Twitter
     attr_reader :user, :twitter_client
 
     BATCH_SIZE = 100
-    # DOnt think this is causing the too many requests (should be /tweets )
-    # MAX_TWEETS_TO_UPDATE = 500
+    MAX_TWEETS_TO_UPDATE = 1500
 
     def initialize(user)
       @user = user
