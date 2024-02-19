@@ -31,8 +31,12 @@ if !Rails.env.development? && !Rails.env.test?
         'cron'  => '0 */12 * * *', # Runs at the start of every 12th hour
         'class' => 'UpdateTwitterDataJob'
         # Specify other job properties if needed
-      }
-      # Add more jobs here if needed
+      },
+      {
+        'name'  => 'Send Daily Application Rate Limit levels to Slack',
+        'cron'  => '0 0 * * *', # Runs at midnight
+        'class' => 'SendRateLimitsToSlackJob'
+    }
     ])
   end
 end
