@@ -1,9 +1,10 @@
 module Twitter
   class RateLimitChecker
-    attr_reader :rate_limit_data, :twitter_client
+    attr_reader :rate_limit_data, :user, :twitter_client
 
-    def initialize
-      @twitter_client = Twitter::Client.new # Pass user if needed
+    def initialize(user = nil)
+      # @user = user
+      @twitter_client = Twitter::Client.new#(user)
     end
 
     def call
@@ -35,3 +36,5 @@ module Twitter
     end
   end
 end
+
+# usage: Twitter::RateLimitChecker.new(user).call

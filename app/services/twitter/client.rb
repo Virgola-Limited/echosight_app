@@ -59,7 +59,7 @@ module Twitter
     def fetch_rate_limit_data
       endpoint = 'application/rate_limit_status.json'
       params = {} # Add necessary parameters if needed
-      make_api_call(endpoint, params, :oauth1, :v1_1) # Using OAuth1 for Twitter API v1.1
+      make_api_call(endpoint, params, :oauth2, :v1_1) # Using OAuth1 for Twitter API v1.1
     end
 
     private
