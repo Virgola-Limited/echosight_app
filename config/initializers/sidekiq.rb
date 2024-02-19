@@ -28,7 +28,7 @@ if !Rails.env.development? && !Rails.env.test?
     Sidekiq::Cron::Job.load_from_array!([
       {
         'name'  => 'Update Twitter Data - every hour',
-        'cron'  => '0 * * * *', # Runs at the beginning of every hour
+        'cron'  => '0 */12 * * *', # Runs at the start of every 12th hour
         'class' => 'UpdateTwitterDataJob'
         # Specify other job properties if needed
       }
