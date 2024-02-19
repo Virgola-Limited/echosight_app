@@ -1,6 +1,8 @@
 ActiveAdmin.register Tweet do
   actions :index
 
+  filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
+
   # Preload tweet_metrics association
   includes :identity, :tweet_metrics
 
