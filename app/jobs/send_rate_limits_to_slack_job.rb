@@ -7,7 +7,7 @@ class SendRateLimitsToSlackJob
 
     if exceeded_limits.any?
       message = "The following rate limits have been exceeded:\n#{exceeded_limits.join("\n")}"
-      Slack::Notifier.new(Rails.application.credentials.slack[:webhook_url]).ping(message)
+      Notifications::SlackNotifier.call(message)
     end
   end
 end
