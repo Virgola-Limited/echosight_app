@@ -120,6 +120,15 @@ module Twitter
       if e.message == 'Unauthorized' && user
         refresh_token_if_needed(user.identity.oauth_credential)
         retry_api_call(endpoint, params, auth_type)
+      elsif e.is_a?(X::TooManyRequests) && e.rate_limit
+        rate_limit = e.rate_limit # Assuming the error object has a `rate_limit` attribute with X::RateLimit instance
+        message = "Rate Limit Exceeded: Type #{rate_limit.type}, Limit #{rate_limit.limit}, Remaining #{rate_limit.remaining}, Reset in #{rate_limit.reset_in} seconds"
+
+        # Send rate limit info to Slack
+        Notifications::SlackNotifier.call(message: message, channel: 'x-rate-limit')
+
+        # Re-raise the error to maintain the original flow
+        raise e
       elsif e.message.start_with?('Twitter API Error:')
         error_details = {
           error: e.message,
@@ -151,7 +160,6 @@ module Twitter
         e.instance_variable_set(:@error_details, error_details)
       end
     end
-
 
     def client(version:, auth: :oauth2)
       X::Client.new(**credentials(version, auth))
