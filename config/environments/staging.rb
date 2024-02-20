@@ -1,5 +1,7 @@
 require "active_support/core_ext/integer/time"
 
+# TODO: delete this and use environment variables instead of environments/*.rb files
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -106,4 +108,5 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
+  IRB.conf[:MAX_OUTPUT_SIZE] = 10_000
 end
