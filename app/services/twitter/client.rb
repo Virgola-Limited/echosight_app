@@ -123,19 +123,26 @@ module Twitter
       elsif e.is_a?(X::TooManyRequests) && e.rate_limit
         rate_limit = e.rate_limit # Assuming the error object has a `rate_limit` attribute with X::RateLimit instance
         message = "Rate Limit Exceeded: Type #{rate_limit.type}, Limit #{rate_limit.limit}, Remaining #{rate_limit.remaining}, Reset in #{rate_limit.reset_in} seconds"
+        request_info = "Endpoint: #{endpoint}, Params: #{params.to_json}"
 
-        # Send rate limit info to Slack
-        Notifications::SlackNotifier.call(message: message, channel: 'x-rate-limit')
+        # Send rate limit info and request details to Slack
+        Notifications::SlackNotifier.call(message: "#{message}, Request Info: #{request_info}", channel: '#x-rate-limit')
 
         # Re-raise the error to maintain the original flow
         raise e
       elsif e.message.start_with?('Twitter API Error:')
+        request_info = if auth_type == :oauth1
+                         "Full URL: #{base_url(determine_api_version(endpoint))}#{endpoint}?#{URI.encode_www_form(params)}"
+                       else
+                         # For POST requests or when detailed post data is needed
+                         "Endpoint: #{endpoint}, Data: #{params.to_json}"
+                       end
         error_details = {
           error: e.message,
           auth_type: auth_type.to_s,
           api_version: determine_api_version(endpoint),
           endpoint: endpoint,
-          query_params: params,
+          request_info: request_info, # Added full request details
           user_info: user_info_for_error
         }
 
@@ -143,12 +150,12 @@ module Twitter
         e.instance_variable_set(:@error_details, error_details)
         raise e
       else
+        request_info = "Endpoint: #{endpoint}, Params: #{params.to_json}"
         error_details = {
           error: e.message,
           auth_type: auth_type.to_s,
           api_version: determine_api_version(endpoint),
-          endpoint: endpoint,
-          query_params: params,
+          request_info: request_info, # Added request details
           user_info: user_info_for_error
         }
 
