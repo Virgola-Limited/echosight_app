@@ -1,4 +1,4 @@
-if defined?(ExceptionNotification)
+if defined?(ExceptionNotification) && !Rails.env.development?
 
   require 'exception_notification/rails'
 
@@ -23,7 +23,6 @@ if defined?(ExceptionNotification)
       email_prefix: '[ERROR] ',
       sender_address: %{"Chris Toynbee" <chris@echosight.io>},
       exception_recipients: %w{ctoynbee@gmail.com},
-      ignore_if: ->(env, exception) { Rails.env.development? } # This line is added to ignore Slack notifications in development
     }
 
     # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.
@@ -51,7 +50,6 @@ if defined?(ExceptionNotification)
       additional_parameters: {
         mrkdwn: true
       },
-      ignore_if: ->(env, exception) { Rails.env.development? } # This line is added to ignore Slack notifications in development
     }
 
   end

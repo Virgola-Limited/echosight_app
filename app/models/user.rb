@@ -72,6 +72,7 @@ class User < ApplicationRecord
 
     # Update or build identity
     identity ||= user.build_identity
+    ExceptionNotifier.notify_exception(StandardError.new('auth.info' + auth.info.inspect))
     identity.assign_attributes(
       provider: auth.provider,
       uid: auth.uid,
