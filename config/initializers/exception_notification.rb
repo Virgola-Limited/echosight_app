@@ -45,8 +45,7 @@ if defined?(ExceptionNotification) && !Rails.env.development?
     # }
 
     config.add_notifier :slack, {
-      webhook_url: Rails.application.credentials.slack[:webhook_url],
-      channel: '#errors',
+      webhook_url: Rails.application.credentials.slack[:webhook_url][:errors],
       additional_parameters: {
         mrkdwn: true
       },
