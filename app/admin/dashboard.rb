@@ -21,7 +21,7 @@ ActiveAdmin.register_page "Dashboard" do
     h2 "Tweets Needing Refresh"
     section do
       div do
-        span "Total Tweets not updated in 24 hours: #{Tweet.where('updated_at < ?', 24.hours.ago).count}"
+        span "Total Tweets not updated in 24 hours: #{Tweet.where('updated_at < ?', 24.hours.ago).where('twitter_created_at > ?', 28.days.ago).count}"
       end
       table_for Tweet.where('updated_at < ?', 24.hours.ago).order('updated_at ASC').limit(10) do
         column :twitter_id
@@ -39,7 +39,7 @@ ActiveAdmin.register_page "Dashboard" do
     section do
       div do
         # Define recent_metrics_subquery here to ensure it's in scope
-        recent_metrics_subquery = TweetMetric.where('created_at >= ?', 24.hours.ago).select(:tweet_id)
+        recent_metrics_subquery = TweetMetric.joins(:tweet).where('tweets.twitter_created_at >= ?', 28.days.ago).select(:tweet_id)
         tweets_without_recent_metrics_count = Tweet.where.not(id: recent_metrics_subquery).count
         span "Total Tweets without Metrics updated in the last 24 hours: #{tweets_without_recent_metrics_count}"
       end
