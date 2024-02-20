@@ -108,5 +108,4 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  IRB.conf[:MAX_OUTPUT_SIZE] = 10_000
 end
