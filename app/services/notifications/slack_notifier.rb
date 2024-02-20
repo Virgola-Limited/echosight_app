@@ -5,7 +5,7 @@ module Notifications
       @notifier = Slack::Notifier.new(Rails.application.credentials.slack[:webhook_url], channel: channel)
     end
 
-    def self.call(message: channel: nil)
+    def self.call(message:, channel: nil)
       self.new(channel: nil).ping(message)
     end
   end
