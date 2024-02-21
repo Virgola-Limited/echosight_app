@@ -45,8 +45,11 @@ module Twitter
     end
 
     def impressions_count
+      if user.tweet_metrics.count.zero?
+        return 0
+      end
       # Check if we have at least 14 days of data
-      earliest_record_date = TweetMetric.order(:pulled_at).first.pulled_at.to_date
+      earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
       return false if (Date.current - earliest_record_date).to_i < 14
 
       # Calculate impressions for the last 7 days and the previous 7 days
@@ -121,8 +124,11 @@ module Twitter
     end
 
     def profile_clicks_count
+      if user.tweet_metrics.count.zero?
+        return 0
+      end
     # Check if we have at least 14 days of data
-    earliest_record_date = TweetMetric.order(:pulled_at).first.pulled_at.to_date
+    earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
     return false if (Date.current - earliest_record_date).to_i < 14
 
     # Calculate profile clicks for the last 7 days and the previous 7 days

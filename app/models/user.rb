@@ -41,6 +41,8 @@ class User < ApplicationRecord
          omniauth_providers: [:twitter2]
 
   has_one :identity, dependent: :destroy
+  has_many :tweets, through: :identity
+  has_many :tweet_metrics, through: :tweets
 
   delegate :handle, to: :identity, allow_nil: true
   delegate :banner_url, to: :identity, allow_nil: true
