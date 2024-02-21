@@ -126,7 +126,7 @@ module Twitter
         request_info = "Endpoint: #{endpoint}, Params: #{params.to_json}"
 
         # Send rate limit info and request details to Slack
-        Notifications::SlackNotifier.call(message: "#{message}, Request Info: #{request_info}", channel: '#x-rate-limit')
+        Notifications::SlackNotifier.call(message: "#{message}, Request Info: #{request_info}", channel: :xratelimit)
 
         # Re-raise the error to maintain the original flow
         raise e
