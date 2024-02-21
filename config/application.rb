@@ -44,5 +44,10 @@ module EchosightApp
 
     config.action_mailer.asset_host = Rails.application.credentials.dig(:asset_host) || 'https://echosight.io'
 
+    console do
+      puts 'Helpful commands:'
+      puts 'UpdateTwitterDataJob.new.perform'
+    end
+
   end
 end
