@@ -19,11 +19,13 @@ ActiveAdmin.register_page "Dashboard" do
     end
 
     h2 "Tweets Needing Refresh"
+    tweets = Tweet.where('updated_at < ?', 24.hours.ago)
+                  .where('twitter_created_at > ?', 28.days.ago)
     section do
       div do
-        span "Total Tweets not updated in 24 hours: #{Tweet.where('updated_at < ?', 24.hours.ago).where('twitter_created_at > ?', 28.days.ago).count}"
+        span "Total Tweets not updated in 24 hours: #{tweets.count}"
       end
-      table_for Tweet.where('updated_at < ?', 24.hours.ago).order('updated_at ASC').limit(10) do
+      table_for tweets.limit(10) do
         column :twitter_id
         column :text do |tweet|
           truncate(tweet.text, omision: "...", length: 100)
@@ -35,18 +37,17 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
-    h2 "Tweets Needing Metrics Refresh"
+    h2 "TweetMetrics Needing Refresh"
+    recent_metrics_subquery = TweetMetric.joins(:tweet).where('tweets.twitter_created_at >= ?', 28.days.ago).select(:tweet_id)
+    tweets_without_recent_metrics = Tweet.where.not(id: recent_metrics_subquery)
     section do
       div do
         # Define recent_metrics_subquery here to ensure it's in scope
-        recent_metrics_subquery = TweetMetric.joins(:tweet).where('tweets.twitter_created_at >= ?', 28.days.ago).select(:tweet_id)
-        tweets_without_recent_metrics_count = Tweet.where.not(id: recent_metrics_subquery).count
-        span "Total Tweets without Metrics updated in the last 24 hours: #{tweets_without_recent_metrics_count}"
+        span "Total Tweets without Metrics updated in the last 24 hours: #{tweets_without_recent_metrics.count}"
       end
       div do
         # If you need to use recent_metrics_subquery again, ensure it's defined again in this scope
-        recent_metrics_subquery = TweetMetric.where('created_at >= ?', 24.hours.ago).select(:tweet_id)
-        table_for Tweet.includes(:identity).where.not(id: recent_metrics_subquery).order('tweets.created_at ASC').limit(10) do
+        table_for tweets_without_recent_metrics.order('tweets.created_at ASC').limit(10) do
           column "Tweet ID", :twitter_id
           column "User Email" do |tweet|
             tweet.identity.user.email  # Adjust according to your user association
