@@ -26,6 +26,8 @@
 #  fk_rails_...  (tweet_id => tweets.id)
 #
 class TweetMetric < ApplicationRecord
+  has_paper_trail
+
   belongs_to :tweet
 
   def self.ransackable_associations(auth_object = nil)
