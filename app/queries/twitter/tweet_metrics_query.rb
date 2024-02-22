@@ -236,26 +236,13 @@ module Twitter
       tweet_metrics_table = TweetMetric.arel_table
       identities_table = Identity.arel_table
 
-      # Define the subquery to select the latest tweet metric record per tweet per day
-      latest_metrics_subquery = TweetMetric.select(
-        tweet_metrics_table[:tweet_id],
-        tweet_metrics_table[:id].maximum.as('max_id')
-      ).group(
-        tweet_metrics_table[:tweet_id],
-        grouping_date.call(tweet_metrics_table) # Apply grouping_date directly to the Arel table
-      ).to_sql # Convert to SQL string
-
-      # Use the subquery in a JOIN clause with a raw SQL string
-      latest_metrics_join_clause = "INNER JOIN (#{latest_metrics_subquery}) latest_metrics_per_day ON tweet_metrics.id = latest_metrics_per_day.max_id"
-
       tweets_with_engagement = Tweet.joins(:tweet_metrics)
-                                    .where('tweets.twitter_created_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
-                                    .joins(latest_metrics_join_clause) # Join using the subquery
-                                    .joins(:identity) # Join with identities to access the user
-                                    .where(identities_table[:user_id].eq(user.id)) # Use the user_id from the identities table
-                                    .where(tweets_table[:created_at].gteq(@start_time))
+                                    .joins(:identity)
+                                    .where(identities_table[:user_id].eq(user.id))
+                                    .where(tweets_table[:twitter_created_at].gt(MAXIMUM_DAYS_OF_DATA.days.ago))
+                                    .where(tweets_table[:twitter_created_at].gteq(@start_time))
                                     .select(
-                                      grouping_date.call(tweets_table).as('date'), # Apply grouping_date directly to the Arel table
+                                      tweets_table[:twitter_created_at].as('date'),
                                       Arel.sql('SUM(tweet_metrics.retweet_count + tweet_metrics.quote_count + tweet_metrics.like_count + tweet_metrics.reply_count + tweet_metrics.user_profile_clicks + tweet_metrics.bookmark_count) as interactions'),
                                       Arel.sql('SUM(tweet_metrics.impression_count) as impressions')
                                     )
