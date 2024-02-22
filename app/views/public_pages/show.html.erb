@@ -31,7 +31,7 @@
 
     <!-- Quote Container -->
     <div class="py-2 px-4 rounded-lg">
-      <p class="text-xl font-semibold italic text-gray-900 dark:text-white">"Any sufficiently advanced technology is equivalent to magic." - Arthur C. Clarke</p>
+      <p class="text-xl font-semibold italic text-gray-900 dark:text-white"><%= html_description_with_links(@user.identity.description) %></p>
     </div>
   </div>
 </div>
