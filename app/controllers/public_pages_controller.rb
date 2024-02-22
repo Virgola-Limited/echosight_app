@@ -116,6 +116,7 @@ class PublicPagesController < ApplicationController
     # Engagement Graph
     @engagement_rate_percentage_per_day = tweet_metrics_query.engagement_rate_percentage_per_day
     Rails.logger.debug('paul' + @engagement_rate_percentage_per_day.inspect)
+    # force build on heroku
 
     ############################
     # Impressions over Time Graph
