@@ -104,10 +104,66 @@ class User < ApplicationRecord
     ActiveRecord::Base.transaction do
       user.save! if user.new_record? || user.changed?
       identity.save! if identity.new_record? || identity.changed?
+      oauth_credential.save! #if oauth_credential.new_record? || oauth_credential.changed?
+    end
+
+    user
+  end
+
+  def self.create_or_update_identity_from_omniauth(auth)
+    identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
+    user = identity.try(:user)
+
+    if user.nil?
+      # Find or initialize the user by email
+      user = User.find_or_initialize_by(email: auth.info.email)
+      user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
+      # Auto-confirm only if the user is new and created via OmniAuth
+      user.confirm if user.new_record?
+    end
+
+    # Update user's attributes
+    user.assign_from_auth(auth)
+
+    # Update or create identity and oauth_credential
+    ActiveRecord::Base.transaction do
+      user.save! if user.new_record? || user.changed?
+
+      identity ||= user.build_identity
+      identity.assign_attributes_from_auth(auth) # Ensure this method exists in the Identity model to handle auth data
+
+      oauth_credential = identity.oauth_credential || identity.build_oauth_credential
+      oauth_credential.assign_attributes(
+        token: auth.credentials.token,
+        refresh_token: auth.credentials.refresh_token,
+        expires_at: Time.at(auth.credentials.expires_at)
+      )
+
+      identity.save! if identity.new_record? || identity.changed?
       oauth_credential.save! if oauth_credential.new_record? || oauth_credential.changed?
     end
 
     user
+  end
+
+
+  def assign_from_auth(auth)
+    self.name = auth.info.name if name.blank?
+    self.email = auth.info.email if email.blank?
+    # dd
+    self.email = "fake_email_#{rand(252...4350)}@echosight.io" if email.blank?
+  end
+
+  def update_identity_from_auth(auth)
+    identity = self.identity || build_identity
+    identity.assign_attributes(
+      provider: auth.provider,
+      uid: auth.uid,
+      image_url: auth.info.image,
+      description: auth.info.description,
+      handle: auth.extra.raw_info.data.username
+    )
+    identity.save!
   end
 
 
