@@ -18,7 +18,9 @@
     <!-- Profile Photo and Info -->
     <div class="flex items-center space-x-4">
       <!-- Profile Photo -->
-      <%= image_tag(@user.image_url, alt: @user.handle + " Profile image", class: "h-24 w-24 rounded-full border-4 border-white shadow-lg") %>
+      <%= link_to "https://twitter.com/#{@user.handle}", target: "_blank" do %>
+        <%= image_tag(@user.image_url, alt: @user.handle + " Profile image", class: "h-24 w-24 rounded-full border-4 border-white shadow-lg") %>
+      <% end %>
 
       <!-- Profile Info -->
       <div>
