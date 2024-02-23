@@ -127,42 +127,60 @@ module Twitter
       if user.tweet_metrics.count.zero?
         return 0
       end
-    # Check if we have at least 14 days of data
-    earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
-    return false if (Date.current - earliest_record_date).to_i < 14
+      # Check if we have at least 14 days of data
+      earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
+      return false if (Date.current - earliest_record_date).to_i < 14
 
-    # Calculate profile clicks for the last 7 days and the previous 7 days
-    current_week_clicks = total_profile_clicks_for_period(7.days.ago.beginning_of_day, Time.current)
-    previous_week_clicks = total_profile_clicks_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
+      # Calculate profile clicks for the last 7 days and the previous 7 days
+      current_week_clicks = total_profile_clicks_for_period(7.days.ago.beginning_of_day, Time.current)
+      previous_week_clicks = total_profile_clicks_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
 
-    # Return the difference in profile clicks between the last two 7-day periods
-    current_week_clicks - previous_week_clicks
-  end
+      # Return the difference in profile clicks between the last two 7-day periods
+      current_week_clicks - previous_week_clicks
+    end
 
-  def profile_clicks_change_since_last_week
-    # Calculate profile clicks for the last 7 days and the previous 7 days
-    current_week_clicks = total_profile_clicks_for_period(7.days.ago.beginning_of_day, Time.current)
-    previous_week_clicks = total_profile_clicks_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
+    def profile_clicks_change_since_last_week
+      # Calculate profile clicks for the last 7 days and the previous 7 days
+      current_week_clicks = total_profile_clicks_for_period(7.days.ago.beginning_of_day, Time.current)
+      previous_week_clicks = total_profile_clicks_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
 
-    return false if previous_week_clicks.zero? # No data from last week
+      return false if previous_week_clicks.zero? # No data from last week
 
-    # Calculate the percentage change in profile clicks
-    percentage_change = if previous_week_clicks.positive?
-                          ((current_week_clicks - previous_week_clicks) / previous_week_clicks.to_f) * 100
-                        else
-                          0 # No change if both current and previous week clicks are zero
-                        end
-    percentage_change.round(2)
-  end
+      # Calculate the percentage change in profile clicks
+      percentage_change = if previous_week_clicks.positive?
+                            ((current_week_clicks - previous_week_clicks) / previous_week_clicks.to_f) * 100
+                          else
+                            0 # No change if both current and previous week clicks are zero
+                          end
+      percentage_change.round(2)
+    end
 
     def impression_counts_per_day
-      TweetMetric.joins(:tweet)
-                .where(tweets: { identity_id: user.identity.id })
-                .where('tweet_metrics.pulled_at > ?', 28.days.ago)
-                .select('DATE(tweet_metrics.pulled_at) as pulled_date, MAX(tweet_metrics.impression_count) as impression_count')
-                .group('DATE(tweet_metrics.pulled_at)')
-                .order('DATE(tweet_metrics.pulled_at)')
-                .pluck('DATE(tweet_metrics.pulled_at)', 'MAX(tweet_metrics.impression_count)')
+      # Subquery to select the latest TweetMetric record for each day
+      subquery = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
+                            .where('pulled_at > ?', 28.days.ago)
+                            .order('tweet_id, DATE(pulled_at), pulled_at DESC')
+
+      # Inner query to calculate the daily impression count using window function
+      inner_query = TweetMetric.from(subquery, :latest_metrics)
+                               .joins('INNER JOIN tweets ON tweets.id = latest_metrics.tweet_id')
+                               .where(tweets: { identity_id: user.identity.id })
+                               .select("
+                                 DATE(latest_metrics.pulled_at) as pulled_date,
+                                 latest_metrics.impression_count,
+                                 LAG(latest_metrics.impression_count, 1, 0) OVER (PARTITION BY latest_metrics.tweet_id ORDER BY latest_metrics.pulled_at) AS previous_impression_count
+                               ")
+
+      # Outer query to filter and sum the daily impression differences
+      outer_query = TweetMetric.from("(#{inner_query.to_sql}) as impression_diffs")
+                               .select('pulled_date, impression_count - previous_impression_count AS daily_impression_diff')
+                               .where('impression_count - previous_impression_count > 0')
+
+      # Final aggregation by date
+      TweetMetric.from("(#{outer_query.to_sql}) as final_diffs")
+                 .group('pulled_date')
+                 .order('pulled_date')
+                 .pluck('pulled_date', 'SUM(daily_impression_diff)')
     end
 
     def engagement_rate_percentage_per_day
