@@ -41,8 +41,8 @@ module Twitter
 
     # | Endpoint       | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
     # |----------------|-----------|----------------|----------|-----------------------------|------------------------|
-    # | GET_2_tweets   | 15        | 15 minutes     | per user | yes                         | 10,000                  |
-    # | GET_2_tweets   | 15        | 15 minutes     | per app  | yes                         | 10,000                  |
+    # | GET_2_tweets   | 15        | 15 minutes     | per user | yes                         | 10,000                 |
+    # | GET_2_tweets   | 15        | 15 minutes     | per app  | yes                         | 10,000                 |
     def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = true)
       endpoint = "tweets"
       fields = 'created_at,public_metrics'

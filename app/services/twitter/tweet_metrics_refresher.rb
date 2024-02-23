@@ -2,8 +2,8 @@ module Twitter
   class TweetMetricsRefresher
     attr_reader :user, :twitter_client
 
-    BATCH_SIZE = 100
-    MAX_TWEETS_TO_UPDATE = 1400
+    BATCH_SIZE = 110
+    MAX_REQUESTS = 15
 
     def initialize(user)
       @user = user
@@ -11,7 +11,9 @@ module Twitter
     end
 
     def call
-      outdated_tweet_ids.each_slice(BATCH_SIZE) do |batch|
+      outdated_tweet_ids.each_slice(BATCH_SIZE).with_index do |batch, index|
+        break if index >= MAX_REQUESTS - 1
+
         update_tweets_and_metrics(batch, include_non_public_metrics: true)
       end
     end
