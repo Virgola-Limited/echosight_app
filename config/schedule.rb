@@ -18,7 +18,7 @@
 # end
 
 every 6.hour do
-  runner 'UpdateTwitterDataJob.perform_async'
+  # Not finishing in development ideally it mimics sidekiq.yml if we have the API bandwidth
 end
 
 # Learn more: http://github.com/javan/whenever

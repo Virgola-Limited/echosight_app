@@ -25,17 +25,32 @@ if !Rails.env.development? && !Rails.env.test?
     end
 
     # Define your Sidekiq-Cron jobs here
-    Sidekiq::Cron::Job.load_from_array!([
-      {
-        'name'  => 'Update Twitter Data - every hour',
-        'cron'  => '0 */12 * * *', # Runs at the start of every 12th hour
-        'class' => 'UpdateTwitterDataJob'
-        # Specify other job properties if needed
-      },
-      {
-        'name'  => 'Send Daily Application Rate Limit levels to Slack',
-        'cron'  => '0 0 * * *', # Runs at midnight
-        'class' => 'SendRateLimitsToSlackJob'
+    Sidekiq::Cron::Job.load_from_array!(
+  [
+    {
+      'name'  => 'Update Twitter Followers - daily',
+      'cron'  => '0 8 * * *',
+      'class' => 'Twitter::FollowersUpdaterJob'
+    },
+    {
+      'name'  => 'Refresh Tweet Metrics at 8am UTC',
+      'cron'  => '0 8 * * *',
+      'class' => 'Twitter::TweetMetricsRefresherJob'
+    },
+    {
+      'name'  => 'Refresh Tweet Metrics at 8pm UTC',
+      'cron'  => '0 16 * * *',
+      'class' => 'Twitter::TweetMetricsRefresherJob'
+    },
+    {
+      'name'  => 'Fetch New Tweets - every 12 hours',
+      'cron'  => '0 8,20 * * *',
+      'class' => 'Twitter::NewTweetsFetcherJob'
+    },
+    {
+      'name'  => 'Send Daily Application Rate Limit levels to Slack',
+      'cron'  => '0 0 * * *',
+      'class' => 'Twitter::SendRateLimitsToSlackJob'
     }
     ])
   end
