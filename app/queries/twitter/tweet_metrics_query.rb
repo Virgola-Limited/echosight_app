@@ -203,7 +203,7 @@ module Twitter
         engagement_rate_percentage = impressions.zero? ? 0.0 : (interactions / impressions) * 100
 
         { date: date, engagement_rate_percentage: engagement_rate_percentage.round(2) }
-      end
+      end.sort_by { |record| record[:date] }
     end
 
     def profile_clicks_count_per_day(days_ago = 28)
