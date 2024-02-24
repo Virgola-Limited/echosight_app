@@ -72,13 +72,22 @@ class User < ApplicationRecord
     user.email = auth.info.email if user.email.blank?
     user.email = "fake_email_#{rand(252...4350)}@echosight.io" if user.email.blank?
 
+    # Extract and update description with original URLs
+    description = auth.info.description
+
+    urls = auth.extra.raw_info.data.entities.description.urls rescue []
+
+    urls.each do |url_object|
+      replaced = description.gsub!(url_object.url, url_object.expanded_url)
+    end
+
     # Update or build identity
     identity ||= user.build_identity
     identity.assign_attributes(
       provider: auth.provider,
       uid: auth.uid,
       image_url: auth.info.image,
-      description: auth.info.description,
+      description: description,
       handle: auth.extra.raw_info.data.username,
     )
 
