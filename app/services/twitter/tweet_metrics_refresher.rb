@@ -2,7 +2,7 @@ module Twitter
   class TweetMetricsRefresher
     attr_reader :user, :twitter_client
 
-    BATCH_SIZE = 110
+    BATCH_SIZE = 100
     MAX_REQUESTS = 15
 
     def initialize(user)
