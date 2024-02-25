@@ -150,7 +150,6 @@ class User < ApplicationRecord
   def assign_from_auth(auth)
     self.name = auth.info.name if name.blank?
     self.email = auth.info.email if email.blank?
-    # dd
     self.email = "fake_email_#{rand(252...4350)}@echosight.io" if email.blank?
   end
 
@@ -169,6 +168,10 @@ class User < ApplicationRecord
 
   def guest?
     !persisted?
+  end
+
+  def connected_to_twitter?
+    identity&.provider == 'twitter2'
   end
 
   private
