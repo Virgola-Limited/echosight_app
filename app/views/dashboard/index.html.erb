@@ -1,43 +1,52 @@
 <%
 
-  # Rules to confirm with Dean about dashboard not button.
-  # A. On own public page (not frequent)
-  # 1. Logged In Paid user:  button will show a link to the dashboard?
-  # 2. Logged In Trial User: button will show a link to subscription page?
-  # 3. Not logged in: button will show link to "Want one of these"?
+# Rules to confirm with Dean about dashboard not button.
+# A. On own public page (not frequent)
+# 1. Logged In Paid user:  button will show a link to the dashboard?
+# 2. Logged In Trial User: button will show a link to subscription page?
+# 3. Not logged in: button will show link to "Want one of these"?
 
-  # B. On someone elses public page
-  # 1. Logged In Paid user: Perhaps show nothing as its a bit confusing linking to your dashboard from someone else's public page?
-  # 2. Logged In Trial User: button will show a link to subscription page? Think about the copy -
-  # 3. Not logged in: button will show link to "get their public page"?
+# B. On someone elses public page
+# 1. Logged In Paid user: Perhaps show nothing as its a bit confusing linking to your dashboard from someone else's public page?
+# 2. Logged In Trial User: button will show a link to subscription page? Think about the copy -
+# 3. Not logged in: button will show link to "get their public page"?
 
-  # C. On dashboard page
-  # 1. Logged In Paid user: Share Echosight? )(make it clear its not sharing their dashboard values)
-  # 2. Logged In Trial User: button will show a link to subscription page?
-  # 3. Logged In with no trial or active subscription:
-  # a: Could have a link to a 7 days free trial (if they havent had one recently)
-  # b: Otherwise link to subscription page?
+# C. On dashboard page
+# 1. Logged In Paid user: Share Echosight? )(make it clear its not sharing their dashboard values)
+# 2. Logged In Trial User: button will show a link to subscription page?
+# 3. Logged In with no trial or active subscription:
+# a: Could have a link to a 7 days free trial (if they havent had one recently)
+# b: Otherwise link to subscription page?
 
+# Missing steps message
 
+# Check with Dean but we need to show steps to get their public page working
+
+# 1. Need to connect to Twitter
+# 2. Need to supply their email address if they logged in with twitter as Twitter wont give it to user
+# 3. Need to have a paid subscription
+
+show_missing_steps_message = !!current_user.connected_to_twitter? || !!current_user.email.present? # || !!current_user.subscription.active?
+
+if show_missing_steps_message
 %>
-
-<div class="px-4 pt-6">
-  <%
-=begin%>
- <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
-    <p class="font-bold">Connect Your Twitter Account</p>
-    <p class="text-sm">To start leveraging the full capabilities of Echosight, please connect your Twitter account.</p>
-  </div>
-  <div>
-  <%= button_to omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
-      <button type="submit" class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 me-2 mb-2">
-    <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 17">
-      <path fill-rule="evenodd" d="M20 1.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.344 8.344 0 0 1-2.605.98A4.13 4.13 0 0 0 13.85 0a4.068 4.068 0 0 0-4.1 4.038 4 4 0 0 0 .105.919A11.705 11.705 0 0 1 1.4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 4.1 9.635a4.19 4.19 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 0 14.184 11.732 11.732 0 0 0 6.291 16 11.502 11.502 0 0 0 17.964 4.5c0-.177 0-.35-.012-.523A8.143 8.143 0 0 0 20 1.892Z" clip-rule="evenodd"/>
-    </svg>
-    Connect to <%= OmniAuth::Utils.camelize('Twitter') %>
-  </button>
-  <% end %>
-  </div>
-<%
-=end%>
+Say something about your Echosight public page isn't configured yet but here's a demo page for you to have a look at in the meantime.
+<div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+  <span class="font-medium"></span>To start leveraging the full capabilities of Echosight, please complete the steps below:
 </div>
+<% end
+unless current_user.connected_to_twitter? %>
+  <div class="py-3" role="alert">
+    <p class="font-bold">Connect Your Twitter Account</p>
+    <p class="text-sm">To start collecting data from Twitter to generate your public page, please connect your Twitter account.</p>
+    <p class="m-2"><%= button_to omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
+      <button type="submit" class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 me-2 mb-2">
+        <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 17">
+          <path fill-rule="evenodd" d="M20 1.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.344 8.344 0 0 1-2.605.98A4.13 4.13 0 0 0 13.85 0a4.068 4.068 0 0 0-4.1 4.038 4 4 0 0 0 .105.919A11.705 11.705 0 0 1 1.4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 4.1 9.635a4.19 4.19 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 0 14.184 11.732 11.732 0 0 0 6.291 16 11.502 11.502 0 0 0 17.964 4.5c0-.177 0-.35-.012-.523A8.143 8.143 0 0 0 20 1.892Z" clip-rule="evenodd"/>
+        </svg>
+        Connect to <%= OmniAuth::Utils.camelize('Twitter') %>
+      </button>
+    <% end %>
+    </p>
+  </div>
+<% end %>

@@ -44,4 +44,13 @@ class Identity < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     ["banner_url", "created_at", "description", "handle", "id", "id_value", "image_url", "provider", "uid", "updated_at", "user_id"]
   end
+
+  def assign_attributes_from_auth(auth)
+    self.provider = auth.provider
+    self.uid = auth.uid
+    self.image_url = auth.info.image
+    self.description = auth.info.description
+    self.handle = auth.extra.raw_info.data.username
+    # Add any other attributes you need to handle from the auth hash
+  end
 end
