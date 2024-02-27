@@ -44,6 +44,7 @@ gem 'bootsnap', require: false
 # gem "image_processing", "~> 1.2"
 
 gem 'activeadmin'
+gem 'rack-cors'
 gem 'apexcharts'
 gem 'devise', '~> 4.9'
 gem 'exception_notification'
