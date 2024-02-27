@@ -29,4 +29,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root 'dashboard#index'
+
+  post 'scraped_contents', to: 'scraped_contents#create'
 end
