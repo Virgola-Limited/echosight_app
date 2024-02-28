@@ -62,6 +62,7 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
+  gem 'factory_bot_rails', require: false
   gem 'htmlbeautifier'
   gem 'rspec-rails', '~> 6.1.0'
   gem 'vcr'

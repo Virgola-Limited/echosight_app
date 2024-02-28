@@ -15,6 +15,7 @@
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'vcr'
+require 'factory_bot_rails'
 # require 'webmock/rspec'
 # WebMock.disable_net_connect!(allow_localhost: true)
 
@@ -23,9 +24,9 @@ VCR.configure do |config|
   config.hook_into :webmock
 end
 
-
-
 RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
+
   config.around(:each, :vcr) do |example|
     name = example.metadata[:full_description]
                .split(/\s+/, 2)
