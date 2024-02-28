@@ -21,60 +21,14 @@ http_interactions:
       - Bearer ekV3ZDhkQm9UbEV1ZDVLcWpjSlhLbk0yYXVFVjJ0WWphTTVKU1h2eW9ta245OjE3MDkxMDQyOTI3MjA6MToxOmF0OjE
   response:
     status:
-      code: 429
-      message: Too Many Requests
+      code: 200
+      message: OK
     headers:
-      Date:
-      - Wed, 28 Feb 2024 08:14:53 UTC
-      Perf:
-      - '7469935968'
-      Server:
-      - tsa_r
-      Set-Cookie:
-      - guest_id=v1%3A170910809330910957; Max-Age=63072000; Expires=Fri, 27 Feb 2026
-        08:14:53 GMT; Path=/; Domain=.twitter.com; Secure; SameSite=None
-      - guest_id_ads=v1%3A170910809330910957; Max-Age=63072000; Expires=Fri, 27 Feb
-        2026 08:14:53 GMT; Path=/; Domain=.twitter.com; Secure; SameSite=None
-      - guest_id_marketing=v1%3A170910809330910957; Max-Age=63072000; Expires=Fri,
-        27 Feb 2026 08:14:53 GMT; Path=/; Domain=.twitter.com; Secure; SameSite=None
-      - personalization_id="v1_zHWbAcYHGEfZam38UFqnFw=="; Max-Age=63072000; Expires=Fri,
-        27 Feb 2026 08:14:53 GMT; Path=/; Domain=.twitter.com; Secure; SameSite=None
-      Api-Version:
-      - '2.93'
       Content-Type:
       - application/json; charset=utf-8
-      Cache-Control:
-      - no-cache, no-store, max-age=0
-      Content-Length:
-      - '238'
-      X-Access-Level:
-      - read
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Transaction-Id:
-      - '048dfc1dae630515'
-      X-Xss-Protection:
-      - '0'
-      X-Rate-Limit-Limit:
-      - '40000'
-      X-Rate-Limit-Reset:
-      - '1709108993'
-      Content-Disposition:
-      - attachment; filename=json.json
-      X-Content-Type-Options:
-      - nosniff
-      X-Rate-Limit-Remaining:
-      - '39999'
-      Strict-Transport-Security:
-      - max-age=631138519
-      X-Response-Time:
-      - '184'
-      X-Connection-Hash:
-      - cae925bc38dbb709c86bfd14d8aee02a5223cae594d4eb05122968658b793aec
     body:
-      encoding: ASCII-8BIT
-      string: '{"account_id":1759737840408367104,"product_name":"standard-basic","title":"UsageCapExceeded","period":"Monthly","scope":"Product","detail":"Usage
-        cap exceeded: Monthly product cap","type":"https://api.twitter.com/2/problems/usage-capped"}'
+      encoding: UTF-8
+      string: '{"data":[{"id":"1234567890","text":"This is an example tweet #1","created_at":"2024-02-28T08:00:00.000Z","public_metrics":{"retweet_count":10,"reply_count":5,"like_count":100,"quote_count":1}},{"id":"0987654321","text":"This is another example tweet #2","created_at":"2024-02-28T09:00:00.000Z","public_metrics":{"retweet_count":20,"reply_count":10,"like_count":150,"quote_count":2}}]}'
   recorded_at: Wed, 28 Feb 2024 08:14:53 GMT
 - request:
     method: post

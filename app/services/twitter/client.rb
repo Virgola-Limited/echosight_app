@@ -22,7 +22,6 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
-
     # | Endpoint                  | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
     # |---------------------------|-----------|----------------|----------|-----------------------------|------------------------|
     # | GET_2_users_param_tweets  | 10        | 15 minutes     | per app  | yes                         | 10,000                 |
@@ -37,7 +36,6 @@ module Twitter
 
       make_api_call(endpoint, params, :oauth1)
     end
-
 
     # | Endpoint       | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
     # |----------------|-----------|----------------|----------|-----------------------------|------------------------|

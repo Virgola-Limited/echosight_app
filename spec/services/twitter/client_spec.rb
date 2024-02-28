@@ -6,10 +6,13 @@ RSpec.describe Twitter::Client do
   let!(:oauth_credential) { create(:oauth_credential, identity: identity) }
   let(:client) { described_class.new(user) }
 
+  let(:response_body) {
+    {"data"=>[{"id"=>"1234567890", "text"=>"This is an example tweet #1", "created_at"=>"2024-02-28T08:00:00.000Z", "public_metrics"=>{"retweet_count"=>10, "reply_count"=>5, "like_count"=>100, "quote_count"=>1}}, {"id"=>"0987654321", "text"=>"This is another example tweet #2", "created_at"=>"2024-02-28T09:00:00.000Z", "public_metrics"=>{"retweet_count"=>20, "reply_count"=>10, "like_count"=>150, "quote_count"=>2}}]}
+  }
+
   describe '#fetch_new_tweets' do
     it 'fetches new tweets from the API', :vcr do
-      tweets = client.fetch_new_tweets
-      p tweets
+      expect(response_body).to eq(client.fetch_new_tweets)
     end
   end
 end
