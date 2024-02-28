@@ -63,6 +63,7 @@ group :development, :test do
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
   gem 'htmlbeautifier'
+  gem 'rspec-rails', '~> 6.1.0'
 end
 
 group :development do
