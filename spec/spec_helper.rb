@@ -26,6 +26,17 @@ end
 
 
 RSpec.configure do |config|
+  config.around(:each, :vcr) do |example|
+    name = example.metadata[:full_description]
+               .split(/\s+/, 2)
+               .join("/")
+               .gsub(/[^\w\s]/, "_") # Replace non-word characters with underscores
+               .gsub(/\s+/, "_")     # Replace spaces with underscores
+    VCR.use_cassette(name) do
+      example.run
+    end
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
