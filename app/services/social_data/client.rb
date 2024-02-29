@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SocialData
   class Client
     attr_reader :user
@@ -6,11 +8,12 @@ module SocialData
       @user = user
     end
 
-    def access_token
-      Rails.application.credentials.socialdata[:access_token]
+    def api_key
+      Rails.application.credentials.social_data[:api_key]
     end
 
-    def fetch_new_tweets(next_token = nil)
+    # TODO: need to iterate over tweets until we reach one we already have
+    def fetch_new_tweets(_next_token = nil)
       endpoint = "user/#{user.identity.uid}/tweets"
       params = {
         # 'cursor' => xxx
@@ -21,13 +24,13 @@ module SocialData
 
     private
 
-    def make_api_call(endpoint, params, auth_type, version = :v2)
+    def make_api_call(endpoint, _params, _auth_type, _version = :v2)
       # Construct the API request URL
-      uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")  # Replace 'socialdata.api.endpoint' with the actual API endpoint
+      uri = URI("https://api.socialdata.tools/twitter/#{endpoint}") # Replace 'socialdata.api.endpoint' with the actual API endpoint
 
       # Set up the request
       request = Net::HTTP::Get.new(uri)
-      request['Authorization'] = "Bearer #{access_token}"  # Add appropriate authorization header
+      request['Authorization'] = "Bearer #{api_key}" # Add appropriate authorization header
 
       # Perform the request
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
@@ -35,11 +38,11 @@ module SocialData
       end
 
       # Handle the response
-      if response.is_a?(Net::HTTPSuccess)
-        JSON.parse(response.body)
-      else
+      unless response.is_a?(Net::HTTPSuccess)
         raise StandardError, "HTTP request failed: #{response.code} - #{response.message}"
       end
+
+      JSON.parse(response.body)
     end
   end
 end
