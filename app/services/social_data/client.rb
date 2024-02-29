@@ -7,7 +7,7 @@ module SocialData
     end
 
     def access_token
-      '120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a'
+      Rails.application.credentials.socialdata[:access_token]
     end
 
     def fetch_new_tweets(next_token = nil)
