@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require_relative '../../../app/services/social_data/client'
+require 'rails_helper'
 
 RSpec.describe SocialData::Client do
   let(:user) { double('User', identity: double('Identity', uid: '1691930809756991488')) }
