@@ -71,8 +71,8 @@ end
 
 group :development do
   gem 'annotate'
-  gem "better_errors"
-  gem "binding_of_caller"
+  gem 'better_errors'
+  gem 'binding_of_caller'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'guard-rspec', require: false
   gem 'rubocop'
