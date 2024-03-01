@@ -6,5 +6,11 @@ FactoryBot.define do
     association :user
     provider { 'twitter2' }
     handle { 'echosight' }
+
+    trait :with_oauth_credential do
+      after(:create) do |identity|
+        create(:oauth_credential, identity: identity)
+      end
+    end
   end
 end

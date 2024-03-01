@@ -1,9 +1,9 @@
 module Twitter
-  # Could run this every 15 separate from the othe fetchers
   class NewTweetsFetcher
-    attr_reader :user, :twitter_client
+    attr_reader :user, :twitter_client, :number_of_requests
 
-    def initialize(user)
+    def initialize(user: , number_of_requests:)
+      @number_of_requests = number_of_requests
       @user = user
       @twitter_client = Twitter::Client.new(user)
     end
@@ -25,7 +25,7 @@ module Twitter
       counter = 0
 
       loop do
-        break if counter >= 4
+        break if @number_of_requests && counter >= @number_of_requests
 
         tweets, next_token = fetch_tweets(next_token)
         break if tweets.empty?
@@ -53,6 +53,8 @@ module Twitter
         twitter_created_at: twitter_created_at # Assign parsed timestamp
       )
 
+      # this really needs to be an upserter to avoid wasting requests that have existing tweets
+      # complete this in https://github.com/Virgola-Limited/echosight_app/pull/50/files
       TweetMetric.create(
         tweet: tweet,
         retweet_count: metrics['retweet_count'],

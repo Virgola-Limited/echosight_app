@@ -1,0 +1,117 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.twitter.com/2/users/1691930809756991488/tweets?max_results=100&tweet.fields=created_at,public_metrics,non_public_metrics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      Host:
+      - api.twitter.com
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - X-Client/0.14.1 ruby/3.2.2 (x86_64-darwin22)
+      Authorization:
+      - Bearer ekV3ZDhkQm9UbEV1ZDVLcWpjSlhLbk0yYXVFVjJ0WWphTTVKU1h2eW9ta245OjE3MDkxMDQyOTI3MjA6MToxOmF0OjE
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Perf:
+      - '7469935968'
+      Content-Type:
+      - application/problem+json
+      Cache-Control:
+      - no-cache, no-store, max-age=0
+      Content-Length:
+      - '99'
+      X-Transaction-Id:
+      - 2cfe7e3e51bc2eaa
+      X-Response-Time:
+      - '143'
+      X-Connection-Hash:
+      - 0a24bdc8b10435d6910a6ad19dea78bd643bcbd9d24c8ba90a22e9cb569ceb63
+      Date:
+      - Fri, 01 Mar 2024 21:13:59 GMT
+      Server:
+      - tsa_r
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "title": "Unauthorized",
+          "type": "about:blank",
+          "status": 401,
+          "detail": "Unauthorized"
+        }
+  recorded_at: Fri, 01 Mar 2024 21:13:59 GMT
+- request:
+    method: post
+    uri: https://hooks.slack.com/services/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
+    body:
+      encoding: US-ASCII
+      string: payload=%7B%22webhook_url%22%3A%22https%3A%2F%2Fhooks.slack.com%2Fservices%2F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%22%2C%22additional_parameters%22%3A%7B%22mrkdwn%22%3Atrue%7D%2C%22mrkdwn%22%3Atrue%2C%22text%22%3A%22%22%2C%22attachments%22%3A%5B%7B%22color%22%3A%22danger%22%2C%22text%22%3A%22*A*+%60StandardError%60+*occured+in+background*%5Cn%22%2C%22fields%22%3A%5B%7B%22title%22%3A%22Exception%22%2C%22value%22%3A%22Twitter+API+Error%3A+Unauthorized%3A+Unauthorized%22%7D%2C%7B%22title%22%3A%22Hostname%22%2C%22value%22%3A%22Personal.local%22%7D%2C%7B%22title%22%3A%22Data%22%2C%22value%22%3A%22%60%60%60error%3A+Unauthorized%3A+Unauthorized%5Cnauth_type%3A+oauth1%5Cnapi_version%3A+v2%5Cnrequest_info%3A+Endpoint%3A+users%2F1691930809756991488%2Ftweets%2C+Params%3A+%7B%5C%22tweet.fields%5C%22%3A%5C%22created_at%2Cpublic_metrics%2Cnon_public_metrics%5C%22%2C%5C%22max_results%5C%22%3A100%7D%5Cnuser_info%3A+User+ID%3A+1691930809756991488%2C+Email%3A+blah%40echosight.io%60%60%60%22%7D%5D%2C%22mrkdwn_in%22%3A%5B%22text%22%2C%22fields%22%5D%7D%5D%7D
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 01 Mar 2024 21:14:00 GMT
+      Server:
+      - Apache
+      Vary:
+      - Accept-Encoding
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Referrer-Policy:
+      - no-referrer
+      X-Slack-Unique-Id:
+      - ZeJFGNtoXJbJa_yr9BybGQAAAAo
+      X-Slack-Backend:
+      - r
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Frame-Options:
+      - SAMEORIGIN
+      Content-Type:
+      - text/html
+      Content-Length:
+      - '2'
+      Via:
+      - 1.1 slack-prod.tinyspeck.com, envoy-www-iad-gkgrbryp, envoy-edge-syd-qfhqupxk
+      X-Envoy-Attempt-Count:
+      - '1'
+      X-Envoy-Upstream-Service-Time:
+      - '235'
+      X-Backend:
+      - main_normal main_canary_with_overflow main_control_with_overflow
+      X-Server:
+      - slack-www-hhvm-main-iad-kubc
+      X-Slack-Shared-Secret-Outcome:
+      - no-match
+      X-Edge-Backend:
+      - envoy-www
+      X-Slack-Edge-Shared-Secret-Outcome:
+      - no-match
+    body:
+      encoding: UTF-8
+      string: ok
+  recorded_at: Fri, 01 Mar 2024 21:14:00 GMT
+recorded_with: VCR 6.2.0

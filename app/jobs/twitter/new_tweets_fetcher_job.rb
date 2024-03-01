@@ -3,7 +3,7 @@ module Twitter
     private
 
     def update_user(user)
-      Twitter::NewTweetsFetcher.new(user).call
+      Twitter::NewTweetsFetcher.new(user: user).call
     end
   end
 end
