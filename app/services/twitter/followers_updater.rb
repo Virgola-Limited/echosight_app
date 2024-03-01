@@ -17,7 +17,7 @@ module Twitter
 
 
     def fetch_user_data
-      @user_data ||= twitter_client.fetch_user_public_metrics
+      @user_data ||= twitter_client.fetch_user_with_metrics
     end
 
     def store_followers
