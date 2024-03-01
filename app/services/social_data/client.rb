@@ -22,6 +22,18 @@ module SocialData
       make_api_call(endpoint, params, :oauth2)
     end
 
+    def fetch_user_with_metrics
+      endpoint = "user/#{user.identity.uid}"
+      params = {
+      }
+
+      make_api_call(endpoint, params, :oauth2)
+    end
+
+    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = false)
+      raise 'Unavailable on SocialData.tools'
+    end
+
     private
 
     def make_api_call(endpoint, _params, _auth_type, _version = :v2)
