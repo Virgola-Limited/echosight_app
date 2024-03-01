@@ -15,7 +15,7 @@ module Twitter
     private
 
     def fetch_tweets(next_token = nil)
-      response = twitter_client.fetch_new_tweets(next_token)
+      response = twitter_client.fetch_user_tweets(next_token)
 
       [response['data'] || [], response.dig('meta', 'next_token')]
     end

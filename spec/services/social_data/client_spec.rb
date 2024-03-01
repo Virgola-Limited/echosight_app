@@ -6,9 +6,9 @@ RSpec.describe SocialData::Client do
   let(:user) { double('User', identity: double('Identity', uid: '1691930809756991488')) }
   let(:client) { described_class.new(user) }
 
-  describe '#fetch_new_tweets' do
+  describe '#fetch_user_tweets' do
     it 'fetches new tweets from the API', :vcr do
-      tweets = client.fetch_new_tweets
+      tweets = client.fetch_user_tweets
       expect(tweets).to eq(response_body)
     end
   end

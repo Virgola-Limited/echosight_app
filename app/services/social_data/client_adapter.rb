@@ -7,8 +7,8 @@ module SocialData
       @social_data_client = SocialData::Client.new(user)
     end
 
-    def fetch_new_tweets(next_token = nil)
-      response = social_data_client.fetch_new_tweets(next_token)
+    def fetch_user_tweets(next_token = nil)
+      response = social_data_client.fetch_user_tweets(next_token)
       adapt_response_format(response)
     end
 

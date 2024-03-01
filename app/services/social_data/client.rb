@@ -13,7 +13,7 @@ module SocialData
     end
 
     # TODO: need to iterate over tweets until we reach one we already have
-    def fetch_new_tweets(_next_token = nil)
+    def fetch_user_tweets(_next_token = nil)
       endpoint = "user/#{user.identity.uid}/tweets"
       params = {
         # 'cursor' => xxx

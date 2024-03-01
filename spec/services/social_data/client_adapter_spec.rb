@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe SocialData::ClientAdapter, vcr: { cassette_name: 'SocialData__Client_fetch_new_tweets_fetches_new_tweets_from_the_API.yml' } do
+RSpec.describe SocialData::ClientAdapter, vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity: identity) }
   let(:client_adapter) { described_class.new(user) }
 
-  describe '#fetch_new_tweets' do
+  describe '#fetch_user_tweets' do
     it 'returns adapted social data in the expected format' do
-      adapted_data = client_adapter.fetch_new_tweets
+      adapted_data = client_adapter.fetch_user_tweets
       expect(adapted_data).to be_a(Hash)
       expect(adapted_data['data']).to be_an(Array)
       expect(adapted_data['data'].last).to eq(first_tweet)

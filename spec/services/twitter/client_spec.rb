@@ -15,9 +15,9 @@ RSpec.describe Twitter::Client do
     ] }
   end
 
-  describe '#fetch_new_tweets' do
+  describe '#fetch_user_tweets' do
     it 'fetches new tweets from the API', :vcr do
-      expect(response_body).to eq(client.fetch_new_tweets)
+      expect(response_body).to eq(client.fetch_user_tweets)
     end
   end
 end
