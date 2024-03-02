@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :twitter_followers_count do
     # Define your factory attributes here

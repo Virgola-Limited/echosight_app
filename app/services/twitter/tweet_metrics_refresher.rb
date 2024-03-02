@@ -4,6 +4,7 @@ module Twitter
 
     BATCH_SIZE = 100
     MAX_REQUESTS = 15
+    UPDATABLE_TIME_FRAME = 7.days
 
     def initialize(user)
       @user = user
@@ -22,7 +23,7 @@ module Twitter
 
     def outdated_tweet_ids
       user.identity.tweets
-           .where('twitter_created_at > ?', 30.days.ago)
+           .where('twitter_created_at > ?', UPDATABLE_TIME_FRAME)
            .where('updated_at < ?', 24.hours.ago)
            .order(updated_at: :asc)
            .pluck(:twitter_id)

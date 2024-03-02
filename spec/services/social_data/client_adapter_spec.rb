@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe SocialData::ClientAdapter, vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
+RSpec.describe SocialData::ClientAdapter,
+               vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
-  let!(:oauth_credential) { create(:oauth_credential, identity: identity) }
+  let!(:oauth_credential) { create(:oauth_credential, identity:) }
   let(:client_adapter) { described_class.new(user) }
 
   describe '#fetch_user_tweets' do

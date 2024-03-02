@@ -47,11 +47,11 @@ if !Rails.env.development? && !Rails.env.test?
       'cron'  => '0 8,20 * * *',
       'class' => 'Twitter::NewTweetsFetcherJob'
     },
-    {
-      'name'  => 'Send Daily Application Rate Limit levels to Slack',
-      'cron'  => '0 0 * * *',
-      'class' => 'Twitter::SendRateLimitsToSlackJob'
-    }
+    # {
+    #   'name'  => 'Send Daily Application Rate Limit levels to Slack',
+    #   'cron'  => '0 0 * * *',
+    #   'class' => 'Twitter::SendRateLimitsToSlackJob'
+    # }
     ])
   end
 end

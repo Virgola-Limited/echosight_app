@@ -9,8 +9,15 @@ FactoryBot.define do
 
     trait :with_oauth_credential do
       after(:create) do |identity|
-        create(:oauth_credential, identity: identity)
+        create(:oauth_credential, identity:)
       end
+    end
+
+    trait :loftwah do
+      uid { '1192091185' }
+      association :user
+      provider { 'twitter2' }
+      handle { 'loftwah' }
     end
   end
 end

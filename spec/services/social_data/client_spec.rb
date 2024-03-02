@@ -31,24 +31,24 @@ RSpec.describe SocialData::Client do
 
   let(:fetch_user_with_metrics_response_body) do
     {
-      "id"=>1691930809756991488,
-      "id_str"=>"1691930809756991488",
-      "name"=>"Topher",
-      "screen_name"=>"TopherToy",
-      "location"=>"",
-      "url"=>nil,
-      "description"=>"Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq",
-      "protected"=>false,
-      "verified"=>false,
-      "followers_count"=>3,
-      "friends_count"=>16,
-      "listed_count"=>0,
-      "favourites_count"=>11,
-       "statuses_count"=>15,
-       "created_at"=>"2023-08-16T21:52:25.000000Z",
-      "profile_banner_url"=>"https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482",
-      "profile_image_url_https"=>"https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg",
-      "can_dm"=>false
+      'id' => 1_691_930_809_756_991_488,
+      'id_str' => '1691930809756991488',
+      'name' => 'Topher',
+      'screen_name' => 'TopherToy',
+      'location' => '',
+      'url' => nil,
+      'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq',
+      'protected' => false,
+      'verified' => false,
+      'followers_count' => 3,
+      'friends_count' => 16,
+      'listed_count' => 0,
+      'favourites_count' => 11,
+      'statuses_count' => 15,
+      'created_at' => '2023-08-16T21:52:25.000000Z',
+      'profile_banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482',
+      'profile_image_url_https' => 'https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg',
+      'can_dm' => false
     }
   end
 end

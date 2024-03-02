@@ -17,18 +17,18 @@ RSpec.describe Twitter::Client do
 
   let(:fetch_user_with_metrics_response_body) do
     {
-      "data"=>{
-        "id"=>"1691930809756991488",
-        "name"=>"Twitter Dev",
-        "public_metrics"=>{
-          "followers_count"=>512,
-          "following_count"=>165,
-          "listed_count"=>14,
-          "tweet_count"=>3210
+      'data' => {
+        'id' => '1691930809756991488',
+        'name' => 'Twitter Dev',
+        'public_metrics' => {
+          'followers_count' => 512,
+          'following_count' => 165,
+          'listed_count' => 14,
+          'tweet_count' => 3210
         },
-        "username"=>"TwitterDev"
-        }
+        'username' => 'TwitterDev'
       }
+    }
   end
 
   describe '#fetch_user_tweets' do
