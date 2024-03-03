@@ -35,7 +35,10 @@ module SocialData
         }
       end
 
-      { 'data' => adapted_tweets }
+      adapted_response = { 'data' => adapted_tweets }
+      # Check if 'next_cursor' exists and add it under 'meta' key in adapted response
+      adapted_response['meta'] = { 'next_token' => response['next_cursor'] } if response['next_cursor']
+      adapted_response
     end
 
     def adapt_user_response_format(response)

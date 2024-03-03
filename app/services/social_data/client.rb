@@ -13,10 +13,10 @@ module SocialData
     end
 
     # TODO: need to iterate over tweets until we reach one we already have
-    def fetch_user_tweets(_next_token = nil)
+    def fetch_user_tweets(next_token = nil)
       endpoint = "user/#{user.identity.uid}/tweets"
       params = {
-        # 'cursor' => xxx
+        'cursor' => next_token
       }
 
       make_api_call(endpoint, params, :oauth2)
@@ -24,21 +24,23 @@ module SocialData
 
     def fetch_user_with_metrics
       endpoint = "user/#{user.identity.uid}"
-      params = {
-      }
+      params = {}
 
       make_api_call(endpoint, params, :oauth2)
     end
 
-    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = false)
+    def fetch_tweets_by_ids(_tweet_ids, _include_non_public_metrics = false)
       raise 'Unavailable on SocialData.tools'
     end
 
     private
 
-    def make_api_call(endpoint, _params, _auth_type, _version = :v2)
-      # Construct the API request URL
-      uri = URI("https://api.socialdata.tools/twitter/#{endpoint}") # Replace 'socialdata.api.endpoint' with the actual API endpoint
+    def make_api_call(endpoint, params, _auth_type)
+      uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
+
+      # remove params with empty values
+      params = params.reject { |_k, v| v.nil? || v.empty? }
+      uri.query = URI.encode_www_form(params) unless params.nil? || params.empty?
 
       # Set up the request
       request = Net::HTTP::Get.new(uri)
