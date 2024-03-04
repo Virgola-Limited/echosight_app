@@ -7,6 +7,7 @@ module Twitter
     attr_reader :user
 
     def initialize(user)
+      raise 'Not used'
       @user = user
     end
 
@@ -25,11 +26,11 @@ module Twitter
         'start_time' => 1.week.ago.utc.iso8601
       }
 
-      twitter_client.get("#{endpoint}?#{URI.encode_www_form(params)}")
+      client.get("#{endpoint}?#{URI.encode_www_form(params)}")
     end
 
-    def twitter_client
-      @twitter_client ||= Client.new.client
+    def client
+      @client ||= Client.new.client
     end
 
     def store_hourly_counts

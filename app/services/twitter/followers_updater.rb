@@ -2,11 +2,11 @@
 
 module Twitter
   class FollowersUpdater
-    attr_reader :user, :user_data, :twitter_client
+    attr_reader :user, :user_data, :client
 
-    def initialize(user)
+    def initialize(user: client: nil)
       @user = user
-      @twitter_client = Twitter::Client.new(user)
+      @client = client || Twitter::Client.new(user)
     end
 
     def call
@@ -17,7 +17,7 @@ module Twitter
 
 
     def fetch_user_data
-      @user_data ||= twitter_client.fetch_user_with_metrics
+      @user_data ||= client.fetch_user_with_metrics
     end
 
     def store_followers

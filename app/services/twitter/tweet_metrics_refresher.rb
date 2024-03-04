@@ -1,14 +1,14 @@
 module Twitter
   class TweetMetricsRefresher
-    attr_reader :user, :twitter_client
+    attr_reader :user, :client
 
     BATCH_SIZE = 100
     MAX_REQUESTS = 15
     UPDATABLE_TIME_FRAME = 7.days
 
-    def initialize(user)
+    def initialize(user: client:)
       @user = user
-      @twitter_client = Twitter::Client.new(user)
+      @client = client || SocialData::ClientAdapter.new(user)
     end
 
     def call
@@ -30,7 +30,7 @@ module Twitter
     end
 
     def update_tweets_and_metrics(tweet_ids, include_non_public_metrics: true)
-      tweets_data = twitter_client.fetch_tweets_by_ids(tweet_ids, include_non_public_metrics)
+      tweets_data = client.fetch_tweets_by_ids(tweet_ids, include_non_public_metrics)
 
       tweets_data['data'].each do |tweet_data|
         process_tweet_data(tweet_data, include_non_public_metrics)

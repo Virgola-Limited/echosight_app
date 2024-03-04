@@ -1,10 +1,10 @@
 module Twitter
   class RateLimitChecker
-    attr_reader :rate_limit_data, :user, :twitter_client
+    attr_reader :rate_limit_data, :user, :client
 
-    def initialize(user = nil)
+    def initialize(user = nil, client: nil)
       # @user = user
-      @twitter_client = Twitter::Client.new#(user)
+      @client = client || Twitter::Client.new#(user)
     end
 
     def call
@@ -16,7 +16,7 @@ module Twitter
 
     def fetch_rate_limit_data
       return @rate_limit_data if @rate_limit_data
-      @rate_limit_data = twitter_client.fetch_rate_limit_data
+      @rate_limit_data = client.fetch_rate_limit_data
     end
 
     def process_rate_limit_data
