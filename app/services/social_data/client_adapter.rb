@@ -25,9 +25,7 @@ module SocialData
     private
 
     def adapt_tweets_response_format(response)
-      tweets = response['tweets'] || response['data']
-
-      adapted_tweets = tweets.map do |tweet|
+      adapted_tweets = response['tweets'].map do |tweet|
         {
           'id' => tweet['id_str'],
           'text' => tweet['full_text'] || tweet['text'],
@@ -42,7 +40,8 @@ module SocialData
       end
 
       adapted_response = { 'data' => adapted_tweets }
-      adapted_response['meta'] = { 'next_token' => response['next_cursor'] } if response['next_cursor']
+
+      adapted_response['meta'] = { 'next_token' => response['next_cursor'] } if response.is_a?(Hash) && response['next_cursor']
       adapted_response
     end
 

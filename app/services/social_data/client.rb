@@ -33,7 +33,7 @@ module SocialData
       tweets = tweet_ids.map do |tweet_id|
         fetch_tweet_by_id(tweet_id, include_non_public_metrics)
       end
-      tweets.compact
+      { 'tweets' => tweets.compact }
     end
 
     private

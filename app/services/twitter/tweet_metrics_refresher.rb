@@ -1,21 +1,19 @@
 module Twitter
   class TweetMetricsRefresher
-    attr_reader :user, :client
+    attr_reader :user, :client, :batch_size, :include_non_public_metrics
 
-    BATCH_SIZE = 100
-    MAX_REQUESTS = 15
-    UPDATABLE_TIME_FRAME = 7.days
+    UPDATABLE_TIME_FRAME = 7.days.ago
 
-    def initialize(user: client:)
+    def initialize(user:, client: nil, batch_size: 120)
       @user = user
       @client = client || SocialData::ClientAdapter.new(user)
+      @batch_size = batch_size
+      @include_non_public_metrics = false # ask the client?
     end
 
     def call
-      outdated_tweet_ids.each_slice(BATCH_SIZE).with_index do |batch, index|
-        break if index >= MAX_REQUESTS - 1
-
-        update_tweets_and_metrics(batch, include_non_public_metrics: true)
+      outdated_tweet_ids.each_slice(batch_size) do |batch|
+        update_tweets_and_metrics(batch, include_non_public_metrics: include_non_public_metrics)
       end
     end
 
@@ -29,12 +27,12 @@ module Twitter
            .pluck(:twitter_id)
     end
 
-    def update_tweets_and_metrics(tweet_ids, include_non_public_metrics: true)
+    def update_tweets_and_metrics(tweet_ids, include_non_public_metrics:)
       tweets_data = client.fetch_tweets_by_ids(tweet_ids, include_non_public_metrics)
-
       tweets_data['data'].each do |tweet_data|
         process_tweet_data(tweet_data, include_non_public_metrics)
       end
+      sleep(1)
     end
 
     def process_tweet_data(tweet_data, include_non_public_metrics)
@@ -55,12 +53,11 @@ module Twitter
 
       if include_non_public_metrics
         non_public_metrics = tweet_data['non_public_metrics']
-        metric_attributes.merge!(
-          user_profile_clicks: non_public_metrics.fetch('user_profile_clicks', nil)  # Optional
-        )
+        metric_attributes[:user_profile_clicks] = non_public_metrics.fetch('user_profile_clicks', nil)
       end
 
-      TweetMetric.create!(metric_attributes)
+      result = TweetMetric.create!(metric_attributes)
+      result
     end
   end
 end
