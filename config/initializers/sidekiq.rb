@@ -34,6 +34,12 @@ if !Rails.env.development? && !Rails.env.test?
       'args'  => ['SocialData::ClientAdapter']
     },
     {
+      'name'  => 'Fetch New Tweets - every 7am UTC',
+      'cron'  => '0 7, * * * *',
+      'class' => 'Twitter::NewTweetsFetcherJob',
+      'args'  => ['SocialData::ClientAdapter']
+    },
+    {
       'name'  => 'Refresh Tweet Metrics at 8am UTC',
       'cron'  => '0 8 * * *',
       'class' => 'Twitter::TweetMetricsRefresherJob',
@@ -43,12 +49,6 @@ if !Rails.env.development? && !Rails.env.test?
       'name'  => 'Refresh Tweet Metrics at 8pm UTC',
       'cron'  => '0 16 * * *',
       'class' => 'Twitter::TweetMetricsRefresherJob',
-      'args'  => ['SocialData::ClientAdapter']
-    },
-    {
-      'name'  => 'Fetch New Tweets - every 12 hours',
-      'cron'  => '0 8,20 * * *',
-      'class' => 'Twitter::NewTweetsFetcherJob',
       'args'  => ['SocialData::ClientAdapter']
     },
     # {

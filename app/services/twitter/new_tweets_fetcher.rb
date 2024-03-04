@@ -76,9 +76,7 @@ module Twitter
         )
       end
 
-      # this really needs to be an upserter to avoid wasting requests that have existing tweets
-      # complete this in https://github.com/Virgola-Limited/echosight_app/pull/50/files
-      TweetMetric.create(metric_attributes)
+      TweetMetric.create!(metric_attributes)
     end
   end
 end
