@@ -2,9 +2,7 @@
 
 FactoryBot.define do
   factory :tweet do
-    # Define your factory attributes here
-    # For example:
-    # title { "My Tweet" }
-    # content { "This is my tweet content" }
+    twitter_id { Faker::Number.number(digits: 18) }
+    text { Faker::Lorem.sentence }
   end
 end

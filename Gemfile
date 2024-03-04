@@ -63,6 +63,7 @@ group :development, :test do
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
   gem 'factory_bot_rails', require: false
+  gem 'faker'
   gem 'htmlbeautifier'
   gem 'rspec-rails', '~> 6.1.0'
   gem 'vcr'
