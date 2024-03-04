@@ -4,7 +4,7 @@ RSpec.describe Twitter::FollowersUpdater, :vcr do
   let!(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity: identity) }
-  let(:updater) { described_class.new(user) }
+  let(:updater) { described_class.new(user: user) }
 
   describe '#call' do
     context 'when the followers data has been updated today for that user' do

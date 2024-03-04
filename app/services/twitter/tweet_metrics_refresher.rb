@@ -64,5 +64,3 @@ module Twitter
     end
   end
 end
-
-#  Twitter::TweetMetricsRefresher.new(user).call

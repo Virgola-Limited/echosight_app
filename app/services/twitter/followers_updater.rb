@@ -4,7 +4,7 @@ module Twitter
   class FollowersUpdater
     attr_reader :user, :user_data, :client
 
-    def initialize(user: client: nil)
+    def initialize(user:, client: nil)
       @user = user
       @client = client || Twitter::Client.new(user)
     end

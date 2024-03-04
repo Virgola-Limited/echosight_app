@@ -30,22 +30,26 @@ if !Rails.env.development? && !Rails.env.test?
     {
       'name'  => 'Update Twitter Followers - daily',
       'cron'  => '0 8 * * *',
-      'class' => 'Twitter::FollowersUpdaterJob'
+      'class' => 'Twitter::FollowersUpdaterJob',
+      'args'  => ['SocialData::ClientAdapter']
     },
     {
       'name'  => 'Refresh Tweet Metrics at 8am UTC',
       'cron'  => '0 8 * * *',
-      'class' => 'Twitter::TweetMetricsRefresherJob'
+      'class' => 'Twitter::TweetMetricsRefresherJob',
+      'args'  => ['SocialData::ClientAdapter']
     },
     {
       'name'  => 'Refresh Tweet Metrics at 8pm UTC',
       'cron'  => '0 16 * * *',
-      'class' => 'Twitter::TweetMetricsRefresherJob'
+      'class' => 'Twitter::TweetMetricsRefresherJob',
+      'args'  => ['SocialData::ClientAdapter']
     },
     {
       'name'  => 'Fetch New Tweets - every 12 hours',
       'cron'  => '0 8,20 * * *',
-      'class' => 'Twitter::NewTweetsFetcherJob'
+      'class' => 'Twitter::NewTweetsFetcherJob',
+      'args'  => ['SocialData::ClientAdapter']
     },
     # {
     #   'name'  => 'Send Daily Application Rate Limit levels to Slack',
