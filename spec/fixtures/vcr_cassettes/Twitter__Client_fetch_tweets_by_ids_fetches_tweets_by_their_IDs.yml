@@ -1,0 +1,70 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://api.twitter.com/2/tweets?ids=1234567890,0987654321&tweet.fields=created_at,public_metrics,non_public_metrics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      Host:
+      - api.twitter.com
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - X-Client/0.14.1 ruby/3.2.2 (x86_64-darwin22)
+      Authorization:
+      - Bearer ekV3ZDhkQm9UbEV1ZDVLcWpjSlhLbk0yYXVFVjJ0WWphTTVKU1h2eW9ta245OjE3MDkxMDQyOTI3MjA6MToxOmF0OjE
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '...' # Adjust based on the actual length of the response body
+      Date:
+      - Mon, 04 Mar 2024 03:57:24 GMT
+      Server:
+      - tsa_r
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "data": [
+            {
+              "id": "1234567890",
+              "text": "Sample tweet text for ID 1234567890",
+              "public_metrics": {
+                "retweet_count": 5,
+                "reply_count": 2,
+                "like_count": 10,
+                "quote_count": 1
+              },
+              "non_public_metrics": {
+                "impression_count": 100,
+                "user_profile_clicks": 10
+              }
+            },
+            {
+              "id": "0987654321",
+              "text": "Sample tweet text for ID 0987654321",
+              "public_metrics": {
+                "retweet_count": 3,
+                "reply_count": 1,
+                "like_count": 7,
+                "quote_count": 0
+              },
+              "non_public_metrics": {
+                "impression_count": 80,
+                "user_profile_clicks": 8
+              }
+            }
+          ]
+        }
+  recorded_at: Mon, 04 Mar 2024 03:57:25 GMT
+recorded_with: VCR 6.2.0
