@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Twitter::Client do
+RSpec.describe Twitter::Client, :vcr do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity:) }
@@ -32,13 +32,13 @@ RSpec.describe Twitter::Client do
   end
 
   describe '#fetch_user_tweets' do
-    it 'fetches new tweets from the API', :vcr do
+    it 'fetches new tweets from the API' do
       expect(client.fetch_user_tweets).to eq(fetch_user_tweets_response_body)
     end
   end
 
   describe '#fetch_user_with_metrics' do
-    it 'fetches user data with metrics from the API', :vcr do
+    it 'fetches user data with metrics from the API' do
       expect(client.fetch_user_with_metrics).to eq(fetch_user_with_metrics_response_body)
     end
   end

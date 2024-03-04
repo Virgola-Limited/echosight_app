@@ -29,11 +29,24 @@ module SocialData
       make_api_call(endpoint, params, :oauth2)
     end
 
-    def fetch_tweets_by_ids(_tweet_ids, _include_non_public_metrics = false)
-      raise 'Unavailable on SocialData.tools'
+    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = false)
+      tweets = tweet_ids.map do |tweet_id|
+        fetch_tweet_by_id(tweet_id, include_non_public_metrics)
+      end
+      tweets.compact
     end
 
     private
+
+    def fetch_tweet_by_id(tweet_id, include_non_public_metrics = false)
+      endpoint = "statuses/show"
+      params = {
+        'id' => tweet_id
+      }
+
+      make_api_call(endpoint, params, :oauth2)
+    end
+
 
     def make_api_call(endpoint, params, _auth_type)
       uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
