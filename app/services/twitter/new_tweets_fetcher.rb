@@ -21,8 +21,6 @@ module Twitter
 
     def fetch_tweets(next_token = nil)
       response = client.fetch_user_tweets(next_token)
-      p response['data'].length
-      p response['data'].last
       [response['data'] || [], response.dig('meta', 'next_token')]
     end
 
@@ -34,11 +32,10 @@ module Twitter
         break if @number_of_requests && counter >= @number_of_requests
 
         tweets, next_token = fetch_tweets(next_token)
-        p next_token
         break if tweets.empty?
 
         tweets.each do |tweet_data|
-          p tweet_data
+          # sort this to work with pinned tweets so we dont spend too much
           # break if Tweet.exists?(twitter_id: tweet_data['id']) # Stop if tweet is already stored
 
           process_tweet_data(tweet_data)

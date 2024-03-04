@@ -23,7 +23,8 @@ RSpec.describe Twitter::NewTweetsFetcher, :vcr do
         expect(attributes).to eq(first_tweet_attributes)
       end
 
-      # Do we want this any longer?
+      # Need this to work with pinned tweets
+      # one option is dont stop after the first tweet found that matches an existing tweet
       xcontext 'when we have Tweet model data persisted that matches tweets in the final request' do
         let!(:existing_tweet) { create(:tweet, twitter_id: '12345') } # Assuming a factory for tweet exists
         let(:subject) { described_class.new(user:) }
