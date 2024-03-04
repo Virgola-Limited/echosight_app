@@ -17,10 +17,17 @@ module SocialData
       adapt_user_response_format(response)
     end
 
+    def fetch_tweets_by_ids(tweet_ids, _include_non_public_metrics)
+      response = social_data_client.fetch_tweets_by_ids(tweet_ids)
+      adapt_tweets_response_format(response)
+    end
+
     private
 
     def adapt_tweets_response_format(response)
-      adapted_tweets = response['tweets'].map do |tweet|
+      tweets = response['tweets'] || response['data']
+
+      adapted_tweets = tweets.map do |tweet|
         {
           'id' => tweet['id_str'],
           'text' => tweet['full_text'] || tweet['text'],
@@ -31,12 +38,10 @@ module SocialData
             'like_count' => tweet['favorite_count'],
             'quote_count' => tweet['quote_count']
           }
-          # Add more fields as needed
         }
       end
 
       adapted_response = { 'data' => adapted_tweets }
-      # Check if 'next_cursor' exists and add it under 'meta' key in adapted response
       adapted_response['meta'] = { 'next_token' => response['next_cursor'] } if response['next_cursor']
       adapted_response
     end

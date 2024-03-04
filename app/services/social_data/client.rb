@@ -52,7 +52,8 @@ module SocialData
       uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
 
       # remove params with empty values
-      params = params.reject { |_k, v| v.nil? || v.empty? }
+      params = params.reject { |_k, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
+
       uri.query = URI.encode_www_form(params) unless params.nil? || params.empty?
 
       # Set up the request
