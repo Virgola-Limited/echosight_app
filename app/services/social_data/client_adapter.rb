@@ -22,6 +22,11 @@ module SocialData
       adapt_tweets_response_format(response)
     end
 
+    def search_tweets(params = {})
+      response = social_data_client.search_tweets(params)
+      adapt_tweets_response_format(response)
+    end
+
     private
 
     def adapt_tweets_response_format(response)
@@ -35,7 +40,8 @@ module SocialData
             'reply_count' => tweet['reply_count'],
             'like_count' => tweet['favorite_count'],
             'quote_count' => tweet['quote_count']
-          }
+          },
+          'is_pinned' => tweet['is_pinned'] || 'false'
         }
       end
 

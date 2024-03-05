@@ -4,6 +4,8 @@ module SocialData
   class Client
     attr_reader :user
 
+    MAXIMUM_TWEETS = 200
+
     def initialize(user = nil)
       @user = user
     end
@@ -12,6 +14,8 @@ module SocialData
       Rails.application.credentials.social_data[:api_key]
     end
 
+    # TODO: Internalize the next_token handling to prevent
+    # pullling too many tweets
     def fetch_user_tweets(next_token = nil)
       endpoint = "user/#{user.identity.uid}/tweets"
       params = {
@@ -23,13 +27,24 @@ module SocialData
 
     # https://socialdata.gitbook.io/docs/twitter-tweets/retrieve-search-results-by-keyword
     # https://github.com/igorbrigadir/twitter-advanced-search
-    def search_tweets(params = {}, next_token = nil)
-      # use this endpoint
-      # GET https://api.socialdata.tools/twitter/search
+    def search_tweets(params = {})
       endpoint = "search"
 
-      make_api_call(endpoint, params, :oauth2)
+      received_tweet_count = 0
+      all_tweets = []
+      while received_tweet_count < MAXIMUM_TWEETS
+        response = make_api_call(endpoint, params, :oauth2)
+        break unless response['tweets'] && !response['tweets'].empty?
+
+        all_tweets.concat(response['tweets'])
+        received_tweet_count += response['tweets'].size
+        break if received_tweet_count >= MAXIMUM_TWEETS
+
+        params['next_token'] = response['next_cursor']
+      end
+      {'tweets' => all_tweets}
     end
+
 
     def fetch_user_with_metrics
       endpoint = "user/#{user.identity.uid}"

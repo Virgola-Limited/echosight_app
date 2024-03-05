@@ -49,4 +49,27 @@ RSpec.describe SocialData::ClientAdapter, vcr: { cassette_name: 'SocialData__Cli
       }
     }
   end
+
+  describe '#search_tweets' do
+    let(:params) { {query: "from:elonmusk" } }
+    it 'returns adapted social data in the expected format' do
+      VCR.use_cassette('SocialData__Client_search_tweets_when_providing_within_time_parameter_fetches_tweets_for_that_time_frame.yml') do
+        adapted_data = client_adapter.search_tweets(params)
+        expect(adapted_data).to be_a(Hash)
+        expect(adapted_data['data']).to be_an(Array)
+        expect(adapted_data['data'].last).to eq(first_tweet)
+        expect(adapted_data['data'].size).to eq(200)
+      end
+    end
+
+    let(:first_tweet) {
+      {
+        "id"=>"1765035782774137074",
+        "text" => "Sorry to bother everyone with this note, as it applies to people in the greater Austin area, but please go to the polls and vote for a new District Attorney!",
+        "created_at"=>"2024-03-05T15:24:58.000000Z",
+        "public_metrics" => {"like_count"=>35450, "quote_count"=>235, "reply_count"=>2069, "retweet_count"=>7851},
+        "is_pinned"=>"false"
+      }
+    }
+  end
 end
