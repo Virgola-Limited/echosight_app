@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe SocialData::Client, :vcr do
-  let(:user) { double('User', identity: double('Identity', uid: '1691930809756991488')) }
+  let(:identity) { create(:identity) }
+  let(:user) { identity.user }
   let(:client) { described_class.new(user) }
 
   describe '#fetch_user_tweets' do
@@ -27,6 +28,30 @@ RSpec.describe SocialData::Client, :vcr do
       it 'fetches valid tweets by their IDs from the API' do
         response = client.fetch_tweets_by_ids(tweet_ids)
         expect(response).to eq(fetch_tweets_by_ids_response_body)
+      end
+    end
+  end
+
+  describe '#search_tweets' do
+    context 'when providing within_time parameter' do
+      context 'when there are less than 1 page of tweets' do
+        it 'fetches tweets for that time frame' do
+            params = { query: "from:#{user.handle} within_time:15m" }
+            response = client.search_tweets(params)
+
+            # Extract the response time from the VCR cassette
+            vcr_response_time = Time.parse("Tue, 05 Mar 2024 18:54:26 GMT")
+            expect(response['tweets'].count).to eq(3)
+            response['tweets'].each do |tweet|
+              tweet_created_at = Time.parse(tweet['tweet_created_at'])
+              expect(tweet_created_at).to be_within(15.minutes).of(vcr_response_time)
+            end
+          end
+        end
+
+      context 'when there are more than 1 page of tweets' do
+        # TODO: Add test to ensure pagination works as expected
+        skip
       end
     end
   end

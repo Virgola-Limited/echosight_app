@@ -12,12 +12,21 @@ module SocialData
       Rails.application.credentials.social_data[:api_key]
     end
 
-    # TODO: need to iterate over tweets until we reach one we already have
     def fetch_user_tweets(next_token = nil)
       endpoint = "user/#{user.identity.uid}/tweets"
       params = {
         'cursor' => next_token
       }
+
+      make_api_call(endpoint, params, :oauth2)
+    end
+
+    # https://socialdata.gitbook.io/docs/twitter-tweets/retrieve-search-results-by-keyword
+    # https://github.com/igorbrigadir/twitter-advanced-search
+    def search_tweets(params = {}, next_token = nil)
+      # use this endpoint
+      # GET https://api.socialdata.tools/twitter/search
+      endpoint = "search"
 
       make_api_call(endpoint, params, :oauth2)
     end
