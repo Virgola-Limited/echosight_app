@@ -21,7 +21,8 @@ RSpec.describe SocialData::ClientAdapter, vcr: { cassette_name: 'SocialData__Cli
         "id"=>"1740498992587567374",
         "text"=>"test",
         "created_at"=>"2023-12-28T22:24:31.000000Z",
-        "public_metrics" => {"like_count"=>0, "quote_count"=>0, "reply_count"=>0, "retweet_count"=>0}
+        "public_metrics" => {"like_count"=>0, "quote_count"=>0, "reply_count"=>0, "retweet_count"=>0},
+        "is_pinned"=>"false"
       }
     }
   end
