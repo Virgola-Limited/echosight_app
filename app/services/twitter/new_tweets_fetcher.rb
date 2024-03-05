@@ -8,6 +8,7 @@ module Twitter
     attr_reader :user, :client, :number_of_requests
 
     def initialize(user:, number_of_requests:, client: nil)
+      raise 'Possibly not needed now we have twitter search'
       @number_of_requests = number_of_requests
       @user = user
       @client = client || SocialData::ClientAdapter.new(user)
@@ -24,6 +25,8 @@ module Twitter
       [response['data'] || [], response.dig('meta', 'next_token')]
     end
 
+    # ignore pinned
+    # when it gets to a non pinned
     def fetch_and_store_tweets
       next_token = nil
       counter = 0
@@ -35,9 +38,15 @@ module Twitter
         break if tweets.empty?
 
         tweets.each do |tweet_data|
-          # sort this to work with pinned tweets so we dont spend too much
-          # break if Tweet.exists?(twitter_id: tweet_data['id']) # Stop if tweet is already stored
+          if Tweet.exists?(twitter_id: tweet_data['id'])
+            p tweet_data
 
+            if tweet_data['is_pinned'] == 'false'
+              byebug
+              next_token = nil
+              p 'wont fetch more tweets'
+            end
+          end
           process_tweet_data(tweet_data)
         end
 

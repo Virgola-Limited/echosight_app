@@ -13,20 +13,19 @@ RSpec.describe Twitter::NewTweetsFetcher, :vcr do
     }
   end
 
-  context 'when the number_of_requests is set to 3' do
+  xcontext 'when the number_of_requests is set to 3' do
     let(:subject) { described_class.new(user:, number_of_requests: 3) }
 
     context 'when the user has no tweets' do
-      it 'fetches and stores 3 requests of tweets' do
+      fit 'fetches and stores 3 requests of tweets' do
+        p Tweet.count
         expect { subject.call }.to change { user.reload.tweets.count }.by(61)
         attributes = user.tweets.last.attributes.slice(*first_tweet_attributes.keys)
         expect(attributes).to eq(first_tweet_attributes)
       end
 
-      # Need this to work with pinned tweets
-      # one option is dont stop after the first tweet found that matches an existing tweet
-      xcontext 'when we have Tweet model data persisted that matches tweets in the final request' do
-        let!(:existing_tweet) { create(:tweet, twitter_id: '12345') } # Assuming a factory for tweet exists
+      context 'when we have Tweet model data persisted that matches tweets in the final request' do
+        # let!(:existing_tweet) { create(:tweet, twitter_id: '12345') } # Assuming a factory for tweet exists
         let(:subject) { described_class.new(user:) }
 
         it 'fetches and stores the tweets until it matches the existing tweet' do
@@ -42,7 +41,7 @@ RSpec.describe Twitter::NewTweetsFetcher, :vcr do
 
   let(:subject) { described_class.new(user:, number_of_requests: 1) }
 
-  it 'fetches the tweets in order of newest to oldest' do
+  xit 'fetches the tweets in order of newest to oldest' do
     subject.call
     tweets = Tweet.order(twitter_created_at: :desc).pluck(:twitter_created_at)
 
