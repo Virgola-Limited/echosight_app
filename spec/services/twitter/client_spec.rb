@@ -22,7 +22,7 @@ RSpec.describe Twitter::Client, :vcr do
 
   describe '#fetch_tweets_by_ids' do
     it 'fetches tweets by their IDs' do
-      tweet_ids = ['1234567890', '0987654321']
+      tweet_ids = %w[1234567890 0987654321]
       tweets_data = client.fetch_tweets_by_ids(tweet_ids)
       expect(tweets_data).to eq(fetch_tweets_by_ids_response_body)
     end
@@ -36,7 +36,10 @@ RSpec.describe Twitter::Client, :vcr do
   end
 
   let(:fetch_tweets_by_ids_response_body) do
-    {"data"=>[{"id"=>"1234567890", "text"=>"Sample tweet text for ID 1234567890", "public_metrics"=>{"retweet_count"=>5, "reply_count"=>2, "like_count"=>10, "quote_count"=>1}, "non_public_metrics"=>{"impression_count"=>100, "user_profile_clicks"=>10}}, {"id"=>"0987654321", "text"=>"Sample tweet text for ID 0987654321", "public_metrics"=>{"retweet_count"=>3, "reply_count"=>1, "like_count"=>7, "quote_count"=>0}, "non_public_metrics"=>{"impression_count"=>80, "user_profile_clicks"=>8}}]}
+    { 'data' => [
+      { 'id' => '1234567890', 'text' => 'Sample tweet text for ID 1234567890',
+        'public_metrics' => { 'retweet_count' => 5, 'reply_count' => 2, 'like_count' => 10, 'quote_count' => 1 }, 'non_public_metrics' => { 'impression_count' => 100, 'user_profile_clicks' => 10 } }, { 'id' => '0987654321', 'text' => 'Sample tweet text for ID 0987654321', 'public_metrics' => { 'retweet_count' => 3, 'reply_count' => 1, 'like_count' => 7, 'quote_count' => 0 }, 'non_public_metrics' => { 'impression_count' => 80, 'user_profile_clicks' => 8 } }
+    ] }
   end
 
   let(:fetch_user_with_metrics_response_body) do

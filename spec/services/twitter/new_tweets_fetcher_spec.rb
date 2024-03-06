@@ -7,7 +7,7 @@ RSpec.describe Twitter::NewTweetsFetcher, :vcr do
   let(:user) { identity.user }
   let(:first_tweet_attributes) do
     {
-      'twitter_id' => 1763545800431550673,
+      'twitter_id' => 1_763_545_800_431_550_673,
       'text' => 'A tech innovation that excites you for the future?',
       'identity_id' => identity.id
     }

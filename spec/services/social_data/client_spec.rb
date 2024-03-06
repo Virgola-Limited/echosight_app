@@ -23,7 +23,7 @@ RSpec.describe SocialData::Client, :vcr do
 
   describe '#fetch_tweets_by_ids' do
     context 'when the tweet IDs are a mixture of valid and invalid IDs' do
-      let(:tweet_ids) { ['1758983678515085403', '1740577614476321069'] }
+      let(:tweet_ids) { %w[1758983678515085403 1740577614476321069] }
 
       it 'fetches valid tweets by their IDs from the API' do
         response = client.fetch_tweets_by_ids(tweet_ids)
@@ -36,10 +36,12 @@ RSpec.describe SocialData::Client, :vcr do
     context 'when providing within_time parameter' do
       context 'when there are less than 1 page of tweets' do
         let(:user_keys) do
-          ["id", "id_str", "name", "screen_name", "location", "url", "description", "protected", "verified", "followers_count", "friends_count", "listed_count", "favourites_count", "statuses_count", "created_at", "profile_banner_url", "profile_image_url_https", "can_dm"]
+          %w[id id_str name screen_name location url description protected verified
+             followers_count friends_count listed_count favourites_count statuses_count created_at profile_banner_url profile_image_url_https can_dm]
         end
         let(:non_null_user_keys) do
-          ["id", "id_str", "name", "screen_name", "followers_count", "friends_count", "listed_count", "favourites_count", "statuses_count", "created_at", "profile_banner_url", "profile_image_url_https"]
+          %w[id id_str name screen_name followers_count friends_count listed_count
+             favourites_count statuses_count created_at profile_banner_url profile_image_url_https]
         end
 
         it 'fetches tweets and user for that time frame including user data' do
@@ -47,7 +49,7 @@ RSpec.describe SocialData::Client, :vcr do
           response = client.search_tweets(params)
 
           # Extract the response time from the VCR cassette
-          vcr_response_time = Time.parse("Wed, 06 Mar 2024 03:06:15 GMT")
+          vcr_response_time = Time.parse('Wed, 06 Mar 2024 03:06:15 GMT')
           expect(response['tweets'].count).to eq(3)
           response['tweets'].each do |tweet|
             tweet_created_at = Time.parse(tweet['tweet_created_at'])
@@ -77,7 +79,8 @@ RSpec.describe SocialData::Client, :vcr do
   let(:fetch_tweets_by_ids_response_body) do
     {
       'tweets' => [
-        {"tweet_created_at"=>"2024-02-17T22:36:03.000000Z", "id"=>1758983678515085403, "id_str"=>"1758983678515085403", "text"=>nil, "full_text"=>"test", "source"=>"<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>", "truncated"=>false, "in_reply_to_status_id"=>nil, "in_reply_to_status_id_str"=>nil, "in_reply_to_user_id"=>nil, "in_reply_to_user_id_str"=>nil, "in_reply_to_screen_name"=>nil, "user"=>{"id"=>1691930809756991488, "id_str"=>"1691930809756991488", "name"=>"Topher", "screen_name"=>"TopherToy", "location"=>"", "url"=>nil, "description"=>"Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq", "protected"=>false, "verified"=>false, "followers_count"=>3, "friends_count"=>16, "listed_count"=>0, "favourites_count"=>11, "statuses_count"=>19, "created_at"=>"2023-08-16T21:52:25.000000Z", "profile_banner_url"=>"https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482", "profile_image_url_https"=>"https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg", "can_dm"=>false}, "quoted_status_id"=>nil, "quoted_status_id_str"=>nil, "is_quote_status"=>false, "quoted_status"=>nil, "retweeted_status"=>nil, "quote_count"=>0, "reply_count"=>0, "retweet_count"=>0, "favorite_count"=>0, "lang"=>"en", "entities"=>{"user_mentions"=>[], "urls"=>[], "hashtags"=>[], "symbols"=>[]}, "views_count"=>17, "bookmark_count"=>0}, {"tweet_created_at"=>"2023-12-29T03:36:56.000000Z", "id"=>1740577614476321069, "id_str"=>"1740577614476321069", "text"=>nil, "full_text"=>"test2", "source"=>"<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>", "truncated"=>false, "in_reply_to_status_id"=>nil, "in_reply_to_status_id_str"=>nil, "in_reply_to_user_id"=>nil, "in_reply_to_user_id_str"=>nil, "in_reply_to_screen_name"=>nil, "user"=>{"id"=>1691930809756991488, "id_str"=>"1691930809756991488", "name"=>"Topher", "screen_name"=>"TopherToy", "location"=>"", "url"=>nil, "description"=>"Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq", "protected"=>false, "verified"=>false, "followers_count"=>3, "friends_count"=>16, "listed_count"=>0, "favourites_count"=>11, "statuses_count"=>19, "created_at"=>"2023-08-16T21:52:25.000000Z", "profile_banner_url"=>"https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482", "profile_image_url_https"=>"https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg", "can_dm"=>false}, "quoted_status_id"=>nil, "quoted_status_id_str"=>nil, "is_quote_status"=>false, "quoted_status"=>nil, "retweeted_status"=>nil, "quote_count"=>0, "reply_count"=>0, "retweet_count"=>0, "favorite_count"=>0, "lang"=>"en", "entities"=>{"user_mentions"=>[], "urls"=>[], "hashtags"=>[], "symbols"=>[]}, "views_count"=>8, "bookmark_count"=>0}
+        { 'tweet_created_at' => '2024-02-17T22:36:03.000000Z', 'id' => 1_758_983_678_515_085_403, 'id_str' => '1758983678515085403',
+          'text' => nil, 'full_text' => 'test', 'source' => '<a href="https://mobile.twitter.com" rel="nofollow">Twitter Web App</a>', 'truncated' => false, 'in_reply_to_status_id' => nil, 'in_reply_to_status_id_str' => nil, 'in_reply_to_user_id' => nil, 'in_reply_to_user_id_str' => nil, 'in_reply_to_screen_name' => nil, 'user' => { 'id' => 1_691_930_809_756_991_488, 'id_str' => '1691930809756991488', 'name' => 'Topher', 'screen_name' => 'TopherToy', 'location' => '', 'url' => nil, 'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq', 'protected' => false, 'verified' => false, 'followers_count' => 3, 'friends_count' => 16, 'listed_count' => 0, 'favourites_count' => 11, 'statuses_count' => 19, 'created_at' => '2023-08-16T21:52:25.000000Z', 'profile_banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482', 'profile_image_url_https' => 'https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg', 'can_dm' => false }, 'quoted_status_id' => nil, 'quoted_status_id_str' => nil, 'is_quote_status' => false, 'quoted_status' => nil, 'retweeted_status' => nil, 'quote_count' => 0, 'reply_count' => 0, 'retweet_count' => 0, 'favorite_count' => 0, 'lang' => 'en', 'entities' => { 'user_mentions' => [], 'urls' => [], 'hashtags' => [], 'symbols' => [] }, 'views_count' => 17, 'bookmark_count' => 0 }, { 'tweet_created_at' => '2023-12-29T03:36:56.000000Z', 'id' => 1_740_577_614_476_321_069, 'id_str' => '1740577614476321069', 'text' => nil, 'full_text' => 'test2', 'source' => '<a href="https://mobile.twitter.com" rel="nofollow">Twitter Web App</a>', 'truncated' => false, 'in_reply_to_status_id' => nil, 'in_reply_to_status_id_str' => nil, 'in_reply_to_user_id' => nil, 'in_reply_to_user_id_str' => nil, 'in_reply_to_screen_name' => nil, 'user' => { 'id' => 1_691_930_809_756_991_488, 'id_str' => '1691930809756991488', 'name' => 'Topher', 'screen_name' => 'TopherToy', 'location' => '', 'url' => nil, 'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq', 'protected' => false, 'verified' => false, 'followers_count' => 3, 'friends_count' => 16, 'listed_count' => 0, 'favourites_count' => 11, 'statuses_count' => 19, 'created_at' => '2023-08-16T21:52:25.000000Z', 'profile_banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482', 'profile_image_url_https' => 'https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg', 'can_dm' => false }, 'quoted_status_id' => nil, 'quoted_status_id_str' => nil, 'is_quote_status' => false, 'quoted_status' => nil, 'retweeted_status' => nil, 'quote_count' => 0, 'reply_count' => 0, 'retweet_count' => 0, 'favorite_count' => 0, 'lang' => 'en', 'entities' => { 'user_mentions' => [], 'urls' => [], 'hashtags' => [], 'symbols' => [] }, 'views_count' => 8, 'bookmark_count' => 0 }
       ]
     }
   end

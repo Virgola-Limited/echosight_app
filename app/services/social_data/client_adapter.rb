@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SocialData
   class ClientAdapter
     attr_reader :user, :social_data_client
@@ -50,21 +52,24 @@ module SocialData
       end
 
       adapted_response = { 'data' => adapted_tweets }
-      adapted_response['meta'] = { 'next_token' => response['next_cursor'] } if response.is_a?(Hash) && response['next_cursor']
+      if response.is_a?(Hash) && response['next_cursor']
+        adapted_response['meta'] =
+          { 'next_token' => response['next_cursor'] }
+      end
       adapted_response
     end
 
     def adapt_user_response_format(response)
       {
-        "data" => {
-          "id" => response["id_str"],
-          "name" => response["name"],
-          "username" => response["screen_name"],
-          "public_metrics" => {
-            "followers_count" => response["followers_count"],
-            "following_count" => response["friends_count"], # Assuming following_count maps to friends_count
-            "listed_count" => response["listed_count"],
-            "tweet_count" => response["statuses_count"]
+        'data' => {
+          'id' => response['id_str'],
+          'name' => response['name'],
+          'username' => response['screen_name'],
+          'public_metrics' => {
+            'followers_count' => response['followers_count'],
+            'following_count' => response['friends_count'], # Assuming following_count maps to friends_count
+            'listed_count' => response['listed_count'],
+            'tweet_count' => response['statuses_count']
           }
         }
       }

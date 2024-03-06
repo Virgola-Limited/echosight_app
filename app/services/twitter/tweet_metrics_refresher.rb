@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Twitter
   class TweetMetricsRefresher
     attr_reader :user, :client, :batch_size, :include_non_public_metrics
@@ -14,7 +16,7 @@ module Twitter
 
     def call
       outdated_tweet_ids.each_slice(batch_size) do |batch|
-        update_tweets_and_metrics(batch, include_non_public_metrics: include_non_public_metrics)
+        update_tweets_and_metrics(batch, include_non_public_metrics:)
       end
     end
 
@@ -22,10 +24,10 @@ module Twitter
 
     def outdated_tweet_ids
       user.identity.tweets
-           .where('twitter_created_at > ?', UPDATABLE_TIME_FRAME)
-           .where('updated_at < ?', 24.hours.ago)
-           .order(updated_at: :asc)
-           .pluck(:twitter_id)
+          .where('twitter_created_at > ?', UPDATABLE_TIME_FRAME)
+          .where('updated_at < ?', 24.hours.ago)
+          .order(updated_at: :asc)
+          .pluck(:twitter_id)
     end
 
     def update_tweets_and_metrics(tweet_ids, include_non_public_metrics:)
@@ -42,7 +44,7 @@ module Twitter
       tweet.touch
 
       metric_attributes = {
-        tweet: tweet,
+        tweet:,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
@@ -57,8 +59,7 @@ module Twitter
         metric_attributes[:user_profile_clicks] = non_public_metrics.fetch('user_profile_clicks', nil)
       end
 
-      result = TweetMetric.create!(metric_attributes)
-      result
+      TweetMetric.create!(metric_attributes)
     end
   end
 end

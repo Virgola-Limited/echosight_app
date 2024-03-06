@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Twitter
-
   # Currently not used might be useful if we go to the Pro plan.
   class HourlyTweetCountsUpdater
     attr_reader :user

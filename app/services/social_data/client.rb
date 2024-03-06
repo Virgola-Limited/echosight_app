@@ -29,7 +29,7 @@ module SocialData
     # https://socialdata.gitbook.io/docs/twitter-tweets/retrieve-search-results-by-keyword
     # https://github.com/igorbrigadir/twitter-advanced-search
     def search_tweets(params = {}, single_request = false)
-      endpoint = "search"
+      endpoint = 'search'
 
       received_tweet_count = 0
       all_tweets = []
@@ -48,7 +48,7 @@ module SocialData
 
         params['cursor'] = response['next_cursor']
       end
-      {'tweets' => all_tweets}
+      { 'tweets' => all_tweets }
     end
 
     def fetch_user_with_metrics
@@ -71,15 +71,14 @@ module SocialData
       tweet['user'] || {}
     end
 
-    def fetch_tweet_by_id(tweet_id, include_non_public_metrics = false)
-      endpoint = "statuses/show"
+    def fetch_tweet_by_id(tweet_id, _include_non_public_metrics = false)
+      endpoint = 'statuses/show'
       params = {
         'id' => tweet_id
       }
 
       make_api_call(endpoint, params, :oauth2)
     end
-
 
     def make_api_call(endpoint, params, _auth_type)
       uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
