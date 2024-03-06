@@ -37,19 +37,25 @@ module SocialData
         response = make_api_call(endpoint, params, :oauth2)
         break unless response['tweets'] && !response['tweets'].empty?
 
-        # Include user data for each tweet
         tweets_with_user_data = response['tweets'].map do |tweet|
           tweet.merge('user' => extract_user_data(tweet))
         end
 
         all_tweets.concat(tweets_with_user_data)
         received_tweet_count += response['tweets'].size
-        break if received_tweet_count >= MAXIMUM_TWEETS || response['next_cursor'].nil? || single_request
+        break if single_request || response['next_cursor'].nil?
 
         params['cursor'] = response['next_cursor']
       end
+
+      if received_tweet_count >= MAXIMUM_TWEETS
+        error_details = { error: "Reached maximum tweet count of #{MAXIMUM_TWEETS} for endpoint: #{endpoint}, params: #{params.to_s}" }
+        ExceptionNotifier.notify_exception(StandardError.new("Maximum tweets limit reached"), data: error_details)
+      end
+
       { 'tweets' => all_tweets }
     end
+
 
     def fetch_user_with_metrics
       endpoint = "user/#{user.identity.uid}"
