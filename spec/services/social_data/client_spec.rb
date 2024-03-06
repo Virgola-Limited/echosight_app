@@ -35,16 +35,30 @@ RSpec.describe SocialData::Client, :vcr do
   describe '#search_tweets' do
     context 'when providing within_time parameter' do
       context 'when there are less than 1 page of tweets' do
-        fit 'fetches tweets for that time frame' do
+        let(:user_keys) do
+          ["id", "id_str", "name", "screen_name", "location", "url", "description", "protected", "verified", "followers_count", "friends_count", "listed_count", "favourites_count", "statuses_count", "created_at", "profile_banner_url", "profile_image_url_https", "can_dm"]
+        end
+        let(:non_null_user_keys) do
+          ["id", "id_str", "name", "screen_name", "followers_count", "friends_count", "listed_count", "favourites_count", "statuses_count", "created_at", "profile_banner_url", "profile_image_url_https"]
+        end
+
+        it 'fetches tweets and user for that time frame including user data' do
           params = { query: "from:#{user.handle} within_time:15m" }
           response = client.search_tweets(params)
 
           # Extract the response time from the VCR cassette
-          vcr_response_time = Time.parse("Wed, 06 Mar 2024 02:35:10 GMT")
+          vcr_response_time = Time.parse("Wed, 06 Mar 2024 03:06:15 GMT")
           expect(response['tweets'].count).to eq(3)
           response['tweets'].each do |tweet|
             tweet_created_at = Time.parse(tweet['tweet_created_at'])
             expect(tweet_created_at).to be_within(15.minutes).of(vcr_response_time)
+
+            expect(tweet).to include('user')
+            expect(tweet['user'].keys).to match_array(user_keys)
+            non_null_user_keys.each do |key|
+              expect(tweet['user'][key]).to_not be_nil
+            end
+
           end
         end
       end

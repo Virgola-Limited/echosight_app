@@ -37,7 +37,12 @@ module SocialData
         response = make_api_call(endpoint, params, :oauth2)
         break unless response['tweets'] && !response['tweets'].empty?
 
-        all_tweets.concat(response['tweets'])
+        # Include user data for each tweet
+        tweets_with_user_data = response['tweets'].map do |tweet|
+          tweet.merge('user' => extract_user_data(tweet))
+        end
+
+        all_tweets.concat(tweets_with_user_data)
         received_tweet_count += response['tweets'].size
         break if received_tweet_count >= MAXIMUM_TWEETS
 
@@ -45,7 +50,6 @@ module SocialData
       end
       {'tweets' => all_tweets}
     end
-
 
     def fetch_user_with_metrics
       endpoint = "user/#{user.identity.uid}"
@@ -62,6 +66,10 @@ module SocialData
     end
 
     private
+
+    def extract_user_data(tweet)
+      tweet['user'] || {}
+    end
 
     def fetch_tweet_by_id(tweet_id, include_non_public_metrics = false)
       endpoint = "statuses/show"
