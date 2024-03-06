@@ -10,13 +10,13 @@
 
 
 def create_follower_count_data(identity_id, start_date, end_date, start_followers, end_followers)
-  TwitterFollowersCount.where(identity_id: identity_id).delete_all
+  TwitterUserMetric.where(identity_id: identity_id).delete_all
   total_days = (end_date - start_date).to_i
   daily_increment = (end_followers - start_followers) / total_days.to_f
 
   (start_date..end_date).each do |date|
     follower_count = start_followers + ((date - start_date).to_i * daily_increment).round
-    TwitterFollowersCount.create!(
+    TwitterUserMetric.create!(
       identity_id: identity_id,
       followers_count: follower_count,
       date: date
@@ -92,7 +92,7 @@ if Rails.env.development?
     # if days_required_in_follower_seed_data
       # Identity ID from the first user's identity
       # identity_id = User.first.identity.id
-      # TwitterFollowersCount.where(identity_id: identity_id).delete_all
+      # TwitterUserMetric.where(identity_id: identity_id).delete_all
       # create_follower_count_data(identity_id, days_required_in_follower_seed_data, Date.today, 1000, 1070)
     # end
 

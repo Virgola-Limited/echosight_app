@@ -1,4 +1,4 @@
-ActiveAdmin.register TwitterFollowersCount do
+ActiveAdmin.register TwitterUserMetric do
   actions :index, :show
 
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }

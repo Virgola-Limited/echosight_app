@@ -11,7 +11,7 @@ module Twitter
     end
 
     def updater_class
-      FollowersUpdater
+      UserMetricsUpdater
     end
   end
 end
