@@ -7,6 +7,8 @@ class PublicPagesController < ApplicationController
 
     raise 'Missing user' unless @user
 
+    @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
+
     ############################
     # Posts/Tweet Counts
     @tweet_count_over_available_time_period = tweet_metrics_query.tweet_count_over_available_time_period

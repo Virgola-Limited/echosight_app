@@ -4,9 +4,15 @@ module Twitter
   class TweetMetricsQuery
     attr_reader :user
 
+    MAXIMUM_DAYS_OF_DATA = 7
+
     def initialize(user:, start_time: nil)
       @user = user
       @start_time = start_time || 1.week.ago.utc
+    end
+
+    def self.maximum_days_of_data
+      MAXIMUM_DAYS_OF_DATA
     end
 
     def tweet_count_over_available_time_period
@@ -93,7 +99,7 @@ module Twitter
       # Select raw data without engagement rate calculation
       query = Tweet.joins(:tweet_metrics)
                    .where(tweets_table[:identity_id].eq(user.identity.id))
-                   .where(tweets_table[:created_at].gt(28.days.ago)) # Check only the last 28 days of tweets
+                   .where(tweets_table[:created_at].gt(MAXIMUM_DAYS_OF_DATA.days.ago))
                    .select("tweets.*, #{metrics_sql}")
                    .group(tweets_table[:id])
                    .order('MAX(tweet_metrics.impression_count) DESC')
@@ -158,7 +164,7 @@ module Twitter
     def impression_counts_per_day
       # Subquery to select the latest TweetMetric record for each day
       subquery = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
-                            .where('pulled_at > ?', 28.days.ago)
+                            .where('pulled_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
                             .order('tweet_id, DATE(pulled_at), pulled_at DESC')
 
       # Inner query to calculate the daily impression count using window function
@@ -201,7 +207,7 @@ module Twitter
       latest_metrics_join_clause = "INNER JOIN (#{latest_metrics_subquery}) latest_metrics_per_day ON tweet_metrics.id = latest_metrics_per_day.max_id"
 
       tweets_with_engagement = Tweet.joins(:tweet_metrics)
-                                    .where('tweets.twitter_created_at > ?', 28.days.ago)
+                                    .where('tweets.twitter_created_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
                                     .joins(latest_metrics_join_clause) # Join using the subquery
                                     .joins(:identity) # Join with identities to access the user
                                     .where(identities_table[:user_id].eq(user.id)) # Use the user_id from the identities table

@@ -20,7 +20,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Tweets Needing Refresh"
     tweets = Tweet.where('updated_at < ?', 24.hours.ago)
-                  .where('twitter_created_at > ?', 28.days.ago)
+                  .where('twitter_created_at > ?', 7.days.ago)
     section do
       div do
         span "Total Tweets not updated in 24 hours: #{tweets.count}"
