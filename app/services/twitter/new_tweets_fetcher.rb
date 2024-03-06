@@ -8,7 +8,7 @@ module Twitter
     attr_reader :user, :client, :number_of_requests
 
     def initialize(user:, number_of_requests:, client: nil)
-      raise 'Possibly not needed now we have twitter search'
+      raise 'Possibly not needed now we have twitter search endpoint'
       @number_of_requests = number_of_requests
       @user = user
       @client = client || SocialData::ClientAdapter.new(user)

@@ -3,6 +3,7 @@ module Twitter
     private
 
     def update_user(user, client_class = nil)
+      raise 'Can get this from the tweet search now'
       client = client_class.new(user) if client_class
       updater_class.new(user: user, client: client).call
     end

@@ -5,6 +5,7 @@ module Twitter
     UPDATABLE_TIME_FRAME = 7.days.ago
 
     def initialize(user:, client: nil, batch_size: 120)
+      raise 'Deprecated'
       @user = user
       @client = client || SocialData::ClientAdapter.new(user)
       @batch_size = batch_size

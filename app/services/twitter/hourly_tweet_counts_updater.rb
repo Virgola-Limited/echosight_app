@@ -7,7 +7,7 @@ module Twitter
     attr_reader :user
 
     def initialize(user)
-      raise 'Not used'
+      raise 'Deprecated'
       @user = user
     end
 
