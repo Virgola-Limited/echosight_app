@@ -4,7 +4,8 @@ module SocialData
   class Client
     attr_reader :user
 
-    MAXIMUM_TWEETS = 200
+    # perhaps removing this or increase it a very large amount
+    MAXIMUM_TWEETS = 1400
 
     def initialize(user = nil)
       @user = user
@@ -40,7 +41,7 @@ module SocialData
         received_tweet_count += response['tweets'].size
         break if received_tweet_count >= MAXIMUM_TWEETS
 
-        params['next_token'] = response['next_cursor']
+        params['cursor'] = response['next_cursor']
       end
       {'tweets' => all_tweets}
     end
