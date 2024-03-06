@@ -35,12 +35,12 @@ RSpec.describe SocialData::Client, :vcr do
   describe '#search_tweets' do
     context 'when providing within_time parameter' do
       context 'when there are less than 1 page of tweets' do
-        it 'fetches tweets for that time frame' do
+        fit 'fetches tweets for that time frame' do
           params = { query: "from:#{user.handle} within_time:15m" }
           response = client.search_tweets(params)
 
           # Extract the response time from the VCR cassette
-          vcr_response_time = Time.parse("Tue, 05 Mar 2024 18:54:26 GMT")
+          vcr_response_time = Time.parse("Wed, 06 Mar 2024 02:35:10 GMT")
           expect(response['tweets'].count).to eq(3)
           response['tweets'].each do |tweet|
             tweet_created_at = Time.parse(tweet['tweet_created_at'])
@@ -49,14 +49,15 @@ RSpec.describe SocialData::Client, :vcr do
         end
       end
 
-      context 'when potentially fetching multiple pages of tweets' do
-        fit 'fetches a maximum of 200 tweets' do
-          params = { query: "from:elonmusk" }
+      # invalid as we allow for 1400 now
+      # context 'when potentially fetching multiple pages of tweets' do
+      #   it 'fetches a maximum of 200 tweets' do
+      #     params = { query: "from:elonmusk" }
 
-          response = client.search_tweets(params)
-          expect( response['tweets'].size).to eq(200)
-        end
-      end
+      #     response = client.search_tweets(params)
+      #     expect( response['tweets'].size).to eq(200)
+      #   end
+      # end
     end
   end
 

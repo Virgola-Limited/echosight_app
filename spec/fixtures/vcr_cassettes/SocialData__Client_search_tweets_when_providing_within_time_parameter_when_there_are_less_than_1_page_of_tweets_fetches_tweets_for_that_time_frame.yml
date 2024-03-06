@@ -23,7 +23,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 05 Mar 2024 19:16:30 GMT
+      - Wed, 06 Mar 2024 02:35:10 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -41,23 +41,79 @@ http_interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=wbAgfLKdQHv24aFa1Xc3JVNMwbZYEuW3OF%2BDoM8Iut3KJUf%2BLU3Jl%2BiKy2vQyJXxvRP%2FdyqxqlAt8QvcMb6ReWnncT5dS6YWhR63HVT%2Fev8JOtXaW59dt9vQqt9hc9gl58EcCOK8QA%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=2ffla%2FDPmpJSkFFrwVNlYgyHG22UO4Coi5prgcQwwknihDlqrqZKb2gueEbI8idQUErrEIJX1IbdhrGquXRwfVPK%2B%2F3WEQNDTOJiTyoYwZWjAtzRxfi%2FOp4KsLzIGqUjBuIRiP6TLw%3D%3D"}],"group":"cf-nel","max_age":604800}'
       Nel:
       - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Cf-Ray:
-      - 85fc70cb3e4b50c5-AKL
+      - 85fef364de3b1c50-AKL
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"tweets":[{"tweet_created_at":"2024-03-05T19:06:51.000000Z","id":1765091622617002043,"id_str":"1765091622617002043","text":null,"full_text":"test3","source":"<a
+      string: '{"tweets":[{"tweet_created_at":"2024-03-06T02:29:10.000000Z","id":1765202937155039324,"id_str":"1765202937155039324","text":null,"full_text":"test
+        2333","source":"<a href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter
+        Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
+        Your Twitter\/X Strategy with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":5,"friends_count":16,"listed_count":0,"favourites_count":11,"statuses_count":28,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1702516482","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1729697224278552576\/pa9ZhTkQ_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":1,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-03-06T02:29:06.000000Z","id":1765202919794880683,"id_str":"1765202919794880683","text":null,"full_text":"test
+        455","source":"<a href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter
+        Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
+        Your Twitter\/X Strategy with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":5,"friends_count":16,"listed_count":0,"favourites_count":11,"statuses_count":28,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1702516482","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1729697224278552576\/pa9ZhTkQ_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":1,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-03-06T02:29:01.000000Z","id":1765202898265489851,"id_str":"1765202898265489851","text":null,"full_text":"test4","source":"<a
         href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
-        Your Twitter\/X Strategy with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":5,"friends_count":16,"listed_count":0,"favourites_count":11,"statuses_count":25,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1702516482","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1729697224278552576\/pa9ZhTkQ_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":2,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-03-05T19:06:47.000000Z","id":1765091605055492403,"id_str":"1765091605055492403","text":null,"full_text":"test2","source":"<a
-        href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
-        Your Twitter\/X Strategy with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":5,"friends_count":16,"listed_count":0,"favourites_count":11,"statuses_count":25,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1702516482","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1729697224278552576\/pa9ZhTkQ_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":2,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-03-05T19:06:43.000000Z","id":1765091590555808179,"id_str":"1765091590555808179","text":null,"full_text":"test","source":"<a
-        href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
-        Your Twitter\/X Strategy with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":5,"friends_count":16,"listed_count":0,"favourites_count":11,"statuses_count":25,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1702516482","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1729697224278552576\/pa9ZhTkQ_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":2,"bookmark_count":0,"is_pinned":false}],"next_cursor":"DAADDAABCgABGH7depoasDsKAAIYft1zIxuxswAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYft-vaQAnEAoABhh-369o_9jwAAA"}'
-  recorded_at: Tue, 05 Mar 2024 19:16:29 GMT
+        Your Twitter\/X Strategy with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":5,"friends_count":16,"listed_count":0,"favourites_count":11,"statuses_count":28,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1702516482","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1729697224278552576\/pa9ZhTkQ_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":1,"bookmark_count":0,"is_pinned":false}],"next_cursor":"DAADDAABCgABGH9CuAmaMFwKAAIYf0Ku-5rBuwAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYf0QXeMAnEAoABhh_RBd4v9jwAAA"}'
+  recorded_at: Wed, 06 Mar 2024 02:35:10 GMT
+- request:
+    method: get
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGH9CuAmaMFwKAAIYf0Ku-5rBuwAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYf0QXeMAnEAoABhh_RBd4v9jwAAA&query=from:TopherToy%20within_time:15m
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 06 Mar 2024 02:35:12 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '118'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v3?s=iWX5NNFUEeTLoLhoYZoLUrnEMlY9yykXQN3wxV6GKLAdzxOdHWwthUljr3XGRxpNRh97CS9Q0%2BuTertpKqQbyD96uKcXZ7bWm%2BTIywrn5zUm3ntV%2Bb2eNKJXXWA09S1cGmulKwo6dQ%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 85fef37279ae50aa-AKL
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[],"next_cursor":null}'
+  recorded_at: Wed, 06 Mar 2024 02:35:12 GMT
 recorded_with: VCR 6.2.0
