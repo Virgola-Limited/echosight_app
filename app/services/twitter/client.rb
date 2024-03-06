@@ -11,23 +11,21 @@ module Twitter
 
     # https://developer.twitter.com/en/portal/products/basic
 
-
     # | Endpoint            | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
     # |---------------------|-----------|----------------|----------|-----------------------------|------------------------|
     # | GET_2_users_param   | 500       | 24 hours       | per user | no                          | 15,000                 |
     # | GET_2_users_param   | 100       | 24 hours       | per app  | no                          | 3,000                  |
-    def fetch_user_public_metrics
+    def fetch_user_with_metrics
       endpoint = "users/#{user.identity.uid}"
       params = { 'user.fields' => 'public_metrics' }
       make_api_call(endpoint, params, :oauth1)
     end
 
-
     # | Endpoint                  | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
     # |---------------------------|-----------|----------------|----------|-----------------------------|------------------------|
     # | GET_2_users_param_tweets  | 10        | 15 minutes     | per app  | yes                         | 10,000                 |
     # | GET_2_users_param_tweets  | 5         | 15 minutes     | per user | yes                         | 10,000                 |
-    def fetch_new_tweets(next_token = nil)
+    def fetch_user_tweets(next_token = nil)
       endpoint = "users/#{user.identity.uid}/tweets"
       params = {
         'tweet.fields' => 'created_at,public_metrics,non_public_metrics',
@@ -38,18 +36,13 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
-
-    # | Endpoint       | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
-    # |----------------|-----------|----------------|----------|-----------------------------|------------------------|
-    # | GET_2_tweets   | 15        | 15 minutes     | per user | yes                         | 10,000                 |
-    # | GET_2_tweets   | 15        | 15 minutes     | per app  | yes                         | 10,000                 |
     def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = true)
-      endpoint = "tweets"
+      endpoint = 'tweets'
       fields = 'created_at,public_metrics'
       fields += ',non_public_metrics' if include_non_public_metrics
 
       params = {
-        'ids' => tweet_ids.join(','),  # Convert to a comma-separated string
+        'ids' => tweet_ids.join(','), # Convert to a comma-separated string
         'tweet.fields' => fields
       }
 
@@ -87,13 +80,13 @@ module Twitter
       encoded_credentials = Base64.strict_encode64(credentials)
 
       # Include the encoded credentials in the Authorization header
-      request["Authorization"] = "Basic #{encoded_credentials}"
+      request['Authorization'] = "Basic #{encoded_credentials}"
 
       # Set the request body with the refresh token and grant type
       request.body = URI.encode_www_form({
-        'refresh_token' => oauth_credential.refresh_token,
-        'grant_type' => 'refresh_token'
-      })
+                                           'refresh_token' => oauth_credential.refresh_token,
+                                           'grant_type' => 'refresh_token'
+                                         })
 
       # Perform the request
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
@@ -101,19 +94,18 @@ module Twitter
       end
 
       # Parse the response
-      if response.is_a?(Net::HTTPSuccess)
-        new_creds = JSON.parse(response.body)
+      raise "Failed to refresh token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
-        # Return the new token details
-        {
-          token: new_creds['access_token'],
-          refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
-          expires_at: Time.now + new_creds['expires_in'].to_i
-        }
-      else
-        # Raise an error with the response body
-        raise "Failed to refresh token: #{response.body}"
-      end
+      new_creds = JSON.parse(response.body)
+
+      # Return the new token details
+      {
+        token: new_creds['access_token'],
+        refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
+        expires_at: Time.now + new_creds['expires_in'].to_i
+      }
+
+      # Raise an error with the response body
     end
 
     def handle_api_error(e, endpoint, params, auth_type)
@@ -141,8 +133,8 @@ module Twitter
           error: e.message,
           auth_type: auth_type.to_s,
           api_version: determine_api_version(endpoint),
-          endpoint: endpoint,
-          request_info: request_info, # Added full request details
+          endpoint:,
+          request_info:, # Added full request details
           user_info: user_info_for_error
         }
 
@@ -155,7 +147,7 @@ module Twitter
           error: e.message,
           auth_type: auth_type.to_s,
           api_version: determine_api_version(endpoint),
-          request_info: request_info, # Added request details
+          request_info:, # Added request details
           user_info: user_info_for_error
         }
 
@@ -175,7 +167,7 @@ module Twitter
     def make_api_call(endpoint, params, auth_type, version = :v2)
       refresh_token_if_needed(user.identity.oauth_credential) if user
 
-      response = client(auth: auth_type, version: version).get("#{endpoint}?#{URI.encode_www_form(params)}")
+      response = client(auth: auth_type, version:).get("#{endpoint}?#{URI.encode_www_form(params)}")
 
       # Check for "errors" key in the response
       if response.is_a?(Hash) && response.key?('errors')
@@ -201,6 +193,7 @@ module Twitter
 
     def user_info_for_error
       return "User ID: #{user.identity.uid}, Email: #{user.email}" if user
+
       'Application Context'
     end
 
@@ -238,5 +231,3 @@ module Twitter
     end
   end
 end
-
-# rubocop :disable Metrics/ClassLength

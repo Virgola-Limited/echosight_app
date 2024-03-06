@@ -10,8 +10,8 @@ module Twitter
 
     def followers_count
       # Fetch the followers count from 7 days ago and today
-      followers_count_7_days_ago = TwitterFollowersCount.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
-      latest_follower_count = TwitterFollowersCount.where(identity_id: user.identity.id).order(date: :desc).first
+      followers_count_7_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
+      latest_follower_count = TwitterUserMetric.where(identity_id: user.identity.id).order(date: :desc).first
 
       return false unless followers_count_7_days_ago && latest_follower_count
 
@@ -21,8 +21,8 @@ module Twitter
 
     def followers_count_change_percentage
       # Fetch the followers count for the last 14 days and 7 days ago
-      followers_count_14_days_ago = TwitterFollowersCount.where(identity_id: user.identity.id, date: 14.days.ago.to_date).first
-      followers_count_7_days_ago = TwitterFollowersCount.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
+      followers_count_14_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 14.days.ago.to_date).first
+      followers_count_7_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
 
       return false unless followers_count_14_days_ago && followers_count_7_days_ago
 
@@ -35,7 +35,7 @@ module Twitter
     end
 
     def followers_data_for_graph
-      data = TwitterFollowersCount.where(identity_id: @user.identity.id)
+      data = TwitterUserMetric.where(identity_id: @user.identity.id)
                                   .where('date >= ?', 12.months.ago)
                                   .order(date: :asc)
                                   .pluck(:date, :followers_count)
@@ -49,7 +49,7 @@ module Twitter
     end
 
     def daily_followers_count(days_ago = 28)
-      last_followers_count_per_day = TwitterFollowersCount
+      last_followers_count_per_day = TwitterUserMetric
                                        .where(identity_id: user.identity.id)
                                        .where('date >= ?', days_ago.days.ago)
                                        .select('DISTINCT ON (date) date, followers_count, created_at')

@@ -2,24 +2,24 @@
 
 # == Schema Information
 #
-# Table name: twitter_followers_counts
+# Table name: twitter_user_metrics
 #
 #  id              :bigint           not null, primary key
 #  date            :date
-#  followers_count :string
+#  followers_count :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  identity_id     :bigint           not null
 #
 # Indexes
 #
-#  index_twitter_followers_counts_on_identity_id  (identity_id)
+#  index_twitter_user_metrics_on_identity_id  (identity_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (identity_id => identities.id)
 #
-class TwitterFollowersCount < ApplicationRecord
+class TwitterUserMetric < ApplicationRecord
   belongs_to :identity
 
   def self.ransackable_associations(auth_object = nil)

@@ -1,11 +1,17 @@
-module Twitter
-  # Could run this every 15 separate from the othe fetchers
-  class NewTweetsFetcher
-    attr_reader :user, :twitter_client
+# frozen_string_literal: true
 
-    def initialize(user)
+module Twitter
+  class NewTweetsFetcher
+    # This also refreshes existing tweets because there is no way to know if a tweet is new or not
+    # before the request and pinned tweets seem to appear in each page of responses
+    # Consider renaming to make it clear that it also refreshes existing tweets
+    attr_reader :user, :client, :number_of_requests
+
+    def initialize(user:, number_of_requests:, client: nil)
+      raise 'Possibly not needed now we have twitter search endpoint'
+      @number_of_requests = number_of_requests
       @user = user
-      @twitter_client = Twitter::Client.new(user)
+      @client = client || SocialData::ClientAdapter.new(user)
     end
 
     def call
@@ -15,27 +21,34 @@ module Twitter
     private
 
     def fetch_tweets(next_token = nil)
-      response = twitter_client.fetch_new_tweets(next_token)
-
+      response = client.fetch_user_tweets(next_token)
       [response['data'] || [], response.dig('meta', 'next_token')]
     end
 
+    # ignore pinned
+    # when it gets to a non pinned
     def fetch_and_store_tweets
       next_token = nil
       counter = 0
 
       loop do
-        break if counter >= 4
+        break if @number_of_requests && counter >= @number_of_requests
 
         tweets, next_token = fetch_tweets(next_token)
         break if tweets.empty?
 
         tweets.each do |tweet_data|
-          break if Tweet.exists?(twitter_id: tweet_data['id']) # Stop if tweet is already stored
+          if Tweet.exists?(twitter_id: tweet_data['id'])
+            if tweet_data['is_pinned'] == 'false'
+              byebug
+              next_token = nil
+            end
+          end
           process_tweet_data(tweet_data)
         end
 
         break unless next_token
+
         counter += 1
       end
     end
@@ -45,25 +58,31 @@ module Twitter
       non_public_metrics = tweet_data['non_public_metrics']
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
 
-      # Parse Twitter API timestamp and assign to twitter_created_at
       twitter_created_at = DateTime.parse(tweet_data['created_at'])
       tweet.update(
         text: tweet_data['text'],
         identity_id: user.identity.id,
-        twitter_created_at: twitter_created_at # Assign parsed timestamp
+        twitter_created_at:
       )
 
-      TweetMetric.create(
-        tweet: tweet,
+      metric_attributes = {
+        tweet:,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
         impression_count: metrics['impression_count'],
         reply_count: metrics['reply_count'],
         bookmark_count: metrics['bookmark_count'],
-        user_profile_clicks: non_public_metrics['user_profile_clicks'],
-        pulled_at: DateTime.now.utc # Consider using user time zone
-      )
+        pulled_at: DateTime.now.utc
+      }
+
+      if non_public_metrics && non_public_metrics['user_profile_clicks']
+        metric_attributes.merge!(
+          user_profile_clicks: non_public_metrics['user_profile_clicks']
+        )
+      end
+
+      TweetMetric.create!(metric_attributes)
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_04_235151) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_06_192032) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -102,22 +102,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_04_235151) do
     t.index ["twitter_id"], name: "index_tweets_on_twitter_id", unique: true
   end
 
-  create_table "twitter_followers_counts", force: :cascade do |t|
-    t.string "followers_count"
+  create_table "twitter_user_metrics", force: :cascade do |t|
+    t.integer "followers_count"
     t.bigint "identity_id", null: false
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["identity_id"], name: "index_twitter_followers_counts_on_identity_id"
-  end
-
-  create_table "twitter_likes_counts", force: :cascade do |t|
-    t.string "likes_count"
-    t.bigint "identity_id", null: false
-    t.date "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["identity_id"], name: "index_twitter_likes_counts_on_identity_id"
+    t.index ["identity_id"], name: "index_twitter_user_metrics_on_identity_id"
   end
 
   create_table "user_twitter_data_updates", force: :cascade do |t|
@@ -164,7 +155,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_04_235151) do
   add_foreign_key "oauth_credentials", "identities"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "identities"
-  add_foreign_key "twitter_followers_counts", "identities"
-  add_foreign_key "twitter_likes_counts", "identities"
+  add_foreign_key "twitter_user_metrics", "identities"
   add_foreign_key "user_twitter_data_updates", "identities"
 end

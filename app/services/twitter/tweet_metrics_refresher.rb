@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 module Twitter
   class TweetMetricsRefresher
-    attr_reader :user, :twitter_client
+    attr_reader :user, :client, :batch_size, :include_non_public_metrics
 
-    BATCH_SIZE = 100
-    MAX_REQUESTS = 15
+    UPDATABLE_TIME_FRAME = 7.days.ago
 
-    def initialize(user)
+    def initialize(user:, client: nil, batch_size: 120)
+      raise 'Deprecated'
       @user = user
-      @twitter_client = Twitter::Client.new(user)
+      @client = client || SocialData::ClientAdapter.new(user)
+      @batch_size = batch_size
+      @include_non_public_metrics = false # ask the client?
     end
 
     def call
-      outdated_tweet_ids.each_slice(BATCH_SIZE).with_index do |batch, index|
-        break if index >= MAX_REQUESTS - 1
-
-        update_tweets_and_metrics(batch, include_non_public_metrics: true)
+      outdated_tweet_ids.each_slice(batch_size) do |batch|
+        update_tweets_and_metrics(batch, include_non_public_metrics:)
       end
     end
 
@@ -22,18 +24,18 @@ module Twitter
 
     def outdated_tweet_ids
       user.identity.tweets
-           .where('twitter_created_at > ?', 30.days.ago)
-           .where('updated_at < ?', 24.hours.ago)
-           .order(updated_at: :asc)
-           .pluck(:twitter_id)
+          .where('twitter_created_at > ?', UPDATABLE_TIME_FRAME)
+          .where('updated_at < ?', 24.hours.ago)
+          .order(updated_at: :asc)
+          .pluck(:twitter_id)
     end
 
-    def update_tweets_and_metrics(tweet_ids, include_non_public_metrics: true)
-      tweets_data = twitter_client.fetch_tweets_by_ids(tweet_ids, include_non_public_metrics)
-
+    def update_tweets_and_metrics(tweet_ids, include_non_public_metrics:)
+      tweets_data = client.fetch_tweets_by_ids(tweet_ids, include_non_public_metrics)
       tweets_data['data'].each do |tweet_data|
         process_tweet_data(tweet_data, include_non_public_metrics)
       end
+      sleep(1)
     end
 
     def process_tweet_data(tweet_data, include_non_public_metrics)
@@ -42,7 +44,7 @@ module Twitter
       tweet.touch
 
       metric_attributes = {
-        tweet: tweet,
+        tweet:,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
@@ -54,14 +56,10 @@ module Twitter
 
       if include_non_public_metrics
         non_public_metrics = tweet_data['non_public_metrics']
-        metric_attributes.merge!(
-          user_profile_clicks: non_public_metrics.fetch('user_profile_clicks', nil)  # Optional
-        )
+        metric_attributes[:user_profile_clicks] = non_public_metrics.fetch('user_profile_clicks', nil)
       end
 
       TweetMetric.create!(metric_attributes)
     end
   end
 end
-
-#  Twitter::TweetMetricsRefresher.new(user).call
