@@ -39,12 +39,9 @@ module Twitter
 
         tweets.each do |tweet_data|
           if Tweet.exists?(twitter_id: tweet_data['id'])
-            p tweet_data
-
             if tweet_data['is_pinned'] == 'false'
               byebug
               next_token = nil
-              p 'wont fetch more tweets'
             end
           end
           process_tweet_data(tweet_data)

@@ -18,7 +18,6 @@ RSpec.describe Twitter::NewTweetsFetcher, :vcr do
 
     context 'when the user has no tweets' do
       it 'fetches and stores 3 requests of tweets' do
-        p Tweet.count
         expect { subject.call }.to change { user.reload.tweets.count }.by(61)
         attributes = user.tweets.last.attributes.slice(*first_tweet_attributes.keys)
         expect(attributes).to eq(first_tweet_attributes)

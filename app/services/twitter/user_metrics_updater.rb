@@ -23,6 +23,7 @@ module Twitter
         date: Date.current
       ).update(
         followers_count: @user_data.dig('public_metrics', 'followers_count')
+        # TODO update other metrics
       )
     end
   end
