@@ -31,7 +31,7 @@ if !Rails.env.development? && !Rails.env.test?
           'name' => 'Fetch Tweets - every 7am UTC',
           'cron' => '0 7, * * * *',
           'class' => 'Twitter::TweetsFetcherJob',
-          'args' => ['SocialData::ClientAdapter']
+          'args' => [{ 'client_class_name' => 'SocialData::ClientAdapter' }] # Pass args as a hash
         }
         # {
         #   'name'  => 'Update Twitter Followers - daily',
