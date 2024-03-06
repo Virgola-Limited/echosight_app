@@ -58,7 +58,6 @@ RSpec.describe SocialData::Client, :vcr do
             non_null_user_keys.each do |key|
               expect(tweet['user'][key]).to_not be_nil
             end
-
           end
         end
       end

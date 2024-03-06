@@ -23,4 +23,10 @@ RSpec.describe Twitter::TweetsFetcher, :vcr do
     # this might fail with other data sets
     expect(oldest_tweet.twitter_created_at).to be_within(1.day).of(oldest_expected_date)
   end
+
+  it 'saves followers data for today' do
+    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+      subject.call
+    end
+  end
 end

@@ -28,7 +28,7 @@ module SocialData
 
     # https://socialdata.gitbook.io/docs/twitter-tweets/retrieve-search-results-by-keyword
     # https://github.com/igorbrigadir/twitter-advanced-search
-    def search_tweets(params = {})
+    def search_tweets(params = {}, single_request = false)
       endpoint = "search"
 
       received_tweet_count = 0
@@ -44,7 +44,7 @@ module SocialData
 
         all_tweets.concat(tweets_with_user_data)
         received_tweet_count += response['tweets'].size
-        break if received_tweet_count >= MAXIMUM_TWEETS
+        break if received_tweet_count >= MAXIMUM_TWEETS || response['next_cursor'].nil? || single_request
 
         params['cursor'] = response['next_cursor']
       end
