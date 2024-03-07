@@ -179,6 +179,6 @@ class User < ApplicationRecord
   def enqueue_twitter_data_pull
     return unless confirmed_at_changed? && confirmed_at_was.nil?
 
-    Twitter::UpdateTwitterDataJob.perform_async(user_id: id)
+    # Twitter::UpdateTwitterDataJob.perform_async(user_id: id)
   end
 end

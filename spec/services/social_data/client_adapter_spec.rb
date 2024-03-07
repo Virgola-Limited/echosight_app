@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SocialData::ClientAdapter,
-               vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
+  vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity:) }
@@ -39,7 +39,14 @@ RSpec.describe SocialData::ClientAdapter,
         'id' => '1740498992587567374',
         'text' => 'test',
         'created_at' => '2023-12-28T22:24:31.000000Z',
-        'public_metrics' => { 'like_count' => 0, 'quote_count' => 0, 'reply_count' => 0, 'retweet_count' => 0 },
+        'public_metrics' => {
+          'impression_count' => 5,
+          'like_count' => 0,
+          'quote_count' => 0,
+          'reply_count' => 0,
+          'retweet_count' => 0,
+          'bookmark_count' => 0
+        },
         'is_pinned' => 'false',
         'user' => tweet_user_data
       }
@@ -62,7 +69,7 @@ RSpec.describe SocialData::ClientAdapter,
             'followers_count' => 3,
             'following_count' => 16,
             'listed_count' => 0,
-            'tweet_count' => 15
+            'tweet_count' => 15,
           }
         }
       }
@@ -103,8 +110,14 @@ RSpec.describe SocialData::ClientAdapter,
         'id' => '1765035782774137074',
         'text' => 'Sorry to bother everyone with this note, as it applies to people in the greater Austin area, but please go to the polls and vote for a new District Attorney!',
         'created_at' => '2024-03-05T15:24:58.000000Z',
-        'public_metrics' => { 'like_count' => 35_437, 'quote_count' => 235, 'reply_count' => 2069,
-                              'retweet_count' => 7846 },
+        'public_metrics' => {
+          'like_count' => 35_437,
+          'quote_count' => 235,
+          'reply_count' => 2069,
+          'retweet_count' => 7846,
+          'impression_count' => 6796646,
+          'bookmark_count' => 417
+        },
         'is_pinned' => 'false',
         'user' => tweet_user_data
       }

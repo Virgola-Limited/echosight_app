@@ -41,7 +41,9 @@ module SocialData
             'retweet_count' => tweet['retweet_count'],
             'reply_count' => tweet['reply_count'],
             'like_count' => tweet['favorite_count'],
-            'quote_count' => tweet['quote_count']
+            'quote_count' => tweet['quote_count'],
+            'impression_count' => tweet['views_count'],
+            'bookmark_count' => tweet['bookmark_count']
           },
           'is_pinned' => tweet['is_pinned'] || 'false'
         }
@@ -67,7 +69,7 @@ module SocialData
           'username' => response['screen_name'],
           'public_metrics' => {
             'followers_count' => response['followers_count'],
-            'following_count' => response['friends_count'], # Assuming following_count maps to friends_count
+            'following_count' => response['friends_count'],
             'listed_count' => response['listed_count'],
             'tweet_count' => response['statuses_count']
           }
