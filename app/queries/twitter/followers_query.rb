@@ -10,25 +10,25 @@ module Twitter
 
     def followers_count
       # Fetch the followers count from 7 days ago and today
-      followers_count_7_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
-      latest_follower_count = TwitterUserMetric.where(identity_id: user.identity.id).order(date: :desc).first
+      followers_count_7_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 7.days.ago.to_date)&.last&.followers_count
+      latest_follower_count = TwitterUserMetric.where(identity_id: user.identity.id).order(date: :desc)&.first&.followers_count
 
       return false unless followers_count_7_days_ago && latest_follower_count
 
       # Convert followers_count values to integers before subtraction
-      latest_follower_count.followers_count.to_i - followers_count_7_days_ago.followers_count.to_i
+      latest_follower_count - followers_count_7_days_ago
     end
 
     def followers_count_change_percentage
       # Fetch the followers count for the last 14 days and 7 days ago
-      followers_count_14_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 14.days.ago.to_date).first
+      followers_count_14_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 14.days.ago.to_date).last
       followers_count_7_days_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: 7.days.ago.to_date).first
 
       return false unless followers_count_14_days_ago && followers_count_7_days_ago
 
       # Convert followers_count values to integers before calculation
-      old_count = followers_count_14_days_ago.followers_count.to_i
-      new_count = followers_count_7_days_ago.followers_count.to_i
+      old_count = followers_count_14_days_ago.followers_count
+      new_count = followers_count_7_days_ago.followers_count
       change_percentage = calculate_percentage_change(old_count, new_count)
 
       format_change_percentage(change_percentage)
