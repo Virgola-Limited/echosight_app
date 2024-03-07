@@ -26,14 +26,13 @@ module Twitter
         twitter_created_at = DateTime.parse(tweet_data['created_at'])
 
         # Set today_user_data for the first tweet created today
-        today_user_data ||= tweet_data['user'] if twitter_created_at.to_date == Date.today
+        today_user_data ||= tweet_data['user']['data'] if twitter_created_at.to_date == Date.today
 
         process_tweet_data(tweet_data)
       end
 
       return unless today_user_data
-
-      UserMetricsUpdater.new(user: today_user_data['user']).call
+      UserMetricsUpdater.new(user: today_user_data).call
     end
 
     def process_tweet_data(tweet_data)

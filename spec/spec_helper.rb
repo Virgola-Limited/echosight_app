@@ -32,8 +32,8 @@ VCR.configure do |config|
 end
 
 RSpec.configure do |config|
-  config.filter_run_when_matching :focus
   config.include FactoryBot::Syntax::Methods
+  config.filter_run_when_matching :focus
 
   config.around(:each, :vcr) do |example|
     name = example.metadata[:full_description]
