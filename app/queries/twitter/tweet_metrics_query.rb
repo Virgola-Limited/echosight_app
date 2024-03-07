@@ -91,7 +91,6 @@ module Twitter
         MAX(tweet_metrics.quote_count) AS quote_count,
         MAX(tweet_metrics.like_count) AS like_count,
         MAX(tweet_metrics.reply_count) AS reply_count,
-        MAX(tweet_metrics.user_profile_clicks) AS user_profile_clicks,
         MAX(tweet_metrics.bookmark_count) AS bookmark_count,
         MAX(tweet_metrics.impression_count) AS impression_count
       SQL
@@ -112,7 +111,6 @@ module Twitter
                        tweet.quote_count.to_f +
                        tweet.like_count.to_f +
                        tweet.reply_count.to_f +
-                       tweet.user_profile_clicks.to_f +
                        tweet.bookmark_count.to_f
         impressions = tweet.impression_count.to_f
 

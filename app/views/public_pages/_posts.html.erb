@@ -61,10 +61,10 @@
                       <%= tweet.like_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.impression_count %>
+                      <%= tweet.reply_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.reply_count %>
+                      <%= tweet.impression_count %>
                   </td>
                  <td class="px-6 py-4 relative">
                  <div class="engagement-rate-cell">
@@ -77,7 +77,7 @@
                   </div>
                   <div id="tooltip-engagement-<%= tweet.id %>" role="tooltip" class="tooltip absolute z-10 invisible bg-gray-900 text-white p-2 rounded-lg shadow-lg text-xs">
                     Engagement rate is calculated as (interactions / impressions) * 100. For this tweet:
-                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet.retweet_count || 0, tweet.quote_count || 0, tweet.like_count || 0, tweet.reply_count || 0, tweet.user_profile_clicks || 0, tweet.bookmark_count || 0, tweet.impression_count || 0] %> = <%= tweet.engagement_rate_percentage %>
+                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet.retweet_count || 0, tweet.quote_count || 0, tweet.like_count || 0, tweet.reply_count || 0, tweet.bookmark_count || 0, tweet.impression_count || 0] %> = <%= tweet.engagement_rate_percentage %>
                     <div class="tooltip-arrow" data-popper-arrow></div>
                   </div>
                 </td>
