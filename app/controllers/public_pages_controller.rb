@@ -105,9 +105,9 @@ class PublicPagesController < ApplicationController
 
     ############################
     # Profile Conversion Rate
-    @profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
-    @followers_data = followers_query.daily_followers_count
-    @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph(profile_clicks_data: @profile_clicks_data, followers_data: @followers_data)
+    # @profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
+    # @followers_data = followers_query.daily_followers_count
+    # @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph(profile_clicks_data: @profile_clicks_data, followers_data: @followers_data)
 
     ############################
     # Top Posts / Tweets
