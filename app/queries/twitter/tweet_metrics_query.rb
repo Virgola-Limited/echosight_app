@@ -145,6 +145,29 @@ module Twitter
       current_week_clicks - previous_week_clicks
     end
 
+    def likes_count
+      if user.tweet_metrics.count.zero?
+        return 0
+      end
+      # Check if we have at least 14 days of data
+      earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
+      return false if (Date.current - earliest_record_date).to_i < 14
+
+      # Calculate likes for the last 7 days and the previous 7 days
+      current_week_likes = TweetMetric.joins(:tweet)
+                                      .where(tweets: { identity_id: user.identity.id })
+                                      .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
+                                      .sum(:like_count)
+      previous_week_likes = TweetMetric.joins(:tweet)
+                                        .where(tweets: { identity_id: user.identity.id })
+                                        .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
+                                        .sum(:like_count)
+
+      # Return the difference in likes between the last two 7-day periods
+      current_week_likes - previous_week_likes
+    end
+
+
     def profile_clicks_change_since_last_week
       # Calculate profile clicks for the last 7 days and the previous 7 days
       current_week_clicks = total_profile_clicks_for_period(7.days.ago.beginning_of_day, Time.current)
@@ -160,6 +183,28 @@ module Twitter
                           end
       percentage_change.round(2)
     end
+
+    def likes_change_since_last_week
+      # Calculate likes for the last 7 days and the previous 7 days
+      current_week_likes = TweetMetric.joins(:tweet)
+                                      .where(tweets: { identity_id: user.identity.id })
+                                      .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
+                                      .sum(:like_count)
+      previous_week_likes = TweetMetric.joins(:tweet)
+                                        .where(tweets: { identity_id: user.identity.id })
+                                        .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
+                                        .sum(:like_count)
+
+      return false if previous_week_likes.zero? # No data from last week
+
+      # Calculate the percentage change in likes
+      percentage_change = if previous_week_likes.positive?
+                            ((current_week_likes - previous_week_likes) / previous_week_likes.to_f) * 100
+                          else
+                            0 # No change if both current and previous week likes are zero
+                          end
+      percentage_change.round(2)
+                        end
 
     def impression_counts_per_day
       # Subquery to select the latest TweetMetric record for each day
