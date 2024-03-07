@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_one :identity, dependent: :destroy
   has_many :tweets, through: :identity
   has_many :tweet_metrics, through: :tweets
+  has_many :twitter_user_metrics, through: :identity
 
   delegate :handle, to: :identity, allow_nil: true
   delegate :banner_url, to: :identity, allow_nil: true

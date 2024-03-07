@@ -21,7 +21,7 @@ module Twitter
       TwitterUserMetric.find_or_initialize_by(
         identity_id: identity.id,
         date: Date.current
-      ).update(
+      ).update!(
         followers_count: @user_data.dig('public_metrics', 'followers_count')
         # TODO update other metrics
       )

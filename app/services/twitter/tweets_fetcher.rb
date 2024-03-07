@@ -32,6 +32,7 @@ module Twitter
       end
 
       return unless today_user_data
+
       UserMetricsUpdater.new(user: today_user_data).call
     end
 
@@ -41,7 +42,7 @@ module Twitter
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
 
       twitter_created_at = DateTime.parse(tweet_data['created_at'])
-      tweet.update(
+      tweet.update!(
         text: tweet_data['text'],
         identity_id: user.identity.id,
         twitter_created_at:

@@ -27,6 +27,7 @@ ActiveAdmin.register_page "Dashboard" do
       end
       table_for tweets.limit(10) do
         column :twitter_id
+        column :created_at
         column :text do |tweet|
           truncate(tweet.text, omision: "...", length: 100)
         end
