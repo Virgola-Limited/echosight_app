@@ -46,9 +46,7 @@ module EchosightApp
 
     console do
       puts 'Helpful commands:'
-      puts 'Twitter::TweetMetricsRefresherJob.new.perform'
-      puts 'Twitter::FollowersUpdaterJob.new.perform'
-      puts 'Twitter::NewTweetsFetcherJob.new.perform'
+      puts 'Twitter::TweetsFetcherJob.new.perform'
     end
 
   end
