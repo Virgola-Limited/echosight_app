@@ -31,37 +31,8 @@ if !Rails.env.development? && !Rails.env.test?
           'name' => 'Fetch Tweets - every 7am UTC',
           'cron' => '0 7, * * * *',
           'class' => 'Twitter::TweetsFetcherJob',
-          'args' => [{ 'client_class_name' => 'SocialData::ClientAdapter' }] # Pass args as a hash
+          'args' => [{ 'client_class_name' => 'SocialData::ClientAdapter' }]
         }
-        # {
-        #   'name'  => 'Update Twitter Followers - daily',
-        #   'cron'  => '0 8 * * *',
-        #   'class' => 'Twitter::FollowersUpdaterJob',
-        #   'args'  => ['SocialData::ClientAdapter']
-        # },
-        # {
-        #   'name'  => 'Fetch New Tweets - every 7am UTC',
-        #   'cron'  => '0 7, * * * *',
-        #   'class' => 'Twitter::NewTweetsFetcherJob',
-        #   'args'  => ['SocialData::ClientAdapter']
-        # },
-        # {
-        #   'name'  => 'Refresh Tweet Metrics at 8am UTC',
-        #   'cron'  => '0 8 * * *',
-        #   'class' => 'Twitter::TweetMetricsRefresherJob',
-        #   'args'  => ['SocialData::ClientAdapter']
-        # },
-        # {
-        #   'name'  => 'Refresh Tweet Metrics at 8pm UTC',
-        #   'cron'  => '0 16 * * *',
-        #   'class' => 'Twitter::TweetMetricsRefresherJob',
-        #   'args'  => ['SocialData::ClientAdapter']
-        # },
-        # {
-        #   'name'  => 'Send Daily Application Rate Limit levels to Slack',
-        #   'cron'  => '0 0 * * *',
-        #   'class' => 'Twitter::SendRateLimitsToSlackJob'
-        # }
       ]
     )
   end
