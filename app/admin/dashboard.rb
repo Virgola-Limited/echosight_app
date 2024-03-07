@@ -36,5 +36,19 @@ ActiveAdmin.register_page "Dashboard" do
         end
       end
     end
+
+    h2 "Users Missing Recent Twitter Metrics"
+    section do
+      users_missing_metrics = User.joins(:identity)  # Ensure users have an identity
+                              .where.not(identities: {id: TwitterUserMetric.where('created_at > ?', 24.hours.ago).select(:identity_id)})
+
+      table_for users_missing_metrics do
+        column :email
+        column "Last Metric Date" do |user|
+          user.identity.twitter_user_metrics.order(created_at: :desc).first&.created_at
+        end
+      end
+    end
+
   end
 end
