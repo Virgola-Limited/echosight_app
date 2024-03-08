@@ -1,3 +1,4 @@
+require 'dotenv/load'
 require "active_support/core_ext/integer/time"
 
 # TODO: delete this and use environment variables instead of environments/*.rb files
