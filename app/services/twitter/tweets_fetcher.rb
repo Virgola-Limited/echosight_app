@@ -10,7 +10,11 @@ module Twitter
     end
 
     def call
-      fetch_and_store_tweets
+      metrics_created_count, tweets_updated_count = fetch_and_store_tweets
+      Notifications::SlackNotifier.call(
+        message: "#{metrics_created_count} tweet metrics created, #{tweets_updated_count} tweets updated.",
+        channel: :general
+      )
     end
 
     private
@@ -19,21 +23,23 @@ module Twitter
       params = { query: "from:#{user.handle} within_time:7d" }
       tweets = client.search_tweets(params)
 
-      # Variable to hold user data for the first tweet created today
       today_user_data = nil
+      metrics_created_count = 0
+      tweets_updated_count = 0
 
       tweets['data'].each do |tweet_data|
         twitter_created_at = DateTime.parse(tweet_data['created_at'])
 
-        # Set today_user_data for the first tweet created today
         today_user_data ||= tweet_data['user']['data'] if twitter_created_at.to_date == Date.today
 
-        process_tweet_data(tweet_data)
+        metrics_created, tweet_updated = process_tweet_data(tweet_data)
+        metrics_created_count += 1 if metrics_created
+        tweets_updated_count += 1 if tweet_updated
       end
 
-      return unless today_user_data
+      UserMetricsUpdater.new(user: today_user_data).call if today_user_data
 
-      UserMetricsUpdater.new(user: today_user_data).call
+      [metrics_created_count, tweets_updated_count]
     end
 
     def process_tweet_data(tweet_data)
@@ -41,15 +47,16 @@ module Twitter
       non_public_metrics = tweet_data['non_public_metrics']
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
 
+      tweet_updated = tweet.new_record? || tweet.changed?
       twitter_created_at = DateTime.parse(tweet_data['created_at'])
       tweet.update!(
         text: tweet_data['text'],
         identity_id: user.identity.id,
-        twitter_created_at:
+        twitter_created_at: twitter_created_at
       )
 
       metric_attributes = {
-        tweet:,
+        tweet: tweet,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
@@ -66,6 +73,7 @@ module Twitter
       end
 
       TweetMetric.create!(metric_attributes)
+      [true, tweet_updated]
     end
   end
 end
