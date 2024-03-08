@@ -40,7 +40,6 @@ module Twitter
         tweets.each do |tweet_data|
           if Tweet.exists?(twitter_id: tweet_data['id'])
             if tweet_data['is_pinned'] == 'false'
-              byebug
               next_token = nil
             end
           end

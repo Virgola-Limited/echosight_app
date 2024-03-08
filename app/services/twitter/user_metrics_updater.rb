@@ -2,6 +2,8 @@
 
 module Twitter
   class UserMetricsUpdater
+    attr_reader :user_data
+
     def initialize(user_data)
       @user_data = user_data
     end
@@ -9,27 +11,27 @@ module Twitter
     def call
       metrics_updated = update_followers_count
       send_slack_notification(metrics_updated)
+      if metrics_updated
+        return "Twitter user metrics updated for #{@user_data['username']}."
+      end
+      "No updates were made to Twitter user metrics for #{@user_data['username']}."
     end
 
     private
 
     def update_followers_count
-      return false unless @user_data.is_a?(Hash)
+      raise "#{self.class.name}: Invalid user data: #{@user_data}" unless @user_data.is_a?(Hash)
 
-      identity = Identity.find_by(handle: @user_data['username'])
-      return false unless identity
+      identity = Identity.find_by!(handle: user_data['username'])
 
       twitter_user_metric = TwitterUserMetric.find_or_initialize_by(
         identity_id: identity.id,
         date: Date.current
       )
 
-      metrics_updated = twitter_user_metric.new_record? || twitter_user_metric.changed?
-
-      twitter_user_metric.update!(
-        followers_count: @user_data.dig('public_metrics', 'followers_count')
-        # TODO: update other metrics
-      )
+      twitter_user_metric.followers_count = @user_data.dig('public_metrics', 'followers_count')
+      metrics_updated = twitter_user_metric.changed?
+      twitter_user_metric.save! if metrics_updated
 
       metrics_updated
     end

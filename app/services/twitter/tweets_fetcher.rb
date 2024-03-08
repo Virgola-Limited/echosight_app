@@ -15,12 +15,17 @@ module Twitter
         message: "#{metrics_created_count} tweet metrics created, #{tweets_updated_count} tweets updated.",
         channel: :general
       )
+      response_message = "Fetched and stored #{metrics_created_count} tweet metrics and updated #{tweets_updated_count} tweets.\n\n"
+      if @user_metrics_updated_message
+        response_message += @user_metrics_updated_message
+      end
+      response_message
     end
 
     private
 
     def fetch_and_store_tweets
-      params = { query: "from:#{user.handle} within_time:7d" }
+      params = { query: "from:#{user.handle} within_time:12h" }
       tweets = client.search_tweets(params)
 
       today_user_data = nil
@@ -28,16 +33,15 @@ module Twitter
       tweets_updated_count = 0
 
       tweets['data'].each do |tweet_data|
-        twitter_created_at = DateTime.parse(tweet_data['created_at'])
-
-        today_user_data ||= tweet_data['user']['data'] if twitter_created_at.to_date == Date.today
+        unless today_user_data
+          today_user_data = tweet_data['user']['data']
+        end
 
         metrics_created, tweet_updated = process_tweet_data(tweet_data)
         metrics_created_count += 1 if metrics_created
         tweets_updated_count += 1 if tweet_updated
       end
-
-      UserMetricsUpdater.new(user: today_user_data).call if today_user_data
+      @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call if today_user_data
 
       [metrics_created_count, tweets_updated_count]
     end
