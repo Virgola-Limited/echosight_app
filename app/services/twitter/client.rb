@@ -120,6 +120,7 @@ module Twitter
         # Send rate limit info and request details to Slack
         Notifications::SlackNotifier.call(message: "#{message}, Request Info: #{request_info}", channel: :xratelimit)
 
+
         # Re-raise the error to maintain the original flow
         raise e
       elsif e.message.start_with?('Twitter API Error:')

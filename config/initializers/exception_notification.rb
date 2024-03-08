@@ -1,6 +1,8 @@
 if defined?(ExceptionNotification) && !Rails.env.development?
 
   require 'exception_notification/rails'
+  require 'exception_notification/sidekiq'
+
 
   ExceptionNotification.configure do |config|
     # Ignore additional exception types.
@@ -52,7 +54,4 @@ if defined?(ExceptionNotification) && !Rails.env.development?
     }
 
   end
-require 'exception_notification/rails'
-
-require 'exception_notification/sidekiq'
 end
