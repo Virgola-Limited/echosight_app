@@ -1,4 +1,4 @@
-if defined?(ExceptionNotification) && !Rails.env.development?
+if defined?(ExceptionNotification) && !Rails.env.development? && !Rails.env.test?
 
   require 'exception_notification/rails'
   require 'exception_notification/sidekiq'
