@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Twitter
-  class FollowersQuery
+  class TwitterUserMetricsQuery
     attr_reader :user
 
     def initialize(user)

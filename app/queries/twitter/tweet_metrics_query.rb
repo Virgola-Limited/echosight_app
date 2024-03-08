@@ -114,7 +114,6 @@ module Twitter
                        tweet.bookmark_count.to_f
         impressions = tweet.impression_count.to_f
 
-        # Calculate engagement rate in Ruby
         tweet.engagement_rate_percentage = if impressions.zero?
                                              0.0
                                            else

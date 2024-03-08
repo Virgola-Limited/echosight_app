@@ -149,6 +149,6 @@ class PublicPagesController < ApplicationController
   end
 
   def followers_query
-    Twitter::FollowersQuery.new(@user)
+    Twitter::TwitterUserMetricsQuery.new(@user)
   end
 end
