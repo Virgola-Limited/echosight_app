@@ -23,6 +23,7 @@ if !Rails.env.development? && !Rails.env.test?
     config.server_middleware do |chain|
       chain.add Sidekiq::ExceptionNotificationMiddleware
     end
+    Sidekiq::Cron::Job.destroy_all!
 
     # Define your Sidekiq-Cron jobs here
     Sidekiq::Cron::Job.load_from_array!(
