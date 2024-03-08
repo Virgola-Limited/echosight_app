@@ -25,7 +25,7 @@ module Twitter
     private
 
     def fetch_and_store_tweets
-      params = { query: "from:#{user.handle} within_time:12h" }
+      params = { query: "from:#{user.handle} within_time:7d" }
       tweets = client.search_tweets(params)
 
       today_user_data = nil
