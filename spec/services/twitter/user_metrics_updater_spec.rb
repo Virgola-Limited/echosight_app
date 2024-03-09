@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+
 RSpec.describe Twitter::UserMetricsUpdater, :vcr do
   let!(:identity) { create(:identity, :loftwah, :with_oauth_credential) }
 
@@ -20,6 +21,7 @@ RSpec.describe Twitter::UserMetricsUpdater, :vcr do
 
   describe '#call' do
     context 'when the followers data has been updated today for that user' do
+      # VCR.use_cassette('Twitter__TweetMetricsRefresher_when_there_are_no_outdated_tweets_does_not_perform_any_updates.yml') do
       let!(:twitter_user_metric) { create(:twitter_user_metric, identity: identity, date: Date.current, followers_count: 512) }
 
       it 'updates the existing TwitterUserMetric' do

@@ -24,7 +24,6 @@ RSpec.describe Twitter::TweetsFetcher do
       # this might fail with other data sets
       expect(oldest_tweet.twitter_created_at).to be_within(1.day).of(oldest_expected_date)
       TweetMetric.last.tap do |metric|
-        # byebug
         expect(metric.impression_count).to eq(35)
         expect(metric.like_count).to eq(4)
         expect(metric.quote_count).to eq(1)
@@ -50,10 +49,10 @@ RSpec.describe Twitter::TweetsFetcher do
     }
   end
 
-  fit 'send todays user data to UserMetricsUpdater' do
+  it 'send todays user data to UserMetricsUpdater' do
     VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
       travel_to Time.parse('Wed, 06 Mar 2024 00:00:00 GMT') do
-        expect(Twitter::UserMetricsUpdater).to receive(:new).with(user: expected_user_data).and_call_original
+        expect(Twitter::UserMetricsUpdater).to receive(:new).with(expected_user_data).and_call_original
         subject.call
       end
     end
