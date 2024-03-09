@@ -132,7 +132,7 @@ class PublicPagesController < ApplicationController
 
     ############################
     # Top Posts / Tweets
-    @top_tweets = tweet_metrics_query.top_tweets_for_user
+    @top_posts = tweet_metrics_query.top_tweets_for_user
 
     ############################
 
