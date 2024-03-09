@@ -1,0 +1,33 @@
+name: Ruby
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.3.0
+
+    - name: Install dependencies
+      run: |
+        bundle install --jobs 4 --retry 3
+
+    - name: Setup test environment
+      env:
+        RAILS_ENV: test
+        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      run: |
+        bin/rails db:create db:schema:load --trace
+
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      run: |
+        bundle exec rspec
