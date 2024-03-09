@@ -7,7 +7,7 @@ module Notifications
       webhook_url = webhook_urls[channel] || webhook_urls[:general]
 
       notifier = Slack::Notifier.new(webhook_url)
-      notifier.ping(message)
+      notifier.ping("#{message} on #{Rails.env}")
     end
   end
 end
