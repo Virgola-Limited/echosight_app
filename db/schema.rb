@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_192032) do
     t.integer "impression_count"
     t.integer "reply_count"
     t.integer "bookmark_count"
-    t.datetime "pulled_at"
+    t.date "pulled_at"
     t.bigint "tweet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -148,6 +148,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_192032) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   add_foreign_key "hourly_tweet_counts", "identities"

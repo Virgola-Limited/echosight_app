@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: tweet_metrics
@@ -25,17 +23,7 @@
 #
 #  fk_rails_...  (tweet_id => tweets.id)
 #
-class TweetMetric < ApplicationRecord
-  has_paper_trail
-
-  belongs_to :tweet
-
-  def self.ransackable_associations(auth_object = nil)
-    ["tweet"]
+FactoryBot.define do
+  factory :tweet_metric do
   end
-
-  def self.ransackable_attributes(auth_object = nil)
-    ["bookmark_count", "created_at", "id", "id_value", "impression_count", "like_count", "pulled_at", "quote_count", "reply_count", "retweet_count", "tweet_id", "updated_at", "user_profile_clicks"]
-  end
-
 end

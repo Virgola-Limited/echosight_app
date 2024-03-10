@@ -49,6 +49,7 @@ gem 'devise', '~> 4.9'
 gem 'exception_notification'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
+gem 'paper_trail'
 gem 'premailer-rails'
 gem 'sassc' # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sidekiq'
