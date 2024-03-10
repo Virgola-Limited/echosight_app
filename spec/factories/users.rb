@@ -36,7 +36,7 @@
 #
 FactoryBot.define do
   factory :user do
-    email { 'blah@echosight.io' }
+    email { Faker::Internet.email }
     password { 'password' }
     confirmed_at { Time.now } # Set the confirmed_at attribute to the current time
   end
