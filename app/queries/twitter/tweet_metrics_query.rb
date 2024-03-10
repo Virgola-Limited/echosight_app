@@ -96,7 +96,7 @@ module Twitter
       SQL
 
       # Select raw data without engagement rate calculation
-      query = Tweet.joins(:tweet_metrics)
+      return Tweet.joins(:tweet_metrics)
                    .where(tweets_table[:identity_id].eq(user.identity.id))
                    .where(tweets_table[:created_at].gt(MAXIMUM_DAYS_OF_DATA.days.ago))
                    .select("tweets.*, #{metrics_sql}")
