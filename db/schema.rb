@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_192032) do
     t.integer "impression_count"
     t.integer "reply_count"
     t.integer "bookmark_count"
-    t.datetime "pulled_at"
+    t.date "pulled_at"
     t.bigint "tweet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

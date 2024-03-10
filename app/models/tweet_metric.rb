@@ -8,7 +8,7 @@
 #  bookmark_count      :integer
 #  impression_count    :integer
 #  like_count          :integer
-#  pulled_at           :datetime
+#  pulled_at           :date
 #  quote_count         :integer
 #  reply_count         :integer
 #  retweet_count       :integer
