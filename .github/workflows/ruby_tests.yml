@@ -13,7 +13,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: echosight_app_test
-          DISABLE_SLACK_NOTIFY: true
         ports:
           - 5432:5432
         options: >-
@@ -46,5 +45,6 @@ jobs:
       env:
         RAILS_ENV: test
         RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        DISABLE_SLACK_NOTIFY: true
       run: |
         bundle exec rspec
