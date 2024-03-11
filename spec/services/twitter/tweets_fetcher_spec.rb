@@ -10,6 +10,22 @@ RSpec.describe Twitter::TweetsFetcher do
   let(:subject) { described_class.new(user:) }
   let(:expected_tweets) { 630 }
 
+  it 'does not create duplicate TweetMetric records for the same tweet on the same day' do
+    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+      expect { subject.call }.to change { TweetMetric.count }.from(0).to(630)
+    end
+
+    expect(TweetMetric.count).to be_positive # Ensure metrics were created
+
+    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+      expect { subject.call }.not_to change { TweetMetric.count }
+    end
+
+    user.tweets.each do |tweet|
+      expect(tweet.tweet_metrics.count).to eq(1) # Ensuring only one metric per tweet
+    end
+  end
+
   it 'fetches and saves tweets and tweet metrics for the last seven days' do
     VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
       expect(TweetMetric.count).to eq(0)
@@ -57,4 +73,6 @@ RSpec.describe Twitter::TweetsFetcher do
       end
     end
   end
+
+
 end
