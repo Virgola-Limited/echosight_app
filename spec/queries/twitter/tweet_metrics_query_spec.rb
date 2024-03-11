@@ -14,6 +14,10 @@ RSpec.describe Twitter::TweetMetricsQuery do
         end,
         create(:tweet, identity: identity, created_at: 4.days.ago).tap do |tweet|
           create(:tweet_metric, tweet: tweet, impression_count: 300)
+        end,
+        # keep this to ensure we dont get weird results with nil impression_count
+        create(:tweet, identity: identity, created_at: 3.days.ago).tap do |tweet|
+          create(:tweet_metric, tweet: tweet, impression_count: nil)
         end
       ]
     end

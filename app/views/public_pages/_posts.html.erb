@@ -46,43 +46,43 @@
             </tr>
         </thead>
         <tbody>
-          <% @top_posts.each do |tweet| %>
+          <% @top_posts.each do |tweet_metric| %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                      <%= text_with_images(tweet.text) %>
+                      <%= text_with_images(tweet_metric.tweet.text) %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.retweet_count %>
+                      <%= tweet_metric.retweet_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.quote_count %>
+                      <%= tweet_metric.quote_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.like_count %>
+                      <%= tweet_metric.like_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.reply_count %>
+                      <%= tweet_metric.reply_count %>
                   </td>
                   <td class="px-6 py-4">
-                      <%= tweet.impression_count %>
+                      <%= tweet_metric.impression_count %>
                   </td>
                  <td class="px-6 py-4 relative">
                  <div class="engagement-rate-cell">
-                  <%= tweet.engagement_rate_percentage %>%
-                  <div data-tooltip-target="tooltip-engagement-<%= tweet.id %>" class="ml-2">
+                  <%= tweet_metric.engagement_rate_percentage %>%
+                  <div data-tooltip-target="tooltip-engagement-<%= tweet_metric.tweet.id %>" class="ml-2">
                     <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   </div>
-                  <div id="tooltip-engagement-<%= tweet.id %>" role="tooltip" class="tooltip absolute z-10 invisible bg-gray-900 text-white p-2 rounded-lg shadow-lg text-xs">
+                  <div id="tooltip-engagement-<%= tweet_metric.tweet.id %>" role="tooltip" class="tooltip absolute z-10 invisible bg-gray-900 text-white p-2 rounded-lg shadow-lg text-xs">
                     Engagement rate is calculated as (interactions / impressions) * 100. For this tweet:
-                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet.retweet_count || 0, tweet.quote_count || 0, tweet.like_count || 0, tweet.reply_count || 0, tweet.bookmark_count || 0, tweet.impression_count || 0] %> = <%= tweet.engagement_rate_percentage %>
+                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet_metric.retweet_count || 0, tweet_metric.quote_count || 0, tweet_metric.like_count || 0, tweet_metric.reply_count || 0, tweet_metric.bookmark_count || 0, tweet_metric.impression_count || 0] %> = <%= tweet_metric.engagement_rate_percentage %>
                     <div class="tooltip-arrow" data-popper-arrow></div>
                   </div>
                 </td>
                   <td class="px-6 py-4">
-                    <a href="https://twitter.com/user/status/<%= tweet.twitter_id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
+                    <a href="https://twitter.com/user/status/<%= tweet_metric.tweet.twitter_id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
                       <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
                           <path d="M17 0h-5.768a1 1 0 1 0 0 2h3.354L8.4 8.182A1.003 1.003 0 1 0 9.818 9.6L16 3.414v3.354a1 1 0 0 0 2 0V1a1 1 0 0 0-1-1Z"></path>
                           <path d="m14.258 7.985-3.025 3.025A3 3 0 1 1 6.99 6.768l3.026-3.026A3.01 3.01 0 0 1 8.411 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V9.589a3.011 3.011 0 0 1-1.742-1.604Z"></path>

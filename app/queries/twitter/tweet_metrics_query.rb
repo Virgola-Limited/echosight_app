@@ -83,15 +83,8 @@ module Twitter
     end
 
     def top_tweets_for_user
-      tweets_table = Tweet.arel_table
-
-      # Select raw data including all tweet metric counts directly since there's only one record per day now
-      Tweet.joins(:tweet_metrics)
-                   .where(tweets_table[:identity_id].eq(user.identity.id))
-                   .where(tweets_table[:created_at].gt(MAXIMUM_DAYS_OF_DATA.days.ago))
-                   .select("tweets.*, tweet_metrics.retweet_count, tweet_metrics.quote_count, tweet_metrics.like_count, tweet_metrics.reply_count, tweet_metrics.bookmark_count, tweet_metrics.impression_count")
-                   .order('tweet_metrics.impression_count DESC')
-                   .limit(5)
+      last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('created_at > ?', 7.days.ago)
+      TweetMetric.where(tweet_id: last_seven_days_of_tweets).where.not(impression_count: nil).order(impression_count: :desc).includes(:tweet).limit(5)
     end
 
     def profile_clicks_count
