@@ -1,5 +1,5 @@
 ActiveAdmin.register Tweet do
-  actions :index
+  actions :index, :show
 
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 
@@ -29,6 +29,7 @@ ActiveAdmin.register Tweet do
     end
     column :created_at
     column :updated_at
+    column :twitter_created_at
 
     Tweet.reflect_on_all_associations(:has_many).each do |association|
       if association.name == :tweet_metrics

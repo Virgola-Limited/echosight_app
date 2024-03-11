@@ -12,7 +12,10 @@ ActiveAdmin.register TweetMetric do
 
   index do
     column :id
-    column "Tweet" do |tweet_metric|
+    column :tweet do |tweet_metric|
+      link_to 'Admin Link', admin_tweet_path(tweet_metric.tweet), target: "_blank"
+    end
+    column "Twitter Link" do |tweet_metric|
       link_to tweet_metric.tweet.text.truncate(50), "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.twitter_id}", target: "_blank"
     end
     column :retweet_count
