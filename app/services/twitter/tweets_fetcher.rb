@@ -16,9 +16,7 @@ module Twitter
         channel: :general
       )
       response_message = "Fetched and stored #{metrics_created_count} tweet metrics and updated #{tweets_updated_count} tweets.\n\n"
-      if @user_metrics_updated_message
-        response_message += @user_metrics_updated_message
-      end
+      response_message += @user_metrics_updated_message if @user_metrics_updated_message
       response_message
     end
 
@@ -33,10 +31,7 @@ module Twitter
       tweets_updated_count = 0
 
       tweets['data'].each do |tweet_data|
-        unless today_user_data
-          today_user_data = tweet_data['user']['data']
-        end
-
+        today_user_data ||= tweet_data['user']['data']
         metrics_created, tweet_updated = process_tweet_data(tweet_data)
         metrics_created_count += 1 if metrics_created
         tweets_updated_count += 1 if tweet_updated
@@ -50,24 +45,23 @@ module Twitter
       metrics = tweet_data['public_metrics']
       non_public_metrics = tweet_data['non_public_metrics']
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
+      twitter_created_at = DateTime.parse(tweet_data['created_at'])
 
       tweet_updated = tweet.new_record? || tweet.changed?
-      twitter_created_at = DateTime.parse(tweet_data['created_at'])
-      tweet.update!(
+      tweet.assign_attributes(
         text: tweet_data['text'],
         identity_id: user.identity.id,
         twitter_created_at: twitter_created_at
       )
+      tweet.save! if tweet_updated
 
       metric_attributes = {
-        tweet: tweet,
         retweet_count: metrics['retweet_count'],
         quote_count: metrics['quote_count'],
         like_count: metrics['like_count'],
         impression_count: metrics['impression_count'],
         reply_count: metrics['reply_count'],
         bookmark_count: metrics['bookmark_count'],
-        pulled_at: DateTime.now.utc
       }
 
       if non_public_metrics && non_public_metrics['user_profile_clicks']
@@ -75,8 +69,9 @@ module Twitter
           user_profile_clicks: non_public_metrics['user_profile_clicks']
         )
       end
+      tweet_metric = TweetMetric.find_or_initialize_by(tweet: tweet, pulled_at: Date.today)
+      tweet_metric.update!(metric_attributes)
 
-      TweetMetric.create!(metric_attributes)
       [true, tweet_updated]
     end
   end
