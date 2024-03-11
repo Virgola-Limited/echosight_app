@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Twitter::TweetMetricsQuery do
   describe '#top_tweets_for_user' do
-    let(:identity) { create(:identity) } # Assume an identity factory is available
-    let(:user) { create(:user, identity: identity) } # Assume a user factory is available
+    let(:identity) { create(:identity) }
+    let(:user) { create(:user, identity: identity) }
     let!(:tweets) do
       [
         create(:tweet, identity: identity, created_at: 6.days.ago).tap do |tweet|

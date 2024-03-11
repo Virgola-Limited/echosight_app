@@ -85,23 +85,12 @@ module Twitter
     def top_tweets_for_user
       tweets_table = Tweet.arel_table
 
-      # Define SQL for individual max count metrics
-      metrics_sql = <<-SQL
-        MAX(tweet_metrics.retweet_count) AS retweet_count,
-        MAX(tweet_metrics.quote_count) AS quote_count,
-        MAX(tweet_metrics.like_count) AS like_count,
-        MAX(tweet_metrics.reply_count) AS reply_count,
-        MAX(tweet_metrics.bookmark_count) AS bookmark_count,
-        MAX(tweet_metrics.impression_count) AS impression_count
-      SQL
-
-      # Select raw data without engagement rate calculation
-      return Tweet.joins(:tweet_metrics)
+      # Select raw data including all tweet metric counts directly since there's only one record per day now
+      query = Tweet.joins(:tweet_metrics)
                    .where(tweets_table[:identity_id].eq(user.identity.id))
                    .where(tweets_table[:created_at].gt(MAXIMUM_DAYS_OF_DATA.days.ago))
-                   .select("tweets.*, #{metrics_sql}")
-                   .group(tweets_table[:id])
-                   .order('MAX(tweet_metrics.impression_count) DESC')
+                   .select("tweets.*, tweet_metrics.retweet_count, tweet_metrics.quote_count, tweet_metrics.like_count, tweet_metrics.reply_count, tweet_metrics.bookmark_count, tweet_metrics.impression_count")
+                   .order('tweet_metrics.impression_count DESC')
                    .limit(5)
 
       # Convert the query to an array of tweets to calculate the engagement rate in Ruby
@@ -120,7 +109,6 @@ module Twitter
                                              (interactions / impressions) * 100
                                            end.round(2)
       end
-
 
       # Return the modified tweets with the engagement rate calculated
       top_tweets
