@@ -84,7 +84,7 @@ module Twitter
 
     def top_tweets_for_user
       last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('created_at > ?', 7.days.ago)
-      TweetMetric.where(tweet_id: last_seven_days_of_tweets).where.not(impression_count: nil).order(impression_count: :desc).includes(:tweet).limit(5)
+      TweetMetric.where(tweet_id: last_seven_days_of_tweets).where.not(impression_count: nil).group("tweet_metrics.id", :tweet_id).order(impression_count: :desc).includes(:tweet).limit(5)
     end
 
     def profile_clicks_count
