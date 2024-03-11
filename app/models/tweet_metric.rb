@@ -38,4 +38,18 @@ class TweetMetric < ApplicationRecord
     ["bookmark_count", "created_at", "id", "id_value", "impression_count", "like_count", "pulled_at", "quote_count", "reply_count", "retweet_count", "tweet_id", "updated_at", "user_profile_clicks"]
   end
 
+
+  def engagement_rate_percentage
+    interactions = retweet_count.to_f +
+    quote_count.to_f +
+    like_count.to_f +
+    reply_count.to_f +
+    bookmark_count.to_f
+    impressions = impression_count.to_f
+
+    return 0.0 if impressions.zero?
+
+    ((interactions / impressions) * 100).round(2)
+  end
+
 end
