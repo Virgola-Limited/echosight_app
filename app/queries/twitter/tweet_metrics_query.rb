@@ -82,10 +82,26 @@ module Twitter
       percentage_change.round(2)
     end
 
-    def top_tweets_for_user
+    def top_tweets_for_user_old
       last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('created_at > ?', 7.days.ago)
       TweetMetric.where(tweet_id: last_seven_days_of_tweets).where.not(impression_count: nil).group("tweet_metrics.id", :tweet_id).order(impression_count: :desc).includes(:tweet).limit(5)
     end
+
+    def top_tweets_for_user
+      # Subquery to find the TweetMetric with the highest impression_count for each tweet
+      top_tweet_metrics_subquery = TweetMetric
+        .where(tweet_id: Tweet.where(identity_id: user.identity.id).where('created_at > ?', 7.days.ago))
+        .where.not(impression_count: nil)
+        .order(:tweet_id, impression_count: :desc)
+
+      # Use the subquery to fetch the top TweetMetrics and their associated Tweets
+      TweetMetric
+        .from("(#{top_tweet_metrics_subquery.to_sql}) as tweet_metrics")
+        .includes(:tweet)
+        .order(impression_count: :desc)
+        .limit(5)
+  end
+
 
     def profile_clicks_count
       if user.tweet_metrics.count.zero?
