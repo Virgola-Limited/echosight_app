@@ -15,28 +15,26 @@
     <img class="h-48 w-full object-cover shadow-lg" src="<%= @user.banner_url || image_url('default-public-page-banner.jpg') %>" alt="Twitter Header Photo">
 
     <!-- Profile Container -->
-    <div class="flex items-end justify-between px-4 py-4 lg:py-8">
+    <div class="flex items-end justify-between px-4 py-4 -mt-20 z-10">
       <!-- Profile Photo and Info -->
       <div class="flex items-center space-x-4">
         <!-- Profile Photo -->
         <%= link_to "https://twitter.com/#{@user.handle}", target: "_blank" do %>
-          <%= image_tag(@user.image_url, alt: @user.handle + " Profile image", class: "h-24 w-24 rounded-full border-4 border-white shadow-lg") %>
+          <%= image_tag(@user.image_url, alt: @user.handle + " Profile image", class: "min-h-24 min-w-24 h-24 w-24 md:h-28 md:w-28 rounded-full border-4 border-white shadow-lg object-cover") %>
         <% end %>
-
-        <!-- Profile Info -->
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><%= @user.name %></h1>
-          <p class="text-sm text-gray-500 dark:text-white"><%= @user.handle %></p>
-        </div>
-      </div>
-
-      <!-- Quote Container -->
-      <div class="py-2 px-4 rounded-lg">
-        <p class="text-xl font-semibold italic text-gray-900 dark:text-white"><%= html_description_with_links(@user.identity.description) %></p>
       </div>
     </div>
-  </div>
 
+
+    <div class="py-2 px-4 rounded-lg">
+      <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= @user.name %></h1>
+      <div class="flex flex-col lg:flex-row justify-between">
+        <p class="text-xs dark:text-white lg:mb-0"><%= @user.handle %></p>
+        <p class="text-m italic dark:text-white"><%= html_description_with_links(@user.identity.description) %></p>
+      </div>
+    </div>
+
+  </div>
 
   <div class="flex flex-wrap">
     <!-- Posts -->
