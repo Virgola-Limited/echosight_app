@@ -1,155 +1,155 @@
-<% content_for :title, "#{@user.handle}'s Public Page" %>
+<% cache(@cache_key) do %>
+  <% content_for :title, "#{@user.handle}'s Public Page" %>
 
-<%= content_for :profile_container do %>
-<div class="profile-container">
-  <div class="flex items-center space-x-3">
-      <%= render PrimaryActionButtonComponent.new(user: current_or_guest_user) %>
-      <%= render 'shared/dark_mode_toggle_button' %>
+  <%= content_for :profile_container do %>
+  <div class="profile-container">
+    <div class="flex items-center space-x-3">
+        <%= render PrimaryActionButtonComponent.new(user: current_or_guest_user) %>
+        <%= render 'shared/dark_mode_toggle_button' %>
+    </div>
   </div>
-</div>
-<% end %>
+  <% end %>
 
-<div class="relative">
-  <!-- Header Photo -->
-  <img class="h-48 w-full object-cover shadow-lg" src="<%= @user.banner_url || image_url('default-public-page-banner.jpg') %>" alt="Twitter Header Photo">
+  <div class="relative">
+    <!-- Header Photo -->
+    <img class="h-48 w-full object-cover shadow-lg" src="<%= @user.banner_url || image_url('default-public-page-banner.jpg') %>" alt="Twitter Header Photo">
 
-  <!-- Profile Container -->
-  <div class="flex items-end justify-between px-4 py-4 lg:py-8">
-    <!-- Profile Photo and Info -->
-    <div class="flex items-center space-x-4">
-      <!-- Profile Photo -->
-      <%= link_to "https://twitter.com/#{@user.handle}", target: "_blank" do %>
-        <%= image_tag(@user.image_url, alt: @user.handle + " Profile image", class: "h-24 w-24 rounded-full border-4 border-white shadow-lg") %>
-      <% end %>
+    <!-- Profile Container -->
+    <div class="flex items-end justify-between px-4 py-4 lg:py-8">
+      <!-- Profile Photo and Info -->
+      <div class="flex items-center space-x-4">
+        <!-- Profile Photo -->
+        <%= link_to "https://twitter.com/#{@user.handle}", target: "_blank" do %>
+          <%= image_tag(@user.image_url, alt: @user.handle + " Profile image", class: "h-24 w-24 rounded-full border-4 border-white shadow-lg") %>
+        <% end %>
 
-      <!-- Profile Info -->
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><%= @user.name %></h1>
-        <p class="text-sm text-gray-500 dark:text-white"><%= @user.handle %></p>
+        <!-- Profile Info -->
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><%= @user.name %></h1>
+          <p class="text-sm text-gray-500 dark:text-white"><%= @user.handle %></p>
+        </div>
       </div>
-    </div>
 
-    <!-- Quote Container -->
-    <div class="py-2 px-4 rounded-lg">
-      <p class="text-xl font-semibold italic text-gray-900 dark:text-white"><%= html_description_with_links(@user.identity.description) %></p>
-    </div>
-  </div>
-</div>
-
-
-<div class="flex flex-wrap">
-  <!-- Posts -->
-  <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-        Posts
-        <span class="ml-1">
-          <div data-tooltip-target="posts-count-tooltip">
-            <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </span>
-      </h5>
-      <p class="font-normal text-gray-700 dark:text-gray-400"><%= @tweet_count_over_available_time_period %></p>
-      <p class="font-normal text-green-600 dark:text-green-400"><%= @tweets_change_over_available_time_period %></p>
-    </div>
-  </div>
-  <!-- Impressions -->
-  <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-        Impressions
-        <span class="ml-1">
-          <div data-tooltip-target="impressions-count-tooltip">
-            <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </span>
-      </h5>
-      <p class="font-normal text-gray-700 dark:text-gray-400"><%= @impressions_count %></p>
-      <p class="font-normal text-green-600 dark:text-green-400"><%= @impressions_change_since_last_week %></p>
-    </div>
-  </div>
-  <!-- Profile Clicks -->
-  <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-        Likes
-        <span class="ml-1">
-          <div data-tooltip-target="likes-count-tooltip">
-            <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </span>
-      </h5>
-      <p class="font-normal text-gray-700 dark:text-gray-400"><%= @likes_count %></p>
-      <p class="font-normal text-green-600 dark:text-green-400"><%= @likes_change_since_last_week %></p>
-    </div>
-  </div>
-  <!-- Followers -->
-  <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-        Followers
-        <span class="ml-1">
-          <div data-tooltip-target=followers-count-tooltip">
-            <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </span>
-      </h5>
-      <p class="font-normal text-gray-700 dark:text-gray-400"><%= @followers_count %></p>
-      <p class="font-normal text-blue-600 dark:text-blue-400"><%= @followers_count_change_percentage_text %></p>
-    </div>
-  </div>
-</div>
-
-<div id="posts-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    This is the total number of tweets you have made in the last <%= @tweet_comparison_days %> days. Compared to the previous <%= @tweet_comparison_days %> days.
-    <%= (@tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-</div>
-
-<div id="impressions-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    This is the total number of times your tweets have been seen in the last <%= @impressions_comparison_days %> days. Compared to the previous <%= @impressions_comparison_days %> days.
-    <%= (@impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-</div>
-
-<div id="likes-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    This is the total number of likes you've recieved in the last <%= @likes_comparison_days %> days. Compared to the previous <%= @likes_comparison_days %> days.
-    <%= (@likes_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-</div>
-
-<div id="followers-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    This is the total number of followers you have acquired in the last <%= @followers_comparison_days %> days compared to the previous <%= @followers_comparison_days %> days.
-    <%= (@followers_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-</div>
-
-<%= render "public_pages/followers_graph" %>
-<%= render "public_pages/engagement_rate" %>
-<%= render "public_pages/impressions_over_time" %>
-<% #render "public_pages/profile_conversion_rate" %>
-<%= render "public_pages/posts" %>
-
-<section class="mt-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-8 px-4 sm:px-6 lg:px-8 rounded-xl w-full">
-  <div class="w-full mx-auto text-center">
-    <h2 class="text-3xl font-extrabold sm:text-4xl">
-      Want to Stand Out?
-    </h2>
-    <p class="mt-4 text-lg leading-6">
-      Get your own public page with private dashboard and join the community of Echosight trendsetters.
-    </p>
-    <div class="mt-8 flex justify-center">
-      <div class="inline-flex rounded-md shadow">
-        <a href="<%= new_registration_path(:user) %>" class="call-to-action-button call-to-action-button-indigo">
-          Join Echosight Now
-        </a>
+      <!-- Quote Container -->
+      <div class="py-2 px-4 rounded-lg">
+        <p class="text-xl font-semibold italic text-gray-900 dark:text-white"><%= html_description_with_links(@user.identity.description) %></p>
       </div>
     </div>
   </div>
-</section>
 
 
+  <div class="flex flex-wrap">
+    <!-- Posts -->
+    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
+      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
+          Posts
+          <span class="ml-1">
+            <div data-tooltip-target="posts-count-tooltip">
+              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </span>
+        </h5>
+        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @tweet_count_over_available_time_period %></p>
+        <p class="font-normal text-green-600 dark:text-green-400"><%= @tweets_change_over_available_time_period %></p>
+      </div>
+    </div>
+    <!-- Impressions -->
+    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
+      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
+          Impressions
+          <span class="ml-1">
+            <div data-tooltip-target="impressions-count-tooltip">
+              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </span>
+        </h5>
+        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @impressions_count %></p>
+        <p class="font-normal text-green-600 dark:text-green-400"><%= @impressions_change_since_last_week %></p>
+      </div>
+    </div>
+    <!-- Profile Clicks -->
+    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
+      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
+          Likes
+          <span class="ml-1">
+            <div data-tooltip-target="likes-count-tooltip">
+              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </span>
+        </h5>
+        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @likes_count %></p>
+        <p class="font-normal text-green-600 dark:text-green-400"><%= @likes_change_since_last_week %></p>
+      </div>
+    </div>
+    <!-- Followers -->
+    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
+      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
+          Followers
+          <span class="ml-1">
+            <div data-tooltip-target=followers-count-tooltip">
+              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </span>
+        </h5>
+        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @followers_count %></p>
+        <p class="font-normal text-blue-600 dark:text-blue-400"><%= @followers_count_change_percentage_text %></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="posts-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+      This is the total number of tweets you have made in the last <%= @tweet_comparison_days %> days. Compared to the previous <%= @tweet_comparison_days %> days.
+      <%= (@tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
+  </div>
+
+  <div id="impressions-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+      This is the total number of times your tweets have been seen in the last <%= @impressions_comparison_days %> days. Compared to the previous <%= @impressions_comparison_days %> days.
+      <%= (@impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
+  </div>
+
+  <div id="likes-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+      This is the total number of likes you've recieved in the last <%= @likes_comparison_days %> days. Compared to the previous <%= @likes_comparison_days %> days.
+      <%= (@likes_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
+  </div>
+
+  <div id="followers-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+      This is the total number of followers you have acquired in the last <%= @followers_comparison_days %> days compared to the previous <%= @followers_comparison_days %> days.
+      <%= (@followers_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
+  </div>
+
+  <%= render "public_pages/followers_graph" %>
+  <%= render "public_pages/engagement_rate" %>
+  <%= render "public_pages/impressions_over_time" %>
+  <% #render "public_pages/profile_conversion_rate" %>
+  <%= render "public_pages/posts" %>
+
+  <section class="mt-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-8 px-4 sm:px-6 lg:px-8 rounded-xl w-full">
+    <div class="w-full mx-auto text-center">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">
+        Want to Stand Out?
+      </h2>
+      <p class="mt-4 text-lg leading-6">
+        Get your own public page with private dashboard and join the community of Echosight trendsetters.
+      </p>
+      <div class="mt-8 flex justify-center">
+        <div class="inline-flex rounded-md shadow">
+          <a href="<%= new_registration_path(:user) %>" class="call-to-action-button call-to-action-button-indigo">
+            Join Echosight Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% end %>

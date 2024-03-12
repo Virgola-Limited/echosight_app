@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 class PublicPagesController < ApplicationController
+  include Cacheable
+
   def show
     identity = Identity.find_by(handle: params[:handle])
     @user = identity.user if identity.present?
 
     raise 'Missing user' unless @user
+    @cache_key = cache_key_for_user(@user)
 
     @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
 
