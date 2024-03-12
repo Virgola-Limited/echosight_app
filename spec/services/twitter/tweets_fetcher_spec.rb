@@ -61,7 +61,9 @@ RSpec.describe Twitter::TweetsFetcher do
         "following_count" => 4554,
         "listed_count" => 42,
         "tweet_count" => 52729
-      }
+      },
+      "image_url" => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
+      "banner_url" => "https://pbs.twimg.com/profile_banners/1192091185/1707817030"
     }
   end
 

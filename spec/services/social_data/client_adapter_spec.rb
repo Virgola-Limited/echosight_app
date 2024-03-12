@@ -29,7 +29,9 @@ RSpec.describe SocialData::ClientAdapter,
             'following_count' => 16,
             'listed_count' => 0,
             'tweet_count' => 15
-          }
+          },
+          'image_url' => 'https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg',
+          'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482'
         }
       }
     end
@@ -70,7 +72,9 @@ RSpec.describe SocialData::ClientAdapter,
             'following_count' => 16,
             'listed_count' => 0,
             'tweet_count' => 15,
-          }
+          },
+          'image_url' => 'https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg',
+          'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482'
         }
       }
     end
@@ -100,7 +104,9 @@ RSpec.describe SocialData::ClientAdapter,
             'following_count' => 551,
             'listed_count' => 149_016,
             'tweet_count' => 39_250
-          }
+          },
+          'image_url' => 'https://pbs.twimg.com/profile_images/1683325380441128960/yRsRRjGO_normal.jpg',
+          'banner_url' => 'https://pbs.twimg.com/profile_banners/44196397/1690621312'
         }
       }
     end
