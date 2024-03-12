@@ -289,6 +289,7 @@ module Twitter
 
     def total_impressions_for_period(start_time, end_time)
       TweetMetric.joins(:tweet)
+                 .includes(:tweet)
                  .where(tweets: { identity_id: user.identity.id })
                  .where(pulled_at: start_time..end_time)
                  .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
