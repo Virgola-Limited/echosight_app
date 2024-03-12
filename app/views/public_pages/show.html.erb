@@ -29,8 +29,8 @@
     <div class="py-2 px-4 rounded-lg">
       <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= @user.name %></h1>
       <div class="flex flex-col lg:flex-row justify-between">
-        <p class="text-xs dark:text-white lg:mb-0"><%= @user.handle %></p>
-        <p class="text-m italic dark:text-white"><%= html_description_with_links(@user.identity.description) %></p>
+        <div class="text-xs dark:text-white lg:mb-0"><%= @user.handle %></div>
+        <div class="text-m dark:text-white dark:text-white"><%= html_description_with_links(@user.identity.description) %></div>
       </div>
     </div>
 
@@ -94,7 +94,7 @@
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
           Followers
           <span class="ml-1">
-            <div data-tooltip-target=followers-count-tooltip">
+            <div data-tooltip-target="followers-count-tooltip">
               <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
