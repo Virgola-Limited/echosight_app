@@ -176,32 +176,36 @@ module Twitter
     end
 
     def engagement_rate_percentage_per_day
-      # Fetch tweets and their metrics for the last 8 days
       recent_tweets = Tweet.includes(:tweet_metrics)
                            .where(identity_id: @user.identity.id)
-                           .where('tweet_metrics.pulled_at >= ?', 8.days.ago.utc.to_date)
-                           .where('tweet_metrics.pulled_at <= ?', 1.day.ago.utc.to_date)
+                           .where('tweet_metrics.pulled_at' => 8.days.ago.utc.to_date..1.day.ago.utc.to_date)
                            .references(:tweet_metrics)
-      # ...
       daily_engagement_rates = {}
+
+      # Cache pulled_at dates for all metrics in a hash for quick access
+      tweet_metrics_by_date = recent_tweets.each_with_object({}) do |tweet, hash|
+        hash[tweet.id] = tweet.tweet_metrics.each_with_object({}) do |metric, h|
+          h[metric.pulled_at] = metric
+        end
+      end
 
       # Iterate over the last 7 days
       (1..7).each do |day_ago|
         current_day = day_ago.days.ago.utc.to_date
         previous_day = (day_ago + 1).days.ago.utc.to_date
 
+        # Initialize counters
         daily_interactions = 0
         daily_impressions = 0
         eligible_tweets_count = 0
 
-        recent_tweets.each do |tweet|
-          current_metrics = tweet.tweet_metrics.find_by(pulled_at: current_day)
-          previous_metrics = tweet.tweet_metrics.find_by(pulled_at: previous_day)
+        # Iterate over cached tweet metrics
+        tweet_metrics_by_date.each do |tweet_id, metrics|
+          current_metrics = metrics[current_day]
+          previous_metrics = metrics[previous_day]
 
-          # Skip if metrics are not present for both days
-          next unless current_metrics && previous_metrics
-
-          # Skip if any of the counts are nil
+          # Skip if metrics are not present for both days or if any of the counts are nil
+          next if current_metrics.nil? || previous_metrics.nil?
           next if [current_metrics.retweet_count, current_metrics.quote_count, current_metrics.like_count,
                    current_metrics.reply_count, current_metrics.bookmark_count, current_metrics.impression_count,
                    previous_metrics.retweet_count, previous_metrics.quote_count, previous_metrics.like_count,
@@ -231,14 +235,10 @@ module Twitter
         end
       end
 
-      # Format the result as specified
-      daily_engagement_rates.map { |date, rate| { date:, engagement_rate_percentage: rate } }
-
-      # Sort the hash by date (ascending) before mapping it to the specified format
+      # Sort and format the result
       sorted_daily_engagement_rates = daily_engagement_rates.sort_by { |date, _| date }.to_h
       sorted_daily_engagement_rates.map { |date, rate| { date: date, engagement_rate_percentage: rate } }
     end
-
 
     private
 
