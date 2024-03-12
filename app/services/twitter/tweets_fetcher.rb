@@ -36,7 +36,11 @@ module Twitter
         metrics_created_count += 1 if metrics_created
         tweets_updated_count += 1 if tweet_updated
       end
-      @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call if today_user_data
+
+      if today_user_data
+        @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
+        UserUpdater.new(today_user_data).call
+      end
 
       [metrics_created_count, tweets_updated_count]
     end

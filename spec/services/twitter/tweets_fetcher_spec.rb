@@ -18,7 +18,7 @@ RSpec.describe Twitter::TweetsFetcher do
     expect(TweetMetric.count).to be_positive # Ensure metrics were created
 
     VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
-      expect { subject.call }.not_to change { TweetMetric.count }
+      expect { subject.call }.not_to(change { TweetMetric.count })
     end
 
     user.tweets.each do |tweet|
@@ -53,28 +53,31 @@ RSpec.describe Twitter::TweetsFetcher do
 
   let(:expected_user_data) do
     {
-      "id"=>"1192091185",
-      "username" => "loftwah",
-      "name" => "Loftwah",
-      "public_metrics" => {
-        "followers_count" => 6676,
-        "following_count" => 4554,
-        "listed_count" => 42,
-        "tweet_count" => 52729
+      'id' => '1192091185',
+      'username' => 'loftwah',
+      'name' => 'Loftwah',
+      'public_metrics' => {
+        'followers_count' => 6676,
+        'following_count' => 4554,
+        'listed_count' => 42,
+        'tweet_count' => 52_729
       },
-      "image_url" => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
-      "banner_url" => "https://pbs.twimg.com/profile_banners/1192091185/1707817030"
+      'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
+      'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1707817030'
     }
   end
 
   it 'send todays user data to UserMetricsUpdater' do
     VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
-      travel_to Time.parse('Wed, 06 Mar 2024 00:00:00 GMT') do
-        expect(Twitter::UserMetricsUpdater).to receive(:new).with(expected_user_data).and_call_original
-        subject.call
-      end
+      expect(Twitter::UserMetricsUpdater).to receive(:new).with(expected_user_data).and_call_original
+      subject.call
     end
   end
 
-
+  it 'sends todays user data to UserUpdater' do
+    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+      expect(UserUpdater).to receive(:new).with(expected_user_data).and_call_original
+      subject.call
+    end
+  end
 end

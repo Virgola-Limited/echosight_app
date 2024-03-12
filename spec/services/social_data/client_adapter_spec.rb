@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SocialData::ClientAdapter,
-  vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
+               vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity:) }
@@ -71,7 +71,7 @@ RSpec.describe SocialData::ClientAdapter,
             'followers_count' => 3,
             'following_count' => 16,
             'listed_count' => 0,
-            'tweet_count' => 15,
+            'tweet_count' => 15
           },
           'image_url' => 'https://pbs.twimg.com/profile_images/1729697224278552576/pa9ZhTkQ_normal.jpg',
           'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1702516482'
@@ -121,7 +121,7 @@ RSpec.describe SocialData::ClientAdapter,
           'quote_count' => 235,
           'reply_count' => 2069,
           'retweet_count' => 7846,
-          'impression_count' => 6796646,
+          'impression_count' => 6_796_646,
           'bookmark_count' => 417
         },
         'is_pinned' => 'false',
