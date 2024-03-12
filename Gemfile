@@ -59,7 +59,9 @@ gem 'stripe'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
+
 group :development, :test do
+  gem 'bullet'
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
@@ -78,11 +80,10 @@ group :development do
   gem 'binding_of_caller'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'guard-rspec', require: false
+  gem 'rack-mini-profiler'
   gem 'rubocop'
   gem 'web-console'
 
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  # gem "rack-mini-profiler"
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
