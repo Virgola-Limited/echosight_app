@@ -74,9 +74,8 @@ module Twitter
         )
       end
       tweet_metric = TweetMetric.find_or_initialize_by(tweet: tweet, pulled_at: Date.today)
-      tweet_metric.update!(metric_attributes)
 
-      [true, tweet_updated]
+      [tweet_metric.update!(metric_attributes), tweet_updated]
     end
   end
 end
