@@ -30,7 +30,7 @@ module Twitter
     def staggered_tweets_count_difference
       days_of_data = (Time.current - @start_time.to_time) / 1.day
       comparison_days = determine_comparison_days(days_of_data)
-      Rails.logger.debug('paul days_of_data' + days_of_data.inspect)
+      Rails.logger.debug("paul days_of_data#{days_of_data.inspect}")
 
       end_time = Time.current
       start_time_recent = end_time - comparison_days.days
@@ -38,7 +38,7 @@ module Twitter
       recent_count = tweets_count_between(start_time_recent, end_time)
       difference = compare_tweets_count(comparison_days)
 
-      { recent_count: recent_count, difference: difference, comparison_days: comparison_days }
+      { recent_count:, difference:, comparison_days: }
     end
 
     def days_until_last_weeks_data_available
@@ -46,14 +46,13 @@ module Twitter
       return 7 unless earliest_data_date # If no data, assume a full week is needed.
 
       days_of_data = (Time.current.beginning_of_day - earliest_data_date.to_date).to_i
-      Rails.logger.debug('pauldays_of_data' + days_of_data.inspect)
+      Rails.logger.debug("pauldays_of_data#{days_of_data.inspect}")
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
     def impressions_count
-      if user.tweet_metrics.count.zero?
-        return 0
-      end
+      return 0 if user.tweet_metrics.count.zero?
+
       # Check if we have at least 14 days of data
       earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
       return false if (Date.current - earliest_record_date).to_i < 14
@@ -83,13 +82,14 @@ module Twitter
     end
 
     def top_tweets_for_user
-      last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?', 7.days.ago)
+      last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
+                                                                                   MAXIMUM_DAYS_OF_DATA.days.ago)
 
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
-      .group(:tweet_id, :pulled_at, :impression_count, :id)
-      .where.not(impression_count: nil)
-      .select('*, MAX(impression_count) as max_impression_count')
-      .order(impression_count: :desc)
+                                 .group(:tweet_id, :pulled_at, :impression_count, :id)
+                                 .where.not(impression_count: nil)
+                                 .select('*, MAX(impression_count) as max_impression_count')
+                                 .order(impression_count: :desc)
 
       results = []
       used_tweets = []
@@ -105,9 +105,8 @@ module Twitter
     end
 
     def likes_count
-      if user.tweet_metrics.count.zero?
-        return 0
-      end
+      return 0 if user.tweet_metrics.count.zero?
+
       # Check if we have at least 14 days of data
       earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
       return false if (Date.current - earliest_record_date).to_i < 14
@@ -118,9 +117,9 @@ module Twitter
                                       .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
                                       .sum(:like_count)
       previous_week_likes = TweetMetric.joins(:tweet)
-                                        .where(tweets: { identity_id: user.identity.id })
-                                        .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
-                                        .sum(:like_count)
+                                       .where(tweets: { identity_id: user.identity.id })
+                                       .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
+                                       .sum(:like_count)
 
       # Return the difference in likes between the last two 7-day periods
       current_week_likes - previous_week_likes
@@ -133,9 +132,9 @@ module Twitter
                                       .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
                                       .sum(:like_count)
       previous_week_likes = TweetMetric.joins(:tweet)
-                                        .where(tweets: { identity_id: user.identity.id })
-                                        .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
-                                        .sum(:like_count)
+                                       .where(tweets: { identity_id: user.identity.id })
+                                       .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
+                                       .sum(:like_count)
 
       return false if previous_week_likes.zero? # No data from last week
 
@@ -146,7 +145,7 @@ module Twitter
                             0 # No change if both current and previous week likes are zero
                           end
       percentage_change.round(2)
-                        end
+    end
 
     def impression_counts_per_day
       # Subquery to select the latest TweetMetric record for each day
@@ -177,31 +176,67 @@ module Twitter
     end
 
     def engagement_rate_percentage_per_day
-      tweets_table = Tweet.arel_table
-      tweet_metrics_table = TweetMetric.arel_table
-      identities_table = Identity.arel_table
+      # Fetch tweets and their metrics for the last 8 days
+      recent_tweets = Tweet.includes(:tweet_metrics)
+                           .where(identity_id: @user.identity.id)
+                           .where('tweet_metrics.pulled_at >= ?', 8.days.ago.utc.to_date)
+                           .where('tweet_metrics.pulled_at <= ?', 1.day.ago.utc.to_date)
+                           .references(:tweet_metrics)
+      # ...
+      daily_engagement_rates = {}
 
-      tweets_with_engagement = Tweet.joins(:tweet_metrics)
-                                    .joins(:identity)
-                                    .where(identities_table[:user_id].eq(user.id))
-                                    .where(tweets_table[:twitter_created_at].gt(MAXIMUM_DAYS_OF_DATA.days.ago))
-                                    .where(tweets_table[:twitter_created_at].gteq(@start_time))
-                                    .select(
-                                      tweets_table[:twitter_created_at].as('date'),
-                                      Arel.sql('SUM(tweet_metrics.retweet_count + tweet_metrics.quote_count + tweet_metrics.like_count + tweet_metrics.reply_count + tweet_metrics.user_profile_clicks + tweet_metrics.bookmark_count) as interactions'),
-                                      Arel.sql('SUM(tweet_metrics.impression_count) as impressions')
-                                    )
-                                    .group('date')
+      # Iterate over the last 7 days
+      (1..7).each do |day_ago|
+        current_day = day_ago.days.ago.utc.to_date
+        previous_day = (day_ago + 1).days.ago.utc.to_date
 
-      # Map over the ActiveRecord Relation to calculate engagement rates
-      tweets_with_engagement.map do |record|
-        date = record.date
-        interactions = record.interactions.to_f
-        impressions = record.impressions.to_f
-        engagement_rate_percentage = impressions.zero? ? 0.0 : (interactions / impressions) * 100
+        daily_interactions = 0
+        daily_impressions = 0
+        eligible_tweets_count = 0
 
-        { date: date, engagement_rate_percentage: engagement_rate_percentage.round(2) }
-      end.sort_by { |record| record[:date] }
+        recent_tweets.each do |tweet|
+          current_metrics = tweet.tweet_metrics.find_by(pulled_at: current_day)
+          previous_metrics = tweet.tweet_metrics.find_by(pulled_at: previous_day)
+
+          # Skip if metrics are not present for both days
+          next unless current_metrics && previous_metrics
+
+          # Skip if any of the counts are nil
+          next if [current_metrics.retweet_count, current_metrics.quote_count, current_metrics.like_count,
+                   current_metrics.reply_count, current_metrics.bookmark_count, current_metrics.impression_count,
+                   previous_metrics.retweet_count, previous_metrics.quote_count, previous_metrics.like_count,
+                   previous_metrics.reply_count, previous_metrics.bookmark_count, previous_metrics.impression_count].any?(&:nil?)
+
+          # Calculate differences
+          interactions_difference = (current_metrics.retweet_count + current_metrics.quote_count +
+                                     current_metrics.like_count + current_metrics.reply_count +
+                                     current_metrics.bookmark_count) -
+                                    (previous_metrics.retweet_count + previous_metrics.quote_count +
+                                     previous_metrics.like_count + previous_metrics.reply_count +
+                                     previous_metrics.bookmark_count)
+
+          impressions_difference = current_metrics.impression_count - previous_metrics.impression_count
+
+          # Avoid division by zero
+          next unless impressions_difference.positive?
+
+          daily_interactions += interactions_difference
+          daily_impressions += impressions_difference
+          eligible_tweets_count += 1
+        end
+
+        # Calculate and store the average engagement rate for the day if we have eligible tweets
+        if eligible_tweets_count.positive?
+          daily_engagement_rates[current_day] = (daily_interactions.to_f / daily_impressions * 100).round(2)
+        end
+      end
+
+      # Format the result as specified
+      daily_engagement_rates.map { |date, rate| { date:, engagement_rate_percentage: rate } }
+
+      # Sort the hash by date (ascending) before mapping it to the specified format
+      sorted_daily_engagement_rates = daily_engagement_rates.sort_by { |date, _| date }.to_h
+      sorted_daily_engagement_rates.map { |date, rate| { date: date, engagement_rate_percentage: rate } }
     end
 
 
@@ -252,16 +287,15 @@ module Twitter
            .count
     end
 
-
     def total_impressions_for_period(start_time, end_time)
       TweetMetric.joins(:tweet)
-        .where(tweets: { identity_id: user.identity.id })
-        .where(pulled_at: start_time..end_time)
-        .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
-        .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
-        .group_by { |tm| [tm.tweet_id, tm.pulled_at.to_date] }
-        .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
-        .sum
+                 .where(tweets: { identity_id: user.identity.id })
+                 .where(pulled_at: start_time..end_time)
+                 .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
+                 .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
+                 .group_by { |tm| [tm.tweet_id, tm.pulled_at.to_date] }
+                 .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
+                 .sum
     end
   end
 end

@@ -25,5 +25,12 @@
 #
 FactoryBot.define do
   factory :tweet_metric do
+    retweet_count { 1..100 }
+    like_count { 1..100 }
+    quote_count { 1..100 }
+    impression_count { 1..100 }
+    reply_count { 1..100 }
+    bookmark_count { 1..100 }
+    pulled_at { 1.day.ago }
   end
 end
