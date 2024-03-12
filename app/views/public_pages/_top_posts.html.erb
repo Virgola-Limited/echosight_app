@@ -45,7 +45,7 @@
         <tbody>
           <% @top_posts.each do |tweet_metric| %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-1 whitespace-nowrap">
+                    <td class="p-1">
                       <a href="https://twitter.com/user/status/<%= tweet_metric.tweet.twitter_id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
                       <%= text_with_images(tweet_metric.tweet.text) %>
                       </a>
