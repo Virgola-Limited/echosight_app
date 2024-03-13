@@ -54,10 +54,6 @@ gem 'vite_rails'
 gem 'whenever', require: false
 gem 'x', '~> 0.14.1'
 
-group :production, :staging do
-  gem 'slack-notifier'
-end
-
 group :development, :test do
   gem 'bullet'
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
