@@ -51,4 +51,24 @@ ActiveAdmin.register User do
       end
     end
   end
+
+  collection_action :invite_user, method: :get do
+    @user = User.new # Initializes a new user for the form
+
+    render 'admin/users/invite_user'
+  end
+
+  collection_action :send_invite, method: :post do
+    user = User.invite!(email: params[:user][:email], name: params[:user][:name]) # Adjust as per your User model attributes
+    if user.errors.empty?
+      redirect_to admin_users_path, notice: "User has been successfully invited."
+    else
+      flash[:error] = user.errors.full_messages.join(", ")
+      redirect_to invite_user_admin_users_path
+    end
+  end
+
+  action_item :invite, only: :index do
+    link_to 'Invite User', invite_user_admin_users_path
+  end
 end

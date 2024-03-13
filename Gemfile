@@ -28,30 +28,23 @@ gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '>= 4.0.1'
 
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
-
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
-
 gem 'activeadmin'
 gem 'apexcharts'
 gem 'devise', '~> 4.9'
+gem 'devise_invitable'
 gem 'exception_notification'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'paper_trail'
 gem 'premailer-rails'
-gem 'sassc' # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
+# Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
+gem 'sassc'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slack-notifier'
@@ -59,6 +52,7 @@ gem 'stripe'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
+gem 'x', '~> 0.14.1'
 
 group :development, :test do
   gem 'bullet'
@@ -88,4 +82,3 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
-gem 'x', '~> 0.14.1'
