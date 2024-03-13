@@ -82,7 +82,7 @@ module Twitter
     end
 
     def top_tweets_for_user
-      last_seven_days_of_tweets = tweet_metrics_for_user.where('twitter_created_at > ?',
+      last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
                                                                                    MAXIMUM_DAYS_OF_DATA.days.ago)
 
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
@@ -112,10 +112,12 @@ module Twitter
       return false if (Date.current - earliest_record_date).to_i < 14
 
       # Calculate likes for the last 7 days and the previous 7 days
-      current_week_likes = tweet_metrics_for_user
+      current_week_likes = TweetMetric.joins(:tweet)
+                                      .where(tweets: { identity_id: user.identity.id })
                                       .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
                                       .sum(:like_count)
-      previous_week_likes = tweet_metrics_for_user
+      previous_week_likes = TweetMetric.joins(:tweet)
+                                       .where(tweets: { identity_id: user.identity.id })
                                        .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
                                        .sum(:like_count)
 
@@ -125,10 +127,12 @@ module Twitter
 
     def likes_change_since_last_week
       # Calculate likes for the last 7 days and the previous 7 days
-      current_week_likes = tweet_metrics_for_user
+      current_week_likes = TweetMetric.joins(:tweet)
+                                      .where(tweets: { identity_id: user.identity.id })
                                       .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
                                       .sum(:like_count)
-      previous_week_likes = tweet_metrics_for_user
+      previous_week_likes = TweetMetric.joins(:tweet)
+                                       .where(tweets: { identity_id: user.identity.id })
                                        .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
                                        .sum(:like_count)
 
@@ -285,6 +289,7 @@ module Twitter
 
     def total_impressions_for_period(start_time, end_time)
       TweetMetric.joins(:tweet)
+                 .includes(:tweet)
                  .where(tweets: { identity_id: user.identity.id })
                  .where(pulled_at: start_time..end_time)
                  .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
@@ -292,12 +297,6 @@ module Twitter
                  .group_by { |tm| [tm.tweet_id, tm.pulled_at.to_date] }
                  .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
                  .sum
-    end
-
-    def tweet_metrics_for_user
-      TweetMetric.joins(:tweet)
-                 .includes(:tweet)
-                 .where(tweets: { identity_id: user.identity.id })
     end
   end
 end
