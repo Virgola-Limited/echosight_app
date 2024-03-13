@@ -5,10 +5,14 @@
 
 body {
   padding-top: 25px;
-  padding-left: 100px;
-  padding-right: 100px;
 }
 
+@media (min-width: 768px) {
+  body {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
 .logo-container a {
   display: flex;
   align-items: center;
