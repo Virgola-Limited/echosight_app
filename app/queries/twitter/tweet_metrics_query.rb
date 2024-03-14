@@ -148,32 +148,37 @@ module Twitter
     end
 
     def impression_counts_per_day
-      # Subquery to select the latest TweetMetric record for each day
-      subquery = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
-                            .where('pulled_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
-                            .order('tweet_id, DATE(pulled_at), pulled_at DESC')
+      # Fetch the latest TweetMetric record for each day for each tweet
+      tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
+                                 .joins(:tweet)
+                                 .where('pulled_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
+                                 .where(tweets: { identity_id: user.identity.id })
+                                 .order('tweet_id, DATE(pulled_at), pulled_at DESC')
 
-      # Inner query to calculate the daily impression count using window function
-      inner_query = TweetMetric.from(subquery, :latest_metrics)
-                               .joins('INNER JOIN tweets ON tweets.id = latest_metrics.tweet_id')
-                               .where(tweets: { identity_id: user.identity.id })
-                               .select("
-                                 DATE(latest_metrics.pulled_at) as pulled_date,
-                                 latest_metrics.impression_count,
-                                 LAG(latest_metrics.impression_count, 1, 0) OVER (PARTITION BY latest_metrics.tweet_id ORDER BY latest_metrics.pulled_at) AS previous_impression_count
-                               ")
+      # Group the metrics by date
+      grouped_metrics = tweet_metrics.group_by { |metric| metric.pulled_at.to_date }
+      puts "Grouped Metrics: #{grouped_metrics.inspect}"
 
-      # Outer query to filter and sum the daily impression differences
-      outer_query = TweetMetric.from("(#{inner_query.to_sql}) as impression_diffs")
-                               .select('pulled_date, impression_count - previous_impression_count AS daily_impression_diff')
-                               .where('impression_count - previous_impression_count > 0')
+      # Sort the dates to ensure we're processing them in order
+      sorted_dates = grouped_metrics.keys.sort
 
-      # Final aggregation by date
-      TweetMetric.from("(#{outer_query.to_sql}) as final_diffs")
-                 .group('pulled_date')
-                 .order('pulled_date')
-                 .pluck('pulled_date', 'SUM(daily_impression_diff)')
+      # Initialize a hash to keep track of total impressions per day
+      daily_total_impressions = {}
+
+      sorted_dates.each do |date|
+        daily_total_impressions[date] = grouped_metrics[date].sum(&:impression_count)
+      end
+      puts "Daily Total Impressions: #{daily_total_impressions.inspect}"
+      # Calculate daily impression differences, excluding the first day
+      daily_impression_diffs = sorted_dates.each_cons(2).map do |previous_date, current_date|
+        difference = daily_total_impressions[current_date] - daily_total_impressions[previous_date]
+        puts "Calculating difference for #{current_date}: #{difference}"
+        [current_date, difference.positive? ? difference : 0] # Replace negative differences with 0
+      end
+
+      daily_impression_diffs
     end
+
 
     def engagement_rate_percentage_per_day
       recent_tweets = Tweet.includes(:tweet_metrics)
@@ -289,7 +294,6 @@ module Twitter
 
     def total_impressions_for_period(start_time, end_time)
       TweetMetric.joins(:tweet)
-                 .includes(:tweet)
                  .where(tweets: { identity_id: user.identity.id })
                  .where(pulled_at: start_time..end_time)
                  .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')

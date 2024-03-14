@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Twitter::TweetMetricsQuery do
-  let(:identity) { create(:identity) }
+  let(:identity) { create(:identity, :random_credentials) }
   let(:user) { create(:user, identity: identity) }
 
   describe '#top_tweets_for_user' do
@@ -31,6 +31,34 @@ RSpec.describe Twitter::TweetMetricsQuery do
       expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300])
     end
   end
+
+  fdescribe '#impression_counts_per_day' do
+    let(:tweet1) { create(:tweet, identity: identity) }
+    let(:tweet2) { create(:tweet, identity: identity) }
+    before do
+      # Create TweetMetrics for 3 consecutive days for 2 tweets, ensuring impression counts increase each day
+      3.times do |i|
+        create(:tweet_metric, tweet: tweet1, pulled_at: (2 - i).days.ago, impression_count: 100 * (i + 1))
+        create(:tweet_metric, tweet: tweet2, pulled_at: (2 - i).days.ago, impression_count: 200 * (i + 1))
+      end
+    end
+
+    subject(:impression_diffs) { described_class.new(user: user).impression_counts_per_day }
+
+    it 'calculates daily impression differences, ignoring the first day' do
+      # Expected impression diffs: Day 2 - Day 1, Day 3 - Day 2 for each tweet, excluding the first day
+      expected_diffs = [
+        [1.day.ago.to_date, 300], # (200*2 - 200*1) + (100*2 - 100*1)
+        [Time.zone.today, 300]    # (200*3 - 200*2) + (100*3 - 100*2)
+      ]
+      # puts "TweetMetrics all: #{TweetMetric.all}"
+      # puts "Impression Diffs: #{impression_diffs.inspect}"
+      expect(impression_diffs).to match_array(expected_diffs)
+    end
+  end
+
+  # expect day 1 diff to be 100 and 200 for tweet1 and tweet2 respectively 300 in total
+
 
   xdescribe '#engagement_rate_percentage_per_day' do
     subject(:query) { described_class.new(user: user) }

@@ -31,6 +31,11 @@ FactoryBot.define do
     provider { 'twitter2' }
     handle { 'TopherToy' }
 
+    trait :random_credentials do
+      uid { SecureRandom.uuid }
+      handle { Faker::Internet.username }
+    end
+
     trait :with_oauth_credential do
       after(:create) do |identity|
         create(:oauth_credential, identity:)
