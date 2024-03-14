@@ -11,7 +11,7 @@
   <div class="py-3" role="alert">
     <p class="mb-3 text-gray-500 dark:text-gray-400">To start collecting data from Twitter to generate your public page, please connect your Twitter account.</p>
     <p class="m-2">
-      <%= button_to omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
+      <%= button_to helpers.omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
         <button type="submit" class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 me-2 mb-2">
           <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 17">
             <path fill-rule="evenodd" d="..."></path>
