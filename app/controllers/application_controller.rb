@@ -1,15 +1,14 @@
 class ApplicationController < ActionController::Base
   helper_method :current_or_guest_user
-  before_action :authenticate_staging
+
+  # Use Devise's authentication filter for staging environment
+  before_action :authenticate_admin_user!, if: :staging_environment?
 
   private
 
-  def authenticate_staging
-    return unless Rails.env.staging?
-
-    authenticate_or_request_with_http_basic do |username, password|
-      username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
-    end
+  # Check if the current environment is staging
+  def staging_environment?
+    Rails.env.staging?
   end
 
   def current_or_guest_user
