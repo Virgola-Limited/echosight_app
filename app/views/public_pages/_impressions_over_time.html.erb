@@ -11,7 +11,7 @@
   </h2>
 </div>
 <div id="impressions-over-time-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    We collect new impression data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to <%= @maximum_days_of_data %> days of data.
+    We collect new impression data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to <%= @maximum_days_of_data %> days of data. <%= @first_impressions_message %>
     <div class="tooltip-arrow" data-popper-arrow></div>
 </div>
 
@@ -27,7 +27,7 @@
 <script>
   let impressionData = <%= @impression_daily_data_points_for_graph.to_json.html_safe %>;
   let maxYValue = Math.max(...impressionData);
-  let minYValue = Math.min(...impressionData);
+  let minYValue = 0; // Start y-axis from 0 to avoid negative values
 
   let range = maxYValue - minYValue;
   let stepSize = Math.pow(10, range.toString().length - 1);
@@ -35,6 +35,7 @@
   tickAmount = Math.max(tickAmount, 5);
   minYValue = Math.floor(minYValue / stepSize) * stepSize;
   maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
+
 
   window.addEventListener("load", function() {
     let options = {

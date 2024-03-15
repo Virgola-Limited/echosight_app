@@ -28,9 +28,8 @@ module Twitter
     end
 
     def staggered_tweets_count_difference
-      days_of_data = (Time.current - @start_time.to_time) / 1.day
+      days_of_data = ((Time.current - @start_time.to_time) / 1.day).to_i
       comparison_days = determine_comparison_days(days_of_data)
-      Rails.logger.debug("paul days_of_data#{days_of_data.inspect}")
 
       end_time = Time.current
       start_time_recent = end_time - comparison_days.days
@@ -46,7 +45,6 @@ module Twitter
       return 7 unless earliest_data_date # If no data, assume a full week is needed.
 
       days_of_data = (Time.current.beginning_of_day - earliest_data_date.to_date).to_i
-      Rails.logger.debug("pauldays_of_data#{days_of_data.inspect}")
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
@@ -88,20 +86,22 @@ module Twitter
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
                                  .group(:tweet_id, :pulled_at, :impression_count, :id)
                                  .where.not(impression_count: nil)
-                                 .select('*, MAX(impression_count) as max_impression_count')
+                                #  .select('*, MAX(impression_count) as max_impression_count')
                                  .order(impression_count: :desc)
 
       results = []
       used_tweets = []
       tweet_metrics.each do |tweet_metric|
         if used_tweets.exclude?(tweet_metric.tweet_id)
-          results << tweet_metric
+          results << tweet_metric.id
           used_tweets << tweet_metric.tweet_id
         end
         break if used_tweets.count == 5
       end
 
-      results
+      TweetMetric.where(id: results)
+      .includes(:tweet)
+      .order(impression_count: :desc)
     end
 
     def likes_count
@@ -147,7 +147,7 @@ module Twitter
       percentage_change.round(2)
     end
 
-    def impression_counts_per_day
+    def impression_counts_per_day_old
       # Fetch the latest TweetMetric record for each day for each tweet
       tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
                                  .joins(:tweet)
@@ -173,10 +173,31 @@ module Twitter
       daily_impression_diffs = sorted_dates.each_cons(2).map do |previous_date, current_date|
         difference = daily_total_impressions[current_date] - daily_total_impressions[previous_date]
         puts "Calculating difference for #{current_date}: #{difference}"
-        [current_date, difference.positive? ? difference : 0] # Replace negative differences with 0
+        {date: current_date, impression_count: difference}
       end
-
       daily_impression_diffs
+    end
+
+    def impression_counts_per_day
+      grouped_metrics, sorted_dates = fetch_grouped_metrics
+      daily_total_impressions = calculate_total_impressions(grouped_metrics, sorted_dates)
+
+      # Calculate daily impression differences, excluding the first day
+      daily_impression_diffs = sorted_dates.each_cons(2).map do |previous_date, current_date|
+        difference = daily_total_impressions[current_date] - daily_total_impressions[previous_date]
+        {date: current_date, impression_count: difference} # Replace negative differences with 0
+      end
+      daily_impression_diffs
+    end
+
+    def first_day_impressions
+      grouped_metrics, sorted_dates = fetch_grouped_metrics
+      return nil if sorted_dates.empty?
+
+      first_date = sorted_dates.first
+      first_day_impression_count = grouped_metrics[first_date].sum(&:impression_count)
+
+      { date: first_date, impression_count: first_day_impression_count }
     end
 
 
@@ -246,6 +267,30 @@ module Twitter
     end
 
     private
+
+    def fetch_grouped_metrics
+      # Fetch the latest TweetMetric record for each day for each tweet
+      tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
+                                 .joins(:tweet)
+                                 .where('pulled_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
+                                 .where(tweets: { identity_id: user.identity.id })
+                                 .order('tweet_id, DATE(pulled_at), pulled_at DESC')
+
+      # Group the metrics by date and sort the dates
+      grouped_metrics = tweet_metrics.group_by { |metric| metric.pulled_at.to_date }
+      sorted_dates = grouped_metrics.keys.sort
+
+      [grouped_metrics, sorted_dates]
+    end
+
+    def calculate_total_impressions(grouped_metrics, sorted_dates)
+      # Initialize a hash to keep track of total impressions per day
+      daily_total_impressions = {}
+      sorted_dates.each do |date|
+        daily_total_impressions[date] = grouped_metrics[date].sum(&:impression_count)
+      end
+      daily_total_impressions
+    end
 
     def determine_comparison_days(days_of_data)
       case days_of_data

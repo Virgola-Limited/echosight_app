@@ -118,15 +118,25 @@ class PublicPagesController < ApplicationController
     ############################
     # Engagement Graph
     @engagement_rate_percentage_per_day = tweet_metrics_query.engagement_rate_percentage_per_day
-    Rails.logger.info('paul' + @engagement_rate_percentage_per_day.inspect)
 
     ############################
     # Impressions over Time Graph
     impression_counts_per_day = tweet_metrics_query.impression_counts_per_day
+    if current_admin_user
+      @first_day_impressions = tweet_metrics_query.first_day_impressions
+      Rails.logger.debug('paul' + @first_day_impressions.inspect)
+      @first_impressions_message = "Based on #{@first_day_impressions[:impression_count].to_s} on #{@first_day_impressions[:date].to_s} "
+    end
+    Rails.logger.debug('paul @first_day_impressions' + @first_day_impressions.inspect)
+    @impression_formatted_labels_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
+      label = data[:date].strftime('%b %d')
+      label += " (#{data[:impression_count]})" if current_admin_user.present?
+      label
+    end
 
-    # Prepare data for the impressions graph
-    @impression_formatted_labels_for_graph = impression_counts_per_day.map { |date, _| date.strftime('%b %d') }
-    @impression_daily_data_points_for_graph = impression_counts_per_day.map { |_, count| count }
+    @impression_daily_data_points_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
+      data[:impression_count] >= 0 ? data[:impression_count] : 0
+    end
 
     ############################
     # Profile Conversion Rate
