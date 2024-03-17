@@ -14,9 +14,9 @@
     <!-- Header Photo -->
     <!-- this is poor refactor later -->
     <% if @user.banner_url.present? %>
-      <img class="h-48 w-full object-cover shadow-lg" src="<%= @user.banner_url %>" alt="Twitter Header Photo">
+      <img class="h-48 w-full object-cover shadow-lg" src="<%= @user.banner_url %>" alt="Twitter/X Header Photo">
     <% else %>
-      <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'h-48 w-full object-cover shadow-lg', alt: 'Twitter Header Photo') %>
+      <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'h-48 w-full object-cover shadow-lg', alt: 'Twitter/X Header Photo') %>
     <% end %>
     <!-- Profile Container -->
     <div class="flex items-end justify-between px-4 py-4 -mt-20 z-10">
