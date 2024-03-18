@@ -126,7 +126,7 @@ class PublicPagesController < ApplicationController
     if current_admin_user
       @first_day_impressions = tweet_metrics_query.first_day_impressions
       @first_impressions_message = ''
-      if first_day_impressions
+      if @first_day_impressions
         @first_impressions_message = "Based on #{@first_day_impressions[:impression_count].to_s} on #{@first_day_impressions[:date].to_s} "
       end
     end
