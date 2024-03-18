@@ -69,16 +69,17 @@ module Twitter
 
     # TODO: This is currently broken for any other format except daily
     def format_for_graph(data)
-      formatted_data = case data.count
-                       when 0..30
-                         daily_format(data)
-                       when 31..60
-                         weekly_format(data)
-                       else
-                         monthly_format(data)
-                       end
-      # Ensure daily data points are kept
-      [formatted_data, data.map { |record| [record.first.strftime('%d %b'), record.last.to_i] }]
+      return daily_format(data)
+      # formatted_data = case data.count
+      #                  when 0..30
+      #                    daily_format(data)
+      #                  when 31..60
+      #                    weekly_format(data)
+      #                  else
+      #                    monthly_format(data)
+      #                  end
+      # # Ensure daily data points are kept
+      # [formatted_data, data.map { |record| [record.first.strftime('%d %b'), record.last.to_i] }]
     end
 
     def daily_format(data)
