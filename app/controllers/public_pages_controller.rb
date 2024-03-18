@@ -122,15 +122,15 @@ class PublicPagesController < ApplicationController
     ############################
     # Impressions over Time Graph
     impression_counts_per_day = tweet_metrics_query.impression_counts_per_day
+    # Admin only data
     if current_admin_user
       @first_day_impressions = tweet_metrics_query.first_day_impressions
-      @first_day_impressions = nil
-      Rails.logger.debug('paul' + @first_day_impressions.inspect)
+      @first_impressions_message = ''
       if first_day_impressions
         @first_impressions_message = "Based on #{@first_day_impressions[:impression_count].to_s} on #{@first_day_impressions[:date].to_s} "
       end
     end
-    Rails.logger.debug('paul @first_day_impressions' + @first_day_impressions.inspect)
+
     @impression_formatted_labels_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
       label = data[:date].strftime('%b %d')
       label += " (#{data[:impression_count]})" if current_admin_user.present?
