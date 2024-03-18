@@ -14,7 +14,9 @@
     <!-- Header Photo -->
     <!-- this is poor refactor later -->
     <% if @user.banner_url.present? %>
-      <img class="h-48 w-full object-cover shadow-lg" src="<%= @user.banner_url %>" alt="Twitter Header Photo">
+      <div style="width: 100%; padding-bottom: 33.33%; position: relative;">
+        <img class="w-full h-full object-cover shadow-lg absolute top-0 left-0" src="<%= @user.banner_url %>" alt="Twitter Header Photo">
+      </div>
     <% else %>
       <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'h-48 w-full object-cover shadow-lg', alt: 'Twitter Header Photo') %>
     <% end %>
@@ -62,7 +64,7 @@
     <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
       <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-          Impressions (check this value)
+          Impressions
           <span class="ml-1">
             <div data-tooltip-target="impressions-count-tooltip">
               <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
