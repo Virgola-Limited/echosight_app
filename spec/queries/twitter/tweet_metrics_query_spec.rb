@@ -4,6 +4,31 @@ RSpec.describe Twitter::TweetMetricsQuery do
   let(:identity) { create(:identity, :random_credentials) }
   let(:user) { create(:user, identity: identity) }
 
+  describe '#impressions_count' do
+    let!(:old_tweets) do
+      # Create tweets with metrics older than 14 days to ensure we pass the 14-day check
+      (15..20).to_a.map do |n|
+        create(:tweet, identity: identity, twitter_created_at: n.days.ago).tap do |tweet|
+          create(:tweet_metric, tweet: tweet, pulled_at: n.days.ago, impression_count: 50 * n)
+        end
+      end
+    end
+
+    it 'calculates the total impressions count for the last 7 days' do
+      query = described_class.new(user: user)
+
+      # Calculate expected impressions count for the last 7 days
+      expected_impressions = TweetMetric.where('pulled_at > ?', 7.days.ago)
+                                        .sum(:impression_count) - TweetMetric.where('pulled_at > ?', 14.days.ago)
+                                                                              .where('pulled_at <= ?', 7.days.ago)
+                                                                              .sum(:impression_count)
+
+      impressions_count = query.impressions_count
+      expect(impressions_count).to eq(expected_impressions)
+    end
+  end
+
+
   describe '#top_tweets_for_user' do
     let!(:tweets) do
       [
