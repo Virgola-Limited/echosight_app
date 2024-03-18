@@ -7,7 +7,7 @@ class PublicPagesController < ApplicationController
     identity = Identity.find_by(handle: params[:handle])
     @user = identity.user if identity.present?
 
-    raise 'Missing user' unless @user
+    raise ActiveRecord::RecordNotFound if @user.nil?
     @cache_key = cache_key_for_user(@user)
 
     @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
@@ -124,8 +124,11 @@ class PublicPagesController < ApplicationController
     impression_counts_per_day = tweet_metrics_query.impression_counts_per_day
     if current_admin_user
       @first_day_impressions = tweet_metrics_query.first_day_impressions
+      @first_day_impressions = nil
       Rails.logger.debug('paul' + @first_day_impressions.inspect)
-      @first_impressions_message = "Based on #{@first_day_impressions[:impression_count].to_s} on #{@first_day_impressions[:date].to_s} "
+      if first_day_impressions
+        @first_impressions_message = "Based on #{@first_day_impressions[:impression_count].to_s} on #{@first_day_impressions[:date].to_s} "
+      end
     end
     Rails.logger.debug('paul @first_day_impressions' + @first_day_impressions.inspect)
     @impression_formatted_labels_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
