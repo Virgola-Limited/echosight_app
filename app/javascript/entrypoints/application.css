@@ -3,16 +3,44 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  padding-top: 25px;
+:root {
+  --base-padding: 20px; /* Default padding for small devices */
 }
 
+body {
+  padding-left: var(--base-padding);
+  padding-right: var(--base-padding);
+}
+
+/* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
-  body {
-    padding-left: 100px;
-    padding-right: 100px;
+  :root {
+    --base-padding: 40px;
   }
 }
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  :root {
+    --base-padding: 100px;
+  }
+}
+
+/* Extra large devices (large desktops, 1440px and up) */
+@media (min-width: 1440px) {
+  :root {
+    --base-padding: 300px;
+  }
+}
+
+/* Over 1080p resolution (1920px and up) */
+@media (min-width: 1920px) {
+  :root {
+    --base-padding: 400px; /* Increase padding for very large screens */
+  }
+}
+
+
 .logo-container a {
   display: flex;
   align-items: center;
