@@ -44,39 +44,28 @@
 
   <div class="flex flex-wrap">
     <!-- Posts -->
-    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-          Posts
-          <span class="ml-1">
-            <div data-tooltip-target="posts-count-tooltip">
-              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </span>
-        </h5>
-        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @tweet_count_over_available_time_period %></p>
-        <p class="font-normal text-green-600 dark:text-green-400"><%= @tweets_change_over_available_time_period %></p>
-      </div>
-    </div>
-    <!-- Impressions -->
-    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-          Impressions
-          <span class="ml-1">
-            <div data-tooltip-target="impressions-count-tooltip">
-              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </span>
-        </h5>
-        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @impressions_count %></p>
-        <p class="font-normal text-green-600 dark:text-green-400"><%= @impressions_change_since_last_week %></p>
-      </div>
-    </div>
+    <%- posts_tooltip_text = "This is the total number of tweets you have made in the last #{@tweet_comparison_days} days compared to the previous #{@tweet_comparison_days} days." %>
+<%- posts_tooltip_text = posts_tooltip_text + ((@tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before' : '') %>
+<%= render Shared::MetricsCardComponent.new(
+      title: "Posts",
+      count: @tweet_count_over_available_time_period,
+      change: @tweets_change_over_available_time_period,
+      tooltip_target: "posts-count-tooltip",
+      count_text: @tweet_count_over_available_time_period,
+      change_text: @tweets_change_over_available_time_period,
+      tooltip_text: posts_tooltip_text.html_safe
+    ) %>
+    <%- impressions_tooltip_text = "This is the total number of impressions your posts have made in the last 7 days compared to the previous 7 days." %>
+    <%- impressions_tooltip_text = impressions_tooltip_text + ((@impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
+    <%= render Shared::MetricsCardComponent.new(
+      title: "Impressions",
+      count: @impressions_count,
+      change: @impressions_change_since_last_week,
+      tooltip_target: "impressions-count-tooltip",
+      count_text: @impressions_count,
+      change_text: @impressions_change_since_last_week,
+      tooltip_text: impressions_tooltip_text
+    ) %>
     <!-- Likes -->
     <%- tooltip_text = "This is the total number of likes you've received in the last #{@likes_comparison_days} days. Compared to the previous #{@likes_comparison_days} days." %>
     <%- tooltip_text = tooltip_text + ((@likes_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
@@ -90,38 +79,17 @@
       tooltip_text: tooltip_text
     ) %>
     <!-- Followers -->
-    <div class="block w-full md:w-1/2 lg:w-1/4 p-2">
-      <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center">
-          Followers
-          <span class="ml-1">
-            <div data-tooltip-target="followers-count-tooltip">
-              <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </span>
-        </h5>
-        <p class="font-normal text-gray-700 dark:text-gray-400"><%= @followers_count %></p>
-        <p class="font-normal text-blue-600 dark:text-blue-400"><%= @followers_count_change_percentage_text %></p>
-      </div>
-    </div>
-  </div>
-
-  <div id="posts-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-      This is the total number of tweets you have made in the last <%= @tweet_comparison_days %> days. Compared to the previous <%= @tweet_comparison_days %> days.
-      <%= (@tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-  </div>
-
-  <div id="impressions-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-      This is the total number of times your tweets have been seen in the last <%= @impressions_comparison_days %> days. Compared to the previous <%= @impressions_comparison_days %> days.
-      <%= (@impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-  </div>
-
-  <div id="followers-count-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-      This is the total number of followers you have acquired in the last <%= @followers_comparison_days %> days compared to the previous <%= @followers_comparison_days %> days.
-      <%= (@followers_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '' %>
-  </div>
+    <%- followers_tooltip_text = "This is the total number of followers you have acquired in the last #{@followers_comparison_days} days compared to the previous #{@followers_comparison_days} days." %>
+<%- followers_tooltip_text = followers_tooltip_text + ((@followers_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
+<%= render Shared::MetricsCardComponent.new(
+      title: "Followers",
+      count: @followers_count,
+      change: @followers_count_change_percentage_text,
+      tooltip_target: "followers-count-tooltip",
+      count_text: @followers_count,
+      change_text: @followers_count_change_percentage_text,
+      tooltip_text: followers_tooltip_text
+    ) %>
 
   <%= render "public_pages/followers_graph" %>
   <%= render "public_pages/engagement_rate" %>
