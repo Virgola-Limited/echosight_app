@@ -57,7 +57,7 @@ RSpec.describe Twitter::TweetMetricsQuery do
     end
   end
 
-  fdescribe '#impression_counts_per_day' do
+  describe '#impression_counts_per_day' do
     let(:tweet1) { create(:tweet, identity: identity) }
     let(:tweet2) { create(:tweet, identity: identity) }
     before do
