@@ -6,11 +6,9 @@
 #
 #  id          :bigint           not null, primary key
 #  banner_data :text
-#  banner_url  :string
 #  description :string
 #  handle      :string
 #  image_data  :text
-#  image_url   :string
 #  provider    :string
 #  uid         :string
 #  created_at  :datetime         not null
