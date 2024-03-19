@@ -1,0 +1,61 @@
+---
+http_interactions:
+- request:
+    method: head
+    uri: https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_400x400.jpg
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22126'
+      Perf:
+      - '7469935968'
+      Cache-Control:
+      - max-age=604800, must-revalidate
+      Last-Modified:
+      - Mon, 12 Feb 2024 02:47:07 GMT
+      X-Transaction-Id:
+      - 2b5ad2906c0d27c9
+      Timing-Allow-Origin:
+      - https://twitter.com, https://mobile.twitter.com
+      Strict-Transport-Security:
+      - max-age=631138519
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Content-Length
+      X-Content-Type-Options:
+      - nosniff
+      Content-Type:
+      - image/jpeg
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Tue, 19 Mar 2024 05:13:45 GMT
+      X-Cache:
+      - HIT, HIT
+      X-Tw-Cdn:
+      - FT
+      X-Served-By:
+      - cache-tyo11981-TYO, cache-akl10323-AKL, cache-tw-ZZZ1
+      Server-Timing:
+      - x-cache;desc=HIT, x-tw-cdn;desc=FT
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Tue, 19 Mar 2024 05:13:44 GMT
+recorded_with: VCR 6.2.0

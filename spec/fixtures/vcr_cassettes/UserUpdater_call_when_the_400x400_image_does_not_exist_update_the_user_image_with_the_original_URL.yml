@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: head
+    uri: https://example.com/zc13kjbX_400x400.jpg
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Encoding:
+      - gzip
+      Cache-Control:
+      - max-age=604800
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Tue, 19 Mar 2024 05:13:45 GMT
+      Expires:
+      - Tue, 26 Mar 2024 05:13:45 GMT
+      Server:
+      - EOS (vny/044F)
+      Vary:
+      - Accept-Encoding
+      Content-Length:
+      - '648'
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Tue, 19 Mar 2024 05:13:45 GMT
+recorded_with: VCR 6.2.0

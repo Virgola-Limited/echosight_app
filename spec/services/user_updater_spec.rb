@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserUpdater, :vcr do
+RSpec.describe UserUpdater do
   describe '#call' do
     let!(:identity) { create(:identity, :loftwah, :with_oauth_credential) }
     let(:user_data) do
@@ -24,17 +24,21 @@ RSpec.describe UserUpdater, :vcr do
       let(:expected_image_url) { user_data["image_url"].gsub('_normal', '_400x400') }
 
       it 'updates the user images with transformed URL' do
-        expect(identity.banner_url).to be_nil
-        expect { updater.call }.to change { identity.reload.image_url }.from(nil).to(expected_image_url)
-        expect(identity.banner_url).to eq(user_data["banner_url"])
+        VCR.use_cassette('UserUpdater_call_when_the_400x400_image_exists_updates_the_user_images_with_transformed_URL') do
+          expect(identity.banner_url).to be_nil
+          expect { updater.call }.to change { identity.reload.image_url }.from(nil).to(expected_image_url)
+          expect(identity.banner_url).to eq(user_data["banner_url"])
+        end
       end
     end
 
     context 'when the 400x400 image does not exist' do
       it 'update the user image with the original URL' do
-        expect(identity.banner_url).to be_nil
-        expect { updater.call }.to change { identity.reload.image_url }.from(nil).to(image_url)
-        expect(identity.banner_url).to eq(user_data["banner_url"])
+        VCR.use_cassette('UserUpdater_call_when_the_400x400_image_does_not_exist_update_the_user_image_with_the_original_URL') do
+          expect(identity.banner_url).to be_nil
+          expect { updater.call }.to change { identity.reload.image_url }.from(nil).to(image_url)
+          expect(identity.banner_url).to eq(user_data["banner_url"])
+        end
       end
     end
   end
