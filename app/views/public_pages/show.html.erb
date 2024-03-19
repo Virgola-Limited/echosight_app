@@ -34,10 +34,8 @@
 
     <div class="py-2 px-4 rounded-lg">
       <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= @user.name %></h1>
-      <div class="flex flex-col lg:flex-row justify-between">
-        <div class="text-xs dark:text-white lg:mb-0"><%= @user.handle %></div>
-        <div class="text-m dark:text-white dark:text-white"><%= html_description_with_links(@user.identity.description) %></div>
-      </div>
+      <div class="text-xs dark:text-white lg:mb-3">@<%= @user.handle %></div>
+      <div class="text-m dark:text-white dark:text-white"><%= html_description_with_links(@user.identity.description) %></div>
     </div>
 
   </div>
