@@ -21,6 +21,7 @@ class UserUpdater
     if image_link?(url.gsub('_normal', '_400x400'))
       url.gsub('_normal', '_400x400')
     else
+      raise '400x400 image not found, using original URL.'
       url
     end
   end
