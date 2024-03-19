@@ -7,7 +7,7 @@ module Users
         # Scenario 1: User is already signed in with Devise
         @user = current_user
         @user.update_identity_from_auth(auth)
-        redirect_to dashboard_index_path, notice: 'Your Twitter account has been successfully connected.'
+        redirect_to dashboard_index_path, notice: 'Your Twitter/X account has been successfully connected.'
       else
         # Scenario 2: User is signing up for the first time with Twitter
         @user = User.create_or_update_identity_from_omniauth(auth)
@@ -24,7 +24,7 @@ module Users
       end
     rescue ActiveRecord::RecordInvalid => e
       if e.record.errors[:uid].include?('has already been taken') || e.record.errors[:handle].include?('has already been taken')
-        redirect_to dashboard_index_path, alert: "This Twitter account is already connected to an existing Echosight account. Please log in with that account or contact support for assistance."
+        redirect_to dashboard_index_path, alert: "This Twitter/X account is already connected to an existing Echosight account. Please log in with that account or contact support for assistance."
       else
         raise e # Re-raise the exception if it's not related to UID or Handle uniqueness
       end
