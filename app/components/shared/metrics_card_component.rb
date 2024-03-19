@@ -14,12 +14,12 @@ module Shared
     private
 
     def formatted_count
-      return 'Collecting data. Check back later.' if @count == false
+      return missing_data_message if @count == false
       @count.to_s
     end
 
     def formatted_change
-      return 'Collecting data. Check back later.' if @change == false
+      return missing_data_message if @change == false
 
       if @change > 0
         "#{@change}% increase"
@@ -28,6 +28,10 @@ module Shared
       else
         'No change'
       end
+    end
+
+    def missing_data_message
+      "Awaiting data from #{I18n.t('twitter_title')}..."
     end
   end
 end

@@ -17,10 +17,7 @@ class PublicPagesController < ApplicationController
     @tweet_count_over_available_time_period = tweet_metrics_query.tweet_count_over_available_time_period
     @tweets_change_over_available_time_period = tweet_metrics_query.tweets_change_over_available_time_period
     @tweet_comparison_days = tweet_metrics_query.tweet_comparison_days
-
-    if @tweets_change_over_available_time_period == false
-      @tweets_change_over_available_time_period = 'Collecting data. Check back later.'
-    elsif @tweets_change_over_available_time_period > 0
+    if @tweets_change_over_available_time_period > 0
       @tweets_change_over_available_time_period = "#{@tweets_change_over_available_time_period} increase"
     elsif @tweets_change_over_available_time_period < 0
       @tweets_change_over_available_time_period = "#{@tweets_change_over_available_time_period.abs} decrease"
@@ -33,13 +30,7 @@ class PublicPagesController < ApplicationController
     @impressions_count = tweet_metrics_query.impressions_count
     @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
 
-    if @impressions_count == false
-      @impressions_count = 'Collecting data. Check back later.'
-    end
-
-    if @impressions_change_since_last_week == false
-      @impressions_change_since_last_week = 'Collecting data. Check back later.'
-    elsif @impressions_change_since_last_week > 0
+    if @impressions_change_since_last_week > 0
       @impressions_change_since_last_week = "#{@impressions_change_since_last_week}% increase"
     elsif @impressions_change_since_last_week < 0
       @impressions_change_since_last_week = "#{@impressions_change_since_last_week.abs}% decrease"
@@ -54,14 +45,7 @@ class PublicPagesController < ApplicationController
     # Likes Counts
     @likes_count = tweet_metrics_query.likes_count
     @likes_change_since_last_week = tweet_metrics_query.likes_change_since_last_week
-
-    if @likes_count == false
-      @likes_count = 'Collecting data. Check back later.'
-    end
-
-    if @likes_change_since_last_week == false
-      @likes_change_since_last_week = 'Collecting data. Check back later.'
-    elsif @likes_change_since_last_week > 0
+    if @likes_change_since_last_week > 0
       @likes_change_since_last_week = "#{@likes_change_since_last_week}% increase"
     elsif @likes_change_since_last_week < 0
       @likes_change_since_last_week = "#{@likes_change_since_last_week.abs}% decrease"
@@ -76,13 +60,6 @@ class PublicPagesController < ApplicationController
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
 
-    if @followers_count == false
-      @followers_count = 'Collecting data. Check back later.'
-    end
-
-    if @followers_count_change_percentage_text == false
-      @followers_count_change_percentage_text = 'Collecting data. Check back later.'
-    end
 
     # this needs to change to be dynamic
     @followers_comparison_days = 7
