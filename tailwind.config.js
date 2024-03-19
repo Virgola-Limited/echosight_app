@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./app/views/**/*.{html,html.erb}",
+    "./app/components/**/*.{html,html.erb}",
     "./app/javascript/**/*.js",
     './node_modules/flowbite/**/*.js'
   ],
