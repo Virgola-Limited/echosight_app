@@ -1,10 +1,26 @@
 require "shrine"
 require "shrine/storage/file_system"
 
-Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"), # temporary
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"), # permanent
-}
+if ENV['BUCKETEER_AWS_ACCESS_KEY_ID'] && ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY']
+  require 'shrine/storage/s3'
+
+  s3_options = {
+    access_key_id:     ENV['BUCKETEER_AWS_ACCESS_KEY_ID'],
+    secret_access_key: ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY'],
+    region:            ENV['BUCKETEER_AWS_REGION'],
+    bucket:            ENV['BUCKETEER_BUCKET_NAME'],
+  }
+
+  Shrine.storages = {
+    cache: Shrine::Storage::S3.new(prefix: 'cache', **s3_options),
+    store: Shrine::Storage::S3.new(prefix: 'store', **s3_options),
+  }
+else
+  Shrine.storages = {
+    cache: Shrine::Storage::FileSystem.new('public', prefix: 'uploads/cache'),
+    store: Shrine::Storage::FileSystem.new('public', prefix: 'uploads/store'),
+  }
+end
 
 Shrine.plugin :activerecord # loads ActiveRecord integration
 
