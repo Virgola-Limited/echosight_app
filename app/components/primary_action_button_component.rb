@@ -3,7 +3,6 @@
 class PrimaryActionButtonComponent < ViewComponent::Base
   attr_reader :user, :url, :link_text
 
-
   # TODO Paid users can disable the button on their profile page so no button shows
   def initialize(user:, url: nil)
     @user = user
