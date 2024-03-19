@@ -23,26 +23,28 @@
   <%= render 'layouts/dark_mode_toggle' %>
 
   <body class="dark:bg-gray-900">
-  <%= render 'layouts/nav_bar' %>
-  <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <%= render 'layouts/nav_bar' %>
+    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
-  <div id="main-content" class="relative w-full max-w-screen-2xl mx-auto h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
-    <% if notice.present? %>
-    <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-      <%= notice %>
-    </div>
-  <% end %>
+    <div id="main-content" class="relative w-full max-w-screen-2xl mx-auto h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+      <% if notice.present? %>
+      <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+        <%= notice %>
+      </div>
+    <% end %>
 
-  <% if alert.present? %>
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-      <%= alert %>
+    <% if alert.present? %>
+      <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        <%= alert %>
+      </div>
+    <% end %>
+      <main>
+        <%= yield %>
+      </main>
+      <%= render 'layouts/footer' %>
     </div>
-  <% end %>
-    <main>
-      <%= yield %>
-    </main>
-    <%= render 'layouts/footer' %>
-  </div>
-</div>
+      </div>
+    <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+    <div class="elfsight-app-cb7f3594-7426-4b38-9c68-78f4425abad9" data-elfsight-app-lazy></div>
   </body>
 </html>
