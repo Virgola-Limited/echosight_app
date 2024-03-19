@@ -1,4 +1,6 @@
-  <div class="relative my-4">
+  <%
+=begin%>
+ <div class="relative my-4">
     <div class="absolute inset-0 flex items-center">
       <div class="w-full border-t border-gray-300"></div>
     </div>
@@ -8,6 +10,8 @@
       </span>
     </div>
   </div>
+<%
+=end%>
 
 <%- if devise_mapping.invitable? %>
 <%= render Shared::ButtonComponent.new(text: "Join waiting list", url: 'https://echosight.io/#waitinglist') %>

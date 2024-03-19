@@ -4,7 +4,7 @@ module Users
   class RegistrationsController < Devise::RegistrationsController
     layout 'authenticated', only: %i[edit update]
 
-    before_action :prevent_sign_up, only: [:new, :create]
+    before_action :prevent_sign_up, only: [:create]
 
     # Redirect to a custom path after a user signs up but isn't confirmed
     def after_inactive_sign_up_path_for(_resource)
