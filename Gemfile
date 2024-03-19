@@ -36,6 +36,7 @@ gem 'bootsnap', require: false
 
 gem 'activeadmin'
 gem 'apexcharts'
+gem "aws-sdk-s3", "~> 1.14"
 gem 'devise', '~> 4.9'
 gem 'devise_invitable'
 gem 'exception_notification'
