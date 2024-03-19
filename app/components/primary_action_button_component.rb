@@ -22,10 +22,10 @@ class PrimaryActionButtonComponent < ViewComponent::Base
     # From ChatGTP:
     [
       'Get Your Personal Stats Dashboard',
-      'Start Tracking Your Twitter Impact',
-      'Launch Your Twitter Analytics',
-      'Unveil Your Twitter Insights',
-      'Build Your Twitter Stats Page'
+      'Start Tracking Your Twitter/X Impact',
+      'Launch Your Twitter/X Analytics',
+      'Unveil Your Twitter/X Insights',
+      'Build Your Twitter/X Stats Page'
     ]
   end
 
