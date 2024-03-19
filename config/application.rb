@@ -44,7 +44,7 @@ module EchosightApp
     config.autoload_paths += %W(#{config.root}/app/components)
     config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
 
-    config.action_mailer.asset_host = Rails.application.credentials.dig(:asset_host) || 'https://echosight.io'
+    config.action_mailer.asset_host = Rails.application.credentials.dig(:asset_host) || 'https://app.echosight.io'
 
     console do
       puts 'Helpful commands:'
