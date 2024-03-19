@@ -36,6 +36,7 @@ gem 'bootsnap', require: false
 
 gem 'activeadmin'
 gem 'apexcharts'
+gem "aws-sdk-s3", "~> 1.14"
 gem 'devise', '~> 4.9'
 gem 'devise_invitable'
 gem 'exception_notification'
@@ -45,6 +46,7 @@ gem 'paper_trail'
 gem 'premailer-rails'
 # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sassc'
+gem 'shrine'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slack-notifier'

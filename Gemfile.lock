@@ -94,6 +94,22 @@ GEM
       activesupport (>= 3.0.0)
       ruby2_keywords (>= 0.0.2)
     ast (2.4.2)
+    aws-eventstream (1.3.0)
+    aws-partitions (1.899.0)
+    aws-sdk-core (3.191.4)
+      aws-eventstream (~> 1, >= 1.3.0)
+      aws-partitions (~> 1, >= 1.651.0)
+      aws-sigv4 (~> 1.8)
+      jmespath (~> 1, >= 1.6.1)
+    aws-sdk-kms (1.78.0)
+      aws-sdk-core (~> 3, >= 3.191.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.146.0)
+      aws-sdk-core (~> 3, >= 3.191.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.8)
+    aws-sigv4 (1.8.0)
+      aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
     better_errors (2.10.1)
@@ -115,6 +131,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
+    content_disposition (1.0.0)
     crack (1.0.0)
       bigdecimal
       rexml
@@ -137,6 +154,8 @@ GEM
       devise (>= 4.6)
     diff-lcs (1.5.1)
     dotenv (3.1.0)
+    down (5.4.1)
+      addressable (~> 2.8)
     drb (2.2.0)
       ruby2_keywords
     dry-cli (1.0.0)
@@ -203,6 +222,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    jmespath (1.6.2)
     jquery-rails (4.6.0)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -413,6 +433,9 @@ GEM
     sassc (2.4.0)
       ffi (~> 1.9)
     shellany (0.0.1)
+    shrine (3.5.0)
+      content_disposition (~> 1.0)
+      down (~> 5.1)
     sidekiq (7.2.0)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
@@ -488,6 +511,7 @@ DEPENDENCIES
   activeadmin
   annotate
   apexcharts
+  aws-sdk-s3 (~> 1.14)
   better_errors
   binding_of_caller
   bootsnap
@@ -515,6 +539,7 @@ DEPENDENCIES
   rspec-rails (~> 6.1.0)
   rubocop
   sassc
+  shrine
   sidekiq
   sidekiq-cron
   slack-notifier

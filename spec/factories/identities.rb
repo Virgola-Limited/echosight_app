@@ -5,10 +5,10 @@
 # Table name: identities
 #
 #  id          :bigint           not null, primary key
-#  banner_url  :string
+#  banner_data :text
 #  description :string
 #  handle      :string
-#  image_url   :string
+#  image_data  :text
 #  provider    :string
 #  uid         :string
 #  created_at  :datetime         not null
