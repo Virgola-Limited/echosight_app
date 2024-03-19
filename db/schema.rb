@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_06_192032) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_19_080629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -61,6 +61,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_192032) do
     t.string "description"
     t.string "handle"
     t.string "banner_url"
+    t.text "image_data"
+    t.text "banner_data"
     t.index ["handle"], name: "index_identities_on_handle", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
   end

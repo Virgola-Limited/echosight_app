@@ -45,6 +45,7 @@ gem 'paper_trail'
 gem 'premailer-rails'
 # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sassc'
+gem 'shrine'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slack-notifier'

@@ -11,12 +11,24 @@ class UserUpdater
     raise ArgumentError, "User data must include image_url and banner_url: #{user_data}" if user_data['image_url'].nil? || user_data['banner_url'].nil?
 
     identity = Identity.find_by!(handle: user_data['username'])
-    updated_image_url = transform_image_url(user_data['image_url'])
-    identity.update!(image_url: updated_image_url, banner_url: user_data['banner_url'])
+
+    # Download images and attach them to the identity
+    identity.image = download_image(user_data['image_url'])
+    identity.banner = download_image(user_data['banner_url'])
+    identity.save!
   end
 
   private
 
+  def download_image(url)
+    # Open the image URL and return the Tempfile
+    URI.open(url)
+  rescue => e
+    Rails.logger.error("Error downloading image: #{e.message}")
+    nil
+  end
+
+  # This method can be modified or removed based on your requirements
   def transform_image_url(url)
     if image_link?(url.gsub('_normal', '_400x400'))
       url.gsub('_normal', '_400x400')
@@ -33,7 +45,6 @@ class UserUpdater
     Net::HTTP.start(uri.host, uri.port, use_ssl: use_ssl, open_timeout: 5, read_timeout: 5) do |http|
       response = http.request_head(uri.path.blank? ? '/' : uri.path)
 
-      # Handling redirects, considering only a single redirect for simplicity
       if response.code.to_i >= 300 && response.code.to_i < 400 && response['location'].present?
         return image_link?(response['location'])
       end

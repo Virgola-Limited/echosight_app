@@ -5,9 +5,11 @@
 # Table name: identities
 #
 #  id          :bigint           not null, primary key
+#  banner_data :text
 #  banner_url  :string
 #  description :string
 #  handle      :string
+#  image_data  :text
 #  image_url   :string
 #  provider    :string
 #  uid         :string
@@ -25,6 +27,9 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Identity < ApplicationRecord
+  include ImageUploader::Attachment(:image) # adds an 'image' virtual attribute
+  include ImageUploader::Attachment(:banner) # adds a 'banner' virtual attribute
+
   belongs_to :user
   has_many :hourly_tweet_counts, dependent: :destroy
   has_many :tweets, dependent: :destroy
@@ -48,9 +53,7 @@ class Identity < ApplicationRecord
   def assign_attributes_from_auth(auth)
     self.provider = auth.provider
     self.uid = auth.uid
-    self.image_url = auth.info.image
     self.description = auth.info.description
     self.handle = auth.extra.raw_info.data.username
-    # Add any other attributes you need to handle from the auth hash
   end
 end
