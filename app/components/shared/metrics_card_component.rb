@@ -31,7 +31,7 @@ module Shared
     end
 
     def missing_data_message
-      "Awaiting data from #{I18n.t('twitter_title')}..."
+      "Awaiting data..."
     end
   end
 end
