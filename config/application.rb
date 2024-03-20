@@ -54,7 +54,7 @@ module EchosightApp
 
     config.action_mailer.default_url_options = {
       host: ENV["MAILER_HOST"] || Rails.application.credentials.dig(:host) || 'localhost',
-      port: ENV["MAILER_PORT"] || 3000
+      port: ENV["MAILER_PORT"]
     }
 
     # Delivery method
