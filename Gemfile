@@ -40,6 +40,7 @@ gem "aws-sdk-s3", "~> 1.14"
 gem 'devise', '~> 4.9'
 gem 'devise_invitable'
 gem 'exception_notification'
+gem 'fastimage'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'paper_trail'
@@ -64,7 +65,6 @@ group :development, :test do
   gem 'dotenv'
   gem 'factory_bot_rails', require: false
   gem 'faker'
-  gem 'fastimage'
   gem 'htmlbeautifier'
   gem 'rspec-rails', '~> 6.1.0'
   gem 'vcr'
