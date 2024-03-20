@@ -52,5 +52,26 @@ module EchosightApp
       puts 'Twitter::TweetsFetcher.new(user: User.first).call'
     end
 
+    config.action_mailer.default_url_options = {
+      host: ENV["MAILER_HOST"] || Rails.application.credentials.dig(:host) || 'localhost',
+      port: ENV["MAILER_PORT"] || 3000
+    }
+
+    # Delivery method
+    config.action_mailer.delivery_method = :smtp
+
+    # SMTP settings with fallbacks for development
+    config.action_mailer.smtp_settings = {
+      address: ENV["SMTP_ADDRESS"] || Rails.application.credentials.dig(:email, :address),
+      port: ENV["SMTP_PORT"] || Rails.application.credentials.dig(:email, :port) || 1025,
+      user_name: ENV["SMTP_USER_NAME"] || Rails.application.credentials.dig(:email, :user_name),
+      password: ENV["SMTP_PASSWORD"] || Rails.application.credentials.dig(:email, :password),
+      authentication: :plain,
+      ssl: ENV["SMTP_SSL"] == 'true' || Rails.application.credentials.dig(:email, :ssl),
+      enable_starttls_auto: ENV["SMTP_ENABLE_STARTTLS_AUTO"] != 'false' && Rails.application.credentials.dig(:email, :enable_starttls_auto) != false
+    }
+
+    # Raise delivery errors only in development
+    config.action_mailer.raise_delivery_errors = Rails.env.development?
   end
 end
