@@ -147,39 +147,8 @@ module Twitter
       percentage_change.round(2)
     end
 
-    def impression_counts_per_day_old
-      # Fetch the latest TweetMetric record for each day for each tweet
-      tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
-                                 .joins(:tweet)
-                                 .where('pulled_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
-                                 .where(tweets: { identity_id: user.identity.id })
-                                 .order('tweet_id, DATE(pulled_at), pulled_at DESC')
-
-      # Group the metrics by date
-      grouped_metrics = tweet_metrics.group_by { |metric| metric.pulled_at.to_date }
-      puts "Grouped Metrics: #{grouped_metrics.inspect}"
-
-      # Sort the dates to ensure we're processing them in order
-      sorted_dates = grouped_metrics.keys.sort
-
-      # Initialize a hash to keep track of total impressions per day
-      daily_total_impressions = {}
-
-      sorted_dates.each do |date|
-        daily_total_impressions[date] = grouped_metrics[date].sum(&:impression_count)
-      end
-      puts "Daily Total Impressions: #{daily_total_impressions.inspect}"
-      # Calculate daily impression differences, excluding the first day
-      daily_impression_diffs = sorted_dates.each_cons(2).map do |previous_date, current_date|
-        difference = daily_total_impressions[current_date] - daily_total_impressions[previous_date]
-        puts "Calculating difference for #{current_date}: #{difference}"
-        {date: current_date, impression_count: difference}
-      end
-      daily_impression_diffs
-    end
-
     def impression_counts_per_day
-      grouped_metrics, sorted_dates = fetch_grouped_metrics
+      grouped_metrics, sorted_dates = fetch_grouped_metrics(number_of_days:  8)
       daily_total_impressions = calculate_total_impressions(grouped_metrics, sorted_dates)
 
       # Calculate daily impression differences, excluding the first day
@@ -268,11 +237,12 @@ module Twitter
 
     private
 
-    def fetch_grouped_metrics
+    def fetch_grouped_metrics(number_of_days: nil)
+      number_of_days = number_of_days || MAXIMUM_DAYS_OF_DATA
       # Fetch the latest TweetMetric record for each day for each tweet
       tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
                                  .joins(:tweet)
-                                 .where('pulled_at > ?', MAXIMUM_DAYS_OF_DATA.days.ago)
+                                 .where('pulled_at > ?', number_of_days.days.ago)
                                  .where(tweets: { identity_id: user.identity.id })
                                  .order('tweet_id, DATE(pulled_at), pulled_at DESC')
 

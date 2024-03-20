@@ -34,9 +34,9 @@ module Twitter
       format_change_percentage(change_percentage)
     end
 
-    def followers_data_for_graph
+    def followers_data_for_graph(number_of_days: 7)
       data = TwitterUserMetric.where(identity_id: @user.identity.id)
-                                  .where('date >= ?', 12.months.ago)
+                                  .where('date >= ?', number_of_days.days.ago.to_date)
                                   .order(date: :asc)
                                   .pluck(:date, :followers_count)
       formatted_data, daily_data_points = format_for_graph(data)
