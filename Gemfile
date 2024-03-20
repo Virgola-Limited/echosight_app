@@ -64,6 +64,7 @@ group :development, :test do
   gem 'dotenv'
   gem 'factory_bot_rails', require: false
   gem 'faker'
+  gem 'fastimage'
   gem 'htmlbeautifier'
   gem 'rspec-rails', '~> 6.1.0'
   gem 'vcr'

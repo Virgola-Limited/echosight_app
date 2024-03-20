@@ -12,28 +12,26 @@ class UserUpdater
 
     identity = Identity.find_by!(handle: user_data['username'])
 
-    # Download images and attach them to the identity
-    identity.image = download_image(user_data['image_url'])
-    identity.banner = download_image(user_data['banner_url'])
+    identity.image = download_image(transform_image_url(user_data['image_url']))
+    identity.banner = download_image(transform_banner_url(user_data['banner_url']))
     identity.save!
   end
 
   private
 
   def download_image(url)
-    # Open the image URL and return the Tempfile
-    URI.open(url)
-  rescue => e
-    Rails.logger.error("Error downloading image: #{e.message}")
-    nil
+    return URI.open(url)
   end
 
-  # This method can be modified or removed based on your requirements
+  def transform_banner_url(url)
+    url + '/1500x500'
+  end
+
   def transform_image_url(url)
     if image_link?(url.gsub('_normal', '_400x400'))
       url.gsub('_normal', '_400x400')
     else
-      raise '400x400 image not found, using original URL.'
+      ExceptionNotifier.notify_exception(StandardError.new('400x400 image not found, using original URL.'), data: url.gsub('_normal', '_400x400'))
       url
     end
   end

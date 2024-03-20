@@ -177,6 +177,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
+    fastimage (2.3.0)
     ffi (1.16.3)
     formatador (1.1.0)
     formtastic (5.0.0)
@@ -524,6 +525,7 @@ DEPENDENCIES
   exception_notification
   factory_bot_rails
   faker
+  fastimage
   guard-rspec
   htmlbeautifier
   jbuilder

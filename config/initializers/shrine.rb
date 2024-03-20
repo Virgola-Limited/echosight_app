@@ -1,5 +1,7 @@
 require "shrine"
 require "shrine/storage/file_system"
+require 'shrine/plugins/store_dimensions'
+
 
 if ENV['BUCKETEER_AWS_ACCESS_KEY_ID'] && ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY']
   require 'shrine/storage/s3'
@@ -23,6 +25,7 @@ else
 end
 
 Shrine.plugin :activerecord # loads ActiveRecord integration
+Shrine.plugin :store_dimensions
 
 # :cached_attachment_data Plugin: This plugin is particularly useful if your users might need to re-display forms due to validation errors or other reasons. It enables your application to retain the uploaded file in the cache, so the user doesn't have to re-upload it if the form needs to be redisplayed. This can significantly improve the user experience, especially when dealing with large files.
 
