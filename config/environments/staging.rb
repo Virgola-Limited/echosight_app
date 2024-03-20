@@ -96,16 +96,6 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-  config.action_mailer.default_url_options = { host: Rails.application.credentials.dig(:host)  }
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: Rails.application.credentials.dig(:email, :address),
-    port: Rails.application.credentials.dig(:email, :port),
-    user_name: Rails.application.credentials.dig(:email, :user_name),
-    password: Rails.application.credentials.dig(:email, :password),
-    authentication: :plain,
-    ssl: true,
-    enable_starttls_auto: true
-  }
+
 
 end

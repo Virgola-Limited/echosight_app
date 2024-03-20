@@ -62,13 +62,14 @@ module EchosightApp
 
     # SMTP settings with fallbacks for development
     config.action_mailer.smtp_settings = {
-      address: ENV["SMTP_ADDRESS"] || Rails.application.credentials.dig(:email, :address),
-      port: ENV["SMTP_PORT"] || Rails.application.credentials.dig(:email, :port) || 1025,
-      user_name: ENV["SMTP_USER_NAME"] || Rails.application.credentials.dig(:email, :user_name),
-      password: ENV["SMTP_PASSWORD"] || Rails.application.credentials.dig(:email, :password),
+      address: Rails.application.credentials.dig(:email, :address),
+      port: Rails.application.credentials.dig(:email, :port),
+      user_name: Rails.application.credentials.dig(:email, :user_name),
+      password: Rails.application.credentials.dig(:email, :password),
       authentication: :plain,
-      ssl: ENV["SMTP_SSL"] == 'true' || Rails.application.credentials.dig(:email, :ssl),
-      enable_starttls_auto: ENV["SMTP_ENABLE_STARTTLS_AUTO"] != 'false' && Rails.application.credentials.dig(:email, :enable_starttls_auto) != false
+      authentication: :plain,
+      ssl: true,
+      enable_starttls_auto: true
     }
 
     # Raise delivery errors only in development
