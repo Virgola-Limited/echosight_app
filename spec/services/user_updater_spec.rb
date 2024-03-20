@@ -34,10 +34,10 @@ RSpec.describe UserUpdater do
       end
     end
 
-    context 'when the 400x400 image does not exist' do
-      xit 'update the user image with the original URL' do
-        skip
-      end
-    end
+    # context 'when the 400x400 image does not exist' do
+    #   xit 'update the user image with the original URL' do
+    #     skip
+    #   end
+    # end
   end
 end
