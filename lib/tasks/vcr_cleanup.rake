@@ -1,6 +1,5 @@
 # lib/tasks/vcr_cleanup.rake
 require 'fileutils'
-require 'rspec/core'
 
 namespace :vcr do
   desc 'Clean up unused VCR cassettes based on spec descriptions'
