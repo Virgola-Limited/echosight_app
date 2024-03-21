@@ -67,7 +67,6 @@ module EchosightApp
       user_name: Rails.application.credentials.dig(:email, :user_name),
       password: Rails.application.credentials.dig(:email, :password),
       authentication: :plain,
-      authentication: :plain,
       ssl: true,
       enable_starttls_auto: true
     }
