@@ -17,7 +17,7 @@
 
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-<% if @impression_daily_data_points_for_graph.count < 2 %>
+<% if impression_daily_data_points_for_graph.count < 2 %>
    <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the followers graph.</p>
   <% else %>
     <div id="impressions-chart"></div>
@@ -25,7 +25,7 @@
 </div>
 
 <script>
-  let impressionData = <%= @impression_daily_data_points_for_graph.to_json.html_safe %>;
+  let impressionData = <%= impression_daily_data_points_for_graph.to_json.html_safe %>;
   let maxYValue = Math.max(...impressionData);
   let minYValue = 0; // Start y-axis from 0 to avoid negative values
 
@@ -52,7 +52,7 @@
         data: impressionData
       }],
       xaxis: {
-        categories: <%= @impression_formatted_labels_for_graph.to_json.html_safe %>,
+        categories: <%= impression_formatted_labels_for_graph.to_json.html_safe %>,
         labels: {
           show: true,
           style: {

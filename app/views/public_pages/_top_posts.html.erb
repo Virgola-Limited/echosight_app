@@ -46,7 +46,7 @@
             </tr>
         </thead>
         <tbody>
-          <% @top_posts.each do |tweet_metric| %>
+          <% top_posts.each do |tweet_metric| %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white">
                       <%= text_with_images(tweet_metric.tweet.text) %>

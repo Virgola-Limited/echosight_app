@@ -45,58 +45,72 @@
 
   <div class="flex flex-wrap">
     <!-- Posts -->
-    <%- posts_tooltip_text = "This is the total number of tweets you have made in the last #{@tweet_comparison_days} days compared to the previous #{@tweet_comparison_days} days." %>
-<%- posts_tooltip_text = posts_tooltip_text + ((@tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before' : '') %>
+    <%- posts_tooltip_text = "This is the total number of tweets you have made in the last #{@public_page_service.tweet_comparison_days} days compared to the previous #{@public_page_service.tweet_comparison_days} days." %>
+<%- posts_tooltip_text = posts_tooltip_text + ((@public_page_service.tweet_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before' : '') %>
 <%= render Shared::MetricsCardComponent.new(
       title: "Posts",
-      count: @tweet_count_over_available_time_period,
-      change: @tweets_change_over_available_time_period,
+      count: @public_page_service.tweet_count_over_available_time_period,
+      change: @public_page_service.tweets_change_over_available_time_period,
       tooltip_target: "posts-count-tooltip",
-      count_text: @tweet_count_over_available_time_period,
-      change_text: @tweets_change_over_available_time_period,
+      count_text: @public_page_service.tweet_count_over_available_time_period,
+      change_text: @public_page_service.tweets_change_over_available_time_period,
       tooltip_text: posts_tooltip_text.html_safe
     ) %>
+
+    <!-- Impressions -->
     <%- impressions_tooltip_text = "This is the total number of impressions your posts have made in the last 7 days compared to the previous 7 days." %>
-    <%- impressions_tooltip_text = impressions_tooltip_text + ((@impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
+    <%- impressions_tooltip_text = impressions_tooltip_text + ((@public_page_service.impressions_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
     <%= render Shared::MetricsCardComponent.new(
       title: "Impressions",
-      count: @impressions_count,
-      change: @impressions_change_since_last_week,
+      count: @public_page_service.impressions_count,
+      change: @public_page_service.impressions_change_since_last_week,
       tooltip_target: "impressions-count-tooltip",
-      count_text: @impressions_count,
-      change_text: @impressions_change_since_last_week,
+      count_text: @public_page_service.impressions_count,
+      change_text: @public_page_service.impressions_change_since_last_week,
       tooltip_text: impressions_tooltip_text
     ) %>
+
+
     <!-- Likes -->
-    <%- tooltip_text = "This is the total number of likes you've received in the last #{@likes_comparison_days} days. Compared to the previous #{@likes_comparison_days} days." %>
-    <%- tooltip_text = tooltip_text + ((@likes_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
+    <%- tooltip_text = "This is the total number of likes you've received in the last #{@public_page_service.likes_comparison_days} days. Compared to the previous #{@public_page_service.likes_comparison_days} days." %>
+    <%- tooltip_text = tooltip_text + ((@public_page_service.likes_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
     <%= render Shared::MetricsCardComponent.new(
       title: "Likes",
-      count: @likes_count,
-      change: @likes_change_since_last_week,
+      count: @public_page_service.likes_count,
+      change: @public_page_service.likes_change_since_last_week,
       tooltip_target: "likes-count-tooltip",
-      count_text: @likes_count,
-      change_text: @likes_change_since_last_week,
+      count_text: @public_page_service.likes_count,
+      change_text: @public_page_service.likes_change_since_last_week,
       tooltip_text: tooltip_text
     ) %>
+
+
     <!-- Followers -->
-    <%- followers_tooltip_text = "This is the total number of followers you have acquired in the last #{@followers_comparison_days} days compared to the previous #{@followers_comparison_days} days." %>
-<%- followers_tooltip_text = followers_tooltip_text + ((@followers_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
+    <%- followers_tooltip_text = "This is the total number of followers you have acquired in the last #{@public_page_service.followers_comparison_days} days compared to the previous #{@public_page_service.followers_comparison_days} days." %>
+<%- followers_tooltip_text = followers_tooltip_text + ((@public_page_service.followers_comparison_days < 7) ? '<br /><br />We will continue to collect data so we can show you a whole week compared to the week before'.html_safe : '') %>
 <%= render Shared::MetricsCardComponent.new(
       title: "Followers",
-      count: @followers_count,
-      change: @followers_count_change_percentage_text,
+      count: @public_page_service.followers_count,
+      change: @public_page_service.followers_count_change_percentage_text,
       tooltip_target: "followers-count-tooltip",
-      count_text: @followers_count,
-      change_text: @followers_count_change_percentage_text,
+      count_text: @public_page_service.followers_count,
+      change_text: @public_page_service.followers_count_change_percentage_text,
       tooltip_text: followers_tooltip_text
     ) %>
 
-  <%= render "public_pages/followers_graph" %>
-  <%= render "public_pages/engagement_rate" %>
-  <%= render "public_pages/impressions_over_time" %>
+  <%= render partial:"public_pages/impressions_over_time", locals: {
+  impression_daily_data_points_for_graph: @public_page_service.impression_daily_data_points_for_graph, impression_formatted_labels_for_graph: @public_page_service.impression_formatted_labels_for_graph,
+  maximum_days_of_data: @public_page_service.maximum_days_of_data,
+  first_impressions_message: @public_page_service.first_impressions_message
+  }
+  %>
+
+  <%= render partial:"public_pages/followers_graph", locals: {follower_daily_data_points_for_graph: @public_page_service.follower_daily_data_points_for_graph, maximum_days_of_data: @public_page_service.maximum_days_of_data} %>
+
+  <%= render partial:"public_pages/engagement_rate", locals: {engagement_rate_percentage_per_day: @public_page_service.engagement_rate_percentage_per_day, maximum_days_of_data: @public_page_service.maximum_days_of_data} %>
+
   <% #render "public_pages/profile_conversion_rate" %>
-  <%= render "public_pages/top_posts" %>
+  <%= render partial: "public_pages/top_posts", locals: {top_posts: @public_page_service.top_posts, maximum_days_of_data: @public_page_service.maximum_days_of_data} %>
 
   <% unless current_user %>
   <section class="mt-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-8 px-4 sm:px-6 lg:px-8 rounded-xl w-full">
