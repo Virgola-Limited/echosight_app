@@ -98,16 +98,17 @@
       tooltip_text: followers_tooltip_text
     ) %>
 
+  <%= render partial:"public_pages/impressions_over_time", locals: {
+  impression_daily_data_points_for_graph: @public_page_service.impression_daily_data_points_for_graph, impression_formatted_labels_for_graph: @public_page_service.impression_formatted_labels_for_graph,
+  maximum_days_of_data: @public_page_service.maximum_days_of_data,
+  first_impressions_message: @public_page_service.first_impressions_message
+  }
+  %>
+
   <%= render partial:"public_pages/followers_graph", locals: {follower_daily_data_points_for_graph: @public_page_service.follower_daily_data_points_for_graph, maximum_days_of_data: @public_page_service.maximum_days_of_data} %>
 
   <%= render partial:"public_pages/engagement_rate", locals: {engagement_rate_percentage_per_day: @public_page_service.engagement_rate_percentage_per_day, maximum_days_of_data: @public_page_service.maximum_days_of_data} %>
 
-  <%= render partial:"public_pages/impressions_over_time", locals: {
-    impression_daily_data_points_for_graph: @public_page_service.impression_daily_data_points_for_graph, impression_formatted_labels_for_graph: @public_page_service.impression_formatted_labels_for_graph,
-    maximum_days_of_data: @public_page_service.maximum_days_of_data,
-    first_impressions_message: @public_page_service.first_impressions_message
-    }
-    %>
   <% #render "public_pages/profile_conversion_rate" %>
   <%= render partial: "public_pages/top_posts", locals: {top_posts: @public_page_service.top_posts, maximum_days_of_data: @public_page_service.maximum_days_of_data} %>
 
