@@ -32,7 +32,6 @@ class Identity < ApplicationRecord
   has_many :hourly_tweet_counts, dependent: :destroy
   has_many :tweets, dependent: :destroy
   has_many :twitter_user_metrics, dependent: :destroy
-  has_many :twitter_likes_counts, dependent: :destroy
   has_many :user_twitter_data_updates, dependent: :destroy
   has_one :oauth_credential, dependent: :destroy
 
