@@ -169,7 +169,6 @@ class User < ApplicationRecord
     identity.assign_attributes(
       provider: auth.provider,
       uid: auth.uid,
-      image_url: auth.info.image,
       description: auth.info.description,
       handle: auth.extra.raw_info.data.username
     )
