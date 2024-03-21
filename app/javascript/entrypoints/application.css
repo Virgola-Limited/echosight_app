@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Try not to add to this use Tailwind instead */
+
 :root {
   --base-padding: 20px; /* Default padding for small devices */
 }
@@ -38,20 +40,6 @@ body {
   :root {
     --base-padding: 400px; /* Increase padding for very large screens */
   }
-}
-
-.sticky-top {
-  position: -webkit-sticky; /* For Safari */
-  position: sticky;
-  top: 0;
-  z-index: 1000; /* Ensures the div stays above other content */
-}
-
-.logo-container a {
-  display: flex;
-  align-items: center;
-  font-size: 170%; /* Increase text size by 20% */
-  padding-bottom: 20px;
 }
 
 .profile-container img {
