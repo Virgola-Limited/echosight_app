@@ -52,7 +52,7 @@
                     <% if current_or_guest_user.identity && current_or_guest_user.identity.image_url.present? %>
                       <img class="w-8 h-8 rounded-full" src="<%= current_or_guest_user.identity.image_url %>" alt="user photo">
                     <% else %>
-                      <%= vite_image_tag("images/default_avatar.png", class: "w-8 h-8 rounded-full") %>
+                      <%= vite_image_tag("images/default-avatar.png", class: "w-8 h-8 rounded-full") %>
                     <% end %>
 
                 </button>
