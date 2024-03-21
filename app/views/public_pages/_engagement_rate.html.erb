@@ -16,7 +16,7 @@
 </div>
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-  <% if @engagement_rate_percentage_per_day.count < 2 || @engagement_rate_percentage_per_day.all? { |data| data[:engagement_rate_percentage].zero? } %>
+  <% if engagement_rate_percentage_per_day.count < 2 || engagement_rate_percentage_per_day.all? { |data| data[:engagement_rate_percentage].zero? } %>
     <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the followers graph.</p>
   <% else %>
     <div id="engagement-chart"></div>
@@ -36,10 +36,10 @@
       },
       series: [{
         name: "Engagement Rate",
-        data: <%= @engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] }.to_json.html_safe %>
+        data: <%= engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] }.to_json.html_safe %>
       }],
       xaxis: {
-        categories: <%= @engagement_rate_percentage_per_day.map { |entry| entry[:date].strftime('%b %d') }.to_json.html_safe %>,
+        categories: <%= engagement_rate_percentage_per_day.map { |entry| entry[:date].strftime('%b %d') }.to_json.html_safe %>,
         labels: {
           show: true,
           style: {
