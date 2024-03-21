@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: Rename to IdentityUpdater
 class UserUpdater
   attr_reader :user_data
 
@@ -14,6 +15,7 @@ class UserUpdater
 
     identity.image = download_image(transform_image_url(user_data['image_url']))
     identity.banner = download_image(transform_banner_url(user_data['banner_url']))
+    identity.description = user_data['description']
     identity.save!
   end
 

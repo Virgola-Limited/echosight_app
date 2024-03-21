@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SocialData::ClientAdapter,
-               vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
+  vcr: { cassette_name: 'SocialData__Client_fetch_user_tweets_fetches_new_tweets_from_the_API.yml' } do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity:) }
@@ -23,6 +23,7 @@ RSpec.describe SocialData::ClientAdapter,
           'id' => '1691930809756991488',
           'name' => 'Topher',
           'username' => 'TopherToy',
+          'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq',
           'public_metrics' =>
           {
             'followers_count' => 3,
@@ -66,6 +67,7 @@ RSpec.describe SocialData::ClientAdapter,
         'data' => {
           'id' => '1691930809756991488',
           'name' => 'Topher',
+          'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq',
           'username' => 'TopherToy',
           'public_metrics' => {
             'followers_count' => 3,
@@ -98,6 +100,7 @@ RSpec.describe SocialData::ClientAdapter,
           'id' => '44196397',
           'name' => 'Elon Musk',
           'username' => 'elonmusk',
+          'description' => '',
           'public_metrics' =>
           {
             'followers_count' => 175_225_033,
