@@ -67,10 +67,9 @@ module EchosightApp
       user_name: Rails.application.credentials.dig(:email, :user_name),
       password: Rails.application.credentials.dig(:email, :password),
       authentication: :plain,
-      ssl: true,
-      enable_starttls_auto: true
+      ssl: ENV['SMTP_SETTINGS_SSL'] == 'true',
+      enable_starttls_auto: ENV['SMTP_SETTINGS_ENABLE_STARTTLS_AUTO'] == 'true'
     }
-
     # Raise delivery errors only in development
     config.action_mailer.raise_delivery_errors = Rails.env.development?
   end
