@@ -19,7 +19,7 @@
     <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-                <th scope="col" class="md:table-cell p-1">
+                <th scope="col" class="p-0 md:table-cell md:p-1">
                     Post
                 </th>
                 <th scope="col" class="hidden md:table-cell p-1">
@@ -48,7 +48,7 @@
         <tbody>
           <% @top_posts.each do |tweet_metric| %>
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                  <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white">
                       <%= text_with_images(tweet_metric.tweet.text) %>
                   </td>
                   <td class="hidden md:table-cell p-1">
