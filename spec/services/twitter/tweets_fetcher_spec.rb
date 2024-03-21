@@ -66,6 +66,7 @@ RSpec.describe Twitter::TweetsFetcher do
         'listed_count' => 42,
         'tweet_count' => 52_729
       },
+      'description' => "Revolutionize Your Social Media Strategy with Echosight | https://t.co/wMI0LubEYS | https://t.co/HLB3aL1R1I | https://t.co/IbbT2ndwo1 | https://t.co/i9vT0Nnmo4",
       'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
       'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1707817030'
     }
