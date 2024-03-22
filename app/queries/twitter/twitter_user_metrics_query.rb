@@ -29,9 +29,7 @@ module Twitter
       # Convert followers_count values to integers before calculation
       old_count = followers_count_14_days_ago.followers_count
       new_count = followers_count_7_days_ago.followers_count
-      change_percentage = calculate_percentage_change(old_count, new_count)
-
-      format_change_percentage(change_percentage)
+      calculate_percentage_change(old_count, new_count)
     end
 
     def followers_data_for_graph(number_of_days: 7)
@@ -102,16 +100,5 @@ module Twitter
       return 0 if old_value == 0
       ((new_value - old_value) / old_value.to_f) * 100.0
     end
-
-    def format_change_percentage(change_percentage)
-      if change_percentage.positive?
-        "#{change_percentage.round(1)}% increase"
-      elsif change_percentage.negative?
-        "#{change_percentage.abs.round(1)}% decrease"
-      else
-        "No change"
-      end
-    end
-
   end
 end
