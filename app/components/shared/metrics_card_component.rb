@@ -5,7 +5,7 @@ module Shared
       @count = count
       @change = change
       @tooltip_target = tooltip_target
-      @count_text = count_text || formatted_count
+      @count = count
       @change_text = change_text || formatted_change
       @comparison_days = comparison_days
       @tooltip_text = tooltip_text
@@ -13,7 +13,7 @@ module Shared
 
     private
 
-    def formatted_count
+    def count_text
       return missing_data_message if @count == false
       @count.to_s
     end

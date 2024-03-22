@@ -114,7 +114,7 @@ class PublicPageService < Services::Base
     @top_posts = tweet_metrics_query.top_tweets_for_user
   end
 
-  PublicPageResults = Struct.new(
+  PublicPageData = Struct.new(
     :engagement_rate_percentage_per_day,
     :first_day_impressions,
     :first_impressions_message,
@@ -135,7 +135,8 @@ class PublicPageService < Services::Base
     :top_posts,
     :tweet_comparison_days,
     :tweet_count_over_available_time_period,
-    :tweets_change_over_available_time_period
+    :tweets_change_over_available_time_period,
+    :user
   )
 
   ROUNDABLE_METRICS = %i[
