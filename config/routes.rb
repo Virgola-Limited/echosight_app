@@ -5,14 +5,9 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   require 'sidekiq/web'
 
-  # Basic HTTP Authentication for Sidekiq Web UI
-  unless Rails.env.development?
-    Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-      username == ENV['SITE_USERNAME'] && password == ENV['SITE_PASSWORD']
-    end
+  authenticate :admin_user do
+    mount Sidekiq::Web => '/sidekiq'
   end
-  mount Sidekiq::Web => '/sidekiq'
-
   resources :dashboard, only: :index
   get 'public_page/:handle', to: 'public_pages#show', as: :public_page
 
@@ -20,7 +15,8 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
-    confirmations: 'users/confirmations'
+    confirmations: 'users/confirmations',
+    sessions: 'users/sessions'
   }
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
