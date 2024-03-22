@@ -4,11 +4,11 @@ class PublicPageComponent < ViewComponent::Base
   def initialize(page_data:, current_user:)
     @page_data = page_data
     @current_user = current_user
-    @page_user = page_data[:user]
+    @page_user = page_data.user
   end
 
   def page_user_twitter_bio
-    helpers.html_description_with_links(page_user.identity.description)#.html_safe
+    helpers.html_description_with_links(page_user.identity.description)
   end
 
   def method_missing(method_name, *arguments, &block)

@@ -39,16 +39,13 @@ RSpec.describe PublicPageService do
       allow(tweet_metrics_query).to receive(:impressions_change_since_last_week).and_return(-5)
 
       # Stub and set expectation for the NumberRoundingService if necessary
-      allow(NumberRoundingService).to receive(:round_number).with(-5).and_return(-5)
+      allow(NumberRoundingService).to receive(:call).with(-5).and_return(-5)
     end
 
     it 'retrieves impression counts and formats changes correctly' do
       # Expectations to ensure the methods exist and are called
       expect(tweet_metrics_query).to receive(:impressions_count)
       expect(tweet_metrics_query).to receive(:impressions_change_since_last_week)
-
-      # Expectation for the NumberRoundingService if it's part of the logic
-      expect(NumberRoundingService).to receive(:round_number).with(-5)
 
       service.send(:store_impression_counts) # Using `send` to call a private method
 
@@ -69,16 +66,13 @@ RSpec.describe PublicPageService do
       allow(tweet_metrics_query).to receive(:likes_change_since_last_week).and_return(10)
 
       # Stub and set expectation for the NumberRoundingService if necessary
-      allow(NumberRoundingService).to receive(:round_number).with(10).and_return(10)
+      allow(NumberRoundingService).to receive(:call).with(10).and_return(10)
     end
 
     it 'retrieves likes counts and formats changes correctly' do
       # Expectations to ensure the methods exist and are called
       expect(tweet_metrics_query).to receive(:likes_count)
       expect(tweet_metrics_query).to receive(:likes_change_since_last_week)
-
-      # Expectation for the NumberRoundingService if it's part of the logic
-      expect(NumberRoundingService).to receive(:round_number).with(10)
 
       service.send(:store_likes_counts) # Using `send` to call a private method
 
