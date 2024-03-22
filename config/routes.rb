@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
     confirmations: 'users/confirmations',
-    sessions: 'users/sessions'
+    # sessions: 'users/sessions'
   }
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
