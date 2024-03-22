@@ -7,9 +7,22 @@ class PublicPageService < Services::Base
 
   def call
     @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
+    store_post_counts
+    store_impression_counts
+    store_likes_counts
+    store_follower_counts
 
-    ############################
-    # Posts/Tweet Counts
+    store_followers_graph_data
+    store_engagement_rate_graph_data
+    store_impressions_graph_data
+    store_top_posts
+
+    results
+  end
+
+  private
+
+  def store_post_counts
     @tweet_count_over_available_time_period = tweet_metrics_query.tweet_count_over_available_time_period
     @tweets_change_over_available_time_period = tweet_metrics_query.tweets_change_over_available_time_period
     @tweet_comparison_days = tweet_metrics_query.tweet_comparison_days
@@ -20,9 +33,9 @@ class PublicPageService < Services::Base
     else
       @tweets_change_over_available_time_period = 'No change'
     end
+  end
 
-    ############################
-    # Impressions
+  def store_impression_counts
     @impressions_count = tweet_metrics_query.impressions_count
     @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
     if @impressions_change_since_last_week
@@ -38,9 +51,9 @@ class PublicPageService < Services::Base
 
     # this needs to change to be dynamic
     @impressions_comparison_days = 7
+  end
 
-    ############################
-    # Likes Counts
+  def store_likes_counts
     @likes_count = tweet_metrics_query.likes_count
     @likes_change_since_last_week = tweet_metrics_query.likes_change_since_last_week
     if @likes_change_since_last_week
@@ -55,30 +68,29 @@ class PublicPageService < Services::Base
     end
 
     @likes_comparison_days = 7
+  end
 
-    ############################
-    # Followers Counts
+  def  store_follower_counts
     @followers_count = followers_query.followers_count
     @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
 
 
     # this needs to change to be dynamic
     @followers_comparison_days = 7
+  end
 
-    ############################
-    # Followers Graph
+  def store_followers_graph_data
     formatted_follower_data, follower_daily_data_points = followers_query.followers_data_for_graph
     @follower_formatted_labels_for_graph = formatted_follower_data
     @follower_daily_data_points_for_graph = follower_daily_data_points
+  end
 
-    ############################
-    # Engagement Graph
+  def store_engagement_rate_graph_data
     @engagement_rate_percentage_per_day = tweet_metrics_query.engagement_rate_percentage_per_day
+  end
 
-    ############################
-    # Impressions over Time Graph
+  def store_impressions_graph_data
     impression_counts_per_day = tweet_metrics_query.impression_counts_per_day
-    # Admin only data
     if current_admin_user
       @first_day_impressions = tweet_metrics_query.first_day_impressions
       @first_impressions_message = ''
@@ -96,24 +108,11 @@ class PublicPageService < Services::Base
     @impression_daily_data_points_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
       data[:impression_count] >= 0 ? data[:impression_count] : 0
     end
-    # Rails.logger.debug('paul' + @impression_daily_data_points_for_graph.inspect)
-
-    ############################
-    # Profile Conversion Rate
-    # @profile_clicks_data = tweet_metrics_query.profile_clicks_count_per_day
-    # @followers_data = followers_query.daily_followers_count
-    # @conversion_rates_data_for_graph = profile_conversion_rate_query.conversion_rates_data_for_graph(profile_clicks_data: @profile_clicks_data, followers_data: @followers_data)
-
-    ############################
-    # Top Posts / Tweets
-    @top_posts = tweet_metrics_query.top_tweets_for_user
-
-    ############################
-
-    results
   end
 
-  private
+  def store_top_posts
+    @top_posts = tweet_metrics_query.top_tweets_for_user
+  end
 
   PublicPageResults = Struct.new(
     :engagement_rate_percentage_per_day,
@@ -151,7 +150,7 @@ class PublicPageService < Services::Base
     ROUNDABLE_METRICS.each do |metric|
       instance_variable_set("@#{metric}", number_rounding_service.round_number(instance_variable_get("@#{metric}")))
     end
-    PublicPageResults.new(
+    blah = PublicPageResults.new(
       @engagement_rate_percentage_per_day,
       @first_day_impressions,
       @first_impressions_message,
@@ -174,6 +173,8 @@ class PublicPageService < Services::Base
       @tweet_count_over_available_time_period,
       @tweets_change_over_available_time_period
     )
+    Rails.logger.debug('paul' + blah.inspect)
+    blah
   end
 
   def profile_conversion_rate_query
@@ -192,45 +193,3 @@ class PublicPageService < Services::Base
     NumberRoundingService
   end
 end
-
-
-
-# TODO move this to lib
-class NumberRoundingService
-  def self.round_number(input)
-    Rails.logger.debug('paul' + input.inspect)
-    return input if input === false
-    number = extract_number(input)
-    sign = number.negative? ? '-' : ''
-    number = number.round.abs
-
-    rounded_number = if number < 999
-                       number
-                     elsif number < 1_000_000
-                       "#{(number / 1_000.0).round}K"
-                     else
-                       "#{format('%.2f', number / 1_000_000.0)}M"
-                     end
-
-    format_output(sign, rounded_number, input)
-  end
-
-  private
-
-  def self.extract_number(input)
-    if input.is_a?(String) && input.include?('%')
-      input.to_f
-    else
-      input
-    end
-  end
-
-  def self.format_output(sign, rounded_number, original_input)
-    if original_input.is_a?(String) && original_input.include?('%')
-      "#{sign}#{rounded_number}% #{original_input.split.last}"
-    else
-      "#{sign}#{rounded_number}"
-    end
-  end
-end
-
