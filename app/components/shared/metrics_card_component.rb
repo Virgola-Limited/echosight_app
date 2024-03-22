@@ -1,6 +1,8 @@
 module Shared
   class MetricsCardComponent < ViewComponent::Base
-    def initialize(title:, count:, change:, tooltip_target:, count_text:, change_text:, tooltip_text:, comparison_days: 7)
+    attr_reader :change_text
+
+    def initialize(title:, count:, change:, tooltip_target:, change_text:, tooltip_text:, comparison_days: 7)
       @title = title
       @count = count
       @change = change

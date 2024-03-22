@@ -43,7 +43,6 @@ class PublicPageComponent < ViewComponent::Base
       count: tweet_count_over_available_time_period,
       change: tweets_change_over_available_time_period,
       tooltip_target: "posts-count-tooltip",
-      count_text: tweet_count_over_available_time_period.to_s,
       change_text: tweets_change_over_available_time_period.to_s,
       tooltip_text: posts_tooltip_text.html_safe
     )
@@ -58,7 +57,6 @@ class PublicPageComponent < ViewComponent::Base
       count: impressions_count,
       change: impressions_change_since_last_week,
       tooltip_target: "impressions-count-tooltip",
-      count_text: impressions_count.to_s,
       change_text: impressions_change_since_last_week.to_s,
       tooltip_text: impressions_tooltip_text.html_safe
     )
@@ -73,7 +71,6 @@ class PublicPageComponent < ViewComponent::Base
       count: likes_count,
       change: likes_change_since_last_week,
       tooltip_target: "likes-count-tooltip",
-      count_text: likes_count.to_s,
       change_text: likes_change_since_last_week.to_s,
       tooltip_text: likes_tooltip_text.html_safe
     )
@@ -88,7 +85,6 @@ class PublicPageComponent < ViewComponent::Base
       count: followers_count,
       change: followers_count_change_percentage_text,
       tooltip_target: "followers-count-tooltip",
-      count_text: followers_count.to_s,
       change_text: followers_count_change_percentage_text.to_s,
       tooltip_text: followers_tooltip_text.html_safe
     )
