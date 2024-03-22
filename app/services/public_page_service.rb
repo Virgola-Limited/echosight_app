@@ -72,8 +72,7 @@ class PublicPageService < Services::Base
 
   def  store_follower_counts
     @followers_count = followers_query.followers_count
-    @followers_count_change_percentage_text = followers_query.followers_count_change_percentage
-
+    @followers_count_change_percentage_text = format_change_percentage(followers_query.followers_count_change_percentage)
 
     # this needs to change to be dynamic
     @followers_comparison_days = 7
@@ -191,5 +190,17 @@ class PublicPageService < Services::Base
 
   def number_rounding_service
     NumberRoundingService
+  end
+
+  def format_change_percentage(change_percentage)
+    return change_percentage unless change_percentage
+
+    if change_percentage.positive?
+      "#{change_percentage.round(1)}% increase"
+    elsif change_percentage.negative?
+      "#{change_percentage.abs.round(1)}% decrease"
+    else
+      "No change"
+    end
   end
 end
