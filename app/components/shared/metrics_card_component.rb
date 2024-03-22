@@ -17,6 +17,7 @@ module Shared
 
     def count_text
       return missing_data_message if @count == false
+
       @count.to_s
     end
 

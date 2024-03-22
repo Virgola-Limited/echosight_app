@@ -1,10 +1,10 @@
 class PublicPageComponent < ViewComponent::Base
-  attr_reader :page_data, :page_user, :current_user
+  attr_reader :public_page_data, :page_user, :current_user
 
-  def initialize(page_data:, current_user:)
-    @page_data = page_data
+  def initialize(public_page_data:, current_user:)
+    @public_page_data = public_page_data
     @current_user = current_user
-    @page_user = page_data.user
+    @page_user = public_page_data.user
   end
 
   def page_user_twitter_bio
@@ -12,15 +12,15 @@ class PublicPageComponent < ViewComponent::Base
   end
 
   def method_missing(method_name, *arguments, &block)
-    if page_data.respond_to?(method_name)
-      page_data.public_send(method_name, *arguments, &block)
+    if public_page_data.respond_to?(method_name)
+      public_page_data.public_send(method_name, *arguments, &block)
     else
       super
     end
   end
 
   def respond_to_missing?(method_name, include_private = false)
-    page_data.respond_to?(method_name) || super
+    public_page_data.respond_to?(method_name) || super
   end
 
   def count_cards
