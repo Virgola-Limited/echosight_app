@@ -16,8 +16,10 @@ RSpec.describe UserUpdater do
         'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
         'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1710884709',
         'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq'
+
       }
     end
+    let(:expected_description) { "Revolutionize Your Twitter/X Strategy with Echosight https://echosight.io/" }
     let(:updater) { described_class.new(user_data) }
 
     context 'when the 400x400 image exists' do
@@ -32,7 +34,7 @@ RSpec.describe UserUpdater do
           expect(identity.reload.image.metadata['width']).to eq(400)
           expect(identity.image.metadata['height']).to eq(400)
           expect(identity.banner.metadata['width']).to eq(1500)
-          expect(identity.description).to eq(user_data['description'])
+          expect(identity.description).to eq(expected_description)
         end
       end
     end

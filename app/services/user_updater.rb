@@ -15,7 +15,7 @@ class UserUpdater
 
     identity.image = download_image(transform_image_url(user_data['image_url']))
     identity.banner = download_image(transform_banner_url(user_data['banner_url']))
-    identity.description = user_data['description']
+    identity.description = UrlRewriter.new(user_data['description']).call
     identity.save!
   end
 
