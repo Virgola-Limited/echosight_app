@@ -33,6 +33,7 @@ class PublicPageService < Services::Base
     else
       @tweets_change_over_available_time_period = 'No change'
     end
+    [@tweet_count_over_available_time_period, @tweets_change_over_available_time_period, @tweet_comparison_days]
   end
 
   def store_impression_counts
