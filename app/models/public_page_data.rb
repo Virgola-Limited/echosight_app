@@ -20,5 +20,10 @@ class PublicPageData
     end
   end
 
-
+  ROUNDABLE_METRICS.each do |metric|
+    define_method(metric) do
+      rounded_value = instance_variable_get("@#{metric}")
+      NumberRoundingService.call(rounded_value) if rounded_value
+    end
+  end
 end

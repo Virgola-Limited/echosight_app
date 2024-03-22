@@ -114,19 +114,7 @@ class PublicPageService < Services::Base
     @top_posts = tweet_metrics_query.top_tweets_for_user
   end
 
-  ROUNDABLE_METRICS = %i[
-    impressions_count
-    impressions_change_since_last_week
-    likes_count
-    followers_count
-].freeze
-
   def results
-    ROUNDABLE_METRICS.each do |metric|
-      Rails.logger.debug('paul' + metric.inspect)
-      Rails.logger.debug('paul' + instance_variable_get("@#{metric}").inspect)
-      instance_variable_set("@#{metric}", number_rounding_service.call(instance_variable_get("@#{metric}")))
-    end
     PublicPageData.new(
       engagement_rate_percentage_per_day: @engagement_rate_percentage_per_day,
       first_day_impressions: @first_day_impressions,
@@ -163,10 +151,6 @@ class PublicPageService < Services::Base
 
   def followers_query
     Twitter::TwitterUserMetricsQuery.new(user)
-  end
-
-  def number_rounding_service
-    NumberRoundingService
   end
 
   def format_change_percentage(change_percentage)
