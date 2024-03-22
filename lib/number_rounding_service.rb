@@ -1,6 +1,5 @@
 class NumberRoundingService
-  def self.round_number(input)
-    Rails.logger.debug('paul' + input.inspect)
+  def self.call(input)
     return input if input === false
     number = extract_number(input)
     sign = number.negative? ? '-' : ''

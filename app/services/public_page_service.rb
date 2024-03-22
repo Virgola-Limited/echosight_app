@@ -6,6 +6,8 @@ class PublicPageService < Services::Base
   end
 
   def call
+    return DemoPublicPageService.call unless user.identity
+
     @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
     store_post_counts
     store_impression_counts
@@ -112,31 +114,6 @@ class PublicPageService < Services::Base
     @top_posts = tweet_metrics_query.top_tweets_for_user
   end
 
-  PublicPageData = Struct.new(
-    :engagement_rate_percentage_per_day,
-    :first_day_impressions,
-    :first_impressions_message,
-    :follower_daily_data_points_for_graph,
-    :follower_formatted_labels_for_graph,
-    :followers_comparison_days,
-    :followers_count,
-    :followers_count_change_percentage_text,
-    :impression_daily_data_points_for_graph,
-    :impression_formatted_labels_for_graph,
-    :impressions_change_since_last_week,
-    :impressions_comparison_days,
-    :impressions_count,
-    :likes_change_since_last_week,
-    :likes_comparison_days,
-    :likes_count,
-    :maximum_days_of_data,
-    :top_posts,
-    :tweet_comparison_days,
-    :tweet_count_over_available_time_period,
-    :tweets_change_over_available_time_period,
-    :user
-  )
-
   ROUNDABLE_METRICS = %i[
     impressions_count
     impressions_change_since_last_week
@@ -145,35 +122,35 @@ class PublicPageService < Services::Base
 ].freeze
 
   def results
-
     ROUNDABLE_METRICS.each do |metric|
-      instance_variable_set("@#{metric}", number_rounding_service.round_number(instance_variable_get("@#{metric}")))
+      Rails.logger.debug('paul' + metric.inspect)
+      Rails.logger.debug('paul' + instance_variable_get("@#{metric}").inspect)
+      instance_variable_set("@#{metric}", number_rounding_service.call(instance_variable_get("@#{metric}")))
     end
-    blah = PublicPageResults.new(
-      @engagement_rate_percentage_per_day,
-      @first_day_impressions,
-      @first_impressions_message,
-      @follower_daily_data_points_for_graph,
-      @follower_formatted_labels_for_graph,
-      @followers_comparison_days,
-      @followers_count,
-      @followers_count_change_percentage_text,
-      @impression_daily_data_points_for_graph,
-      @impression_formatted_labels_for_graph,
-      @impressions_change_since_last_week,
-      @impressions_comparison_days,
-      @impressions_count,
-      @likes_change_since_last_week,
-      @likes_comparison_days,
-      @likes_count,
-      @maximum_days_of_data,
-      @top_posts,
-      @tweet_comparison_days,
-      @tweet_count_over_available_time_period,
-      @tweets_change_over_available_time_period
+    PublicPageData.new(
+      engagement_rate_percentage_per_day: @engagement_rate_percentage_per_day,
+      first_day_impressions: @first_day_impressions,
+      first_impressions_message: @first_impressions_message,
+      follower_daily_data_points_for_graph: @follower_daily_data_points_for_graph,
+      follower_formatted_labels_for_graph: @follower_formatted_labels_for_graph,
+      followers_comparison_days: @followers_comparison_days,
+      followers_count: @followers_count,
+      followers_count_change_percentage_text: @followers_count_change_percentage_text,
+      impression_daily_data_points_for_graph: @impression_daily_data_points_for_graph,
+      impression_formatted_labels_for_graph: @impression_formatted_labels_for_graph,
+      impressions_change_since_last_week: @impressions_change_since_last_week,
+      impressions_comparison_days: @impressions_comparison_days,
+      impressions_count: @impressions_count,
+      likes_change_since_last_week: @likes_change_since_last_week,
+      likes_comparison_days: @likes_comparison_days,
+      likes_count: @likes_count,
+      maximum_days_of_data: @maximum_days_of_data,
+      top_posts: @top_posts,
+      tweet_comparison_days: @tweet_comparison_days,
+      tweet_count_over_available_time_period: @tweet_count_over_available_time_period,
+      tweets_change_over_available_time_period: @tweets_change_over_available_time_period,
+      user: @user
     )
-    Rails.logger.debug('paul' + blah.inspect)
-    blah
   end
 
   def profile_conversion_rate_query
