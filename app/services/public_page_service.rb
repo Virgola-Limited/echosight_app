@@ -6,8 +6,7 @@ class PublicPageService < Services::Base
   end
 
   def call
-    return DemoPublicPageService.call(user: user) if show_public_page_demo?
-
+    # need to refactor this to ensure it isnt called multiple times
     @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
     store_post_counts
     store_impression_counts
@@ -18,9 +17,30 @@ class PublicPageService < Services::Base
     store_engagement_rate_graph_data
     store_impressions_graph_data
     store_top_posts
+    Rails.logger.debug('paul' + public_page_data.inspect)
 
-    results
+    return DemoPublicPageService.call(user: user) if show_public_page_demo?
+
+    public_page_data
   end
+
+  def show_public_page_demo?
+    user.identity.nil? || not_enough_data?
+  end
+
+  def not_enough_data?
+    return true if public_page_data.engagement_rate_percentage_per_day.empty?
+    return true if public_page_data.follower_daily_data_points_for_graph.empty?
+    return true if public_page_data.impression_daily_data_points_for_graph.empty?
+    return true if public_page_data.followers_count == false
+    return true if public_page_data.impressions_count == 0
+    return true if public_page_data.likes_count == 0
+    return true if public_page_data.top_posts.empty?
+    return true if public_page_data.tweet_count_over_available_time_period == 0
+
+    false
+  end
+
 
   private
 
@@ -114,7 +134,7 @@ class PublicPageService < Services::Base
     @top_posts = tweet_metrics_query.top_tweets_for_user
   end
 
-  def results
+  def public_page_data
     PublicPageData.new(
       engagement_rate_percentage_per_day: @engagement_rate_percentage_per_day,
       first_day_impressions: @first_day_impressions,
