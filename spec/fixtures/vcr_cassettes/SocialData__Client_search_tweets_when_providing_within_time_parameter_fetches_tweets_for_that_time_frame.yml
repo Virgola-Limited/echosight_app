@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:TopherToy%20within_time:1h
+    uri: https://api.socialdata.tools/twitter/search?query=from:tophertoy%20within_time:1h
     body:
       encoding: US-ASCII
       string: ''
@@ -328,7 +328,7 @@ http_interactions:
   recorded_at: Tue, 05 Mar 2024 19:01:24 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:TopherToy%20within_time:15m
+    uri: https://api.socialdata.tools/twitter/search?query=from:tophertoy%20within_time:15m
     body:
       encoding: US-ASCII
       string: ''

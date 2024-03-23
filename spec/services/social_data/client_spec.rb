@@ -45,7 +45,6 @@ RSpec.describe SocialData::Client, :vcr do
         end
 
         it 'fetches tweets and user for that time frame including user data' do
-          # VCR.use_cassette('SocialData__Client_search_tweets_when_providing_within_time_parameter_when_there_are_less_than_1_page_of_tweets_fetches_tweets_for_that_time_frame_including_user_data') do
           params = { query: "from:#{user.handle} within_time:15m" }
           response = client.search_tweets(params)
 
@@ -63,7 +62,6 @@ RSpec.describe SocialData::Client, :vcr do
             end
           end
         end
-        # end
       end
 
       # invalid as we allow for 1400 now
