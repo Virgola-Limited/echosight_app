@@ -19,7 +19,7 @@ class PublicPagesController < ApplicationController
 
     public_page_data = PublicPageService.call(user: @user, current_admin_user: current_admin_user)
     if public_page_data.demo?
-      flash[:alert] = "This is a demo page showing how your public page could look. To find out why your public page isn't showing please visit the dashboard"
+      flash[:notice] = "This is a demo page showing how your public page could look. To find out why your public page isn't showing please visit the dashboard"
     else
       @cache_key = cache_key_for_user(@user)
     end
