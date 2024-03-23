@@ -257,7 +257,7 @@ module Twitter
       # Initialize a hash to keep track of total impressions per day
       daily_total_impressions = {}
       sorted_dates.each do |date|
-        daily_total_impressions[date] = grouped_metrics[date].sum(&:impression_count)
+        daily_total_impressions[date] = grouped_metrics[date].sum { |metric| metric.impression_count || 0 }
       end
       daily_total_impressions
     end
