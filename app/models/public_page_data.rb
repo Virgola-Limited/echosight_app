@@ -7,6 +7,8 @@ class PublicPageData
                 :maximum_days_of_data, :top_posts, :tweet_comparison_days, :tweet_count_over_available_time_period,
                 :tweets_change_over_available_time_period, :user
 
+    attr_writer :demo
+
     ROUNDABLE_METRICS = %i[
       impressions_count
       impressions_change_since_last_week
@@ -15,6 +17,7 @@ class PublicPageData
   ].freeze
 
   def initialize(attributes = {})
+    @demo = false
     attributes.each do |name, value|
       public_send("#{name}=", value)
     end
@@ -26,4 +29,9 @@ class PublicPageData
       NumberRoundingService.call(rounded_value) if rounded_value
     end
   end
+
+  def demo?
+    @demo
+  end
+
 end

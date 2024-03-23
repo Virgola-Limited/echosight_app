@@ -6,7 +6,7 @@ class PublicPageService < Services::Base
   end
 
   def call
-    return DemoPublicPageService.call unless user.identity
+    return DemoPublicPageService.call(user: user) if show_public_page_demo?
 
     @maximum_days_of_data = Twitter::TweetMetricsQuery.maximum_days_of_data
     store_post_counts

@@ -7,8 +7,16 @@ class PublicPageComponent < ViewComponent::Base
     @page_user = public_page_data.user
   end
 
+  def page_user_handle
+    page_user.handle || "demo_user"
+  end
+
+  def page_user_name
+    page_user.name || "Demo User"
+  end
+
   def page_user_twitter_bio
-    helpers.html_description_with_links(page_user.identity.description)
+    helpers.html_description_with_links(user_description)
   end
 
   def method_missing(method_name, *arguments, &block)
@@ -32,7 +40,29 @@ class PublicPageComponent < ViewComponent::Base
     ], "\n")
   end
 
+  def render_twitter_image(image_class)
+    image_tag_html = if page_user.image_url.present?
+                       helpers.image_tag(page_user.image_url, alt: "#{page_user.handle} Profile image", class: image_class)
+                     else
+                       helpers.vite_image_tag("images/twitter-default-avatar.png", class: image_class)
+                     end
+
+    if twitter_link
+      helpers.link_to(twitter_link, target: "_blank") { image_tag_html }.html_safe
+    else
+      image_tag_html
+    end
+  end
+
   private
+
+  def twitter_link
+    page_user.handle.present? ? "https://twitter.com/#{page_user.handle}" : nil
+  end
+
+  def user_description
+    page_user&.identity&.description || "Demo Twitter Bio"
+  end
 
   def posts_card
     posts_tooltip_text = "This is the total number of tweets you have made in the last #{tweet_comparison_days} days compared to the previous #{tweet_comparison_days} days."
