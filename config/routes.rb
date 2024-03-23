@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   end
   resources :dashboard, only: :index
   get 'public_page/:handle', to: 'public_pages#show', as: :public_page
-  get 'public_page', to: 'public_pages#show', as: :mine
 
   resources :single_message, only: :index
   devise_for :users, controllers: {

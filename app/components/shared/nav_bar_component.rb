@@ -7,7 +7,10 @@ module Shared
     end
 
     def demo_or_real_public_page_link
-      # <a target="_blank" href="<%= current_or_guest_user.handle ? public_page_url(current_or_guest_user.handle) : '#' %>" class="block rounded text-primary-700 dark:text-primary-500" aria-current="page">My Public Page</a>
+      # if the user has an identity handle, link to their public page via the handle
+      # otherwise use mine_path
+      user.handle.present? ? public_page_path(user.handle : public_page_path(:mine)
+    end
 
     def nav_links
       [
@@ -16,6 +19,5 @@ module Shared
         { name: 'My Profile & Settings', path: edit_user_registration_path }
       ]
     end
-
   end
 end

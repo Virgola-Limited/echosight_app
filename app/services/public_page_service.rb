@@ -1,6 +1,14 @@
 class PublicPageService < Services::Base
   attr_reader :user, :current_admin_user
-  def initialize(user:, current_admin_user:)
+
+  def initialize(handle:, current_user: , current_admin_user:)
+    identity = Identity.find_by(handle: handle)
+    @user = identity.user if identity.present?
+    if @user.nil?
+      raise ActiveRecord::RecordNotFound unless current_user
+      @user = current_user
+    end
+
     @user = user
     @current_admin_user = current_admin_user
   end
