@@ -2,3 +2,4 @@ app: bin/rails s -b 0.0.0.0 -p 3000
 mail: mailcatcher --foreground
 vite: bin/vite dev
 queue: bundle exec sidekiq
+cypress: yarn cypress open --project ./e2e

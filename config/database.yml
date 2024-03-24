@@ -22,6 +22,8 @@ default: &default
 development:
   <<: *default
   database: echosight_app_development
+  # database: <%= ENV['CYPRESS'] ? '  database: echosight_app_test' : 'echosight_app_development' %>
+
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
