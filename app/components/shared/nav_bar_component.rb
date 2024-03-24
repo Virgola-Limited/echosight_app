@@ -9,7 +9,7 @@ module Shared
     def demo_or_real_public_page_link
       # if the user has an identity handle, link to their public page via the handle
       # otherwise use mine_path
-      user.handle.present? ? public_page_path(user.handle : public_page_path(:mine)
+      user.handle.present? ? public_page_path(user.handle) : public_page_path(:mine)
     end
 
     def nav_links
