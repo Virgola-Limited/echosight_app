@@ -10,10 +10,12 @@ ActiveAdmin.register User do
     column :last_name
     column :email
     column :created_at
-    column :updated_at
     column :sign_in_count
     column :current_sign_in_at
     column :last_sign_in_at
+    column "Identity Handle" do |user|
+      user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
+    end
     actions
   end
 

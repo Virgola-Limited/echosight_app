@@ -11,10 +11,6 @@ module Twitter
     def call
       metrics_updated = update_followers_count
       send_slack_notification(metrics_updated)
-      if metrics_updated
-        return "Twitter user metrics updated for #{@user_data['username']}."
-      end
-      "No updates were made to Twitter user metrics for #{@user_data['username']}."
     end
 
     private
@@ -38,10 +34,10 @@ module Twitter
 
     def send_slack_notification(metrics_updated)
       message = if metrics_updated
-                  "Twitter user metrics updated for #{@user_data['username']}."
-                else
-                  "No updates were made to Twitter user metrics for #{@user_data['username']}."
-                end
+        "User: #{user_data['username']}: Twitter user metrics updated."
+      else
+        "User: #{user_data['username']}: Twitter user metrics not updated."
+      end
 
       Notifications::SlackNotifier.call(message: message, channel: :general)
     end

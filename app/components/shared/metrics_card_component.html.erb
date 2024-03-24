@@ -12,10 +12,10 @@
         </span>
       <% end %>
     </h5>
-    <p class="font-normal text-gray-700 dark:text-gray-400"><%= @count_text %></p>
-    <% if @change_text.present? %>
-      <% text_class = @change_text.include?('increase') ? 'text-green-600 dark:text-green-400' : 'text-gray-700 dark:text-gray-400' %>
-      <p class="font-normal <%= text_class %>"><%= @change_text %></p>
+    <p class="font-normal text-gray-700 dark:text-gray-400"><%= count_text %></p>
+    <% if change_text.present? %>
+      <% text_class = change_text.include?('increase') ? 'text-green-600 dark:text-green-400' : 'text-gray-700 dark:text-gray-400' %>
+      <p class="font-normal <%= text_class %>"><%= change_text %></p>
     <% end %>
   </div>
 </div>

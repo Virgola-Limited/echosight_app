@@ -23,21 +23,11 @@
   <%= render 'layouts/dark_mode_toggle' %>
 
   <body class="dark:bg-gray-900">
-    <%= render 'layouts/nav_bar' %>
+    <%= render Shared::NavBarComponent.new(user: current_or_guest_user) %>
     <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
     <div id="main-content" class="relative w-full max-w-screen-2xl mx-auto h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
-      <% if notice.present? %>
-      <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-        <%= notice %>
-      </div>
-    <% end %>
-
-    <% if alert.present? %>
-      <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-        <%= alert %>
-      </div>
-    <% end %>
+      <%= render 'layouts/flash_messages' %>
       <main>
         <%= yield %>
       </main>

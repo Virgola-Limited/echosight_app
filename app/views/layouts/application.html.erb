@@ -23,17 +23,8 @@
   </head>
 
   <body class="dark:bg-gray-900">
-  <% if notice.present? %>
-    <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-      <%= notice %>
-    </div>
-  <% end %>
+  <%= render 'layouts/flash_messages' %>
 
-  <% if alert.present? %>
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-      <%= alert %>
-    </div>
-  <% end %>
   <div class="flex justify-between bg-white dark:bg-gray-900 sticky pt-3 pb-3 inset-x-0 top-0 left-0 z-10">
     <div>
       <a href="<%= root_url %>" class="flex items-center text-2xl font-semibold dark:text-white">

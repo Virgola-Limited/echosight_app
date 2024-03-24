@@ -1,0 +1,76 @@
+<% cache(@cache_key) do %>
+  <% content_for :title, "#{page_user_handle}'s Public Page" %>
+
+  <%= content_for :profile_container do %>
+  <div class="profile-container">
+    <div class="flex items-center space-x-3">
+        <%= render PrimaryActionButtonComponent.new(user: current_user) %>
+        <%= render 'shared/dark_mode_toggle_button' %>
+    </div>
+  </div>
+  <% end %>
+
+  <div class="relative">
+    <!-- Header Photo -->
+    <!-- this is poor refactor later -->
+    <% if page_user.banner_url.present? %>
+      <div style="width: 100%">
+        <img class="w-full h-full object-cover shadow-lg top-0 left-0" src="<%= page_user.banner_url %>" alt="Twitter/X Header Photo">
+      </div>
+    <% else %>
+      <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'h-48 w-full object-cover shadow-lg', alt: 'Twitter/X Header Photo') %>
+    <% end %>
+    <!-- Profile Container -->
+    <div class="flex items-end justify-between px-4 py-4 -mt-20">
+      <!-- Profile Photo and Info -->
+      <div class="flex items-center space-x-4">
+        <%= render_twitter_image("min-h-24 min-w-24 h-24 w-24 md:h-28 md:w-28 rounded-full border-4 border-white shadow-lg object-cover") %>
+      </div>
+    </div>
+
+    <div class="py-2 px-4 rounded-lg">
+      <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= page_user_name %></h1>
+      <div class="text-xs dark:text-white lg:mb-3">@<%= page_user_handle %></div>
+      <div class="text-m dark:text-white dark:text-white"><%= page_user_twitter_bio %></div>
+    </div>
+
+  </div>
+
+  <div class="flex flex-wrap">
+    <%= count_cards %>
+  </div>
+
+  <%= render partial:"public_pages/impressions_over_time", locals: {
+  impression_daily_data_points_for_graph: impression_daily_data_points_for_graph, impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
+  maximum_days_of_data: maximum_days_of_data,
+  first_impressions_message: first_impressions_message
+  }
+  %>
+
+  <%= render partial:"public_pages/followers_graph", locals: {follower_daily_data_points_for_graph: follower_daily_data_points_for_graph, maximum_days_of_data: maximum_days_of_data} %>
+
+  <%= render partial:"public_pages/engagement_rate", locals: {engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
+
+  <% #render "public_pages/profile_conversion_rate" %>
+  <%= render partial: "public_pages/top_posts", locals: {top_posts: top_posts, maximum_days_of_data: maximum_days_of_data} %>
+
+  <% unless current_user %>
+  <section class="mt-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-8 px-4 sm:px-6 lg:px-8 rounded-xl w-full">
+    <div class="w-full mx-auto text-center">
+      <h2 class="text-3xl font-extrabold sm:text-4xl">
+        Want to Stand Out?
+      </h2>
+      <p class="mt-4 text-lg leading-6">
+        Get your own public page with private dashboard and join the community of Echosight trendsetters.
+      </p>
+      <div class="mt-8 flex justify-center">
+        <div class="inline-flex rounded-md shadow">
+          <a href="<%= new_registration_path(:user) %>" class="call-to-action-button call-to-action-button-indigo">
+            Join Echosight Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% end %>
+  <% end %>

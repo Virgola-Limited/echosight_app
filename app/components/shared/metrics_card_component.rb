@@ -1,11 +1,13 @@
 module Shared
   class MetricsCardComponent < ViewComponent::Base
-    def initialize(title:, count:, change:, tooltip_target:, count_text:, change_text:, tooltip_text:, comparison_days: 7)
+    attr_reader :change_text
+
+    def initialize(title:, count:, change:, tooltip_target:, change_text:, tooltip_text:, comparison_days: 7)
       @title = title
       @count = count
       @change = change
       @tooltip_target = tooltip_target
-      @count_text = count_text || formatted_count
+      @count = count
       @change_text = change_text || formatted_change
       @comparison_days = comparison_days
       @tooltip_text = tooltip_text
@@ -13,8 +15,9 @@ module Shared
 
     private
 
-    def formatted_count
+    def count_text
       return missing_data_message if @count == false
+
       @count.to_s
     end
 
