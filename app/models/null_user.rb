@@ -11,4 +11,8 @@ class NullUser
     true
   end
 
+  def identity
+    nil
+  end
+
 end

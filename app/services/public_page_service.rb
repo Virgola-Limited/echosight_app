@@ -1,4 +1,6 @@
 class PublicPageService < Services::Base
+  include Rails.application.routes.url_helpers
+
   attr_reader :current_admin_user, :user
 
   def initialize(handle:, current_user: nil, current_admin_user: nil)
@@ -13,15 +15,34 @@ class PublicPageService < Services::Base
   end
 
   def call
-    return DemoPublicPageService.call(user: user) if show_public_page_demo?
 
-    Rails.logger.debug('paul' + public_page_data.inspect)
-
-    public_page_data
+    # Updated logic based on detailed result
+    result = determine_public_page_status
+    case result.status
+    when :demo
+      DemoPublicPageService.call(user: user)
+    when :success
+      public_page_data
+    when :error
+      result
+    end
   end
+
+  # Move struct
+  Result = Struct.new(:status, :message, :redirect_path, keyword_init: true)
 
   def show_public_page_demo?
     user.identity.nil? || not_enough_data?
+  end
+
+  def determine_public_page_status
+    if user.guest?
+      Result.new(status: :error, message: "You must be logged in to view the private version of your public page", redirect_path: new_user_session_path)
+    elsif user.identity.nil? || not_enough_data?
+      Result.new(status: :demo)
+    else
+      Result.new(status: :success)
+    end
   end
 
   private
