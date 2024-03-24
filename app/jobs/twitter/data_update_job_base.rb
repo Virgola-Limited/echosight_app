@@ -28,10 +28,11 @@ module Twitter
         update_user(user, client_class)
       rescue StandardError => e
         message = "Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
-        data_update_log.update(error_message: message)
+        data_update_log.update!(error_message: message)
+
         raise message
       else
-        data_update_log.update(completed_at: Time.current) # Set completed_at only if no errors occurred.
+        data_update_log.update!(completed_at: Time.current) # Set completed_at only if no errors occurred.
       end
     end
 

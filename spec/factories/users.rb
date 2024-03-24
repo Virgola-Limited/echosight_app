@@ -50,5 +50,9 @@ FactoryBot.define do
     email { Faker::Internet.email }
     password { 'password' }
     confirmed_at { Time.now } # Set the confirmed_at attribute to the current time
+
+    trait :unconfirmed
+      confirmed_at { nil }
+  end
   end
 end
