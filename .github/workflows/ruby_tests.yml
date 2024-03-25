@@ -34,9 +34,26 @@ jobs:
       with:
         ruby-version: 3.2.2
 
-    - name: Install dependencies
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'  # Use the Node.js version that matches your development environment
+
+    - name: Install Ruby and JavaScript dependencies
       run: |
         bundle install --jobs 4 --retry 3
+        npm install
+
+    - name: Setup Chrome and ChromeDriver for Selenium
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser chromium-chromedriver
+        sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+
+    - name: Precompile assets and build Vite
+      run: |
+        bin/rails assets:precompile
+        bin/vite build
 
     - name: Set up test database
       env:
