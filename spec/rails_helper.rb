@@ -2,6 +2,7 @@
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+require 'capybara/rspec'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
@@ -67,10 +68,12 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  #######################
+  # Capybara / Feature test setup
+  Capybara.default_driver = :selenium
   config.include Capybara::DSL, type: :feature
   config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include AuthenticationHelper, type: :feature
-
   config.before(:each, type: :feature) do
     ActionMailer::Base.deliveries.clear
   end

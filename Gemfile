@@ -68,6 +68,7 @@ group :development, :test do
   gem 'faker'
   gem 'htmlbeautifier'
   gem 'rspec-rails', '~> 6.1.0'
+  gem 'webdrivers', require: false
   gem 'vcr'
   gem 'webmock'
 end
