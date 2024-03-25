@@ -68,4 +68,9 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include Capybara::DSL, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+
+  config.before(:each, type: :feature) do
+    ActionMailer::Base.deliveries.clear
+  end
 end
