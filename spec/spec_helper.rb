@@ -22,6 +22,7 @@ require 'factory_bot_rails'
 # WebMock.disable_net_connect!(allow_localhost: true)
 
 VCR.configure do |config|
+  config.ignore_localhost = true
   # config.default_cassette_options = { record: :all }
   # config.default_cassette_options = { record: :none }
   # config.default_cassette_options = { record: :new_episodes }

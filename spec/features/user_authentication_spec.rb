@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'User Authentication', type: :feature do
+RSpec.feature 'User Authentication' do
   let!(:user) { create(:user, :unconfirmed) }
 
   scenario 'User tries various authentication flows' do

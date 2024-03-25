@@ -74,4 +74,41 @@ RSpec.configure do |config|
   config.before(:each, type: :feature) do
     ActionMailer::Base.deliveries.clear
   end
+
+  # config.after(:each, type: :feature) do |example|
+  #   # if page.driver.browser.respond_to?(:logs)
+  #     check_for_errors(example)
+  #   # end
+  # end
+
+  #######################
+
+end
+
+def check_for_errors(example)
+  return if example.metadata[:ignore_errors]
+
+  errors = page.driver.browser.logs.get(:browser)
+  filtered_errors = errors.reject do |e|
+    ignorable_errors.any? { |ignore| e.message.include?(ignore) }
+  end
+  error_messages = filtered_errors.map(&:message).join("\n")
+  expect(filtered_errors).to(
+    be_empty, "JavaScript errors found on:\n
+       #{page.current_url}\n\n
+
+       Failing example: #{example.full_description}\n\n
+       File path: #{example.file_path}\n\n
+
+       Error message:\n
+       #{error_messages}\n\n
+       "
+  )
+  # Added this as a test was throwing a 500 error but not failing.
+  expect(page).not_to have_selector('.exception')
+end
+
+def ignorable_errors
+  [
+  ]
 end
