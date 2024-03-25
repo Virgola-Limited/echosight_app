@@ -48,9 +48,7 @@ class PublicPageService < Services::Base
   private
 
   def not_enough_data?
-    public_page_data_attributes.any?(&:nil?) ||
-    public_page_data_attributes.include?(false) ||
-    engagement_rates_empty_or_zero?
+    UserTwitterDataUpdate.recent_data(user.identity).count < 2
   end
 
   def engagement_rates_empty_or_zero?

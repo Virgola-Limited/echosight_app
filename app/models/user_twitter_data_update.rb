@@ -24,6 +24,9 @@
 class UserTwitterDataUpdate < ApplicationRecord
   belongs_to :identity
 
+  scope :recent_data, ->(identity_id) { where(identity_id: identity_id).where('created_at > ?', 7.days.ago) }
+
+
   def self.ransackable_associations(auth_object = nil)
     ["identity"]
   end
