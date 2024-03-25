@@ -10,6 +10,10 @@ class PublicPagesController < ApplicationController
   # alway show the current users page if the user is my_public_page?
   # Only make the url my_public_page if they havent connected to their twitter account. (no identity?)
   def show
+    if params[:handle] == 'mine' && current_user&.identity.present?
+      redirect_to public_page_path(current_user.identity.handle) and return
+    end
+
     public_page_data = PublicPageService.call(handle: params[:handle], current_user: current_or_guest_user, current_admin_user: current_admin_user)
 
     if public_page_data.is_a?(PublicPageService::Result)
@@ -19,7 +23,6 @@ class PublicPagesController < ApplicationController
         redirect_to public_page_data.redirect_path and return
       when :demo
         flash[:notice] = "This is a demo page showing how your public page could look."
-        # Additional handling for demo case if needed
       end
     else
       # Handle the successful case

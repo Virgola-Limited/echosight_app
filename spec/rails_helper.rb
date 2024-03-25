@@ -70,19 +70,37 @@ RSpec.configure do |config|
 
   #######################
   # Capybara / Feature test setup
+
+  Capybara.register_driver :selenium_chrome_headless do |app|
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  end
+
+  Capybara.javascript_driver = :selenium_chrome_headless
+  Capybara.default_driver = :selenium_chrome_headless
   Capybara.default_driver = :selenium
+
   config.include Capybara::DSL, type: :feature
   config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include AuthenticationHelper, type: :feature
   config.before(:each, type: :feature) do
     ActionMailer::Base.deliveries.clear
+    WebMock.allow_net_connect!
   end
 
-  # config.after(:each, type: :feature) do |example|
-  #   # if page.driver.browser.respond_to?(:logs)
-  #     check_for_errors(example)
-  #   # end
-  # end
+  config.after(:each, type: :feature) do |example|
+    # if page.driver.browser.respond_to?(:logs)
+      # check_for_errors(example)
+    # end
+    WebMock.disable_net_connect!(allow_localhost: true)
+  end
+
+  config.around(:each, type: :feature) do |example|
+    VCR.turned_off { example.run }
+  end
+
 
   #######################
 
