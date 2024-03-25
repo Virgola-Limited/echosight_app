@@ -18,7 +18,7 @@
         <img class="w-full h-full object-cover shadow-lg top-0 left-0" src="<%= page_user.banner_url %>" alt="Twitter/X Header Photo">
       </div>
     <% else %>
-      <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'h-48 w-full object-cover shadow-lg', alt: 'Twitter/X Header Photo') %>
+      <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'w-full h-full object-cover shadow-lg top-0 left-0', alt: 'Twitter/X Header Photo') %>
     <% end %>
     <!-- Profile Container -->
     <div class="flex items-end justify-between px-4 py-4 -mt-20">
