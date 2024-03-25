@@ -51,8 +51,8 @@ FactoryBot.define do
     password { 'password' }
     confirmed_at { Time.now } # Set the confirmed_at attribute to the current time
 
-    trait :unconfirmed
+    trait :unconfirmed do
       confirmed_at { nil }
-  end
+    end
   end
 end

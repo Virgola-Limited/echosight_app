@@ -4,6 +4,8 @@ module Twitter
   class TweetsFetcher
     attr_reader :user, :client
 
+    DAYS_TO_FETCH = 14
+
     def initialize(user:, client: nil)
       @user = user
       @client = client || SocialData::ClientAdapter.new(user)
@@ -23,7 +25,7 @@ module Twitter
     private
 
     def fetch_and_store_tweets
-      params = { query: "from:#{user.handle} within_time:7d" }
+      params = { query: "from:#{user.handle} within_time:#{DAYS_TO_FETCH}d" }
       tweets = client.search_tweets(params)
 
       today_user_data = nil
