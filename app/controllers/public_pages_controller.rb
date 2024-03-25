@@ -23,10 +23,11 @@ class PublicPagesController < ApplicationController
         redirect_to public_page_data.redirect_path and return
       when :demo
         flash[:notice] = "This is a demo page showing how your public page could look."
+      else
+        @cache_key = cache_key_for_user(public_page_data.user)
       end
     else
-      # Handle the successful case
-      @cache_key = cache_key_for_user(public_page_data.user)
+
       render PublicPageComponent.new(public_page_data: public_page_data, current_user: current_or_guest_user)
     end
   end
