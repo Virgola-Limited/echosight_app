@@ -2,22 +2,24 @@ class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
   include Cacheable
 
-  attr_reader :current_admin_user, :current_user, :user
+  attr_reader :current_admin_user, :current_user, :user, :handle
 
   def initialize(handle:, current_user: nil, current_admin_user: nil)
+    @handle = handle
     @current_user = current_user
     identity = Identity.find_by(handle: handle)
     @user = identity.user if identity.present?
-    if @user.nil?
-      raise ActiveRecord::RecordNotFound
-    end
-
     @current_admin_user = current_admin_user
   end
 
   def call
-
-    # Updated logic based on detailed result
+    if @user.nil?
+      if handle == 'mine' && !current_user.guest?
+        @user = current_user
+      else
+        return Result.new(status: :error, message: "You must be logged in to view the private version of your public page", redirect_path: new_user_session_path)
+      end
+    end
     result = determine_public_page_status
     case result.status
     when :demo
@@ -37,8 +39,6 @@ class PublicPageService < Services::Base
   end
 
   def determine_public_page_status
-    # if current_user.guest?
-      # Result.new(status: :error, message: "You must be logged in to view the private version of your public page", redirect_path: new_user_session_path)
     if show_public_page_demo?
       Result.new(status: :demo)
     else
