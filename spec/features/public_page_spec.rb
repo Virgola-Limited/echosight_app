@@ -9,7 +9,7 @@ RSpec.feature 'Public Page Access' do
 
     # Attempt to visit the "mine" page without being logged in
     # Expect redirection to the login page
-    visit public_page_path(:mine)
+    visit public_page_path(:demo)
     expect(page).to have_current_path(new_user_session_path)
     expect(page.body).to include('You must be logged in to view the private version of your public page')
 
@@ -17,7 +17,7 @@ RSpec.feature 'Public Page Access' do
     login_user(user)
 
     # Now logged in, revisit the "mine" page
-    visit public_page_path(:mine)
+    visit public_page_path(:demo)
     DEMO_PAGE_TEXTS.each do |content|
       expect(page.body).to include(content)
     end
@@ -26,7 +26,7 @@ RSpec.feature 'Public Page Access' do
     simulate_twitter_connection(user)
 
     # After connecting Twitter, visit the "mine" page again
-    visit public_page_path(:mine)
+    visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
     DEMO_PAGE_TEXTS.each do |content|
       expect(page.body).not_to include(content)

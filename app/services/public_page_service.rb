@@ -14,7 +14,7 @@ class PublicPageService < Services::Base
 
   def call
     if @user.nil?
-      if handle == 'mine' && !current_user.guest?
+      if handle == 'demo' && !current_user.guest?
         @user = current_user
       end
     end
