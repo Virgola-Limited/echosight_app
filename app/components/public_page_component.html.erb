@@ -12,9 +12,9 @@
   <div class="relative">
     <!-- Header Photo -->
     <!-- this is poor refactor later -->
-    <% if page_user.banner_url.present? %>
+    <% if page_user_banner_url.present? %>
       <div style="width: 100%">
-        <img class="w-full h-full object-cover shadow-lg top-0 left-0" src="<%= page_user.banner_url %>" alt="Twitter/X Header Photo">
+        <img class="w-full h-full object-cover shadow-lg top-0 left-0" src="<%= page_user_banner_url %>" alt="Twitter/X Header Photo">
       </div>
     <% else %>
       <%= vite_image_tag('images/default-public-page-banner.jpg', class: 'w-full h-full object-cover shadow-lg top-0 left-0', alt: 'Twitter/X Header Photo') %>

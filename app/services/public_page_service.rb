@@ -16,8 +16,6 @@ class PublicPageService < Services::Base
     if @user.nil?
       if handle == 'mine' && !current_user.guest?
         @user = current_user
-      else
-        return Result.new(status: :error, message: "You must be logged in to view the private version of your public page", redirect_path: new_user_session_path)
       end
     end
     result = determine_public_page_status
@@ -26,8 +24,6 @@ class PublicPageService < Services::Base
       DemoPublicPageService.call(user: user)
     when :success
       public_page_data
-    when :error
-      result
     end
   end
 
@@ -35,7 +31,7 @@ class PublicPageService < Services::Base
   Result = Struct.new(:status, :message, :redirect_path, keyword_init: true)
 
   def show_public_page_demo?
-    user.identity.nil? || not_enough_data?
+    user&.identity.nil? || not_enough_data?
   end
 
   def determine_public_page_status

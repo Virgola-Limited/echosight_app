@@ -8,11 +8,15 @@ class PublicPageComponent < ViewComponent::Base
   end
 
   def page_user_handle
-    page_user.handle || "demo_user"
+    page_user&.handle || "demo_user"
   end
 
   def page_user_name
-    page_user.name || "Demo User"
+    page_user&.name || "Demo User"
+  end
+
+  def page_user_banner_url
+    page_user&.identity&.banner_url
   end
 
   def page_user_twitter_bio
@@ -41,8 +45,8 @@ class PublicPageComponent < ViewComponent::Base
   end
 
   def render_twitter_image(image_class)
-    image_tag_html = if page_user.image_url.present?
-                       helpers.image_tag(page_user.image_url, alt: "#{page_user.handle} Profile image", class: image_class)
+    image_tag_html = if page_user&.image_url.present?
+                       helpers.image_tag(page_user&.image_url, alt: "#{page_user&.handle} Profile image", class: image_class)
                      else
                        helpers.vite_image_tag("images/twitter-default-avatar.png", class: image_class)
                      end
@@ -57,7 +61,7 @@ class PublicPageComponent < ViewComponent::Base
   private
 
   def twitter_link
-    page_user.handle.present? ? "https://twitter.com/#{page_user.handle}" : nil
+    page_user&.handle.present? ? "https://twitter.com/#{page_user&.handle}" : nil
   end
 
   def user_description
