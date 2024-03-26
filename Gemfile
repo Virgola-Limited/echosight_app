@@ -67,7 +67,6 @@ group :development, :test do
   gem 'faker'
   gem 'htmlbeautifier'
   gem 'rspec-rails', '~> 6.1.0'
-
 end
 
 group :test do
@@ -86,10 +85,5 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'rack-mini-profiler'
   gem 'rubocop'
-  gem "spring"
   gem 'web-console'
-
-
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
 end
