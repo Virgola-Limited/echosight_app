@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PrimaryActionButtonComponent < ViewComponent::Base
+class PrimaryActionButtonComponent <  ApplicationComponent
   attr_reader :user, :url, :link_text
 
   # TODO Paid users can disable the button on their profile page so no button shows

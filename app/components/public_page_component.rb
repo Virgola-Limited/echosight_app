@@ -1,4 +1,4 @@
-class PublicPageComponent < ViewComponent::Base
+class PublicPageComponent <  ApplicationComponent
   attr_reader :public_page_data, :page_user, :current_user
 
   def initialize(public_page_data:, current_user:)

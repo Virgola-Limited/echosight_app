@@ -24,7 +24,7 @@
 # 2. Need to supply their email address if they logged in with Twitter/X as Twitter/X wont give it to user
 # 3. Need to have a paid subscription
 
-class DashboardComponent < ViewComponent::Base
+class DashboardComponent < ApplicationComponent
   def initialize(current_user:)
     @current_user = current_user
   end

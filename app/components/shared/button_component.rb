@@ -1,6 +1,6 @@
 module Shared
-  class ButtonComponent < ViewComponent::Base
     def initialize(text:, url:)
+  class ButtonComponent <  ApplicationComponent
       @text = text
       @url = url
     end
