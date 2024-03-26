@@ -1,5 +1,6 @@
 class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
+  include Cacheable
 
   attr_reader :current_admin_user, :current_user, :user
 
@@ -8,8 +9,7 @@ class PublicPageService < Services::Base
     identity = Identity.find_by(handle: handle)
     @user = identity.user if identity.present?
     if @user.nil?
-      raise ActiveRecord::RecordNotFound # unless current_user
-      # @user = current_user
+      raise ActiveRecord::RecordNotFound
     end
 
     @current_admin_user = current_admin_user
@@ -50,6 +50,44 @@ class PublicPageService < Services::Base
 
   def not_enough_data?
     UserTwitterDataUpdate.recent_data(user.identity).count < 2
+  end
+
+  def public_page_data
+    cache_key = cache_key_for_user(user)
+
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      # The block to generate data if cache miss occurs
+      generate_public_page_data
+    end
+  end
+
+  private
+
+  def generate_public_page_data
+    @public_page_data ||= PublicPageData.new(
+      engagement_rate_percentage_per_day: engagement_rate_percentage_per_day,
+      first_day_impressions: first_day_impressions,
+      first_impressions_message: first_impressions_message,
+      follower_daily_data_points_for_graph: follower_daily_data_points_for_graph,
+      follower_formatted_labels_for_graph: follower_formatted_labels_for_graph,
+      followers_comparison_days: followers_comparison_days,
+      followers_count: followers_count,
+      followers_count_change_percentage_text: followers_count_change_percentage_text,
+      impression_daily_data_points_for_graph: impression_daily_data_points_for_graph,
+      impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
+      impressions_change_since_last_week: impressions_change_since_last_week,
+      impressions_comparison_days: impressions_comparison_days,
+      impressions_count: impressions_count,
+      likes_change_since_last_week: likes_change_since_last_week,
+      likes_comparison_days: likes_comparison_days,
+      likes_count: likes_count,
+      maximum_days_of_data: maximum_days_of_data,
+      top_posts: top_posts,
+      tweet_comparison_days: tweet_comparison_days,
+      tweet_count_over_available_time_period: tweet_count_over_available_time_period,
+      tweets_change_over_available_time_period: tweets_change_over_available_time_period,
+      user: user
+    )
   end
 
   def engagement_rates_empty_or_zero?
