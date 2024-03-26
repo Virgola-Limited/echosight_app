@@ -38,8 +38,8 @@ module Twitter
       else
         "User: #{user_data['username']}: Twitter user metrics not updated."
       end
-
       Notifications::SlackNotifier.call(message: message, channel: :general)
+      message
     end
   end
 end
