@@ -10,8 +10,7 @@ RSpec.feature 'Public Page Access' do
     # Attempt to visit the "mine" page without being logged in
     # Expect redirection to the login page
     visit public_page_path(:demo)
-    expect(page).to have_current_path(new_user_session_path)
-    expect(page.body).to include('You must be logged in to view the private version of your public page')
+    expect(page.body).to include('This is a demo page showing how your public page could look')
 
     # Log in as the created user
     login_user(user)

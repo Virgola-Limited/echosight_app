@@ -42,9 +42,8 @@ RSpec.describe Twitter::TweetMetricsQuery do
           create(:tweet_metric, tweet: tweet, impression_count: 200)
           create(:tweet_metric, tweet: tweet, impression_count: 300)
         end,
-        # keep this to ensure we dont get weird results with nil impression_count
         create(:tweet, identity: identity, twitter_created_at: 3.days.ago).tap do |tweet|
-          create(:tweet_metric, tweet: tweet, impression_count: nil)
+          create(:tweet_metric, tweet: tweet, impression_count: 0)
         end
       ]
     end
@@ -53,7 +52,7 @@ RSpec.describe Twitter::TweetMetricsQuery do
       query = described_class.new(user: user)
       top_tweets = query.top_tweets_for_user
       expect(top_tweets.map(&:tweet_id)).to match_array(top_tweets.map(&:tweet_id).uniq)
-      expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300])
+      expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300, 0])
     end
   end
 

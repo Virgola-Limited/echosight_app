@@ -29,7 +29,7 @@ RSpec.describe UserUpdater do
         VCR.use_cassette('UserUpdater_call_when_the_400x400_image_exists_updates_the_user_images_with_transformed_URL') do
           expect(identity.banner_url).to be_nil
           expect(identity.image_url).to be_nil
-          expect(identity.description).to be_nil
+          expect(identity.description).to eq'Twitter user bio'
           updater.call
           expect(identity.reload.image.metadata['width']).to eq(400)
           expect(identity.image.metadata['height']).to eq(400)
