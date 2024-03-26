@@ -74,40 +74,9 @@ class PublicPageService < Services::Base
     ]
   end
 
-
-
-  # def not_enough_data?
-  #   return true if public_page_data.engagement_rate_percentage_per_day.empty?
-  #   return true if public_page_data.follower_daily_data_points_for_graph.empty?
-  #   return true if public_page_data.impression_daily_data_points_for_graph.empty?
-  #   return true if public_page_data.followers_count == false
-  #   return true if public_page_data.impressions_count == 0
-  #   return true if public_page_data.likes_count == 0
-  #   return true if public_page_data.top_posts.empty?
-  #   return true if public_page_data.tweet_count_over_available_time_period == 0
-
-  #   false
-  # end
-
-  private
-
   def maximum_days_of_data
     @maximum_days_of_data ||= Twitter::TweetMetricsQuery.maximum_days_of_data
   end
-
-  # def store_post_counts
-  #   @tweet_count_over_available_time_period = tweet_metrics_query.tweet_count_over_available_time_period
-  #   @tweets_change_over_available_time_period = tweet_metrics_query.tweets_change_over_available_time_period
-  #   @tweet_comparison_days = tweet_metrics_query.tweet_comparison_days
-  #   if @tweets_change_over_available_time_period > 0
-  #     @tweets_change_over_available_time_period = "#{@tweets_change_over_available_time_period} increase"
-  #   elsif @tweets_change_over_available_time_period < 0
-  #     @tweets_change_over_available_time_period = "#{@tweets_change_over_available_time_period.abs} decrease"
-  #   else
-  #     @tweets_change_over_available_time_period = 'No change'
-  #   end
-  #   [@tweet_count_over_available_time_period, @tweets_change_over_available_time_period, @tweet_comparison_days]
-  # end
 
   def tweet_count_over_available_time_period
     @tweet_count_over_available_time_period ||= tweet_metrics_query.tweet_count_over_available_time_period
@@ -129,23 +98,6 @@ class PublicPageService < Services::Base
     format % change.abs
   end
 
-  # def store_impression_counts
-  #   @impressions_count = tweet_metrics_query.impressions_count
-  #   @impressions_change_since_last_week = tweet_metrics_query.impressions_change_since_last_week
-  #   if @impressions_change_since_last_week
-  #     if @impressions_change_since_last_week > 0
-  #       @impressions_change_since_last_week = "#{@impressions_change_since_last_week}% increase"
-  #     elsif @impressions_change_since_last_week < 0
-  #       @impressions_change_since_last_week = "#{@impressions_change_since_last_week.abs}% decrease"
-  #     else
-  #       @impressions_change_since_last_week = 'No change'
-  #     end
-  #   end
-
-  #   # this needs to change to be dynamic
-  #   @impressions_comparison_days = 7
-  # end
-
   def impressions_count
     @impressions_count ||= tweet_metrics_query.impressions_count
   end
@@ -166,22 +118,6 @@ class PublicPageService < Services::Base
     format % change.abs
   end
 
-  # def store_likes_counts
-  #   @likes_count = tweet_metrics_query.likes_count
-  #   @likes_change_since_last_week = tweet_metrics_query.likes_change_since_last_week
-  #   if @likes_change_since_last_week
-  #     if @likes_change_since_last_week > 0
-  #       @likes_change_since_last_week = "#{@likes_change_since_last_week}% increase"
-  #     elsif @likes_change_since_last_week < 0
-  #       @likes_change_since_last_week = "#{@likes_change_since_last_week.abs}% decrease"
-  #     else
-  #       @likes_change_since_last_week = 'No change'
-  #     end
-  #   end
-
-  #   @likes_comparison_days = 7
-  # end
-
   def likes_count
     @likes_count ||= tweet_metrics_query.likes_count
   end
@@ -201,20 +137,6 @@ class PublicPageService < Services::Base
     format = change.positive? ? '%d%% increase' : '%d%% decrease'
     format % change.abs
   end
-
-  # def  store_follower_counts
-  #   @followers_count = followers_query.followers_count
-  #   @followers_count_change_percentage_text = format_change_percentage(followers_query.followers_count_change_percentage)
-
-  #   # this needs to change to be dynamic
-  #   @followers_comparison_days = 7
-  # end
-
-  # def store_followers_graph_data
-  #   formatted_follower_data, follower_daily_data_points = followers_query.followers_data_for_graph
-  #   @follower_formatted_labels_for_graph = formatted_follower_data
-  #   @follower_daily_data_points_for_graph = follower_daily_data_points
-  # end
 
   def followers_count
     @followers_count ||= twitter_user_metrics_query.followers_count
@@ -242,8 +164,6 @@ class PublicPageService < Services::Base
   end
 
   def dynamic_followers_comparison_days
-    # Placeholder for logic to determine dynamic comparison days.
-    # Update this method with your logic for determining the number of comparison days.
     7
   end
 
@@ -257,28 +177,6 @@ class PublicPageService < Services::Base
   def engagement_rate_percentage_per_day
     @engagement_rate_percentage_per_day ||= tweet_metrics_query.engagement_rate_percentage_per_day
   end
-
-
-  # def store_impressions_graph_data
-  #   impression_counts_per_day = tweet_metrics_query.impression_counts_per_day
-  #   if current_admin_user
-  #     @first_day_impressions = tweet_metrics_query.first_day_impressions
-  #     @first_impressions_message = ''
-  #     if @first_day_impressions
-  #       @first_impressions_message = "Based on #{@first_day_impressions[:impression_count].to_s} on #{@first_day_impressions[:date].to_s} "
-  #     end
-  #   end
-
-  #   @impression_formatted_labels_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
-  #     label = data[:date].strftime('%b %d')
-  #     label += " (#{data[:impression_count]})" if current_admin_user.present?
-  #     label
-  #   end
-
-  #   @impression_daily_data_points_for_graph = tweet_metrics_query.impression_counts_per_day.map do |data|
-  #     data[:impression_count] >= 0 ? data[:impression_count] : 0
-  #   end
-  # end
 
   def impression_daily_data_points_for_graph
     @impression_daily_data_points_for_graph ||= tweet_metrics_query.impression_counts_per_day.map do |data|
@@ -314,33 +212,6 @@ class PublicPageService < Services::Base
 
   def top_posts
     @top_posts ||= tweet_metrics_query.top_tweets_for_user
-  end
-
-  def public_page_data
-    @public_page_data ||= PublicPageData.new(
-      engagement_rate_percentage_per_day: engagement_rate_percentage_per_day,
-      first_day_impressions: first_day_impressions,
-      first_impressions_message: first_impressions_message,
-      follower_daily_data_points_for_graph: follower_daily_data_points_for_graph,
-      follower_formatted_labels_for_graph: follower_formatted_labels_for_graph,
-      followers_comparison_days: followers_comparison_days,
-      followers_count: followers_count,
-      followers_count_change_percentage_text: followers_count_change_percentage_text,
-      impression_daily_data_points_for_graph: impression_daily_data_points_for_graph,
-      impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
-      impressions_change_since_last_week: impressions_change_since_last_week,
-      impressions_comparison_days: impressions_comparison_days,
-      impressions_count: impressions_count,
-      likes_change_since_last_week: likes_change_since_last_week,
-      likes_comparison_days: likes_comparison_days,
-      likes_count: likes_count,
-      maximum_days_of_data: maximum_days_of_data,
-      top_posts: top_posts,
-      tweet_comparison_days: tweet_comparison_days,
-      tweet_count_over_available_time_period: tweet_count_over_available_time_period,
-      tweets_change_over_available_time_period: tweets_change_over_available_time_period,
-      user: user
-    )
   end
 
   def profile_conversion_rate_query
