@@ -1,14 +1,15 @@
 class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
 
-  attr_reader :current_admin_user, :user
+  attr_reader :current_admin_user, :current_user, :user
 
   def initialize(handle:, current_user: nil, current_admin_user: nil)
+    @current_user = current_user
     identity = Identity.find_by(handle: handle)
     @user = identity.user if identity.present?
     if @user.nil?
-      raise ActiveRecord::RecordNotFound unless current_user
-      @user = current_user
+      raise ActiveRecord::RecordNotFound # unless current_user
+      # @user = current_user
     end
 
     @current_admin_user = current_admin_user
@@ -36,9 +37,9 @@ class PublicPageService < Services::Base
   end
 
   def determine_public_page_status
-    if user.guest?
-      Result.new(status: :error, message: "You must be logged in to view the private version of your public page", redirect_path: new_user_session_path)
-    elsif user.identity.nil? || not_enough_data?
+    # if current_user.guest?
+      # Result.new(status: :error, message: "You must be logged in to view the private version of your public page", redirect_path: new_user_session_path)
+    if show_public_page_demo?
       Result.new(status: :demo)
     else
       Result.new(status: :success)
