@@ -80,7 +80,7 @@ RSpec.configure do |config|
 
   Capybara.javascript_driver = :selenium_chrome_headless
   Capybara.default_driver = :selenium_chrome_headless
-  Capybara.default_driver = :selenium
+  # Capybara.default_driver = :selenium
 
   config.include Capybara::DSL, type: :feature
   config.include Devise::Test::IntegrationHelpers, type: :feature

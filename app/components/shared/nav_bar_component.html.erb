@@ -24,9 +24,9 @@
                 <button type="button" class="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 flex-shrink-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="userMenuDropdownButton" aria-expanded="false" data-dropdown-toggle="userMenuDropdown">
                     <span class="sr-only">Open user menu</span>
                     <% if user.identity && user.identity.image_url.present? %>
-                      <img class="w-8 h-8 rounded-full" src="<%= user.identity.image_url %>" alt="user photo">
+                      <img class="w-8 h-8 rounded-full" src="<%= user.identity.image_url %>" alt="User Avatar">
                     <% else %>
-                      <%= vite_image_tag("images/default-avatar.png", class: "w-8 h-8 rounded-full") %>
+                      <%= vite_image_tag("images/default-avatar.png", alt: "User Avatar", class: "w-8 h-8 rounded-full") %>
                     <% end %>
 
                 </button>

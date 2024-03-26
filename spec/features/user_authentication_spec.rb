@@ -93,6 +93,12 @@ RSpec.feature 'User Authentication' do
     fill_in 'Password', with: 'password'
     click_button 'Log in'
 
-    expect(page).to have_content('Sign out')
+    expect(page).to have_content('signed in to Echosight')
+
+    # Step 7: Log out
+    find('img[alt="User Avatar"]').click
+    click_link 'Sign out'
+
+    expect(page).to have_content("You're now signed out of Echosight.")
   end
 end
