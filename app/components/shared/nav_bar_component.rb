@@ -18,6 +18,7 @@ module Shared
         { name: 'My Posts', path: posts_path },
         { name: 'Leaderboard', path: leaderboard_path },
         { name: 'Feature Requests', path: feature_requests_path }
+        { name: 'FAQ', path: faq_path}
       ]
     end
   end
