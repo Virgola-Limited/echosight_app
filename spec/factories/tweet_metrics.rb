@@ -3,13 +3,13 @@
 # Table name: tweet_metrics
 #
 #  id                  :bigint           not null, primary key
-#  bookmark_count      :integer
-#  impression_count    :integer
-#  like_count          :integer
+#  bookmark_count      :integer          default(0), not null
+#  impression_count    :integer          default(0), not null
+#  like_count          :integer          default(0), not null
 #  pulled_at           :date
-#  quote_count         :integer
-#  reply_count         :integer
-#  retweet_count       :integer
+#  quote_count         :integer          default(0), not null
+#  reply_count         :integer          default(0), not null
+#  retweet_count       :integer          default(0), not null
 #  user_profile_clicks :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null

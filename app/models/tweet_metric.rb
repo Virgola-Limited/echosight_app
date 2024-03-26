@@ -5,13 +5,13 @@
 # Table name: tweet_metrics
 #
 #  id                  :bigint           not null, primary key
-#  bookmark_count      :integer
-#  impression_count    :integer
-#  like_count          :integer
+#  bookmark_count      :integer          default(0), not null
+#  impression_count    :integer          default(0), not null
+#  like_count          :integer          default(0), not null
 #  pulled_at           :date
-#  quote_count         :integer
-#  reply_count         :integer
-#  retweet_count       :integer
+#  quote_count         :integer          default(0), not null
+#  reply_count         :integer          default(0), not null
+#  retweet_count       :integer          default(0), not null
 #  user_profile_clicks :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
@@ -27,6 +27,13 @@
 #
 class TweetMetric < ApplicationRecord
   has_paper_trail
+
+  # validate :impression_count, numericality: { greater_than_or_equal_to: 0 }
+  # validate :like_count, numericality: { greater_than_or_equal_to: 0 }
+  # validate :retweet_count, numericality: { greater_than_or_equal_to: 0 }
+  # validate :quote_count, numericality: { greater_than_or_equal_to: 0 }
+  # validate :reply_count, numericality: { greater_than_or_equal_to: 0 }
+  # validate :bookmark_count, numericality: { greater_than_or_equal_to: 0 }
 
   belongs_to :tweet
 
