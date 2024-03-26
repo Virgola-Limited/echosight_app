@@ -34,6 +34,7 @@ class PublicPageService < Services::Base
     user&.identity.nil? || not_enough_data?
   end
 
+  # Crap ChatGTP code fix later no need for result object
   def determine_public_page_status
     if show_public_page_demo?
       Result.new(status: :demo)

@@ -15,19 +15,12 @@ class PublicPagesController < ApplicationController
     end
 
     public_page_data = PublicPageService.call(handle: params[:handle], current_user: current_or_guest_user, current_admin_user: current_admin_user)
-
-    if public_page_data.is_a?(PublicPageService::Result)
-      case public_page_data.status
-      when :error
-        flash[:alert] = public_page_data.message
-        redirect_to public_page_data.redirect_path and return
-      when :demo
-        flash[:notice] = "This is a demo page showing how your public page could look."
-      end
-    else
+    if public_page_data.demo?
+      flash[:notice] = "This is a demo page showing how your public page could look."
+    end
 
       render PublicPageComponent.new(public_page_data: public_page_data, current_user: current_or_guest_user)
-    end
+    # end
   end
 
 
