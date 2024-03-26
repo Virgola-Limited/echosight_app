@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Try not to add to this use Tailwind instead */
 
 :root {
   --base-padding: 20px; /* Default padding for small devices */
@@ -46,12 +45,25 @@ body {
   align-self: start; /* Align the top of the image with the container */
 }
 
+/****************************************************
+ * Shared styles for forms
+ ****************************************************/
+
+.paragraph-base {
+  @apply mb-4 text-lg font-normal text-gray-500 dark:text-gray-400;
+}
+
 .call-to-action-button {
   @apply inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white;
 }
 .call-to-action-button-indigo {
   @apply bg-indigo-600 hover:bg-indigo-700;
 }
+
+
+/****************************************************
+ * Custom styles for the public page
+ ****************************************************/
 
 .engagement-rate-cell {
   display: flex;
