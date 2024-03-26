@@ -53,4 +53,8 @@ class Identity < ApplicationRecord
     self.description = auth.info.description
     self.handle = auth.extra.raw_info.data.username
   end
+
+  def enough_data_for_public_page?
+    user_twitter_data_updates.recent_data(self.id).count > 2
+  end
 end

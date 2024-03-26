@@ -1,5 +1,5 @@
 module Shared
-  class NavBarComponent <  ApplicationComponent
+  class NavBarComponent < ApplicationComponent
     attr_reader :user
 
     def initialize(user:)

@@ -29,6 +29,18 @@ class DashboardComponent < ApplicationComponent
     @current_user = current_user
   end
 
+  def show_waiting_message?
+    current_user.connected_to_twitter? && !current_user.enough_data_for_public_page?
+  end
+
+  def show_connect_to_twiter_message?
+    !current_user.connected_to_twitter?
+  end
+
+  def show_happy_message?
+    current_user.enough_data_for_public_page?
+  end
+
   private
 
   attr_reader :current_user

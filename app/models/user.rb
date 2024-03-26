@@ -59,6 +59,7 @@ class User < ApplicationRecord
   delegate :handle, to: :identity, allow_nil: true
   delegate :banner_url, to: :identity, allow_nil: true
   delegate :image_url, to: :identity, allow_nil: true
+  delegate :enough_data_for_public_page?, to: :identity, allow_nil: true
 
   after_commit :enqueue_twitter_data_pull, on: %i[create update]
 

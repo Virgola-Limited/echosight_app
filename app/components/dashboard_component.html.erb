@@ -3,20 +3,30 @@
     To start leveraging the full capabilities of Echosight, please complete the steps below:
   </div>
 <% end %>
+<% if show_waiting_message? %>
+  <%= render Shared::HeadingComponent.new(text: 'When can I see my public page?', heading_type: :h3) %>
+  <p class="paragraph-base">Thanks for connecting your Twitter/X account. In order to show you your public page we need at least 3 days, ideally 7, of data from Twitter.</p>
+  <p class="paragraph-base">While you wait, why dont you check out our <%= link_to "demo page", public_page_path(:demo) %> to see what your public page will look like.</p>
+  </p>
+<% end %>
 
-<% if current_user.connected_to_twitter? %>
-  <%= render Shared::HeadingComponent.new(text: 'When can I see my public page?', heading_type: :h2) %>
-  <p class="mb-4 text-lg font-normal text-gray-500 dark:text-gray-400">Thanks for connecting your Twitter/X account. In order to show you your public page we need at least 3 days, ideally 7, of data from Twitter.</p>
-
-<% else %>
-  <div class="py-3" role="alert">
-    <p class="mb-3 text-gray-500 dark:text-gray-400">To start collecting data from Twitter/X to generate your public page, please connect your Twitter/X account.</p>
-    <p class="m-2">
+<% if show_connect_to_twiter_message? %>
+  <%= render Shared::HeadingComponent.new(text: 'Steps to complete', heading_type: :h3) %>
+    <p class="paragraph-base">To start collecting data from Twitter/X to generate your public page, please connect your Twitter/X account.</p>
+    <p>
       <%= button_to helpers.omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
         <button type="submit" class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 me-2 mb-2">
           Connect to <%= t(:twitter_title) %>
         </button>
       <% end %>
     </p>
-  </div>
+<% end %>
+
+<% if show_happy_message? %>
+  <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h3) %>
+  <p class="paragraph-base">You are now connected to Twitter/X. We are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+  <% if false %>
+    <% render Shared::HeadingComponent.new(text: 'Next steps', heading_type: :h4) %>
+    <p class="paragraph-base">Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+  <% end %>
 <% end %>
