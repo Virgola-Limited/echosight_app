@@ -24,7 +24,7 @@
 
 <% if show_happy_message? %>
   <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h3) %>
-  <p class="paragraph-base">You are now connected to Twitter/X. We are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+  <p class="paragraph-base">You are connected to Twitter/X and we are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
   <% if false %>
     <% render Shared::HeadingComponent.new(text: 'Next steps', heading_type: :h4) %>
     <p class="paragraph-base">Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
