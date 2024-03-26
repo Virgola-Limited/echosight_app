@@ -39,10 +39,6 @@ module Twitter
                                   .pluck(:date, :followers_count)
       formatted_data, daily_data_points = format_for_graph(data)
 
-      # Rails.logger.debug("Fetched Data: #{data.inspect}")
-      # Rails.logger.debug("Formatted Labels: #{formatted_data.inspect}")
-      # Rails.logger.debug("Daily Data Points: #{daily_data_points.inspect}")
-
       [formatted_data, daily_data_points]
     end
 
@@ -65,35 +61,13 @@ module Twitter
 
     private
 
-    # TODO: This is currently broken for any other format except daily
     def format_for_graph(data)
       formatted_data = daily_format(data)
-      # formatted_data = case data.count
-      #                  when 0..30
-      #                    daily_format(data)
-      #                  when 31..60
-      #                    weekly_format(data)
-      #                  else
-      #                    monthly_format(data)
-      #                  end
-      # Ensure daily data points are kept
       [formatted_data, data.map { |record| [record.first.strftime('%d %b'), record.last.to_i] }]
     end
 
     def daily_format(data)
       data.map { |record| record.first.strftime('%d %b') }
-    end
-
-    def weekly_format(data)
-      data.group_by { |record| record.first.to_date.cweek }
-          .keys
-          .map { |week| "Week #{week}" }
-    end
-
-    def monthly_format(data)
-      data.group_by { |record| record.first.to_date.beginning_of_month }
-          .keys
-          .map { |month| month.strftime('%b %Y') }
     end
 
     def calculate_percentage_change(old_value, new_value)

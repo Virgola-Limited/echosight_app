@@ -17,7 +17,7 @@
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
   <% if engagement_rate_percentage_per_day.count < 2 || engagement_rate_percentage_per_day.all? { |data| data[:engagement_rate_percentage].zero? } %>
-    <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the followers graph.</p>
+    <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the engagement rate graph.</p>
   <% else %>
     <div id="engagement-chart"></div>
   <% end %>
