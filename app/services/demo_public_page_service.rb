@@ -89,13 +89,27 @@ class DemoPublicPageService < Services::Base
   end
 
   def generate_top_posts
-    (0..4).map do |i|
-      # Simulate a Tweet object with necessary attributes
-      tweet = OpenStruct.new(
-        text: "Demo tweet text #{i + 1}",
-        twitter_id: i + 1000, # Simulate a Twitter ID
-        id: i + 100 # Simulate a Tweet ID
+    custom_tweets = [
+      { id: 101, twitter_id: 1772826047878516856, text: "Just asked my smart fridge for the weather forecast, and it advised me to chill. Tech humor never gets old!" },
+      { id: 102, twitter_id: 1772826156355764407, text: "If you think a minute goes by really fast, you've never waited for your code to compile." },
+      { id: 103, twitter_id: 2003, text: "Do you ever talk to your gadgets? I just thanked my coffee machine, and I swear it blushed." },
+      { id: 104, twitter_id: 2004, text: "In a relationship with my Wi-Fi. It's getting serious; we just shared our first password." },
+      { id: 105, twitter_id: 2005, text: "I tried to organize a hide and seek game for my apps, but good luck hiding when I've got analytics on my side!" },
+      { id: 106, twitter_id: 2006, text: "Why did the smartphone go to therapy? It lost its sense of touch. 😄" },
+      { id: 107, twitter_id: 2007, text: "My virtual assistant suggested I take a nap. I'm starting to think it's lazier than I am." },
+      { id: 108, twitter_id: 2008, text: "Decided to clean my keyboard, and now it's typing out existential questions. Clean at your own risk!" },
+      { id: 109, twitter_id: 2009, text: "If my gadgets had a reunion, my old flip phone would definitely be the life of the party." },
+      { id: 110, twitter_id: 2010, text: "Just overheard two algorithms discussing privacy. They didn't say much; guess they prefer to keep things encrypted." }
+    ]
+  
+    custom_tweets.map do |tweet|
+      OpenStruct.new(
+        id: tweet[:id],
+        twitter_id: tweet[:twitter_id],
+        text: tweet[:text]
       )
+    end
+  end  
 
       # Simulate a TweetMetric object with necessary attributes and an associated Tweet object
       OpenStruct.new(
