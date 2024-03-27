@@ -81,6 +81,7 @@ class PublicPageService < Services::Base
       maximum_days_of_data: maximum_days_of_data,
       top_posts: top_posts,
       days_of_data_in_recent_count: days_of_data_in_recent_count,
+      days_of_data_in_difference_count: days_of_data_in_difference_count,
       tweet_count_over_available_time_period: tweet_count_over_available_time_period,
       tweets_change_over_available_time_period: tweets_change_over_available_time_period,
       user: user
@@ -125,6 +126,9 @@ class PublicPageService < Services::Base
     @days_of_data_in_recent_count ||= post_counts_query.days_of_data_in_recent_count
   end
 
+  def days_of_data_in_difference_count
+    @days_of_data_in_difference_count ||= post_counts_query.days_of_data_in_difference_count
+  end
 
   # dry up
   def format_impressions_change(change)

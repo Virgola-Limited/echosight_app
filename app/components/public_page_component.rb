@@ -79,7 +79,7 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def posts_tooltip_text
-    if days_of_data_in_recent_count <= 7
+    if days_of_data_in_recent_count < 7
       # For 7 days or less of recent data
       posts_tooltip_text = "This is the total number of tweets you have made in the last #{days_of_data_in_recent_count} days."
       posts_tooltip_text += " We will continue to collect data to provide more comprehensive insights."
