@@ -9,6 +9,6 @@ gtag = Rails.application.credentials.dig(:google, :analytics)
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', '<%=g tag %>');
+    gtag('config', '<%= gtag %>');
   </script>
 <% end %>
