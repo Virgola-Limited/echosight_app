@@ -211,7 +211,7 @@ module Twitter
     private
 
     def fetch_grouped_metrics(number_of_days: nil)
-      pulled_at_date_time = number_of_days.days.ago || start_time
+      pulled_at_date_time = number_of_days&.days&.ago || start_time
       # Fetch the latest TweetMetric record for each day for each tweet
       tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
                                  .joins(:tweet)

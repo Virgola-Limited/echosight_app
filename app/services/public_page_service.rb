@@ -80,7 +80,7 @@ class PublicPageService < Services::Base
       likes_count: likes_count,
       maximum_days_of_data: maximum_days_of_data,
       top_posts: top_posts,
-      tweet_comparison_days: tweet_comparison_days,
+      days_of_data_in_recent_count: days_of_data_in_recent_count,
       tweet_count_over_available_time_period: tweet_count_over_available_time_period,
       tweets_change_over_available_time_period: tweets_change_over_available_time_period,
       user: user
@@ -121,8 +121,8 @@ class PublicPageService < Services::Base
     @tweets_change_over_available_time_period ||= format_tweet_change(post_counts_query.tweets_change_over_available_time_period)
   end
 
-  def tweet_comparison_days
-    @tweet_comparison_days ||= post_counts_query.tweet_comparison_days
+  def days_of_data_in_recent_count
+    @days_of_data_in_recent_count ||= post_counts_query.days_of_data_in_recent_count
   end
 
   def format_tweet_change(change)

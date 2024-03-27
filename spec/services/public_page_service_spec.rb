@@ -15,14 +15,14 @@
 #       # Stub the methods and set expectations
 #       allow(tweet_metrics_query).to receive(:tweet_count_over_available_time_period).and_return(100)
 #       allow(tweet_metrics_query).to receive(:tweets_change_over_available_time_period).and_return(10)
-#       allow(tweet_metrics_query).to receive(:tweet_comparison_days).and_return(7)
+#       allow(tweet_metrics_query).to receive(:days_of_data_in_recent_count).and_return(7)
 #     end
 
 #     it 'retrieves post counts and formats changes correctly' do
 #       # Expectations to ensure the methods exist and are called
 #       expect(tweet_metrics_query).to receive(:tweet_count_over_available_time_period)
 #       expect(tweet_metrics_query).to receive(:tweets_change_over_available_time_period)
-#       expect(tweet_metrics_query).to receive(:tweet_comparison_days)
+#       expect(tweet_metrics_query).to receive(:days_of_data_in_recent_count)
 
 #       results = service.send(:store_post_counts) # Using `send` to call a private method
 

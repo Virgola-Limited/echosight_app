@@ -13,39 +13,51 @@ module Twitter
     end
 
     def tweets_change_over_available_time_period
-      staggered_tweets_count_difference[:difference]
+      staggered_tweets_count_difference[:difference_count]
     end
 
-    def tweet_comparison_days
-      staggered_tweets_count_difference[:days_of_data]
+    def days_of_data_in_recent_count
+      staggered_tweets_count_difference[:days_of_data_in_recent_count]
+    end
+
+    def days_of_data_in_difference_count
+      staggered_tweets_count_difference[:days_of_data_in_difference_count]
     end
 
     def staggered_tweets_count_difference
       end_time = Time.current
-      start_time = @start_time.to_time
-      intended_days_of_data = @start_time.to_i
+      intended_days_of_data = 7
 
-      recent_tweets = tweets_within_period(start_time, end_time)
+      # Extend the start time further back if more than 7 days of data is being considered
+      extended_start_time = [end_time - 14.days, @start_time.to_time].min
+
+      recent_tweets = tweets_within_period(extended_start_time, end_time)
       if recent_tweets.any?
         earliest_tweet_date = recent_tweets.first.twitter_created_at.to_date
-        actual_days_of_data = (end_time.to_date - earliest_tweet_date).to_i + 1 # Include the start date itself
+        latest_tweet_date = recent_tweets.last.twitter_created_at.to_date
+        actual_days_of_data = (latest_tweet_date - earliest_tweet_date).to_i + 1 # Include the start date itself
+
+        days_of_data_in_recent_count = [actual_days_of_data, intended_days_of_data].min
+        days_of_data_in_difference_count = actual_days_of_data >= intended_days_of_data * 2 ? intended_days_of_data : 0
 
         if actual_days_of_data >= intended_days_of_data * 2
-          days_of_data = intended_days_of_data
-          difference = compare_tweets_count(days_of_data)
+          difference_count = compare_tweets_count(days_of_data_in_recent_count)
         else
-          # Not enough data to calculate difference, so set to nil
-          days_of_data = actual_days_of_data # Update days_of_data to reflect actual data available
-          difference = nil
+          difference_count = nil
         end
       else
-        # No tweets available for comparison
-        days_of_data = 0
-        difference = nil
+        difference_count = nil
+        days_of_data_in_recent_count = 0
+        days_of_data_in_difference_count = 0
       end
 
-      recent_count = tweets_count_between(start_time, end_time)
-      { days_of_data: days_of_data, recent_count: recent_count, difference: difference }
+      recent_count = tweets_count_between(@start_time.to_time, end_time)
+      {
+        recent_count: recent_count,
+        difference_count: difference_count,
+        days_of_data_in_recent_count: days_of_data_in_recent_count,
+        days_of_data_in_difference_count: days_of_data_in_difference_count
+      }
     end
 
     def tweets_within_period(start_time, end_time)

@@ -28,7 +28,7 @@ class DemoPublicPageService < Services::Base
       likes_count: -2913,
       maximum_days_of_data: 7,
       top_posts: generate_top_posts,
-      tweet_comparison_days: 3,
+      days_of_data_in_recent_count: 3,
       tweet_count_over_available_time_period: 20,
       tweets_change_over_available_time_period: "231 decrease",
       user: user,
