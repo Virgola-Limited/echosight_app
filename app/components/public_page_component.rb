@@ -65,7 +65,7 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def user_description
-    page_user&.identity&.description || "Demo Twitter Bio"
+    page_user&.identity&.description || "Amplify your digital impact with Echosight"
   end
 
   def posts_card
