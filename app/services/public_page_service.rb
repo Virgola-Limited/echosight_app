@@ -133,6 +133,35 @@ class PublicPageService < Services::Base
     format % change.abs
   end
 
+  # dry up
+  def format_impressions_change(change)
+    return change unless change
+    return 'No change' if change.nil? || change.zero?
+
+    format = change.positive? ? '%d%% increase' : '%d%% decrease'
+    format % change.abs
+  end
+
+  def format_likes_change(change)
+    return change unless change
+    return 'No change' if change.nil? || change.zero?
+
+    format = change.positive? ? '%d%% increase' : '%d%% decrease'
+    format % change.abs
+  end
+
+  def format_change_percentage(change_percentage)
+    return change_percentage unless change_percentage
+
+    if change_percentage.positive?
+      "#{change_percentage.round(1)}% increase"
+    elsif change_percentage.negative?
+      "#{change_percentage.abs.round(1)}% decrease"
+    else
+      "No change"
+    end
+  end
+
   def impressions_count
     @impressions_count ||= tweet_metrics_query.impressions_count
   end
@@ -145,13 +174,6 @@ class PublicPageService < Services::Base
     @impressions_comparison_days ||= 7  # This is set to a static value but can be made dynamic as needed.
   end
 
-  def format_impressions_change(change)
-    return change unless change
-    return 'No change' if change.nil? || change.zero?
-
-    format = change.positive? ? '%d%% increase' : '%d%% decrease'
-    format % change.abs
-  end
 
   def likes_count
     @likes_count ||= tweet_metrics_query.likes_count
@@ -165,13 +187,6 @@ class PublicPageService < Services::Base
     @likes_comparison_days ||= 7  # This can be adjusted to be dynamic if necessary.
   end
 
-  def format_likes_change(change)
-    return change unless change
-    return 'No change' if change.nil? || change.zero?
-
-    format = change.positive? ? '%d%% increase' : '%d%% decrease'
-    format % change.abs
-  end
 
   def followers_count
     @followers_count ||= twitter_user_metrics_query.followers_count
@@ -200,13 +215,6 @@ class PublicPageService < Services::Base
 
   def dynamic_followers_comparison_days
     7
-  end
-
-  def format_change_percentage(change_percentage)
-    return change_percentage unless change_percentage
-    return 'No change' if change_percentage.nil? || change_percentage.zero?
-    format = change_percentage.positive? ? '%.1f%% increase' : '%.1f%% decrease'
-    format % change_percentage.abs
   end
 
   def engagement_rate_percentage_per_day
@@ -263,17 +271,5 @@ class PublicPageService < Services::Base
 
   def post_counts_query
     Twitter::PostCountsQuery.new(user: user)
-  end
-
-  def format_change_percentage(change_percentage)
-    return change_percentage unless change_percentage
-
-    if change_percentage.positive?
-      "#{change_percentage.round(1)}% increase"
-    elsif change_percentage.negative?
-      "#{change_percentage.abs.round(1)}% decrease"
-    else
-      "No change"
-    end
   end
 end
