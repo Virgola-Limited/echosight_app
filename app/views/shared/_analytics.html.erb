@@ -1,0 +1,14 @@
+<%
+if Rails.application.credentials.dig(:google, :analytics).present?
+gtag = Rails.application.credentials.dig(:google, :analytics)
+%>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= gtag %>"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', '<%=g tag %>');
+  </script>
+<% end %>
