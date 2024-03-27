@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-DEMO_PAGE_TEXTS = ['Demo User', '@demo_user', 'Demo Twitter Bio']
+DEMO_PAGE_TEXTS = ['Demo User', '@demo_user', 'Amplify your digital impact with Echosight']
 
 RSpec.feature 'Public Page Access' do
   scenario 'Verify public page access and redirections' do
