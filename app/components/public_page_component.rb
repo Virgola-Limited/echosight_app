@@ -8,11 +8,11 @@ class PublicPageComponent < ViewComponent::Base
   end
 
   def page_user_handle
-    page_user.handle || "demo_user"
+    page_user.handle || "techsavvysammy"
   end
 
   def page_user_name
-    page_user.name || "Demo User"
+    page_user.name || "Sammy Circuit"
   end
 
   def page_user_twitter_bio
@@ -61,7 +61,7 @@ class PublicPageComponent < ViewComponent::Base
   end
 
   def user_description
-    page_user&.identity&.description || "Demo Twitter Bio"
+    page_user&.identity&.description || "Digital explorer, byte-sized philosopher, and AI whisperer. Navigating the tech terrain with a touch of humor and a dash of code. Join me on a journey through the pixels!"
   end
 
   def posts_card
