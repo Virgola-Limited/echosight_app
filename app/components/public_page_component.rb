@@ -69,17 +69,30 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def posts_card
-    posts_tooltip_text = "This is the total number of tweets you have made in the last #{tweet_comparison_days} days compared to the previous #{tweet_comparison_days} days."
-    posts_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if tweet_comparison_days < 7
-
     render Shared::MetricsCardComponent.new(
       title: "Posts",
       count: tweet_count_over_available_time_period,
-      change: tweets_change_over_available_time_period,
+      change_text: tweets_change_over_available_time_period,
       tooltip_target: "posts-count-tooltip",
-      change_text: tweets_change_over_available_time_period.to_s,
       tooltip_text: posts_tooltip_text.html_safe
     )
+  end
+
+  def posts_tooltip_text
+    if days_of_data_in_recent_count <= 7
+      # For 7 days or less of recent data
+      posts_tooltip_text = "This is the total number of tweets you have made in the last #{days_of_data_in_recent_count} days."
+      posts_tooltip_text += " We will continue to collect data to provide more comprehensive insights."
+    elsif days_of_data_in_difference_count < 7
+      # For less than 7 days of data in the difference count
+      posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous period."
+      posts_tooltip_text += " We are still collecting data to show a full week comparison."
+    else
+      # After having 14 days of data
+      posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous 7 days."
+    end
+
+    posts_tooltip_text
   end
 
   def impressions_card
@@ -89,7 +102,6 @@ class PublicPageComponent <  ApplicationComponent
     render Shared::MetricsCardComponent.new(
       title: "Impressions",
       count: impressions_count,
-      change: impressions_change_since_last_week,
       tooltip_target: "impressions-count-tooltip",
       change_text: impressions_change_since_last_week.to_s,
       tooltip_text: impressions_tooltip_text.html_safe
@@ -103,7 +115,6 @@ class PublicPageComponent <  ApplicationComponent
     render Shared::MetricsCardComponent.new(
       title: "Likes",
       count: likes_count,
-      change: likes_change_since_last_week,
       tooltip_target: "likes-count-tooltip",
       change_text: likes_change_since_last_week.to_s,
       tooltip_text: likes_tooltip_text.html_safe
@@ -117,7 +128,6 @@ class PublicPageComponent <  ApplicationComponent
     render Shared::MetricsCardComponent.new(
       title: "Followers",
       count: followers_count,
-      change: followers_count_change_percentage_text,
       tooltip_target: "followers-count-tooltip",
       change_text: followers_count_change_percentage_text.to_s,
       tooltip_text: followers_tooltip_text.html_safe

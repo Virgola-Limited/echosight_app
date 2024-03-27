@@ -118,20 +118,13 @@ class PublicPageService < Services::Base
   end
 
   def tweets_change_over_available_time_period
-    @tweets_change_over_available_time_period ||= format_tweet_change(post_counts_query.tweets_change_over_available_time_period)
+    @tweets_change_over_available_time_period ||= post_counts_query.tweets_change_over_available_time_period
   end
 
   def days_of_data_in_recent_count
     @days_of_data_in_recent_count ||= post_counts_query.days_of_data_in_recent_count
   end
 
-  def format_tweet_change(change)
-    return change unless change
-    return 'No change' if change.nil? || change.zero?
-
-    format = change.positive? ? '%d increase' : '%d decrease'
-    format % change.abs
-  end
 
   # dry up
   def format_impressions_change(change)

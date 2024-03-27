@@ -13,7 +13,7 @@ module Twitter
     end
 
     def tweets_change_over_available_time_period
-      staggered_tweets_count_difference[:difference_count]
+      format_tweet_change(staggered_tweets_count_difference[:difference_count])
     end
 
     def days_of_data_in_recent_count
@@ -81,6 +81,14 @@ module Twitter
       Tweet.where(identity_id: user.identity.id)
            .where(twitter_created_at: start_time...end_time)
            .count
+    end
+
+    def format_tweet_change(change)
+      return change unless change
+      return 'No change' if change.nil? || change.zero?
+
+      format = change.positive? ? '%d increase' : '%d decrease'
+      format % change.abs
     end
   end
 end
