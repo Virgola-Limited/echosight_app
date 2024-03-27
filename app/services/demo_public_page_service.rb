@@ -92,14 +92,14 @@ class DemoPublicPageService < Services::Base
     custom_tweets = [
       { id: 101, twitter_id: 1772826047878516856, text: "Just asked my smart fridge for the weather forecast, and it advised me to chill. Tech humor never gets old!" },
       { id: 102, twitter_id: 1772826156355764407, text: "If you think a minute goes by really fast, you've never waited for your code to compile." },
-      { id: 103, twitter_id: 2003, text: "Do you ever talk to your gadgets? I just thanked my coffee machine, and I swear it blushed." },
-      { id: 104, twitter_id: 2004, text: "In a relationship with my Wi-Fi. It's getting serious and we just shared our first password." },
-      { id: 105, twitter_id: 2005, text: "I tried to organize a hide and seek game for my apps, but good luck hiding when I've got analytics on my side!" },
-      { id: 106, twitter_id: 2006, text: "Why did the smartphone go to therapy? It lost its sense of touch. 😄" },
-      { id: 107, twitter_id: 2007, text: "My virtual assistant suggested I take a nap. I'm starting to think it's lazier than I am." },
-      { id: 108, twitter_id: 2008, text: "Decided to clean my keyboard, and now it's typing out existential questions. Clean at your own risk!" },
-      { id: 109, twitter_id: 2009, text: "If my gadgets had a reunion, my old flip phone would definitely be the life of the party." },
-      { id: 110, twitter_id: 2010, text: "Just overheard two algorithms discussing privacy. They didn't say much; guess they prefer to keep things encrypted." }
+      { id: 103, twitter_id: 1754363215839142327, text: "Have you been introduced to the BOFH before?" },
+      { id: 104, twitter_id: 1772835317466407361, text: "In a relationship with my Wi-Fi. It's getting serious and we just shared our first password." },
+      { id: 105, twitter_id: 1772829628991946912, text: "I learnt more on the job in six months with a supportive team than I ever did at school." },
+      { id: 106, twitter_id: 1727444841683202207, text: "I don't like working in fields where I can't stand out. Music production became too accessible and what I did was no longer special so I moved to something harder where my efforts could be noticed." },
+      { id: 107, twitter_id: 1772787456544592133, text: "TIL Why does Cloudflare use lava lamps to help with encryption?" },
+      { id: 108, twitter_id: 1772778052667470267, text: "I'm getting some mad ChatGPT nostalgia where it just cuts out before finishing stuff and doesn't give you the rest of the answer. How is AI a threat to anyone?" },
+      { id: 109, twitter_id: 1772574111882961249, text: "What do you think the next leap in machine learning and LLMs is going to be like?" },
+      { id: 110, twitter_id: 1772837100993569080, text: "Just overheard two algorithms discussing privacy. They didn't say much. I guess they prefer to keep things encrypted." }
     ]
   
     custom_tweets.map do |tweet|
