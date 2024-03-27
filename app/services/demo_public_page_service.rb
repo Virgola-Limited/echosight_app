@@ -93,7 +93,7 @@ class DemoPublicPageService < Services::Base
       { id: 101, twitter_id: 1772826047878516856, text: "Just asked my smart fridge for the weather forecast, and it advised me to chill. Tech humor never gets old!" },
       { id: 102, twitter_id: 1772826156355764407, text: "If you think a minute goes by really fast, you've never waited for your code to compile." },
       { id: 103, twitter_id: 2003, text: "Do you ever talk to your gadgets? I just thanked my coffee machine, and I swear it blushed." },
-      { id: 104, twitter_id: 2004, text: "In a relationship with my Wi-Fi. It's getting serious; we just shared our first password." },
+      { id: 104, twitter_id: 2004, text: "In a relationship with my Wi-Fi. It's getting serious and we just shared our first password." },
       { id: 105, twitter_id: 2005, text: "I tried to organize a hide and seek game for my apps, but good luck hiding when I've got analytics on my side!" },
       { id: 106, twitter_id: 2006, text: "Why did the smartphone go to therapy? It lost its sense of touch. 😄" },
       { id: 107, twitter_id: 2007, text: "My virtual assistant suggested I take a nap. I'm starting to think it's lazier than I am." },
