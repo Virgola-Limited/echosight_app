@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Twitter::TweetMetricsQuery do
   let(:identity) { create(:identity, :random_credentials) }
   let(:user) { create(:user, identity: identity) }
+  subject(:query) { described_class.new(user: user) }
 
   describe '#impressions_count' do
     let!(:old_tweets) do
@@ -15,8 +16,6 @@ RSpec.describe Twitter::TweetMetricsQuery do
     end
 
     it 'calculates the total impressions count for the last 7 days' do
-      query = described_class.new(user: user)
-
       # Calculate expected impressions count for the last 7 days
       expected_impressions = TweetMetric.where('pulled_at > ?', 7.days.ago)
                                         .sum(:impression_count) - TweetMetric.where('pulled_at > ?', 14.days.ago)
@@ -49,10 +48,10 @@ RSpec.describe Twitter::TweetMetricsQuery do
     end
 
     it 'returns tweets sorted by impression_count in descending order' do
-      query = described_class.new(user: user)
       top_tweets = query.top_tweets_for_user
       expect(top_tweets.map(&:tweet_id)).to match_array(top_tweets.map(&:tweet_id).uniq)
-      expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300, 0])
+      expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300, 0
+    ])
     end
   end
 
@@ -66,7 +65,7 @@ RSpec.describe Twitter::TweetMetricsQuery do
       end
     end
 
-    subject(:impression_diffs) { described_class.new(user: user).impression_counts_per_day }
+    subject(:impression_diffs) { query.impression_counts_per_day }
 
     it 'calculates daily impression differences, ignoring the first day' do
       expected_diffs = [

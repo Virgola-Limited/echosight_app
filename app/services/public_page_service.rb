@@ -110,19 +110,19 @@ class PublicPageService < Services::Base
   end
 
   def maximum_days_of_data
-    @maximum_days_of_data ||= Twitter::TweetMetricsQuery.maximum_days_of_data
+    @maximum_days_of_data ||= tweet_metrics_query.maximum_days_of_data
   end
 
   def tweet_count_over_available_time_period
-    @tweet_count_over_available_time_period ||= tweet_metrics_query.tweet_count_over_available_time_period
+    @tweet_count_over_available_time_period ||= post_counts_query.tweet_count_over_available_time_period
   end
 
   def tweets_change_over_available_time_period
-    @tweets_change_over_available_time_period ||= format_tweet_change(tweet_metrics_query.tweets_change_over_available_time_period)
+    @tweets_change_over_available_time_period ||= format_tweet_change(post_counts_query.tweets_change_over_available_time_period)
   end
 
   def tweet_comparison_days
-    @tweet_comparison_days ||= tweet_metrics_query.tweet_comparison_days
+    @tweet_comparison_days ||= post_counts_query.tweet_comparison_days
   end
 
   def format_tweet_change(change)
@@ -259,6 +259,10 @@ class PublicPageService < Services::Base
 
   def twitter_user_metrics_query
     Twitter::TwitterUserMetricsQuery.new(user)
+  end
+
+  def post_counts_query
+    Twitter::PostCountsQuery.new(user: user)
   end
 
   def format_change_percentage(change_percentage)

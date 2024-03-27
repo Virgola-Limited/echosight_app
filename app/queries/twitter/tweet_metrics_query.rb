@@ -2,42 +2,15 @@
 
 module Twitter
   class TweetMetricsQuery
-    attr_reader :user
-
-    MAXIMUM_DAYS_OF_DATA = 7
+    attr_reader :user, :start_time
 
     def initialize(user:, start_time: nil)
       @user = user
       @start_time = start_time || 1.week.ago.utc
     end
 
-    def self.maximum_days_of_data
-      MAXIMUM_DAYS_OF_DATA
-    end
-
-    def tweet_count_over_available_time_period
-      staggered_tweets_count_difference[:recent_count]
-    end
-
-    def tweets_change_over_available_time_period
-      staggered_tweets_count_difference[:difference]
-    end
-
-    def tweet_comparison_days
-      staggered_tweets_count_difference[:comparison_days]
-    end
-
-    def staggered_tweets_count_difference
-      days_of_data = ((Time.current - @start_time.to_time) / 1.day).to_i
-      comparison_days = determine_comparison_days(days_of_data)
-
-      end_time = Time.current
-      start_time_recent = end_time - comparison_days.days
-
-      recent_count = tweets_count_between(start_time_recent, end_time)
-      difference = compare_tweets_count(comparison_days)
-
-      { recent_count:, difference:, comparison_days: }
+    def maximum_days_of_data
+      start_time
     end
 
     def days_until_last_weeks_data_available
@@ -81,7 +54,7 @@ module Twitter
 
     def top_tweets_for_user
       last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
-                                                                                   MAXIMUM_DAYS_OF_DATA.days.ago)
+                                                                                   start_time)
 
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
                                  .group(:tweet_id, :pulled_at, :impression_count, :id)
@@ -238,11 +211,11 @@ module Twitter
     private
 
     def fetch_grouped_metrics(number_of_days: nil)
-      number_of_days = number_of_days || MAXIMUM_DAYS_OF_DATA
+      pulled_at_date_time = number_of_days.days.ago || start_time
       # Fetch the latest TweetMetric record for each day for each tweet
       tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
                                  .joins(:tweet)
-                                 .where('pulled_at > ?', number_of_days.days.ago)
+                                 .where('pulled_at > ?', pulled_at_date_time)
                                  .where(tweets: { identity_id: user.identity.id })
                                  .order('tweet_id, DATE(pulled_at), pulled_at DESC')
 
@@ -273,23 +246,6 @@ module Twitter
       else
         7
       end
-    end
-
-    def compare_tweets_count(days)
-      end_time = Time.current
-      start_time_recent = end_time - days.days
-      start_time_previous = start_time_recent - days.days
-
-      recent_count = tweets_count_between(start_time_recent, end_time)
-      previous_count = tweets_count_between(start_time_previous, start_time_recent)
-
-      recent_count - previous_count
-    end
-
-    def tweets_count_between(start_time, end_time)
-      Tweet.where(identity_id: user.identity.id)
-           .where(twitter_created_at: start_time...end_time)
-           .count
     end
 
     # Helper method to format the created_at timestamp for grouping by date
