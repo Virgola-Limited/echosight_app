@@ -47,7 +47,7 @@ class DemoPublicPageService < Services::Base
   end
 
   def calculate_engagement_rate_for_day(date)
-    2.51 - (date.wday * 0.1)
+    4.51 - (date.wday * 0.1)
   end
 
   def generate_first_day_impressions
@@ -55,7 +55,7 @@ class DemoPublicPageService < Services::Base
   end
 
   def generate_follower_info
-    follower_counts = [6719, 6738, 6756, 6759, 6762] # Example follower counts for the last 5 days
+    follower_counts = [6719, 6938, 7156, 7159, 7762]
 
     # Extend the array to accommodate 7 days, assuming the last known value for missing days
     follower_counts.fill(follower_counts.last, follower_counts.length...7)
@@ -74,7 +74,7 @@ class DemoPublicPageService < Services::Base
 
   def generate_impression_info
     # Example impression counts for a predefined number of days
-    impression_counts = [2149, 51817, 72352, 29071, 15000, 8000, 12345]
+    impression_counts = [12149, 51817, 72352, 29071, 15000, 18000, 12345]
 
     data_points = []
     labels = []
