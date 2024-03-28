@@ -88,38 +88,145 @@ class DemoPublicPageService < Services::Base
     { data_points: data_points, labels: labels }
   end
 
-  def generate_top_posts
-    custom_tweets = [
-      { id: 101, twitter_id: 1772826047878516856, text: "Just asked my smart fridge for the weather forecast, and it advised me to chill. Tech humor never gets old!" },
-      { id: 102, twitter_id: 1772826156355764407, text: "If you think a minute goes by really fast, you've never waited for your code to compile." },
-      { id: 103, twitter_id: 1754363215839142327, text: "Have you been introduced to the BOFH before?" },
-      { id: 104, twitter_id: 1772835317466407361, text: "In a relationship with my Wi-Fi. It's getting serious and we just shared our first password." },
-      { id: 105, twitter_id: 1772829628991946912, text: "I learnt more on the job in six months with a supportive team than I ever did at school." },
-      { id: 106, twitter_id: 1727444841683202207, text: "I don't like working in fields where I can't stand out. Music production became too accessible and what I did was no longer special so I moved to something harder where my efforts could be noticed." },
-      { id: 107, twitter_id: 1772787456544592133, text: "TIL Why does Cloudflare use lava lamps to help with encryption?" },
-      { id: 108, twitter_id: 1772778052667470267, text: "I'm getting some mad ChatGPT nostalgia where it just cuts out before finishing stuff and doesn't give you the rest of the answer. How is AI a threat to anyone?" },
-      { id: 109, twitter_id: 1772574111882961249, text: "What do you think the next leap in machine learning and LLMs is going to be like?" },
-      { id: 110, twitter_id: 1772837100993569080, text: "Just overheard two algorithms discussing privacy. They didn't say much. I guess they prefer to keep things encrypted." }
+
+  def custom_tweets
+    [
+      {
+        id: 101,
+        twitter_id: 1772826047878516856,
+        text: "Just asked my smart fridge for the weather forecast, and it advised me to chill. Tech humor never gets old!",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 102,
+        twitter_id: 1772826156355764407,
+        text: "If you think a minute goes by really fast, you've never waited for your code to compile.",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 103,
+        twitter_id: 1754363215839142327,
+        text: "Have you been introduced to the BOFH before?",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 104,
+        twitter_id: 1772835317466407361,
+        text: "In a relationship with my Wi-Fi. It's getting serious and we just shared our first password.",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 105,
+        twitter_id: 1772829628991946912,
+        text: "I learnt more on the job in six months with a supportive team than I ever did at school.",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 106,
+        twitter_id: 1727444841683202207,
+        text: "I don't like working in fields where I can't stand out. Music production became too accessible and what I did was no longer special so I moved to something harder where my efforts could be noticed.",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 107,
+        twitter_id: 1772787456544592133,
+        text: "TIL Why does Cloudflare use lava lamps to help with encryption?",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 108,
+        twitter_id: 1772778052667470267,
+        text: "I'm getting some mad ChatGPT nostalgia where it just cuts out before finishing stuff and doesn't give you the rest of the answer. How is AI a threat to anyone?",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 109,
+        twitter_id: 1772574111882961249,
+        text: "What do you think the next leap in machine learning and LLMs is going to be like?",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      },
+      {
+        id: 110,
+        twitter_id: 1772837100993569080,
+        text: "Just overheard two algorithms discussing privacy. They didn't say much. I guess they prefer to keep things encrypted.",
+        retweet_count: 7,
+        like_count: 178,
+        quote_count: 11,
+        impression_count: 34345,
+        reply_count: 150,
+        bookmark_count: 5
+      }
     ]
+  end
 
-    custom_tweets.map do |tweet|
-      OpenStruct.new(
-        id: tweet[:id],
-        twitter_id: tweet[:twitter_id],
-        text: tweet[:text]
+  def generate_top_posts
+    custom_tweets.each_with_index.map do |custom_tweet, i|
+      # Simulate a Tweet object with necessary attributes
+      tweet = OpenStruct.new(
+        text: custom_tweet[:text],
+        twitter_id: custom_tweet[:twitter_id],
+        id: custom_tweet[:id]
       )
-    end
 
-      # Simulate a TweetMetric object with necessary attributes and an associated Tweet object
+      # Use the counts directly from the custom_tweets hash
       OpenStruct.new(
         tweet: tweet,
-        retweet_count: [7, 1, 3, 1, 1][i],
-        like_count: [178, 9, 95, 93, 101][i],
-        quote_count: [11, 5, 12, 0, 3][i],
-        impression_count: [34345, 32035, 30004, 18220, 17522][i],
-        reply_count: [150, 4, 96, 2, 77][i],
-        bookmark_count: [5, 0, 2, 0, 10][i],
-        engagement_rate_percentage: calculate_engagement_rate([7, 1, 3, 1, 1][i], [178, 9, 95, 93, 101][i], [11, 5, 12, 0, 3][i], [150, 4, 96, 2, 77][i], [5, 0, 2, 0, 10][i], [34345, 32035, 30004, 18220, 17522][i]),
+        retweet_count: custom_tweet[:retweet_count],
+        like_count: custom_tweet[:like_count],
+        quote_count: custom_tweet[:quote_count],
+        impression_count: custom_tweet[:impression_count],
+        reply_count: custom_tweet[:reply_count],
+        bookmark_count: custom_tweet[:bookmark_count],
+        engagement_rate_percentage: calculate_engagement_rate(
+          custom_tweet[:retweet_count], custom_tweet[:like_count],
+          custom_tweet[:quote_count], custom_tweet[:reply_count],
+          custom_tweet[:bookmark_count], custom_tweet[:impression_count]
+        ),
         pulled_at: Date.today - i
       )
     end.sort_by { |post| -post.engagement_rate_percentage }
