@@ -101,7 +101,7 @@ class DemoPublicPageService < Services::Base
       { id: 109, twitter_id: 1772574111882961249, text: "What do you think the next leap in machine learning and LLMs is going to be like?" },
       { id: 110, twitter_id: 1772837100993569080, text: "Just overheard two algorithms discussing privacy. They didn't say much. I guess they prefer to keep things encrypted." }
     ]
-  
+
     custom_tweets.map do |tweet|
       OpenStruct.new(
         id: tweet[:id],
@@ -109,7 +109,6 @@ class DemoPublicPageService < Services::Base
         text: tweet[:text]
       )
     end
-  end  
 
       # Simulate a TweetMetric object with necessary attributes and an associated Tweet object
       OpenStruct.new(

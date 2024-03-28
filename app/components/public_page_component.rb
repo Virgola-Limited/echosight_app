@@ -15,6 +15,10 @@ class PublicPageComponent <  ApplicationComponent
     page_user.name || "Sammy Circuit"
   end
 
+  def page_user_banner_url
+    page_user&.identity&.banner_url
+  end
+
   def page_user_twitter_bio
     helpers.html_description_with_links(user_description)
   end
