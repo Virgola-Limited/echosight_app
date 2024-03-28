@@ -15,13 +15,13 @@ RSpec.describe Twitter::TweetsFetcher do
   end
 
   it 'does not create duplicate TweetMetric records for the same tweet on the same day' do
-    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+    VCR.use_cassette('Twitter__TweetsFetcher_call') do
       expect { subject.call }.to change { TweetMetric.count }.from(0).to(630)
     end
 
     expect(TweetMetric.count).to be_positive # Ensure metrics were created
 
-    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+    VCR.use_cassette('Twitter__TweetsFetcher_call') do
       expect { subject.call }.not_to(change { TweetMetric.count })
     end
 
@@ -31,7 +31,7 @@ RSpec.describe Twitter::TweetsFetcher do
   end
 
   it 'fetches and saves tweets and tweet metrics for the last seven days' do
-    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+    VCR.use_cassette('Twitter__TweetsFetcher_call') do
       expect(TweetMetric.count).to eq(0)
       expect { subject.call }.to change { user.tweets.count }.by(expected_tweets)
       expect(TweetMetric.count).to eq(expected_tweets)
@@ -73,15 +73,16 @@ RSpec.describe Twitter::TweetsFetcher do
   end
 
   it 'send todays user data to UserMetricsUpdater' do
-    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+    VCR.use_cassette('Twitter__TweetsFetcher_call') do
       subject.call
     end
   end
 
   it 'sends todays user data to UserUpdater' do
-    VCR.use_cassette('Twitter__TweetsFetcher_fetches_and_saves_tweets_and_tweet_metrics_for_the_last_seven_days') do
+    VCR.use_cassette('Twitter__TweetsFetcher_call') do
       expect(UserUpdater).to receive(:new).with(expected_user_data)
       subject.call
     end
   end
-end
+
+  end
