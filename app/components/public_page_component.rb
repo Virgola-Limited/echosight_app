@@ -8,11 +8,11 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def page_user_handle
-    page_user.handle || "techsavvysammy"
+    page_user&.handle || "techsavvysammy"
   end
 
   def page_user_name
-    page_user.name || "Sammy Circuit"
+    page_user&.name || "Sammy Circuit"
   end
 
   def page_user_banner_url
@@ -133,5 +133,4 @@ class PublicPageComponent <  ApplicationComponent
       tooltip_text: followers_tooltip_text.html_safe
     )
   end
-
 end
