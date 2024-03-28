@@ -62,12 +62,12 @@ module Twitter
       tweet.save! if tweet_updated
 
       metric_attributes = {
-        retweet_count: metrics['retweet_count'],
-        quote_count: metrics['quote_count'],
-        like_count: metrics['like_count'],
-        impression_count: metrics['impression_count'],
-        reply_count: metrics['reply_count'],
-        bookmark_count: metrics['bookmark_count'],
+        retweet_count: metrics['retweet_count'].to_i,
+        quote_count: metrics['quote_count'].to_i,
+        like_count: metrics['like_count'].to_i,
+        impression_count: metrics['impression_count'].to_i,
+        reply_count: metrics['reply_count'].to_i,
+        bookmark_count: metrics['bookmark_count'].to_i,
       }
 
       if non_public_metrics && non_public_metrics['user_profile_clicks']

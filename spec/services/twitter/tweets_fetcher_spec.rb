@@ -85,4 +85,14 @@ RSpec.describe Twitter::TweetsFetcher do
     end
   end
 
+  context 'when impression_count is nil' do
+    it 'defaults impression_count to 0' do
+      VCR.use_cassette('Twitter__TweetsFetcher_call') do
+        subject.call
+      end
+      tweet_metric = TweetMetric.first
+
+      expect(tweet_metric.impression_count).to eq(0)
+    end
   end
+end
