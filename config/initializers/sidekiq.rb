@@ -53,6 +53,11 @@ if !Rails.env.development? && !Rails.env.test?
         #   'cron' => '0 0 * * *',
         #   'class' => 'RemoveOldEmptyApiBatchJob'
         # }
+        {
+          'name' => 'Sync Subscriptions - every 1 hour',
+          'cron' => '0 * * * *',
+          'class' => 'SubscriptionSyncJob'
+      }
       ]
     )
   end

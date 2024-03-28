@@ -84,6 +84,7 @@ group :development do
   gem 'binding_of_caller'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'guard-rspec', require: false
+  gem 'terminal-notifier'
   gem 'rack-mini-profiler'
   gem 'rubocop'
   gem 'web-console'

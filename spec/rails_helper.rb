@@ -91,6 +91,10 @@ RSpec.configure do |config|
     WebMock.allow_net_connect!
   end
 
+  config.before(:each) do
+    allow(CreateStripeCustomerWorkerJob).to receive(:perform_async)
+  end
+
   config.after(:each, type: :feature) do |example|
     # if page.driver.browser.respond_to?(:logs)
       # check_for_errors(example)

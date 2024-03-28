@@ -36,13 +36,16 @@
                         <span class="block text-sm font-semibold text-gray-900 dark:text-white"><%= user.name %></span>
                         <span class="block text-sm font-light text-gray-500 truncate dark:text-gray-400"><%= user.email %></span>
                     </div>
+                    <% link_classes = 'block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
                     <ul class="py-1 font-light text-gray-500 dark:text-gray-400" aria-labelledby="userMenuDropdownButton">
                         <li>
-                            <a href="<%= edit_user_registration_path %>" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">My Profile &amp; Settings</a>
+                            <a href="<%= edit_user_registration_path %>" class="<%= link_classes %>">My Profile &amp; Settings</a>
                         </li>
                         <li>
-                            <%= link_to 'Sign out', destroy_user_session_path, method: :delete, class: 'block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
-
+                          <%= link_to 'Subscription & Billing', subscription_path, class: link_classes %>
+                        </li>
+                        <li>
+                            <%= link_to 'Sign out', destroy_user_session_path, method: :delete, class: link_classes %>
                         </li>
                     </ul>
                 </div>

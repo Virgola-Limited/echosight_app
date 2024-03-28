@@ -54,82 +54,32 @@ class User < ApplicationRecord
          omniauth_providers: [:twitter2]
 
   has_one :identity, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
   has_many :tweets, through: :identity
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
+  has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 
   delegate :handle, to: :identity, allow_nil: true
   delegate :banner_url, to: :identity, allow_nil: true
   delegate :image_url, to: :identity, allow_nil: true
   delegate :enough_data_for_public_page?, to: :identity, allow_nil: true
 
-  after_commit :enqueue_twitter_data_pull, on: %i[create update]
+  after_create :enqueue_create_stripe_customer
 
   scope :syncable, -> { confirmed.joins(:identity).merge(Identity.valid_identity) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
+
+  validates :stripe_customer_id, uniqueness: true, allow_nil: true
 
   def self.ransackable_attributes(auth_object = nil)
     ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_name", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
-  end
-
-  def self.from_omniauth(auth)
-    identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
-
-    if identity
-      user = identity.user
-    else
-      user = User.find_or_initialize_by(email: auth.info.email)
-      user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
-    end
-
-    # Update user's attributes
-    user.name = auth.info.name if user.name.blank?
-    user.email = auth.info.email if user.email.blank?
-    user.email = "fake_email_#{rand(252...4350)}@echosight.io" if user.email.blank?
-
-    # Extract and update description with original URLs
-    description = auth.info.description
-
-    urls = auth.extra.raw_info.data.entities.description.urls rescue []
-
-    urls.each do |url_object|
-      replaced = description.gsub!(url_object.url, url_object.expanded_url)
-    end
-
-    # Update or build identity
-    identity ||= user.build_identity
-    identity.assign_attributes(
-      provider: auth.provider,
-      uid: auth.uid,
-      description: description,
-      handle: auth.extra.raw_info.data.username,
-    )
-
-    # Update or build oauth_credential
-    oauth_credential = identity.oauth_credential || identity.build_oauth_credential
-    oauth_credential.assign_attributes(
-      provider: auth.provider,
-      token: auth.credentials.token,
-      refresh_token: auth.credentials.refresh_token,
-      expires_at: Time.at(auth.credentials.expires_at)
-    )
-
-    # Save user, identity, and oauth_credential
-    ActiveRecord::Base.transaction do
-      user.save! if user.new_record? || user.changed?
-      identity.save! if identity.new_record? || identity.changed?
-      oauth_credential.save! #if oauth_credential.new_record? || oauth_credential.changed?
-    end
-
-    user
   end
 
   def syncable?
     confirmed? && identity&.valid_identity?
   end
 
-  # Not currently used
   def self.create_or_update_identity_from_omniauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     user = identity.try(:user)
@@ -195,9 +145,7 @@ class User < ApplicationRecord
 
   private
 
-  def enqueue_twitter_data_pull
-    return unless confirmed_at_changed? && confirmed_at_was.nil?
-
-    # Twitter::UpdateTwitterDataJob.perform_async(user_id: id)
+  def enqueue_create_stripe_customer
+    CreateStripeCustomerWorkerJob.perform_async(self.id)
   end
 end

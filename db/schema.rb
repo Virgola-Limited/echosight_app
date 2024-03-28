@@ -74,6 +74,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_003451) do
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "stripe_subscription_id"
+    t.string "stripe_price_id"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_price_id"], name: "index_subscriptions_on_stripe_price_id"
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "tweet_metrics", force: :cascade do |t|
     t.integer "retweet_count", default: 0, null: false
     t.integer "like_count", default: 0, null: false
@@ -181,6 +193,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_003451) do
 
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"

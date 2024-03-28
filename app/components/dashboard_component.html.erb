@@ -1,3 +1,14 @@
+<!--
+
+Yep 1. is perfect
+2. is perfect
+3. Do both? Email and a notice to say check back (with an explanation or link to how it works and what to expect).
+
+-->
+
+<%= link_to "Subscribe", new_subscription_path %><br />
+<%= link_to "View Subscription", subscription_path %>
+
 <% if !current_user.connected_to_twitter? || current_user.email.nil? %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
     To start leveraging the full capabilities of Echosight, please complete the steps below:
