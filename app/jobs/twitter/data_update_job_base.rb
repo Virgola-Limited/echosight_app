@@ -27,7 +27,7 @@ module Twitter
       begin
         update_user(user, client_class)
       rescue StandardError => e
-        message = "Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
+        message = "#{self.class.name}: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
         data_update_log.update!(error_message: message)
 
         raise message
