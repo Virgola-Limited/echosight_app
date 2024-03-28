@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-DEMO_PAGE_TEXTS = ['Demo User', '@demo_user', 'Amplify your digital impact with Echosight']
+DEMO_PAGE_TEXTS = ['Sammy Circuit', 'techsavvysammy', 'Digital explorer, byte-sized philosopher, and AI whisperer. Navigating the tech terrain with a touch of humor and a dash of code. Join me on a journey through the pixels!']
 
 RSpec.feature 'Public Page Access' do
   scenario 'Verify public page access and redirections' do
@@ -17,8 +17,10 @@ RSpec.feature 'Public Page Access' do
 
     # Now logged in, revisit the "mine" page
     visit public_page_path(:demo)
-    DEMO_PAGE_TEXTS.each do |content|
-      expect(page.body).to include(content)
+    within('[data-test="user-profile"]') do
+      DEMO_PAGE_TEXTS.each do |content|
+        expect(page).to have_text(content)
+      end
     end
 
     # Simulate the user connecting their Twitter account
