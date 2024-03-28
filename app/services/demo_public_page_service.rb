@@ -47,7 +47,7 @@ class DemoPublicPageService < Services::Base
   end
 
   def calculate_engagement_rate_for_day(date)
-    4.51 - (date.wday * 0.1)
+    4.51 - (date.wday * 0.3)
   end
 
   def generate_first_day_impressions
