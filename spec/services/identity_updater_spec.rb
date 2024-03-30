@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserUpdater do
+RSpec.describe IdentityUpdater do
   describe '#call' do
     let!(:identity) { create(:identity, :loftwah, :with_oauth_credential) }
     let(:user_data) do
@@ -26,7 +26,7 @@ RSpec.describe UserUpdater do
       let(:expected_image_url) { user_data['image_url'].gsub('_normal', '_400x400') }
 
       it 'updates the user images with transformed URL' do
-        VCR.use_cassette('UserUpdater_call_when_the_400x400_image_exists_updates_the_user_images_with_transformed_URL') do
+        VCR.use_cassette('IdentityUpdater_call_when_the_400x400_image_exists_updates_the_user_images_with_transformed_URL') do
           expect(identity.banner_url).to be_nil
           expect(identity.image_url).to be_nil
           expect(identity.description).to eq'Twitter user bio'
@@ -38,11 +38,5 @@ RSpec.describe UserUpdater do
         end
       end
     end
-
-    # context 'when the 400x400 image does not exist' do
-    #   xit 'update the user image with the original URL' do
-    #     skip
-    #   end
-    # end
   end
 end

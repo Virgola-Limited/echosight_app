@@ -11,7 +11,7 @@ RSpec.describe Twitter::TweetsFetcher do
   let(:expected_tweets) { 630 }
 
   before do
-    allow(UserUpdater).to receive(:new).with(any_args).and_return(double(call: nil))
+    allow(IdentityUpdater).to receive(:new).with(any_args).and_return(double(call: nil))
   end
 
   it 'does not create duplicate TweetMetric records for the same tweet on the same day' do
@@ -78,9 +78,9 @@ RSpec.describe Twitter::TweetsFetcher do
     end
   end
 
-  it 'sends todays user data to UserUpdater' do
+  it 'sends todays user data to IdentityUpdater' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect(UserUpdater).to receive(:new).with(expected_user_data)
+      expect(IdentityUpdater).to receive(:new).with(expected_user_data)
       subject.call
     end
   end

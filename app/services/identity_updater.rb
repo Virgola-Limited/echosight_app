@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# TODO: Rename to IdentityUpdater
-class UserUpdater
+class IdentityUpdater
   attr_reader :user_data
 
   def initialize(user_data)
@@ -9,31 +8,36 @@ class UserUpdater
   end
 
   def call
-    raise ArgumentError, "User data must include image_url and banner_url: #{user_data}" if user_data['image_url'].nil? || user_data['banner_url'].nil?
-
     identity = Identity.find_by!(handle: user_data['username'])
 
-    identity.image = download_image(transform_image_url(user_data['image_url']))
-    identity.banner = download_image(transform_banner_url(user_data['banner_url']))
-    identity.description = UrlRewriter.new(user_data['description']).call
+    if user_data['image_url']
+      identity.image = download_image(transform_image_url(user_data['image_url']))
+    end
+
+    if user_data['banner_url']
+      identity.banner = download_image(transform_banner_url(user_data['banner_url']))
+    end
+
+    identity.description = UrlRewriter.new(user_data['description']).call if user_data['description']
     identity.save!
   end
 
   private
 
   def download_image(url)
-    return URI.open(url)
+    URI.open(url)
   end
 
   def transform_banner_url(url)
-    url + '/1500x500'
+    "#{url}/1500x500"
   end
 
   def transform_image_url(url)
-    if image_link?(url.gsub('_normal', '_400x400'))
-      url.gsub('_normal', '_400x400')
+    modified_url = url.gsub('_normal', '_400x400')
+    if image_link?(modified_url)
+      modified_url
     else
-      ExceptionNotifier.notify_exception(StandardError.new('400x400 image not found, using original URL.'), data: url.gsub('_normal', '_400x400'))
+      ExceptionNotifier.notify_exception(StandardError.new('400x400 image not found, using original URL.'), data: modified_url)
       url
     end
   end
