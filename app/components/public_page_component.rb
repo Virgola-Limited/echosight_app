@@ -103,7 +103,7 @@ class PublicPageComponent <  ApplicationComponent
       title: "Impressions",
       count: impressions_count,
       tooltip_target: "impressions-count-tooltip",
-      change_text: impressions_change_since_last_week.to_s,
+      change_text: impressions_change_since_last_week,
       tooltip_text: impressions_tooltip_text.html_safe
     )
   end
@@ -116,7 +116,7 @@ class PublicPageComponent <  ApplicationComponent
       title: "Likes",
       count: likes_count,
       tooltip_target: "likes-count-tooltip",
-      change_text: likes_change_since_last_week.to_s,
+      change_text: likes_change_since_last_week,
       tooltip_text: likes_tooltip_text.html_safe
     )
   end
@@ -129,7 +129,7 @@ class PublicPageComponent <  ApplicationComponent
       title: "Followers",
       count: followers_count,
       tooltip_target: "followers-count-tooltip",
-      change_text: followers_count_change_percentage_text.to_s,
+      change_text: followers_count_change_percentage_text,
       tooltip_text: followers_tooltip_text.html_safe
     )
   end

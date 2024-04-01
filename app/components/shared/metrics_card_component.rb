@@ -1,17 +1,21 @@
 module Shared
   class MetricsCardComponent <  ApplicationComponent
-    attr_reader :change_text
 
     def initialize(title:, count:, tooltip_target:, tooltip_text:, change_text: nil)
       @title = title
       @count = count
       @tooltip_target = tooltip_target
-      @count = count
-      @change_text = change_text || missing_data_message
+      @change_text = change_text
       @tooltip_text = tooltip_text
     end
 
     private
+
+    def change_text
+      return missing_data_message if @change_text == false
+
+      @change_text.to_s
+    end
 
     def count_text
       return missing_data_message if @count == false
