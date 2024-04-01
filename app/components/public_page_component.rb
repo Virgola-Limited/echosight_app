@@ -65,7 +65,7 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def user_description
-    page_user&.identity&.description || "Digital explorer, byte-sized philosopher, and AI whisperer. Navigating the tech terrain with a touch of humor and a dash of code. Join me on a journey through the pixels!"
+    page_user&.identity&.description || "Digital explorer, byte-sized philosopher, and AI whisperer. Navigating the tech terrain with a touch of humor and a dash of code. Join me on a journey through the pixels! | https://echosight.io | Sign up now!"
   end
 
   def posts_card
