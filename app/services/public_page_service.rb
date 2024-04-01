@@ -171,7 +171,6 @@ class PublicPageService < Services::Base
     @impressions_comparison_days ||= 7  # This is set to a static value but can be made dynamic as needed.
   end
 
-
   def likes_count
     @likes_count ||= tweet_metrics_query.likes_count
   end

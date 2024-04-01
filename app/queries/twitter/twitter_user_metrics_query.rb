@@ -42,23 +42,6 @@ module Twitter
       [formatted_data, daily_data_points]
     end
 
-    def daily_followers_count(days_ago = 28)
-      last_followers_count_per_day = TwitterUserMetric
-                                       .where(identity_id: user.identity.id)
-                                       .where('date >= ?', days_ago.days.ago)
-                                       .select('DISTINCT ON (date) date, followers_count, created_at')
-                                       .order('date, created_at DESC')
-                                       .pluck(:date, :followers_count)
-
-      daily_counts = {}
-      last_followers_count_per_day.each_cons(2) do |previous_day, current_day|
-        daily_increase = [current_day.second.to_i - previous_day.second.to_i, 0].max
-        daily_counts[current_day.first] = daily_increase
-      end
-
-      daily_counts
-    end
-
     private
 
     def format_for_graph(data)
