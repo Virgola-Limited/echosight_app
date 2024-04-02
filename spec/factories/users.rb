@@ -34,6 +34,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  invited_by_id          :bigint
+#  stripe_customer_id     :string
 #
 # Indexes
 #
@@ -43,6 +44,7 @@
 #  index_users_on_invited_by            (invited_by_type,invited_by_id)
 #  index_users_on_invited_by_id         (invited_by_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_stripe_customer_id    (stripe_customer_id)
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
 FactoryBot.define do
