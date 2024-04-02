@@ -51,5 +51,23 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
+    h2 "Aggregated TweetMetrics by Day"
+    section do
+      # Define a scope or method in your TweetMetric model that performs the aggregation
+      aggregated_metrics = TweetMetric.joins(tweet: { identity: :user })
+                                      .select("date(tweet_metrics.pulled_at) as day, users.id as user_id, count(*) as count")
+                                      .group("day, users.id")
+                                      .order("day DESC")
+
+      table_for aggregated_metrics do
+        column :day
+        column "User" do |metric|
+          user = User.find(metric.user_id)
+          link_to user.email, admin_user_path(user)
+        end
+        column :count
+      end
+    end
+
   end
 end
