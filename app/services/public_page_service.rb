@@ -52,7 +52,7 @@ class PublicPageService < Services::Base
   def public_page_data
     cache_key = cache_key_for_user(user)
 
-    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+    Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       # The block to generate data if cache miss occurs
       generate_public_page_data
     end
