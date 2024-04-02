@@ -142,11 +142,24 @@ module Twitter
       { date: first_date, impression_count: first_day_impression_count }
     end
 
+#     Strategies to Consider:
+# Fixed Tweet Set: One way to mitigate this issue is to fix the set of tweets considered for the calculation over the entire period. This means selecting a set of tweets (e.g., those posted within a certain timeframe) and tracking their cumulative impressions over time, even if some fall outside your moving window. This approach provides consistency but might not fully reflect the dynamic nature of engagement.
+
+# Adjusting for Tweet Lifespan: When calculating daily impressions, consider the lifespan of each tweet. For tweets that "exit" your 7-day window, you could proportionally adjust the previous day's aggregate impression count to account for their absence. This method attempts to maintain the integrity of day-to-day comparisons but requires careful implementation to ensure accuracy.
+
+# Floor for Negative Differences: In cases where the aggregate impression count decreases (leading to a negative difference), you might decide to set a floor value (e.g., zero) for the daily impression difference. This approach acknowledges the decrease but avoids the implications of negative impressions in your engagement rate calculations.
+
+# Documenting Assumptions and Limitations: Whatever strategy you choose, it's important to document the assumptions and limitations of your approach, especially when presenting the data to others. This transparency helps users understand the context and potential nuances of the metrics.
+
+# Exploring Alternative Metrics: If the goal is to measure engagement or the impact of content over time, consider if there are alternative metrics or approaches that might be less affected by the issues with cumulative impression counts. For example, focusing on engagement rates per tweet or exploring other engagement signals that might be less prone to these issues.
+
+# Each of these strategies has trade-offs in terms of complexity, accuracy, and the insights they provide. The best approach depends on your specific goals, the nature of the decisions being informed by these metrics, and the resources available for data analysis.
+
 
     def engagement_rate_percentage_per_day
       recent_tweets = Tweet.includes(:tweet_metrics)
                            .where(identity_id: @user.identity.id)
-                           .where('tweet_metrics.pulled_at' => 8.days.ago.utc.to_date..1.day.ago.utc.to_date)
+                           .where('tweet_metrics.pulled_at' => 8.days.ago.utc.to_date..Date.today)
                            .references(:tweet_metrics)
       daily_engagement_rates = {}
 
@@ -157,8 +170,14 @@ module Twitter
         end
       end
 
-      # Iterate over the last 7 days
-      (1..7).each do |day_ago|
+      earliest_date = recent_tweets.minimum('tweet_metrics.pulled_at').to_date
+      latest_date = recent_tweets.maximum('tweet_metrics.pulled_at').to_date
+
+      # Calculate the number of days between the earliest and latest dates
+      total_days = (latest_date - earliest_date).to_i
+
+      # Iterate dynamically based on the available data range
+      (0..total_days).each do |day_ago|
         current_day = day_ago.days.ago.utc.to_date
         previous_day = (day_ago + 1).days.ago.utc.to_date
 
