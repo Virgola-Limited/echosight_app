@@ -37,7 +37,7 @@ jobs:
     - name: Set up Node
       uses: actions/setup-node@v3
       with:
-        node-version: '14'  # Use the Node.js version that matches your development environment
+        node-version: '18'
 
     - name: Install Ruby and JavaScript dependencies
       run: |
