@@ -28,12 +28,12 @@
 class TweetMetric < ApplicationRecord
   has_paper_trail
 
-  # validate :impression_count, numericality: { greater_than_or_equal_to: 0 }
-  # validate :like_count, numericality: { greater_than_or_equal_to: 0 }
-  # validate :retweet_count, numericality: { greater_than_or_equal_to: 0 }
-  # validate :quote_count, numericality: { greater_than_or_equal_to: 0 }
-  # validate :reply_count, numericality: { greater_than_or_equal_to: 0 }
-  # validate :bookmark_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :impression_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :like_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :retweet_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :quote_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :reply_count, numericality: { greater_than_or_equal_to: 0 }
+  validates :bookmark_count, numericality: { greater_than_or_equal_to: 0 }
 
   belongs_to :tweet
 
