@@ -1,10 +1,11 @@
 ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
+  days_to_fetch = Twitter::TweetsFetcher.days_to_fetch
 
   content title: proc { I18n.t("active_admin.dashboard") } do
     h2 "Incomplete User Twitter Data Updates"
     section do
-      table_for UserTwitterDataUpdate.joins(identity: :user).where(completed_at: nil).where('user_twitter_data_updates.created_at > ?', 7.days.ago).order('user_twitter_data_updates.started_at DESC').limit(10) do
+      table_for UserTwitterDataUpdate.joins(identity: :user).where(completed_at: nil).where('user_twitter_data_updates.created_at > ?', days_to_fetch.days.ago).order('user_twitter_data_updates.started_at DESC').limit(10) do
         column :started_at
         column "Error Message", :error_message do |update|
           span truncate(update.error_message, length: 300), title: update.error_message
@@ -20,7 +21,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Tweets Needing Refresh"
     tweets = Tweet.where('updated_at < ?', 24.hours.ago)
-                  .where('twitter_created_at > ?', 7.days.ago)
+                  .where('twitter_created_at > ?', days_to_fetch.days.ago)
     section do
       div do
         span "Total Tweets not updated in 24 hours: #{tweets.count}"

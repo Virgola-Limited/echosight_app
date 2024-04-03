@@ -22,6 +22,10 @@ module Twitter
       response_message
     end
 
+    def self.days_to_fetch
+      DAYS_TO_FETCH
+    end
+
     private
 
     def fetch_and_store_tweets
