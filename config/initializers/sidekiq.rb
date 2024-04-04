@@ -29,9 +29,10 @@ if !Rails.env.development? && !Rails.env.test?
     Sidekiq::Cron::Job.load_from_array!(
       [
         {
-          'name' => 'Fetch Tweets - every 7am UTC',
-          'cron' => '0 7 * * *',
+          'name' => 'Fetch Tweets',
+          'cron' => '0 * * * *',
           'class' => 'Twitter::TweetsFetcherJob'
+        },
         }
       ]
     )
