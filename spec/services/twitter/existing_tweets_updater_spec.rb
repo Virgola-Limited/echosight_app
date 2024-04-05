@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Twitter::TweetMetricsUpdater do
+RSpec.describe Twitter::ExistingTweetsUpdater do
   let(:syncable_user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
   let(:non_syncable_user) { create(:user, :with_identity, confirmed_at: nil) }
   let(:client) { double('Client') }
-  let(:service) { Twitter::TweetMetricsUpdater.new(user: syncable_user, client: client) }
+  let(:service) { Twitter::ExistingTweetsUpdater.new(user: syncable_user, client: client) }
 
   before do
-    allow_any_instance_of(Twitter::TweetMetricsUpdater).to receive(:client).and_return(client)
+    allow_any_instance_of(Twitter::ExistingTweetsUpdater).to receive(:client).and_return(client)
     allow(client).to receive(:fetch_tweets_by_ids)
   end
 
@@ -63,7 +63,7 @@ RSpec.describe Twitter::TweetMetricsUpdater do
     end
 
     context 'when tweet exists for a non-syncable user' do
-      let(:service) { Twitter::TweetMetricsUpdater.new(user: non_syncable_user, client: client) }
+      let(:service) { Twitter::ExistingTweetsUpdater.new(user: non_syncable_user, client: client) }
 
       it 'does not call fetch_tweets_by_ids for the non-syncable user tweet' do
         tweet = create(:tweet, identity: non_syncable_user.identity, twitter_created_at: 23.hours.ago)

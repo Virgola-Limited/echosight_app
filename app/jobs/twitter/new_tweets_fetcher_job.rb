@@ -1,5 +1,5 @@
 module Twitter
-  class UserTweetsFetcherJob
+  class NewTweetsFetcherJob
     include Sidekiq::Job
     sidekiq_options retry: false
 
@@ -17,7 +17,7 @@ module Twitter
       begin
         update_user(user, client_class)
       rescue StandardError => e
-        message = "UserTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
+        message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
         data_update_log.update!(error_message: message)
         raise message
       else
@@ -27,11 +27,7 @@ module Twitter
 
     def update_user(user, client_class = nil)
       client = client_class.new(user) if client_class
-      updater_class.new(user:, client:).call
-    end
-
-    def updater_class
-      Twitter::TweetsFetcher
+      Twitter::NewTweetsFetcher.new(user:, client:).call
     end
   end
 end

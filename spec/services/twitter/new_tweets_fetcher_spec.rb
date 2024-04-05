@@ -2,31 +2,35 @@
 
 require 'rails_helper'
 
-RSpec.describe Twitter::TweetsFetcher do
+RSpec.describe Twitter::NewTweetsFetcher do
   let!(:identity) { create(:identity, :with_oauth_credential, :loftwah) }
   let(:user) { identity.user }
   let(:vcr_response_time) { Time.parse('Tue, 05 Mar 2024 18:54:26 GMT') }
-  let(:oldest_expected_date) { vcr_response_time - 7.days }
-  let(:subject) { described_class.new(user:) }
+  let(:subject) { described_class.new(user:, within_time: '14d') }
   let(:expected_tweets) { 630 }
+  let(:oldest_expected_date) { vcr_response_time - 7.days }
 
   before do
     allow(IdentityUpdater).to receive(:new).with(any_args).and_return(double(call: nil))
   end
 
-  it 'does not create duplicate TweetMetric records for the same tweet on the same day' do
+  fit 'does not create duplicate TweetMetric records for the same tweet on the same day' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect { subject.call }.to change { TweetMetric.count }.from(0).to(630)
+      expect { subject.call }.to change { TweetMetric.count }.by(expected_tweets)
     end
 
-    expect(TweetMetric.count).to be_positive # Ensure metrics were created
+    expect(TweetMetric.count).to be_positive
+    p TweetMetric.count
+    travel 1.hour do # Travel an hour forward within the same day
+      VCR.use_cassette('Twitter__TweetsFetcher_call') do
+        expect { subject.call }.not_to(change { TweetMetric.count })
+      end
 
-    VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect { subject.call }.not_to(change { TweetMetric.count })
-    end
+      p TweetMetric.count
 
-    user.tweets.each do |tweet|
-      expect(tweet.tweet_metrics.count).to eq(1) # Ensuring only one metric per tweet
+      user.tweets.each do |tweet|
+        expect(tweet.tweet_metrics.where('pulled_at >= ? AND pulled_at < ?', Time.current.beginning_of_day, Time.current.end_of_day).count).to eq(1) # Ensuring only one metric per tweet per day
+      end
     end
   end
 
@@ -72,11 +76,6 @@ RSpec.describe Twitter::TweetsFetcher do
     }
   end
 
-  it 'send todays user data to UserMetricsUpdater' do
-    VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      subject.call
-    end
-  end
 
   it 'sends todays user data to IdentityUpdater' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do

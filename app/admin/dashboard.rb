@@ -1,6 +1,6 @@
 ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
-  days_to_fetch = Twitter::TweetsFetcher.days_to_fetch
+  days_to_fetch = Twitter::NewTweetsFetcher.days_to_fetch
 
   content title: proc { I18n.t("active_admin.dashboard") } do
     h2 "Incomplete User Twitter Data Updates"
