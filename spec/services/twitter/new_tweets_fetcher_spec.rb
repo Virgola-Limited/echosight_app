@@ -14,48 +14,27 @@ RSpec.describe Twitter::NewTweetsFetcher do
     allow(IdentityUpdater).to receive(:new).with(any_args).and_return(double(call: nil))
   end
 
-  fit 'does not create duplicate TweetMetric records for the same tweet on the same day' do
+  it 'calls Twitter::TweetAndMetricUpserter with the correct arguments' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect { subject.call }.to change { TweetMetric.count }.by(expected_tweets)
-    end
-
-    expect(TweetMetric.count).to be_positive
-    p TweetMetric.count
-    travel 1.hour do # Travel an hour forward within the same day
-      VCR.use_cassette('Twitter__TweetsFetcher_call') do
-        expect { subject.call }.not_to(change { TweetMetric.count })
-      end
-
-      p TweetMetric.count
-
-      user.tweets.each do |tweet|
-        expect(tweet.tweet_metrics.where('pulled_at >= ? AND pulled_at < ?', Time.current.beginning_of_day, Time.current.end_of_day).count).to eq(1) # Ensuring only one metric per tweet per day
-      end
+      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, user: user).exactly(expected_tweets).times
+      subject.call
     end
   end
 
-  it 'fetches and saves tweets and tweet metrics for the last seven days' do
+  it 'calls Twitter::TweetAndMetricUpserter with the correct arguments at least once' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect(TweetMetric.count).to eq(0)
-      expect { subject.call }.to change { user.tweets.count }.by(expected_tweets)
-      expect(TweetMetric.count).to eq(expected_tweets)
-      user.tweets.each do |tweet|
-        expect(tweet.tweet_metrics.count).to eq(1)
-        expect(tweet.twitter_created_at).to be >= oldest_expected_date
+      expect(Twitter::TweetAndMetricUpserter).to receive(:call).at_least(:once) do |args|
+        expect(args[:tweet_data]).to include(
+          "id",
+          "text",
+          "created_at",
+          "public_metrics" => include("retweet_count", "reply_count", "like_count", "quote_count"),
+          "user" => include("data" => include("id", "name", "username"))
+        )
+        expect(args[:user]).to eq(user)
       end
 
-      oldest_tweet = Tweet.order(twitter_created_at: :asc).first
-      # this might fail with other data sets
-      expect(oldest_tweet.twitter_created_at).to be_within(1.day).of(oldest_expected_date)
-      TweetMetric.last.tap do |metric|
-        expect(metric.impression_count).to eq(35)
-        expect(metric.like_count).to eq(4)
-        expect(metric.quote_count).to eq(1)
-        expect(metric.reply_count).to eq(2)
-        expect(metric.retweet_count).to eq(3)
-        expect(metric.bookmark_count).to eq(0)
-        # consider adding favorite_count
-      end
+      subject.call
     end
   end
 
