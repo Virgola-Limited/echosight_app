@@ -6,7 +6,7 @@
 #  bookmark_count      :integer          default(0), not null
 #  impression_count    :integer          default(0), not null
 #  like_count          :integer          default(0), not null
-#  pulled_at           :date
+#  pulled_at           :datetime
 #  quote_count         :integer          default(0), not null
 #  reply_count         :integer          default(0), not null
 #  retweet_count       :integer          default(0), not null
