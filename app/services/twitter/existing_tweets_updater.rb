@@ -36,6 +36,11 @@ module Twitter
     private
 
     def tweet_ids
+      # possible memoization later
+      calculate_tweet_ids
+    end
+
+    def calculate_tweet_ids
       # Get IDs of syncable identities first
       syncable_identity_ids = Identity.joins(:user).merge(User.syncable).pluck(:id)
 
@@ -45,12 +50,12 @@ module Twitter
       # Find tweets created 23-24 hours ago with only one TweetMetric, belonging to syncable identities
       tweets_for_first_update = Tweet.joins(:tweet_metrics)
                                       .where(identity_id: syncable_identity_ids)
-                                      .where('twitter_created_at <= ?', 23.hours.ago)
+                                      .where('twitter_created_at < ?', 23.hours.ago)
                                       .where.not(id: exclusion_ids) # Exclude old tweets
                                       .group(:id)
                                       .having('COUNT(tweet_metrics.id) = 1')
 
-      # Find tweets with the last TweetMetric pulled_at older than 24 hours, belonging to syncable identities
+                                      # Find tweets with the last TweetMetric pulled_at older than 24 hours, belonging to syncable identities
       tweets_for_subsequent_updates = Tweet.joins(:tweet_metrics)
                                             .where(identity_id: syncable_identity_ids)
                                             .where.not(id: tweets_for_first_update.select(:id) + exclusion_ids) # Exclude tweets already selected for first update and old tweets

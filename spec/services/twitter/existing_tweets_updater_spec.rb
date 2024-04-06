@@ -4,16 +4,16 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
   let(:syncable_user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
   let(:non_syncable_user) { create(:user, :with_identity, confirmed_at: nil) }
   let(:client) { double('Client') }
-  let(:service) { Twitter::ExistingTweetsUpdater.new(user: syncable_user, client: client) }
+  let(:service) { described_class.new(user: syncable_user, client: client) }
 
   before do
-    allow_any_instance_of(Twitter::ExistingTweetsUpdater).to receive(:client).and_return(client)
+    allow_any_instance_of(described_class).to receive(:client).and_return(client)
     allow(client).to receive(:fetch_tweets_by_ids)
   end
 
   describe '#call' do
     context 'when tweet exists with 1 tweet metric' do
-      it 'it only attempts to update 24 hours after being created' do
+      it 'does not attempt to update within 23 hours of being created' do
         tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: Time.current)
         create(:tweet_metric, tweet: tweet, pulled_at: Time.current)
 
@@ -23,8 +23,13 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
             service.call
           end
         end
+      end
 
-        travel_to 24.hours.from_now do
+      it 'attempts to update 23.5 hours after being created' do
+        tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: Time.current)
+        create(:tweet_metric, tweet: tweet, pulled_at: Time.current)
+
+        travel_to 23.5.hours.from_now do
           expect(client).to receive(:fetch_tweets_by_ids).with([tweet.id])
           service.call
         end
@@ -63,7 +68,7 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
     end
 
     context 'when tweet exists for a non-syncable user' do
-      let(:service) { Twitter::ExistingTweetsUpdater.new(user: non_syncable_user, client: client) }
+      let(:service) { described_class.new(user: non_syncable_user, client: client) }
 
       it 'does not call fetch_tweets_by_ids for the non-syncable user tweet' do
         tweet = create(:tweet, identity: non_syncable_user.identity, twitter_created_at: 23.hours.ago)
