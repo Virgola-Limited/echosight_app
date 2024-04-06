@@ -30,14 +30,9 @@ if !Rails.env.development? && !Rails.env.test?
       [
         {
           'name' => 'Fetch Tweets',
-          'cron' => '0 * * * *',
-          'class' => 'Twitter::NewTweetsFetcherJob'
-        },
-        {
-          'name' => 'ExistingTweetsUpdaterJob',
           'cron' => '0,30 * * * *',
-          'class' => 'Twitter::ExistingTweetsUpdaterJob'
-        }
+          'class' => 'Twitter::TweetsFetcherJob'
+        },
       ]
     )
   end
