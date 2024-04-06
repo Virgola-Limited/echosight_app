@@ -32,6 +32,6 @@ FactoryBot.define do
     impression_count { 100 }
     reply_count { 2 }
     bookmark_count { 3 }
-    pulled_at { Time.current }
+    pulled_at { DateTime.current }
   end
 end

@@ -11,17 +11,14 @@ module Twitter
       tweet = initialize_or_update_tweet
       tweet_metric = find_or_initialize_tweet_metric(tweet)
 
-      [update_tweet_metric(tweet_metric), tweet]
+      update_tweet_metric(tweet_metric)
+      [tweet_metric, tweet]
     end
 
     private
 
     def initialize_or_update_tweet
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
-      # if tweet.new_record?
-        # Schedule the metrics update job to run 24 hours after the tweet's creation
-        # Twitter::TweetMetricsUpdateJob.perform_in(24.hours, tweet.id)
-      # end
       tweet.assign_attributes(tweet_attributes)
       tweet.save! if tweet.new_record? || tweet.changed?
       tweet
@@ -36,28 +33,33 @@ module Twitter
     end
 
     def find_or_initialize_tweet_metric(tweet)
-      # Use a date range for today to find an existing TweetMetric or initialize a new one
-      today_range = DateTime.current.beginning_of_day..DateTime.current.end_of_day
-      TweetMetric.find_or_initialize_by(tweet: tweet, pulled_at: today_range)
+      last_metric = tweet.tweet_metrics.order(pulled_at: :desc).first
+      if last_metric.nil? || (last_metric.pulled_at.to_date != DateTime.current.to_date && tweet.tweet_metrics.count > 1)
+        return tweet.tweet_metrics.build
+      end
+      time_difference_in_hours = (DateTime.current.to_time - last_metric.pulled_at.to_time) / 1.hour
+      if time_difference_in_hours < 24
+        return last_metric
+      else
+        return tweet.tweet_metrics.build if last_metric.pulled_at.to_date != DateTime.current.to_date
+      end
+
+      last_metric
     end
 
     def update_tweet_metric(tweet_metric)
-      tweet_metric.assign_attributes(metric_attributes)
-      tweet_metric.pulled_at = DateTime.current unless tweet_metric.persisted?
-      tweet_metric.save!
-    end
-
-    def metric_attributes
       metrics = tweet_data['public_metrics']
-      {
+      tweet_metric.assign_attributes({
         retweet_count: metrics['retweet_count'].to_i,
-        quote_count: metrics['quote_count'].to_i,
-        like_count: metrics['like_count'].to_i,
-        impression_count: metrics['impression_count'].to_i,
         reply_count: metrics['reply_count'].to_i,
-        bookmark_count: metrics['bookmark_count'].to_i
-        # Add non_public_metrics if needed
-      }
+        like_count: metrics['like_count'].to_i,
+        quote_count: metrics['quote_count'].to_i,
+        impression_count: metrics['impression_count'].to_i,
+        bookmark_count: metrics['bookmark_count'].to_i,
+        pulled_at: DateTime.current
+      })
+      tweet_metric.save!
+      tweet_metric
     end
   end
 end
