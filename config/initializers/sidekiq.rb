@@ -35,7 +35,7 @@ if !Rails.env.development? && !Rails.env.test?
         },
         {
           'name' => 'ExistingTweetsUpdaterJob',
-          'cron' => '0 7 * * *',
+          'cron' => '0,30 * * * *',
           'class' => 'Twitter::ExistingTweetsUpdaterJob'
         }
       ]
