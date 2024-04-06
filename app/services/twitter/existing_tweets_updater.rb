@@ -44,7 +44,7 @@ module Twitter
       # Get IDs of syncable identities first
       syncable_identity_ids = Identity.joins(:user).merge(User.syncable).pluck(:id)
 
-      # Exclude tweets already selected for first update and tweets older than 14 days
+      # TO-DO: Change this to inclusion_ids as it should be a small queried set
       exclusion_ids = Tweet.where('twitter_created_at < ?', 15.days.ago).pluck(:id)
 
       # Find tweets created 23-24 hours ago with only one TweetMetric, belonging to syncable identities

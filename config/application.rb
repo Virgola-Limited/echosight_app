@@ -48,7 +48,7 @@ module EchosightApp
 
     console do
       puts 'Helpful commands:'
-      puts 'Twitter::TweetsFetcherJob.new.perform'
+      puts 'Twitter::ExistingTweetsUpdater.call'
       puts 'Twitter::NewTweetsFetcher.new(user: User.first).call'
     end
 

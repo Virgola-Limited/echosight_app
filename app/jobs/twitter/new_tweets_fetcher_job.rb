@@ -3,19 +3,18 @@ module Twitter
     include Sidekiq::Job
     sidekiq_options retry: false
 
-    def perform(user_id, client_class_name = nil)
-      user = User.find(user_id)
-      client_class = client_class_name.constantize if client_class_name
+    def perform
+      User.syncable.find_each do |user|
       fetch_and_log_twitter_data(user, client_class)
     end
 
     private
 
-    def fetch_and_log_twitter_data(user, client_class = nil)
+    def fetch_and_log_twitter_data(user)
       data_update_log = UserTwitterDataUpdate.create!(identity_id: user.identity.id, started_at: Time.current)
 
       begin
-        update_user(user, client_class)
+        update_user(user)
       rescue StandardError => e
         message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
         data_update_log.update!(error_message: message)
@@ -25,8 +24,7 @@ module Twitter
       end
     end
 
-    def update_user(user, client_class = nil)
-      client = client_class.new(user) if client_class
+    def update_user(user)
       Twitter::NewTweetsFetcher.new(user:, client:).call
     end
   end
