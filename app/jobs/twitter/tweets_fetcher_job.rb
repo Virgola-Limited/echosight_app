@@ -5,7 +5,7 @@ module Twitter
 
     def perform(client_class_name: nil)
       User.syncable.find_each do |user|
-        Twitter::NewTweetsFetcherJob.perform_async(user.id, client_class_name, within_time: '1h')
+        Twitter::NewTweetsFetcherJob.perform_async(user.id)
       end
       ExistingTweetsUpdaterJob.perform_async
     end

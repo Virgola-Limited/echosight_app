@@ -4,8 +4,9 @@ module Twitter
     sidekiq_options retry: false
 
     def perform
-      User.syncable.find_each do |user|
-      fetch_and_log_twitter_data(user, client_class)
+      User.syncable.each do |user|
+        fetch_and_log_twitter_data(user)
+      end
     end
 
     private
@@ -25,7 +26,7 @@ module Twitter
     end
 
     def update_user(user)
-      Twitter::NewTweetsFetcher.new(user:, client:).call
+      Twitter::NewTweetsFetcher.new(user:, within_time: '1h').call
     end
   end
 end
