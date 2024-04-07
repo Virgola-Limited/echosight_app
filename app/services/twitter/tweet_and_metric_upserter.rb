@@ -2,9 +2,10 @@ module Twitter
   class TweetAndMetricUpserter < Services::Base
     attr_reader :tweet_data, :user
 
-    def initialize(tweet_data:, user:)
+    def initialize(tweet_data:, user: nil)
       @tweet_data = tweet_data
-      @user = user
+      assign_user(user)
+
     end
 
     def call
@@ -16,6 +17,12 @@ module Twitter
     end
 
     private
+
+    def assign_user(user)
+      tweet = Tweet.find_by(twitter_id: tweet_data['id'])
+      @user = user || tweet.user
+      raise ActiveRecord::RecordNotFound unless @user
+    end
 
     def initialize_or_update_tweet
       tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])

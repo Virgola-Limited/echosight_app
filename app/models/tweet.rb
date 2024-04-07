@@ -25,6 +25,7 @@ class Tweet < ApplicationRecord
   attr_accessor :engagement_rate_percentage
 
   belongs_to :identity
+  has_one :user, through: :identity
   has_many :tweet_metrics, dependent: :destroy
 
   validates :twitter_id, presence: true, uniqueness: true
