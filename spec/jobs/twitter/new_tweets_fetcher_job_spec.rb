@@ -14,7 +14,9 @@ RSpec.describe Twitter::NewTweetsFetcherJob do
       expect(Twitter::NewTweetsFetcher).to receive(:new).with(any_args).and_call_original
       expect_any_instance_of(Twitter::NewTweetsFetcher).to receive(:call)
 
-      subject.perform
+      expect { subject.perform }.to change { UserTwitterDataUpdate.count }.by(1)
+      user_twitter_data_update = UserTwitterDataUpdate.first
+      expect(user_twitter_data_update.sync_class).to eq("Twitter::NewTweetsFetcher")
     end
   end
 end

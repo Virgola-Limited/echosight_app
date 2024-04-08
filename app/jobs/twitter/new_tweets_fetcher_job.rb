@@ -12,7 +12,7 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data(user)
-      data_update_log = UserTwitterDataUpdate.create!(identity_id: user.identity.id, started_at: Time.current)
+      data_update_log = UserTwitterDataUpdate.create!(identity_id: user.identity.id, started_at: Time.current, sync_class: Twitter::NewTweetsFetcher)
 
       begin
         update_user(user)
