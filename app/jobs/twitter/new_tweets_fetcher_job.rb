@@ -1,12 +1,11 @@
 module Twitter
-  class NewTweetsFetcherJob
+  class NewTweetsFetcherJob < Services::Base
     include Sidekiq::Job
     sidekiq_options retry: false
 
-    def perform
-      User.syncable.each do |user|
-        fetch_and_log_twitter_data(user)
-      end
+    def perform(user_id)
+      user = User.find(user_id)
+      fetch_and_log_twitter_data(user)
     end
 
     private
