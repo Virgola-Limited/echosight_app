@@ -25,6 +25,13 @@ if !Rails.env.development? && !Rails.env.test?
     config.server_middleware do |chain|
       chain.add Sidekiq::ExceptionNotificationMiddleware
     end
+
+    # SSL verification mode configuration for Redis
+    config.redis = {
+      url: ENV['REDIS_URL'], # Assuming you have your Redis URL in this ENV var
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+    }
+
     Sidekiq::Cron::Job.destroy_all!
 
     # Define your Sidekiq-Cron jobs here
