@@ -3,22 +3,11 @@ module Twitter
     include Sidekiq::Job
     sidekiq_options retry: false
 
-    def perform(user_id: nil, client_class_name: nil)
-      if user_id
-        return Twitter::UserTweetsFetcherJob.perform_async(user_id, client_class_name)
+    def perform(client_class_name: nil)
+      User.syncable.find_each do |user|
+        Twitter::NewTweetsFetcherJob.perform_async(user.id)
+        Twitter::ExistingTweetsUpdaterJob.perform_async(user.id)
       end
-
-    # TODO: - dont enqueue this if its been done in the last 24 hours for a user
-    # so we can stagger the user
-      confirmed_users.find_each do |user|
-        Twitter::UserTweetsFetcherJob.perform_async(user.id, client_class_name)
-      end
-    end
-
-    private
-
-    def confirmed_users
-      User.confirmed.joins(:identity).merge(Identity.valid_identity)
     end
   end
 end

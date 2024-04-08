@@ -1,6 +1,6 @@
 ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
-  days_to_fetch = Twitter::TweetsFetcher.days_to_fetch
+  days_to_fetch = Twitter::NewTweetsFetcher.days_to_fetch
 
   content title: proc { I18n.t("active_admin.dashboard") } do
     h2 "Incomplete User Twitter Data Updates"
@@ -10,6 +10,7 @@ ActiveAdmin.register_page "Dashboard" do
         column "Error Message", :error_message do |update|
           span truncate(update.error_message, length: 300), title: update.error_message
         end
+        column :sync_class
         column "Identity UID", :identity_id do |update|
           update.identity.uid # Assuming `uid` is a column in your `identities` table
         end

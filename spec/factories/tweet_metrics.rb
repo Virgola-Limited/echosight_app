@@ -6,7 +6,7 @@
 #  bookmark_count      :integer          default(0), not null
 #  impression_count    :integer          default(0), not null
 #  like_count          :integer          default(0), not null
-#  pulled_at           :date
+#  pulled_at           :datetime
 #  quote_count         :integer          default(0), not null
 #  reply_count         :integer          default(0), not null
 #  retweet_count       :integer          default(0), not null
@@ -32,6 +32,6 @@ FactoryBot.define do
     impression_count { 100 }
     reply_count { 2 }
     bookmark_count { 3 }
-    pulled_at { Time.current }
+    pulled_at { DateTime.current }
   end
 end

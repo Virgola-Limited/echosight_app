@@ -16,6 +16,7 @@ module Twitter
     # | GET_2_users_param   | 500       | 24 hours       | per user | no                          | 15,000                 |
     # | GET_2_users_param   | 100       | 24 hours       | per app  | no                          | 3,000                  |
     def fetch_user_with_metrics
+      raise "Not needed as we get this via tweets"
       endpoint = "users/#{user.identity.uid}"
       params = { 'user.fields' => 'public_metrics' }
       make_api_call(endpoint, params, :oauth1)
@@ -36,10 +37,9 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
-    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = true)
+    def fetch_tweets_by_ids(tweet_ids)
       endpoint = 'tweets'
       fields = 'created_at,public_metrics'
-      fields += ',non_public_metrics' if include_non_public_metrics
 
       params = {
         'ids' => tweet_ids.join(','), # Convert to a comma-separated string

@@ -65,6 +65,7 @@ class User < ApplicationRecord
 
   after_commit :enqueue_twitter_data_pull, on: %i[create update]
 
+  scope :syncable, -> { confirmed.joins(:identity).merge(Identity.valid_identity) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 

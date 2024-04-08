@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_28_053802) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_08_210124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_28_053802) do
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "stripe_subscription_id"
+    t.string "stripe_price_id"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_price_id"], name: "index_subscriptions_on_stripe_price_id"
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "tweet_metrics", force: :cascade do |t|
     t.integer "retweet_count", default: 0, null: false
     t.integer "like_count", default: 0, null: false
@@ -83,7 +95,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_28_053802) do
     t.integer "impression_count", default: 0, null: false
     t.integer "reply_count", default: 0, null: false
     t.integer "bookmark_count", default: 0, null: false
-    t.date "pulled_at"
+    t.datetime "pulled_at"
     t.bigint "tweet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -118,6 +130,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_28_053802) do
     t.text "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sync_class"
     t.index ["identity_id"], name: "index_user_twitter_data_updates_on_identity_id"
     t.index ["started_at"], name: "index_user_twitter_data_updates_on_started_at"
   end
@@ -176,6 +189,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_28_053802) do
   add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"

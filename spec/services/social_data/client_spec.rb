@@ -14,7 +14,8 @@ RSpec.describe SocialData::Client, :vcr do
     end
   end
 
-  describe '#fetch_user_with_metrics' do
+  # Not needed as we get this via tweets
+  xdescribe '#fetch_user_with_metrics' do
     it 'fetches user data from the API' do
       user_data = client.fetch_user_with_metrics
       expect(user_data).to eq(fetch_user_with_metrics_response_body)

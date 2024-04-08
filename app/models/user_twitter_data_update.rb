@@ -8,6 +8,7 @@
 #  completed_at  :datetime
 #  error_message :text
 #  started_at    :datetime         not null
+#  sync_class    :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  identity_id   :bigint           not null

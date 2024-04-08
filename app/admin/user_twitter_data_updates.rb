@@ -18,6 +18,7 @@ ActiveAdmin.register UserTwitterDataUpdate do
     column "Error Message", :error_message do |update|
       span truncate(update.error_message, length: 300), title: update.error_message
     end
+    column :sync_class
     column :updated_at
     actions
   end
@@ -28,6 +29,7 @@ ActiveAdmin.register UserTwitterDataUpdate do
       row :started_at
       row :completed_at
       row :error_message
+      column :sync_class
       row :created_at
       row :updated_at
     end

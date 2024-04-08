@@ -56,5 +56,9 @@ FactoryBot.define do
     trait :unconfirmed do
       confirmed_at { nil }
     end
+
+    trait :with_identity do
+      association :identity
+    end
   end
 end
