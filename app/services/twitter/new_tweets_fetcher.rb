@@ -6,7 +6,7 @@ module Twitter
 
     def initialize(user:, client: nil, within_time: )
       @user = user
-      @client = client || SocialData::ClientAdapter.new(user)
+      @client = client || SocialData::ClientAdapter.new
       @within_time = within_time
     end
 

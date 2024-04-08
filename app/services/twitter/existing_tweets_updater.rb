@@ -4,72 +4,81 @@ module Twitter
   class ExistingTweetsUpdater < Services::Base
     attr_reader :user, :client
 
-    def initialize(client: nil)
+    def initialize(user:, client: nil)
       @client = client || SocialData::ClientAdapter.new
+      @user = user
     end
 
     def call
-      tweets = client.fetch_tweets_by_ids(tweet_ids)
-
-      # Need to call new service Twitter::TweetAndMetricUpserter
-
-      # today_user_data = nil
-      # metrics_created_count = 0
-      # tweets_updated_count = 0
-
-      # tweets['data'].each do |tweet_data|
-      #   today_user_data ||= tweet_data['user']['data']
-      #   metrics_created, tweet_updated = process_tweet_data(tweet_data)
-      #   metrics_created_count += 1 if metrics_created
-      #   tweets_updated_count += 1 if tweet_updated
-      # end
-
-      # if today_user_data
-      #   @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
-      #   IdentityUpdater.new(today_user_data).call
-      # end
-
-      # [metrics_created_count, tweets_updated_count]
+      # add logging later from new_tweets_fetcher.rb
+      fetch_and_store_tweets
     end
 
     private
 
-    def tweet_ids
-      # possible memoization later
-      calculate_tweet_ids
+    def fetch_and_store_tweets
+        tweets_for_first_update_params, tweets_for_subsequent_updates_params = calculate_tweet_ranges(user)
+        fetch_and_process_tweets(tweets_for_first_update_params, user)
+        fetch_and_process_tweets(tweets_for_subsequent_updates_params, user)
+      rescue StandardError => e
+        ExceptionNotifier.notify_exception(StandardError.new("DEBUG message (remove later): No tweets found for user"), data: user)
     end
 
-    def calculate_tweet_ids
-      # Get IDs of syncable identities first
-      syncable_identity_ids = Identity.joins(:user).merge(User.syncable).pluck(:id)
+    def fetch_and_process_tweets(params, user)
+      params = { query: "from:#{user.handle} -filter:replies since_id:#{params[:since_id]} max_id:#{params[:max_id]}" }
+      p params
+      tweets = client.search_tweets(params)
+      p tweets
+      today_user_data = nil
 
-      # TO-DO: Change this to inclusion_ids as it should be a small queried set
-      exclusion_ids = Tweet.where('twitter_created_at < ?', 15.days.ago).pluck(:id)
+      tweets['data'].each do |tweet_data|
+        today_user_data ||= tweet_data['user']['data']
+        process_tweet_data(tweet_data)
+      end
 
-      # Find tweets created 23-24 hours ago with only one TweetMetric, belonging to syncable identities
-      tweets_for_first_update = Tweet.joins(:tweet_metrics)
-                                      .where(identity_id: syncable_identity_ids)
-                                      .where('twitter_created_at < ?', 23.hours.ago)
-                                      .where.not(id: exclusion_ids) # Exclude old tweets
-                                      .group(:id)
-                                      .having('COUNT(tweet_metrics.id) = 1')
-
-                                      # Find tweets with the last TweetMetric pulled_at older than 24 hours, belonging to syncable identities
-      tweets_for_subsequent_updates = Tweet.joins(:tweet_metrics)
-                                            .where(identity_id: syncable_identity_ids)
-                                            .where.not(id: tweets_for_first_update.select(:id) + exclusion_ids) # Exclude tweets already selected for first update and old tweets
-                                            .where('tweet_metrics.pulled_at < ?', 24.hours.ago)
-                                            .group(:id)
-                                            .having('MAX(tweet_metrics.pulled_at) < ?', 24.hours.ago)
-
-      # Combine both sets and map to tweet IDs
-      tweet_ids_for_update = (tweets_for_first_update.pluck(:id) + tweets_for_subsequent_updates.pluck(:id)).uniq
-      tweet_ids_for_update
+      if today_user_data
+        @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
+        IdentityUpdater.new(today_user_data).call
+      end
     end
 
+    def calculate_tweet_ranges(user)
+      tweets_for_first_update_range = calculate_range(user, 23.hours.ago)
+      tweets_for_subsequent_updates_range = calculate_range(user, 24.hours.ago, tweets_for_first_update_range[:since_id], for_subsequent_updates: true)
+
+      [tweets_for_first_update_range, tweets_for_subsequent_updates_range]
+    end
+
+    def calculate_range(user, time_threshold, since_id = nil, for_subsequent_updates: false)
+      base_query = Tweet.joins(:tweet_metrics)
+                        .where(identity_id: user.identity.id)
+                        .select(:id)
+
+      if for_subsequent_updates
+        tweet_ids = base_query.where('tweet_metrics.pulled_at < ?', 24.hours.ago)
+                              .group(:id)
+                              .having('MAX(tweet_metrics.pulled_at) < ?', 24.hours.ago)
+                              .pluck(:twitter_id)
+      else
+        tweet_ids = base_query.where('twitter_created_at < ?', time_threshold)
+                              .group(:id)
+                              .having('COUNT(tweet_metrics.id) = 1')
+                              .pluck(:twitter_id)
+      end
+
+      tweet_ids = tweet_ids.filter { |id| id > since_id } if since_id.present?
+
+      raise StandardError.new("No tweet IDs found for the specified criteria") if tweet_ids.empty?
+
+      min_id = tweet_ids.min
+      max_id = tweet_ids.max
+      p "tweet_ids.count: #{tweet_ids.count}"
+
+      { since_id: min_id, max_id: max_id }
+    end
 
     def process_tweet_data(tweet_data)
-
+      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data)
     end
   end
 end
