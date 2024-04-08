@@ -36,9 +36,10 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
-    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = true)
+    def fetch_tweets_by_ids(tweet_ids)
       endpoint = 'tweets'
       fields = 'created_at,public_metrics'
+      # Not used. Remove later
       fields += ',non_public_metrics' if include_non_public_metrics
 
       params = {

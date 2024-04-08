@@ -7,7 +7,7 @@ module Twitter
       User.syncable.find_each do |user|
         Twitter::NewTweetsFetcherJob.perform_async(user.id)
       end
-      ExistingTweetsUpdaterJob.perform_async
+      Twitter::ExistingTweetsUpdaterJob.perform_async
     end
   end
 end

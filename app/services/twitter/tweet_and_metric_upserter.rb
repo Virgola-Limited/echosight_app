@@ -13,7 +13,11 @@ module Twitter
       tweet_metric = find_or_initialize_tweet_metric(tweet)
 
       update_tweet_metric(tweet_metric)
-      [tweet_metric, tweet]
+      {
+        tweet: tweet,
+        tweet_metric: tweet_metric,
+        user: @user
+      }
     end
 
     private

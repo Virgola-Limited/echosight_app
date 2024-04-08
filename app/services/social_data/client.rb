@@ -64,9 +64,10 @@ module SocialData
       make_api_call(endpoint, params, :oauth2)
     end
 
-    def fetch_tweets_by_ids(tweet_ids, include_non_public_metrics = false)
+    def fetch_tweets_by_ids(tweet_ids)
+      Rails.logger.debug('paul' + tweet_ids.inspect)
       tweets = tweet_ids.map do |tweet_id|
-        fetch_tweet_by_id(tweet_id, include_non_public_metrics)
+        fetch_tweet_by_id(tweet_id)
       end
       { 'tweets' => tweets.compact }
     end
@@ -77,12 +78,13 @@ module SocialData
       tweet['user'] || {}
     end
 
-    def fetch_tweet_by_id(tweet_id, _include_non_public_metrics = false)
+    def fetch_tweet_by_id(tweet_id)
       endpoint = 'statuses/show'
       params = {
         'id' => tweet_id
       }
-
+      # byebug
+      # params = {"id"=>'5691&5275'}
       make_api_call(endpoint, params, :oauth2)
     end
 
@@ -104,6 +106,7 @@ module SocialData
       end
 
       # Handle the response
+      Rails.logger.debug('paul' + response.inspect)
       unless response.is_a?(Net::HTTPSuccess)
         raise StandardError, "HTTP request failed: #{response.code} - #{response.message}"
       end

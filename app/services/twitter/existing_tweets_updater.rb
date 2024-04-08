@@ -4,9 +4,8 @@ module Twitter
   class ExistingTweetsUpdater < Services::Base
     attr_reader :user, :client
 
-    def initialize(user:, client: nil)
-      @user = user
-      @client = client || SocialData::ClientAdapter.new(user)
+    def initialize(client: nil)
+      @client = client || SocialData::ClientAdapter.new
     end
 
     def call

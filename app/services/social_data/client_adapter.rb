@@ -4,7 +4,7 @@ module SocialData
   class ClientAdapter
     attr_reader :user, :social_data_client
 
-    def initialize(user)
+    def initialize(user: nil)
       @user = user
       @social_data_client = SocialData::Client.new(user)
     end
@@ -19,7 +19,7 @@ module SocialData
       adapt_user_response_format(response)
     end
 
-    def fetch_tweets_by_ids(tweet_ids, _include_non_public_metrics)
+    def fetch_tweets_by_ids(tweet_ids)
       response = social_data_client.fetch_tweets_by_ids(tweet_ids)
       adapt_tweets_response_format(response)
     end
