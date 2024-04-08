@@ -26,7 +26,7 @@ module Twitter
 
     def update_user(user)
       # Must match what is in Sidekiq::Cron::Job
-      Twitter::NewTweetsFetcher.new(user:, within_time: '30m').call
+      Twitter::NewTweetsFetcher.new(user:).call
     end
   end
 end

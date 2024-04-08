@@ -3,6 +3,8 @@
 # config/initializers/sidekiq.rb
 require 'sidekiq'
 require 'sidekiq-cron'
+require_relative './application_constants'
+require_relative '../../lib/cron_expression_generator'
 
 Sidekiq.logger.level = Logger::DEBUG
 
@@ -30,7 +32,7 @@ if !Rails.env.development? && !Rails.env.test?
       [
         {
           'name' => 'Fetch Tweets',
-          'cron' => '0,30 * * * *',
+          'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
           'class' => 'Twitter::TweetsFetcherJob'
         },
       ]

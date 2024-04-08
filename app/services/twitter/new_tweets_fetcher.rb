@@ -4,7 +4,8 @@ module Twitter
   class NewTweetsFetcher
     attr_reader :user, :client, :within_time
 
-    def initialize(user:, client: nil, within_time: )
+    # dont change ApplicationConstants::TWITTER_FETCH_INTERVAL
+    def initialize(user:, client: nil, within_time: ApplicationConstants::TWITTER_FETCH_INTERVAL)
       @user = user
       @client = client || SocialData::ClientAdapter.new
       @within_time = within_time
