@@ -49,7 +49,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       end
     end
 
-    fcontext 'when the tweet exists' do
+    context 'when the tweet exists' do
       let!(:tweet) { create(:tweet, twitter_id: '1765189290131399049', identity: user.identity) }
       let!(:tweet_metric) { create(:tweet_metric, tweet: tweet, pulled_at: DateTime.now) }
 

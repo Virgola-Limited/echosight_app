@@ -82,8 +82,6 @@ module SocialData
       params = {
         'id' => tweet_id
       }
-      # byebug
-      # params = {"id"=>'5691&5275'}
       make_api_call(endpoint, params, :oauth2)
     end
 
@@ -105,7 +103,6 @@ module SocialData
       end
 
       # Handle the response
-      Rails.logger.debug('paul' + response.inspect)
       unless response.is_a?(Net::HTTPSuccess)
         raise StandardError, "HTTP request failed: #{response.code} - #{response.message}"
       end

@@ -26,9 +26,7 @@ module Twitter
 
     def fetch_and_process_tweets(params, user)
       params = { query: "from:#{user.handle} -filter:replies since_id:#{params[:since_id]} max_id:#{params[:max_id]}" }
-      p params
       tweets = client.search_tweets(params)
-      p tweets
       today_user_data = nil
 
       tweets['data'].each do |tweet_data|
@@ -72,7 +70,6 @@ module Twitter
 
       min_id = tweet_ids.min
       max_id = tweet_ids.max
-      p "tweet_ids.count: #{tweet_ids.count}"
 
       { since_id: min_id, max_id: max_id }
     end
