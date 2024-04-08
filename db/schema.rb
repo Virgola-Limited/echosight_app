@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_04_220341) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_08_210124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,6 +130,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_04_220341) do
     t.text "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sync_class"
     t.index ["identity_id"], name: "index_user_twitter_data_updates_on_identity_id"
     t.index ["started_at"], name: "index_user_twitter_data_updates_on_started_at"
   end

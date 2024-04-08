@@ -10,6 +10,7 @@ ActiveAdmin.register_page "Dashboard" do
         column "Error Message", :error_message do |update|
           span truncate(update.error_message, length: 300), title: update.error_message
         end
+        column :sync_class
         column "Identity UID", :identity_id do |update|
           update.identity.uid # Assuming `uid` is a column in your `identities` table
         end

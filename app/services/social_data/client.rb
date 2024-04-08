@@ -65,7 +65,6 @@ module SocialData
     end
 
     def fetch_tweets_by_ids(tweet_ids)
-      Rails.logger.debug('paul' + tweet_ids.inspect)
       tweets = tweet_ids.map do |tweet_id|
         fetch_tweet_by_id(tweet_id)
       end
