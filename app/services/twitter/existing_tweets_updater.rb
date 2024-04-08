@@ -20,8 +20,9 @@ module Twitter
         tweets_for_first_update_params, tweets_for_subsequent_updates_params = calculate_tweet_ranges(user)
         fetch_and_process_tweets(tweets_for_first_update_params, user)
         fetch_and_process_tweets(tweets_for_subsequent_updates_params, user)
-      rescue StandardError => e
-        ExceptionNotifier.notify_exception(StandardError.new("DEBUG message (remove later): No tweets found for user"), data: user)
+        # add some logging later
+      # rescue StandardError => e
+      #   ExceptionNotifier.notify_exception(StandardError.new("DEBUG message (remove later): No tweets found for user"), data: user)
     end
 
     def fetch_and_process_tweets(params, user)
