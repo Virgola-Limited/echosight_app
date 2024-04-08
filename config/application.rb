@@ -50,6 +50,7 @@ module EchosightApp
       puts 'Helpful commands:'
       puts 'Twitter::ExistingTweetsUpdater.call'
       puts 'Twitter::NewTweetsFetcher.new(user: User.first).call'
+      puts 'Twitter::TweetsFetcherJob.new.perform'
     end
 
     config.action_mailer.default_url_options = {
