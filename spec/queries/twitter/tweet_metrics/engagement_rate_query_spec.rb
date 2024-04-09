@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Twitter::TweetMetrics::EngagementRateQuery do
   let(:identity) { create(:identity, :random_credentials) }
-  let(:user) { create(:user, identity: identity) }
-  subject(:query) { described_class.new(user: user) }
+  let(:user) { create(:user, identity:) }
+  subject(:query) { described_class.new(user:) }
 
   describe '#engagement_rate_percentage_per_day' do
     context 'when there are no tweets' do
@@ -17,8 +19,8 @@ RSpec.describe Twitter::TweetMetrics::EngagementRateQuery do
       before do
         # Create tweets for the past 7 days without interactions or impressions
         1.upto(7) do |n|
-          tweet = create(:tweet, identity: identity, twitter_created_at: n.days.ago)
-          create(:tweet_metric, :zero_metrics, tweet: tweet, pulled_at: n.days.ago)
+          tweet = create(:tweet, identity:, twitter_created_at: n.days.ago)
+          create(:tweet_metric, :zero_metrics, tweet:, pulled_at: n.days.ago)
         end
       end
 
@@ -32,10 +34,10 @@ RSpec.describe Twitter::TweetMetrics::EngagementRateQuery do
       before do
         # Create tweets for the past 7 days with varying interactions and impressions
         1.upto(7) do |n|
-          tweet = create(:tweet, identity: identity, twitter_created_at: n.days.ago)
-          create(:tweet_metric, tweet: tweet, pulled_at: n.days.ago,
-                 retweet_count: n * 2, quote_count: n, like_count: n * 3,
-                 reply_count: n, bookmark_count: n, impression_count: n * 10)
+          tweet = create(:tweet, identity:, twitter_created_at: n.days.ago)
+          create(:tweet_metric, tweet:, pulled_at: n.days.ago,
+                                retweet_count: n * 2, quote_count: n, like_count: n * 3,
+                                reply_count: n, bookmark_count: n, impression_count: n * 10)
         end
       end
 
@@ -56,10 +58,10 @@ RSpec.describe Twitter::TweetMetrics::EngagementRateQuery do
       before do
         # Create multiple tweets from yesterday with varying interactions and impressions
         3.times do |n|
-          tweet = create(:tweet, identity: identity, twitter_created_at: 1.day.ago)
-          create(:tweet_metric, tweet: tweet, pulled_at: 1.day.ago,
-                 retweet_count: 10, quote_count: 5, like_count: 15,
-                 reply_count: 5, bookmark_count: 5, impression_count: 50 + n)
+          tweet = create(:tweet, identity:, twitter_created_at: 1.day.ago)
+          create(:tweet_metric, tweet:, pulled_at: 1.day.ago,
+                                retweet_count: 10, quote_count: 5, like_count: 15,
+                                reply_count: 5, bookmark_count: 5, impression_count: 50 + n)
         end
       end
 

@@ -11,8 +11,8 @@ module Twitter
       end
 
       def first_day_impressions
-            # dont use until we decide if the impression count at the top works the same as the graphs
-    return ''
+        # dont use until we decide if the impression count at the top works the same as the graphs
+        ''
 
         # grouped_metrics, sorted_dates = fetch_grouped_metrics
         # return nil if sorted_dates.empty?

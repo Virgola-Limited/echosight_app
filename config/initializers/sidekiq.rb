@@ -40,7 +40,7 @@ if !Rails.env.development? && !Rails.env.test?
           'name' => 'Fetch Tweets',
           'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
           'class' => 'Twitter::TweetsFetcherJob'
-        },
+        }
       ]
     )
   end

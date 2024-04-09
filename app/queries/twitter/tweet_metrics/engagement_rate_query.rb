@@ -14,13 +14,13 @@ module Twitter
         end_date = Date.current # Assuming you want data up to the current date
         start_date = end_date - 6.days # Adjust this as needed
 
-        daily_engagement_rates = (start_date..end_date).map do |date|
+        (start_date..end_date).map do |date|
           # Fetch tweets created and their metrics on 'date'
           tweets_metrics_on_date = Tweet.joins(:tweet_metrics)
-                              .where(identity_id: user.identity.id, twitter_created_at: date.beginning_of_day..date.end_of_day)
-                              .where('tweet_metrics.pulled_at' => date.beginning_of_day..date.end_of_day)
+                                        .where(identity_id: user.identity.id, twitter_created_at: date.beginning_of_day..date.end_of_day)
+                                        .where('tweet_metrics.pulled_at' => date.beginning_of_day..date.end_of_day)
 
-                                        # .references(:tweet_metrics)
+          # .references(:tweet_metrics)
 
           daily_interactions = 0
           daily_impressions = 0
@@ -40,10 +40,8 @@ module Twitter
           # Calculate the engagement rate for the day
           engagement_rate = daily_impressions.positive? ? (daily_interactions.to_f / daily_impressions * 100).round(2) : 0
 
-          { date: date, engagement_rate_percentage: engagement_rate }
+          { date:, engagement_rate_percentage: engagement_rate }
         end
-
-        daily_engagement_rates
       end
     end
   end
