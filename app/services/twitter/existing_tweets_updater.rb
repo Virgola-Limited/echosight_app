@@ -58,6 +58,8 @@ module Twitter
                               .group(:id)
                               .having('MAX(tweet_metrics.pulled_at) < ?', 24.hours.ago)
                               .pluck(:twitter_id)
+      # improve logging so it doesn't raise an error
+      raise StandardError.new("No tweet IDs found for the specified criteria") if tweet_ids.empty?
       else
         tweet_ids = base_query.where('twitter_created_at < ?', time_threshold)
                               .group(:id)
@@ -67,7 +69,7 @@ module Twitter
 
       tweet_ids = tweet_ids.filter { |id| id > since_id } if since_id.present?
 
-      raise StandardError.new("No tweet IDs found for the specified criteria") if tweet_ids.empty?
+
 
       min_id = tweet_ids.min
       max_id = tweet_ids.max
