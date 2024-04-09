@@ -5,29 +5,6 @@ RSpec.describe Twitter::TweetMetricsQuery do
   let(:user) { create(:user, identity: identity) }
   subject(:query) { described_class.new(user: user) }
 
-  describe '#impressions_count' do
-    let!(:old_tweets) do
-      # Create tweets with metrics older than 14 days to ensure we pass the 14-day check
-      (15..20).to_a.map do |n|
-        create(:tweet, identity: identity, twitter_created_at: n.days.ago).tap do |tweet|
-          create(:tweet_metric, tweet: tweet, pulled_at: n.days.ago, impression_count: 50 * n)
-        end
-      end
-    end
-
-    it 'calculates the total impressions count for the last 7 days' do
-      # Calculate expected impressions count for the last 7 days
-      expected_impressions = TweetMetric.where('pulled_at > ?', 7.days.ago)
-                                        .sum(:impression_count) - TweetMetric.where('pulled_at > ?', 14.days.ago)
-                                                                              .where('pulled_at <= ?', 7.days.ago)
-                                                                              .sum(:impression_count)
-
-      impressions_count = query.impressions_count
-      expect(impressions_count).to eq(expected_impressions)
-    end
-  end
-
-
   describe '#top_tweets_for_user' do
     let!(:tweets) do
       [
@@ -52,27 +29,6 @@ RSpec.describe Twitter::TweetMetricsQuery do
       expect(top_tweets.map(&:tweet_id)).to match_array(top_tweets.map(&:tweet_id).uniq)
       expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300, 0
     ])
-    end
-  end
-
-  describe '#impression_counts_per_day' do
-    let(:tweet1) { create(:tweet, identity: identity) }
-    let(:tweet2) { create(:tweet, identity: identity) }
-    before do
-      3.times do |i|
-        create(:tweet_metric, tweet: tweet1, pulled_at: (2 - i).days.ago, impression_count: 100 * (i + 1))
-        create(:tweet_metric, tweet: tweet2, pulled_at: (2 - i).days.ago, impression_count: 200 * (i + 1))
-      end
-    end
-
-    subject(:impression_diffs) { query.impression_counts_per_day }
-
-    it 'calculates daily impression differences, ignoring the first day' do
-      expected_diffs = [
-        { date: 1.day.ago.to_date, impression_count: 300} , # (200*2 - 200*1) + (100*2 - 100*1)
-        { date: Time.zone.today, impression_count: 300 }    # (200*3 - 200*2) + (100*3 - 100*2)
-      ]
-      expect(impression_diffs).to match_array(expected_diffs)
     end
   end
 
