@@ -33,5 +33,14 @@ FactoryBot.define do
     reply_count { 2 }
     bookmark_count { 3 }
     pulled_at { DateTime.current }
+
+    trait :zero_metrics do
+      retweet_count { 0 }
+      like_count { 0 }
+      quote_count { 0 }
+      impression_count { 0 }
+      reply_count { 0 }
+      bookmark_count { 0 }
+    end
   end
 end
