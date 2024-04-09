@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
   include Cacheable
@@ -7,21 +9,17 @@ class PublicPageService < Services::Base
   def initialize(handle:, current_user: nil, current_admin_user: nil)
     @handle = handle
     @current_user = current_user
-    identity = Identity.find_by(handle: handle)
+    identity = Identity.find_by(handle:)
     @user = identity.user if identity.present?
     @current_admin_user = current_admin_user
   end
 
   def call
-    if @user.nil?
-      if handle == 'demo' && !current_user.guest?
-        @user = current_user
-      end
-    end
+    @user = current_user if @user.nil? && (handle == 'demo' && !current_user.guest?)
     result = determine_public_page_status
     case result.status
     when :demo
-      DemoPublicPageService.call(user: user)
+      DemoPublicPageService.call(user:)
     when :success
       public_page_data
     end
@@ -58,33 +56,31 @@ class PublicPageService < Services::Base
     end
   end
 
-  private
-
   def generate_public_page_data
-    @public_page_data ||= PublicPageData.new(
-      engagement_rate_percentage_per_day: engagement_rate_percentage_per_day,
-      first_day_impressions: first_day_impressions,
-      first_impressions_message: first_impressions_message,
-      follower_daily_data_points_for_graph: follower_daily_data_points_for_graph,
-      follower_formatted_labels_for_graph: follower_formatted_labels_for_graph,
-      followers_comparison_days: followers_comparison_days,
-      followers_count: followers_count,
-      followers_count_change_percentage_text: followers_count_change_percentage_text,
-      impression_daily_data_points_for_graph: impression_daily_data_points_for_graph,
-      impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
-      impressions_change_since_last_week: impressions_change_since_last_week,
-      impressions_comparison_days: impressions_comparison_days,
-      impressions_count: impressions_count,
-      likes_change_since_last_week: likes_change_since_last_week,
-      likes_comparison_days: likes_comparison_days,
-      likes_count: likes_count,
-      maximum_days_of_data: maximum_days_of_data,
-      top_posts: top_posts,
-      days_of_data_in_recent_count: days_of_data_in_recent_count,
-      days_of_data_in_difference_count: days_of_data_in_difference_count,
-      tweet_count_over_available_time_period: tweet_count_over_available_time_period,
-      tweets_change_over_available_time_period: tweets_change_over_available_time_period,
-      user: user
+    @generate_public_page_data ||= PublicPageData.new(
+      engagement_rate_percentage_per_day:,
+      first_day_impressions:,
+      first_impressions_message:,
+      follower_daily_data_points_for_graph:,
+      follower_formatted_labels_for_graph:,
+      followers_comparison_days:,
+      followers_count:,
+      followers_count_change_percentage_text:,
+      impression_daily_data_points_for_graph:,
+      impression_formatted_labels_for_graph:,
+      impressions_change_since_last_week:,
+      impressions_comparison_days:,
+      impressions_count:,
+      likes_change_since_last_week:,
+      likes_comparison_days:,
+      likes_count:,
+      maximum_days_of_data:,
+      top_posts:,
+      days_of_data_in_recent_count:,
+      days_of_data_in_difference_count:,
+      tweet_count_over_available_time_period:,
+      tweets_change_over_available_time_period:,
+      user:
     )
   end
 
@@ -155,7 +151,7 @@ class PublicPageService < Services::Base
     elsif change_percentage.negative?
       "#{change_percentage.abs.round(1)}% decrease"
     else
-      "No change"
+      'No change'
     end
   end
 
@@ -168,7 +164,7 @@ class PublicPageService < Services::Base
   end
 
   def impressions_comparison_days
-    @impressions_comparison_days ||= 7  # This is set to a static value but can be made dynamic as needed.
+    @impressions_comparison_days ||= 7 # This is set to a static value but can be made dynamic as needed.
   end
 
   def likes_count
@@ -180,9 +176,8 @@ class PublicPageService < Services::Base
   end
 
   def likes_comparison_days
-    @likes_comparison_days ||= 7  # This can be adjusted to be dynamic if necessary.
+    @likes_comparison_days ||= 7 # This can be adjusted to be dynamic if necessary.
   end
-
 
   def followers_count
     @followers_count ||= twitter_user_metrics_query.followers_count
@@ -230,13 +225,11 @@ class PublicPageService < Services::Base
   end
 
   def first_impressions_message
-    @first_impressions_message ||= begin
-      if first_day_impressions
-        "Based on #{first_day_impressions[:impression_count].to_s} on #{first_day_impressions[:date].to_s} "
-      else
-        ''
-      end
-    end
+    @first_impressions_message ||= if first_day_impressions
+                                     "Based on #{first_day_impressions[:impression_count]} on #{first_day_impressions[:date]} "
+                                   else
+                                     ''
+                                   end
   end
 
   def first_day_impressions
@@ -258,11 +251,11 @@ class PublicPageService < Services::Base
   end
 
   def tweet_metrics_query
-    Twitter::TweetMetricsQuery.new(user: user)
+    Twitter::TweetMetricsQuery.new(user:)
   end
 
   def impressions_query
-    Twitter::TweetMetrics::ImpressionsQuery.new(user: user)
+    Twitter::TweetMetrics::ImpressionsQuery.new(user:)
   end
 
   def twitter_user_metrics_query
@@ -270,6 +263,6 @@ class PublicPageService < Services::Base
   end
 
   def post_counts_query
-    Twitter::PostCountsQuery.new(user: user)
+    Twitter::PostCountsQuery.new(user:)
   end
 end

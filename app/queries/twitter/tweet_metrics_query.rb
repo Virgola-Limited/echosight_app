@@ -21,7 +21,6 @@ module Twitter
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
-
     def top_tweets_for_user
       last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
                                                                                    start_time)
@@ -29,7 +28,7 @@ module Twitter
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
                                  .group(:tweet_id, :pulled_at, :impression_count, :id)
                                  .where.not(impression_count: nil)
-                                #  .select('*, MAX(impression_count) as max_impression_count')
+                                 #  .select('*, MAX(impression_count) as max_impression_count')
                                  .order(impression_count: :desc)
 
       results = []
@@ -43,8 +42,8 @@ module Twitter
       end
 
       TweetMetric.where(id: results)
-      .includes(:tweet)
-      .order(impression_count: :desc)
+                 .includes(:tweet)
+                 .order(impression_count: :desc)
     end
 
     def likes_count
@@ -90,7 +89,6 @@ module Twitter
       percentage_change.round(2)
     end
 
-
     def engagement_rate_percentage_per_day
       recent_tweets = Tweet.includes(:tweet_metrics)
                            .where(identity_id: @user.identity.id)
@@ -122,7 +120,7 @@ module Twitter
         eligible_tweets_count = 0
 
         # Iterate over cached tweet metrics
-        tweet_metrics_by_date.each do |tweet_id, metrics|
+        tweet_metrics_by_date.each_value do |metrics|
           current_metrics = metrics[current_day]
           previous_metrics = metrics[previous_day]
 
@@ -159,7 +157,7 @@ module Twitter
 
       # Sort and format the result
       sorted_daily_engagement_rates = daily_engagement_rates.sort_by { |date, _| date }.to_h
-      sorted_daily_engagement_rates.map { |date, rate| { date: date, engagement_rate_percentage: rate } }
+      sorted_daily_engagement_rates.map { |date, rate| { date:, engagement_rate_percentage: rate } }
     end
 
     private
