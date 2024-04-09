@@ -23,8 +23,9 @@ module Twitter
     private
 
     def assign_user(user)
-      tweet = Tweet.find_by(twitter_id: tweet_data['id'])
-      @user = user || tweet.user
+      @user = user
+      return if user
+
       raise ActiveRecord::RecordNotFound unless @user
     end
 

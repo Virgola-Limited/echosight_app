@@ -1,19 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe Twitter::ExistingTweetsUpdater do
-  let!(:syncable_user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
+  let!(:user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
   # let(:non_syncable_user) { create(:user, :with_identity, confirmed_at: nil) }
   let(:client) { double('Client') }
 
   before do
     allow_any_instance_of(described_class).to receive(:client).and_return(client)
-    allow(client).to receive(:fetch_tweets_by_ids)
+    allow(client).to receive(:search_tweets).and_return({ 'data' => [] })
   end
 
 
   describe '#call' do
     it 'runs without error' do
-      expect { described_class.call(user: syncable_user) }.not_to raise_error
+      expect { described_class.call(user: user) }.not_to raise_error
     end
 
     # context 'when tweet exists with 1 tweet metric' do

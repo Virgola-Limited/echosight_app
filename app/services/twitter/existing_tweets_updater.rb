@@ -78,7 +78,7 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
-      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data)
+      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user)
     end
   end
 end
