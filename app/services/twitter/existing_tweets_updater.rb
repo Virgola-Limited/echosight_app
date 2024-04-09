@@ -59,7 +59,7 @@ module Twitter
                               .having('MAX(tweet_metrics.pulled_at) < ?', 24.hours.ago)
                               .pluck(:twitter_id)
       # improve logging so it doesn't raise an error
-      raise StandardError.new("No tweet IDs found for the specified criteria") if tweet_ids.empty?
+      # raise StandardError.new("No tweet IDs found for the specified criteria") if tweet_ids.empty?
       else
         tweet_ids = base_query.where('twitter_created_at < ?', time_threshold)
                               .group(:id)
