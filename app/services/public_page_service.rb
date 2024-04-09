@@ -225,6 +225,8 @@ class PublicPageService < Services::Base
   end
 
   def first_impressions_message
+    # dont use until we decide if the impression count at the top works the same as the graphs
+    return ''
     @first_impressions_message ||= if first_day_impressions
                                      "Based on #{first_day_impressions[:impression_count]} on #{first_day_impressions[:date]} "
                                    else

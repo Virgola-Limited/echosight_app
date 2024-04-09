@@ -11,13 +11,16 @@ module Twitter
       end
 
       def first_day_impressions
-        grouped_metrics, sorted_dates = fetch_grouped_metrics
-        return nil if sorted_dates.empty?
+            # dont use until we decide if the impression count at the top works the same as the graphs
+    return ''
 
-        first_date = sorted_dates.first
-        first_day_impression_count = grouped_metrics[first_date].sum(&:impression_count)
+        # grouped_metrics, sorted_dates = fetch_grouped_metrics
+        # return nil if sorted_dates.empty?
 
-        { date: first_date, impression_count: first_day_impression_count }
+        # first_date = sorted_dates.first
+        # first_day_impression_count = grouped_metrics[first_date].sum(&:impression_count)
+
+        # { date: first_date, impression_count: first_day_impression_count }
       end
 
       def impressions_count
