@@ -84,15 +84,6 @@ class PublicPageService < Services::Base
     )
   end
 
-  def engagement_rates_empty_or_zero?
-    engagement_rate_percentages = public_page_data_attributes.select { |attr| attr.is_a?(Array) }
-    engagement_rate_percentages.any? do |array|
-      array.empty? || array.any? do |element|
-        element.is_a?(Hash) && element[:engagement_rate_percentage].to_f.zero?
-      end
-    end
-  end
-
   def public_page_data_attributes
     [
       public_page_data.engagement_rate_percentage_per_day,
@@ -209,7 +200,7 @@ class PublicPageService < Services::Base
   end
 
   def engagement_rate_percentage_per_day
-    @engagement_rate_percentage_per_day ||= tweet_metrics_query.engagement_rate_percentage_per_day
+    @engagement_rate_percentage_per_day ||= engagement_rate_query.engagement_rate_percentage_per_day
   end
 
   def impression_daily_data_points_for_graph
@@ -246,6 +237,10 @@ class PublicPageService < Services::Base
 
   def top_posts
     @top_posts ||= tweet_metrics_query.top_tweets_for_user
+  end
+
+  def engagement_rate_query
+    Twitter::TweetMetrics::EngagementRateQuery.new(user:)
   end
 
   def profile_conversion_rate_query
