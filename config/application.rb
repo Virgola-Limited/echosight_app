@@ -1,6 +1,8 @@
-require_relative "boot"
+# frozen_string_literal: true
 
-require "rails/all"
+require_relative 'boot'
+
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -17,7 +19,7 @@ module EchosightApp
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -40,22 +42,21 @@ module EchosightApp
       g.controller_specs false
     end
 
-    config.autoload_paths += %W(#{config.root}/lib)
-    config.autoload_paths += %W(#{config.root}/app/components)
+    config.autoload_paths += %W[#{config.root}/lib]
+    config.autoload_paths += %W[#{config.root}/app/components]
     config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
 
-    config.action_mailer.asset_host = Rails.application.credentials.dig(:asset_host) || 'https://app.echosight.io'
+    config.action_mailer.asset_host = Rails.application.credentials[:asset_host] || 'https://app.echosight.io'
 
     console do
       puts 'Helpful commands:'
-      puts 'Twitter::ExistingTweetsUpdater.call'
       puts 'Twitter::NewTweetsFetcher.new(user: User.first).call'
       puts 'Twitter::TweetsFetcherJob.new.perform'
     end
 
     config.action_mailer.default_url_options = {
-      host: ENV["MAILER_HOST"] || Rails.application.credentials.dig(:host) || 'localhost',
-      port: ENV["MAILER_PORT"]
+      host: ENV['MAILER_HOST'] || Rails.application.credentials[:host] || 'localhost',
+      port: ENV['MAILER_PORT']
     }
 
     # Delivery method
@@ -69,7 +70,7 @@ module EchosightApp
       password: Rails.application.credentials.dig(:email, :password),
       authentication: :plain,
       ssl: Rails.application.credentials.dig(:email, :ssl),
-      enable_starttls_auto: Rails.application.credentials.dig(:email, :enable_starttls_auto),
+      enable_starttls_auto: Rails.application.credentials.dig(:email, :enable_starttls_auto)
     }
     # Raise delivery errors only in development
     config.action_mailer.raise_delivery_errors = Rails.env.development?

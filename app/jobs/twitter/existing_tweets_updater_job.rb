@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Twitter
   class ExistingTweetsUpdaterJob
     include Sidekiq::Job
@@ -12,21 +14,22 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data(user)
-      data_update_log = UserTwitterDataUpdate.create!(identity_id: user.identity.id, started_at: Time.current, sync_class: Twitter::ExistingTweetsUpdater)
+      data_update_log = UserTwitterDataUpdate.create!(identity_id: user.identity.id, started_at: Time.current,
+                                                      sync_class: Twitter::ExistingTweetsUpdater)
 
-      # begin
+      begin
         update_user(user)
-      # rescue StandardError => e
-        # message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
-        # data_update_log.update!(error_message: message)
-        # raise message
-      # else
-        # data_update_log.update!(completed_at: Time.current)
-      # end
+      rescue StandardError => e
+        message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
+        data_update_log.update!(error_message: message)
+        raise message
+      else
+        data_update_log.update!(completed_at: Time.current)
+      end
     end
 
     def update_user(user)
-      Twitter::ExistingTweetsUpdater.new(user: user).call
+      Twitter::ExistingTweetsUpdater.new(user:).call
     end
   end
 end
