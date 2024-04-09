@@ -21,36 +21,6 @@ module Twitter
       [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
     end
 
-    def impressions_count
-      return 0 if user.tweet_metrics.count.zero?
-
-      # Check if we have at least 14 days of data
-      earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
-      return false if (Date.current - earliest_record_date).to_i < 14
-
-      # Calculate impressions for the last 7 days and the previous 7 days
-      current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
-      previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
-
-      # Return the difference in impressions between the last two 7-day periods
-      current_week_impressions - previous_week_impressions
-    end
-
-    def impressions_change_since_last_week
-      # Calculate impressions for the last 7 days and the previous 7 days
-      current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
-      previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
-
-      return false if previous_week_impressions.zero? # No data from last week
-
-      # Calculate the percentage change in impressions
-      percentage_change = if previous_week_impressions.positive?
-                            ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
-                          else
-                            0 # No change if both current and previous week impressions are zero
-                          end
-      percentage_change.round(2)
-    end
 
     def top_tweets_for_user
       last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
@@ -119,41 +89,6 @@ module Twitter
                           end
       percentage_change.round(2)
     end
-
-    def impression_counts_per_day
-      grouped_metrics, sorted_dates = fetch_grouped_metrics(number_of_days:  8)
-      daily_total_impressions = calculate_total_impressions(grouped_metrics, sorted_dates)
-
-      # Calculate daily impression differences, excluding the first day
-      daily_impression_diffs = sorted_dates.each_cons(2).map do |previous_date, current_date|
-        difference = daily_total_impressions[current_date] - daily_total_impressions[previous_date]
-        {date: current_date, impression_count: difference} # Replace negative differences with 0
-      end
-      daily_impression_diffs
-    end
-
-    def first_day_impressions
-      grouped_metrics, sorted_dates = fetch_grouped_metrics
-      return nil if sorted_dates.empty?
-
-      first_date = sorted_dates.first
-      first_day_impression_count = grouped_metrics[first_date].sum(&:impression_count)
-
-      { date: first_date, impression_count: first_day_impression_count }
-    end
-
-#     Strategies to Consider:
-# Fixed Tweet Set: One way to mitigate this issue is to fix the set of tweets considered for the calculation over the entire period. This means selecting a set of tweets (e.g., those posted within a certain timeframe) and tracking their cumulative impressions over time, even if some fall outside your moving window. This approach provides consistency but might not fully reflect the dynamic nature of engagement.
-
-# Adjusting for Tweet Lifespan: When calculating daily impressions, consider the lifespan of each tweet. For tweets that "exit" your 7-day window, you could proportionally adjust the previous day's aggregate impression count to account for their absence. This method attempts to maintain the integrity of day-to-day comparisons but requires careful implementation to ensure accuracy.
-
-# Floor for Negative Differences: In cases where the aggregate impression count decreases (leading to a negative difference), you might decide to set a floor value (e.g., zero) for the daily impression difference. This approach acknowledges the decrease but avoids the implications of negative impressions in your engagement rate calculations.
-
-# Documenting Assumptions and Limitations: Whatever strategy you choose, it's important to document the assumptions and limitations of your approach, especially when presenting the data to others. This transparency helps users understand the context and potential nuances of the metrics.
-
-# Exploring Alternative Metrics: If the goal is to measure engagement or the impact of content over time, consider if there are alternative metrics or approaches that might be less affected by the issues with cumulative impression counts. For example, focusing on engagement rates per tweet or exploring other engagement signals that might be less prone to these issues.
-
-# Each of these strategies has trade-offs in terms of complexity, accuracy, and the insights they provide. The best approach depends on your specific goals, the nature of the decisions being informed by these metrics, and the resources available for data analysis.
 
 
     def engagement_rate_percentage_per_day
@@ -229,31 +164,6 @@ module Twitter
 
     private
 
-    def fetch_grouped_metrics(number_of_days: nil)
-      pulled_at_date_time = number_of_days&.days&.ago || start_time
-      # Fetch the latest TweetMetric record for each day for each tweet
-      tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
-                                 .joins(:tweet)
-                                 .where('pulled_at > ?', pulled_at_date_time)
-                                 .where(tweets: { identity_id: user.identity.id })
-                                 .order('tweet_id, DATE(pulled_at), pulled_at DESC')
-
-      # Group the metrics by date and sort the dates
-      grouped_metrics = tweet_metrics.group_by { |metric| metric.pulled_at.to_date }
-      sorted_dates = grouped_metrics.keys.sort
-
-      [grouped_metrics, sorted_dates]
-    end
-
-    def calculate_total_impressions(grouped_metrics, sorted_dates)
-      # Initialize a hash to keep track of total impressions per day
-      daily_total_impressions = {}
-      sorted_dates.each do |date|
-        daily_total_impressions[date] = grouped_metrics[date].sum { |metric| metric.impression_count || 0 }
-      end
-      daily_total_impressions
-    end
-
     def determine_comparison_days(days_of_data)
       case days_of_data
       when 2..3
@@ -280,17 +190,6 @@ module Twitter
       Tweet.where(identity_id: user.identity.id)
            .where(twitter_created_at: start_of_last_week..end_of_last_week)
            .count
-    end
-
-    def total_impressions_for_period(start_time, end_time)
-      TweetMetric.joins(:tweet)
-                 .where(tweets: { identity_id: user.identity.id })
-                 .where(pulled_at: start_time..end_time)
-                 .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
-                 .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
-                 .group_by { |tm| [tm.tweet_id, tm.pulled_at.to_date] }
-                 .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
-                 .sum
     end
   end
 end

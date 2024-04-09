@@ -160,11 +160,11 @@ class PublicPageService < Services::Base
   end
 
   def impressions_count
-    @impressions_count ||= tweet_metrics_query.impressions_count
+    @impressions_count ||= impressions_query.impressions_count
   end
 
   def impressions_change_since_last_week
-    @impressions_change_since_last_week ||= format_impressions_change(tweet_metrics_query.impressions_change_since_last_week)
+    @impressions_change_since_last_week ||= format_impressions_change(impressions_query.impressions_change_since_last_week)
   end
 
   def impressions_comparison_days
@@ -218,13 +218,13 @@ class PublicPageService < Services::Base
   end
 
   def impression_daily_data_points_for_graph
-    @impression_daily_data_points_for_graph ||= tweet_metrics_query.impression_counts_per_day.map do |data|
+    @impression_daily_data_points_for_graph ||= impressions_query.impression_counts_per_day.map do |data|
       data[:impression_count] >= 0 ? data[:impression_count] : 0
     end
   end
 
   def impression_formatted_labels_for_graph
-    @impression_formatted_labels_for_graph ||= tweet_metrics_query.impression_counts_per_day.map do |data|
+    @impression_formatted_labels_for_graph ||= impressions_query.impression_counts_per_day.map do |data|
       format_label_with_impression_count(data)
     end
   end
@@ -240,7 +240,7 @@ class PublicPageService < Services::Base
   end
 
   def first_day_impressions
-    @first_day_impressions ||= current_admin_user ? tweet_metrics_query.first_day_impressions : nil
+    @first_day_impressions ||= current_admin_user ? impressions_query.first_day_impressions : nil
   end
 
   def format_label_with_impression_count(data)
@@ -259,6 +259,10 @@ class PublicPageService < Services::Base
 
   def tweet_metrics_query
     Twitter::TweetMetricsQuery.new(user: user)
+  end
+
+  def impressions_query
+    Twitter::TweetMetrics::ImpressionsQuery.new(user: user)
   end
 
   def twitter_user_metrics_query
