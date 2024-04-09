@@ -1,0 +1,111 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: 'https://api.socialdata.tools/twitter/search?query=from:tophertoy%20-filter:replies%20since_id:%20max_id:'
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 09 Apr 2024 04:35:53 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '118'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=TgezFkjv43j69VXrDXvUXO%2B6m2LunLphGOZdagi5fV3JTyTNuAaMkVIRub9YFFFbQ0Jr91PkIhvSzpEax7O3JJVv7AsNMcc6iR%2B%2FGyyk4OZy4Mk7pBy3eb4ijUmcS9h%2BIPunDrnkBQ%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8717cafc38b7a968-SYD
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[],"next_cursor":null}'
+  recorded_at: Tue, 09 Apr 2024 04:35:53 GMT
+- request:
+    method: get
+    uri: 'https://api.socialdata.tools/twitter/search?query=from:tophertoy%20-filter:replies%20since_id:%20max_id:'
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 09 Apr 2024 04:35:56 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '117'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=X5IYqxPyCpgvPVSD71UKp3%2BOy5mYUeFNq1bssYMusLPuMhMGvP8cHR41NgMJDcoeVPTP76srbGVXfdJTx7PIxkT0ZR2jGit7UvWeIzkkTuw0095xBlB2l5UgBNv90q6dAbrEL2YDUA%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 8717cb0518e65738-SYD
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[],"next_cursor":null}'
+  recorded_at: Tue, 09 Apr 2024 04:35:55 GMT
+recorded_with: VCR 6.2.0

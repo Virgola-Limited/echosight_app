@@ -8,8 +8,9 @@ RSpec.describe Twitter::TweetsFetcherJob do
     let!(:user_2) { create(:user) }
 
     it 'calls Twitter::NewTweetsFetcherJob and ExistingTweetsUpdaterJob for each syncable user' do
-      expect(Twitter::NewTweetsFetcherJob).to receive(:perform_async).with(user.id)
-      expect(Twitter::ExistingTweetsUpdaterJob).to receive(:perform_async).with(user.id)
+      expect(Twitter::NewTweetsFetcherJob).to receive(:perform_async).with(user.id).and_call_original
+      expect(Twitter::ExistingTweetsUpdaterJob).to receive(:perform_async).with(user.id).and_call_original
+
       subject.perform
     end
   end
