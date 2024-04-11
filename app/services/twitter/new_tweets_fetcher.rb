@@ -53,6 +53,7 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
+      # need to check if this is updating existing tweets as part of cost audit
       Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user)
     end
   end

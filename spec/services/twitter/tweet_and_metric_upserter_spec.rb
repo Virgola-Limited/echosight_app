@@ -49,7 +49,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
         # Set up the initial state: one tweet with one associated tweet metric
         tweet_creation_time = Time.current.beginning_of_day + 13.hours
         travel_to tweet_creation_time do
-          tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+          tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now) # Check this shouldnt be DateTime.current
           create(:tweet_metric, tweet: tweet,
             retweet_count: 10,
             like_count: 20,
@@ -57,7 +57,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
             impression_count: 40,
             reply_count: 50,
             bookmark_count: 60,
-            pulled_at: DateTime.now
+            pulled_at: DateTime.now # Check this shouldnt be DateTime.current
           )
         end
 
@@ -152,6 +152,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
         early_morning = Time.current.beginning_of_day + 2.hours
         travel_to early_morning do
           tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+          # Check this shouldnt be DateTime.current
           create(:tweet_metric, tweet: tweet, pulled_at: early_morning - 1.day) # Earlier metric from the previous day
           create(:tweet_metric, tweet: tweet, pulled_at: early_morning) # Last metric from the same day
         end
@@ -197,6 +198,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           yesterday = Time.current.beginning_of_day - 2.hours
           travel_to yesterday do
             tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+            # Check this shouldnt be DateTime.current
             create(:tweet_metric, tweet: tweet, pulled_at: yesterday - 1.day) # An earlier metric from two days ago
             create(:tweet_metric, tweet: tweet, pulled_at: yesterday) # Last metric from yesterday
           end
