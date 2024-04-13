@@ -21,11 +21,16 @@ require 'factory_bot_rails'
 # require 'webmock/rspec'
 # WebMock.disable_net_connect!(allow_localhost: true)
 
+# Comment out to configure VCR
+def record_mode
+  return :new_episodes
+  return :all
+  return :none
+end
+
 VCR.configure do |config|
   config.ignore_localhost = true
-  # config.default_cassette_options = { record: :all }
-  # config.default_cassette_options = { record: :none }
-  # config.default_cassette_options = { record: :new_episodes }
+  config.default_cassette_options = { record: record_mode }
   config.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
   config.hook_into :webmock
 
