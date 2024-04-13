@@ -7,7 +7,6 @@ module Twitter
 
     def perform(user_id)
       user = User.find(user_id)
-      p "**user_id: #{user_id}"
       fetch_and_log_twitter_data(user)
     end
 
