@@ -2,85 +2,49 @@ require 'rails_helper'
 
 RSpec.describe Twitter::ExistingTweetsUpdater do
   let!(:user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
-  # let(:non_syncable_user) { create(:user, :with_identity, confirmed_at: nil) }
-  let(:client) { double('Client') }
-
-  before do
-    allow_any_instance_of(described_class).to receive(:client).and_return(client)
-    allow(client).to receive(:search_tweets).and_return({ 'data' => [] })
-  end
-
+  let(:client) { double('SocialData::ClientAdapter') }
+  let(:subject) { described_class.new(user: user, client: client) }
+  # let(:tweet) { create(:tweet, twitter_id: 1770016891555496274, identity: user.identity, twitter_created_at: 4.hour.ago)}
+  let(:updatable_tweet) { create(:tweet, twitter_id: 1765212190418899365, identity: user.identity, twitter_created_at: Time.current)}
+  # this is 1 second before the unix timestamp of the since id and and 1 second later than the max id
+  let(:expected_query) { { query: "from:#{user.identity.handle} -filter:replies since_time:1709694355 until_time:1709694357" } }
 
   describe '#call' do
-    it 'runs without error' do
-      expect { described_class.call(user: user) }.not_to raise_error
+    it 'it does not update the metric in the first 23 hours' do
+      VCR.use_cassette('Twitter__ExistingTweetsUpdater_call.yml') do
+        create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
+        expect(client).not_to receive(:search_tweets)
+        subject.call
+
+        1.upto(23) do |hour|
+          travel_to(hour.hours.from_now) do
+            begin
+              expect(client).not_to receive(:search_tweets)
+              subject.call
+            rescue RSpec::Mocks::MockExpectationError => e
+              raise "#{hour} didn't expect to call search_tweets. Original error: #{e.message}"
+            end
+          end
+        end
+      end
     end
 
-    # context 'when tweet exists with 1 tweet metric' do
-    #   it 'does not attempt to update within 23 hours of being created' do
-    #     tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: Time.current)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: Time.current)
+    it 'it updates the metric after 23 hours' do
+      VCR.use_cassette('Twitter__ExistingTweetsUpdater_call.yml') do
+        create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
+        travel_to(23.5.hours.from_now) do
+          expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => [] })
+          subject.call
+        end
+      end
+    end
 
-    #     (1..23).each do |hour|
-    #       travel_to hour.hours.from_now do
-    #         expect(client).not_to receive(:fetch_tweets_by_ids).with([tweet.id])
-    #         service.call
-    #       end
-    #     end
-    #   end
+        # need a successful VCR pull to test past here
 
-    #   it 'attempts to update 23.5 hours after being created' do
-    #     tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: Time.current)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: Time.current)
-
-    #     travel_to 23.5.hours.from_now do
-    #       expect(client).to receive(:fetch_tweets_by_ids).with([tweet.id])
-    #       service.call
-    #     end
-    #   end
-    # end
-
-    # context 'when tweet exists with 2 tweet metrics' do
-    #   it 'calls fetch_tweets_by_ids with the tweet id if the last metric was pulled more than 24 hours ago' do
-    #     tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: 48.hours.ago)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: 47.hours.ago)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: 25.hours.ago)
-
-    #     expect(client).to receive(:fetch_tweets_by_ids).with([tweet.id])
-    #     service.call
-    #   end
-    # end
-
-    # context 'when tweet is 14 days old' do
-    #   it 'calls fetch_tweets_by_ids with the tweet id if it needs updating' do
-    #     tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: 14.days.ago)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: 13.days.ago)
-
-    #     expect(client).to receive(:fetch_tweets_by_ids).with([tweet.id])
-    #     service.call
-    #   end
-    # end
-
-    # context 'when tweet is 15 days old' do
-    #   it 'does not call fetch_tweets_by_ids with the tweet id' do
-    #     tweet = create(:tweet, identity: syncable_user.identity, twitter_created_at: 15.days.ago)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: 14.days.ago)
-
-    #     expect(client).not_to receive(:fetch_tweets_by_ids).with([tweet.id])
-    #     service.call
-    #   end
-    # end
-
-    # context 'when tweet exists for a non-syncable user' do
-    #   let(:service) { described_class.new(user: non_syncable_user, client: client) }
-
-    #   it 'does not call fetch_tweets_by_ids for the non-syncable user tweet' do
-    #     tweet = create(:tweet, identity: non_syncable_user.identity, twitter_created_at: 23.hours.ago)
-    #     create(:tweet_metric, tweet: tweet, pulled_at: 23.hours.ago)
-
-    #     expect(client).not_to receive(:fetch_tweets_by_ids).with([tweet.id])
-    #     service.call
-    #   end
+        # test scenario with just new tweets
+        # test scenario with just old tweets
+        # test scenario with both new and old tweets
+        # test scenario when a new tweet needs updating there are tweets in the middle that dont need updating and there is a tweet at the end that needs updating if its possible
     # end
   end
 end
