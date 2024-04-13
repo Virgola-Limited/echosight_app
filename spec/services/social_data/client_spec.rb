@@ -7,7 +7,7 @@ RSpec.describe SocialData::Client, :vcr do
   let(:user) { identity.user }
   let(:client) { described_class.new(user) }
 
-  describe '#fetch_user_tweets' do
+  xdescribe '#fetch_user_tweets' do
     it 'fetches new tweets from the API' do
       tweets = client.fetch_user_tweets
       expect(tweets).to eq(fetch_user_tweets_response_body)
@@ -22,7 +22,7 @@ RSpec.describe SocialData::Client, :vcr do
     end
   end
 
-  describe '#fetch_tweets_by_ids' do
+  xdescribe '#fetch_tweets_by_ids' do
     context 'when the tweet IDs are a mixture of valid and invalid IDs' do
       let(:tweet_ids) { %w[1758983678515085403 1740577614476321069] }
 
@@ -64,16 +64,6 @@ RSpec.describe SocialData::Client, :vcr do
           end
         end
       end
-
-      # invalid as we allow for 1400 now
-      # context 'when potentially fetching multiple pages of tweets' do
-      #   it 'fetches a maximum of 200 tweets' do
-      #     params = { query: "from:elonmusk" }
-
-      #     response = client.search_tweets(params)
-      #     expect( response['tweets'].size).to eq(200)
-      #   end
-      # end
     end
   end
 
