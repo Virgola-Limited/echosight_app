@@ -36,11 +36,11 @@ if !Rails.env.development? && !Rails.env.test?
     # Define your Sidekiq-Cron jobs here
     Sidekiq::Cron::Job.load_from_array!(
       [
-        {
-          'name' => 'Fetch Tweets',
-          'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
-          'class' => 'Twitter::TweetsFetcherJob'
-        }
+        # {
+        #   'name' => 'Fetch Tweets',
+        #   'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
+        #   'class' => 'Twitter::TweetsFetcherJob'
+        # }
       ]
     )
   end
