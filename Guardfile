@@ -23,8 +23,6 @@ guard :rspec, cmd: 'rspec -f doc' do
   watch('config/application.rb')                      { 'spec' }
 
   # Watch for changes in spec helper files
-  watch('spec/spec_helper.rb')                        { 'spec' }
-  watch('spec/rails_helper.rb')                       { 'spec' }
   watch('spec/support/**/*.rb')                       { 'spec' }
 
   # Watch for fixture changes
