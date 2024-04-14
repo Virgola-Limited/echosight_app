@@ -35,11 +35,10 @@ module Twitter
       return unless user.handle && params[:since].present? && params[:until].present?
 
       query = "from:#{user.handle} -filter:replies since_time:#{params[:since]} until_time:#{params[:until]}"
-      p query
+      # p query
       tweets = client.search_tweets(query: query)
-      p tweets
       today_user_data = nil
-      # p "tweets #{tweets}"
+      p "tweets #{tweets}"
       tweets['data'].each do |tweet_data|
         today_user_data ||= tweet_data['user']['data']
         process_tweet_data(tweet_data)
@@ -64,13 +63,19 @@ module Twitter
                         .where(identity_id: user.identity.id)
 
       if for_subsequent_updates
-        tweets = base_query.where('tweet_metrics.pulled_at < ?', 24.hours.ago)
-                           .group('tweets.id')  # Ensure you're grouping by the tweets' table ID
-                           .having('MAX(tweet_metrics.pulled_at) < ?', 24.hours.ago)
+        p '**SUBSEQUENT UPDATES**'
+        tweets = base_query.where('tweet_metrics.pulled_at < ?', time_threshold)
+                           .group('tweets.id')
+                           .having('MAX(tweet_metrics.pulled_at) < ? AND COUNT(tweet_metrics.id) >= 2', time_threshold)
+        p 'Time.current' + Time.current.to_s
+        p '24.hours.ago' + 24.hours.ago.to_s
+        byebug unless tweets.empty?
       else
-        tweets = base_query.where('twitter_created_at < ?', time_threshold)
-                           .group('tweets.id')  # Ensure you're grouping by the tweets' table ID
+        p '**FIRST UPDATE**'
+        tweets = base_query.where('tweet_metrics.pulled_at < ?', time_threshold)
+                           .group('tweets.id')
                            .having('COUNT(tweet_metrics.id) = 1')
+        byebug unless tweets.empty?
       end
 
       p "***tweets.count #{tweets.count}"
@@ -83,6 +88,7 @@ module Twitter
 
       { since: since_time, until: until_time, valid_range: min_tweet.present? && max_tweet.present? }
     end
+
 
     def id_to_time(tweet_id)
       # Shift right by 22 bits and add the Twitter epoch offset, then convert to seconds

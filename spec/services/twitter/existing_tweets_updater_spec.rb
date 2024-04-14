@@ -10,8 +10,8 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
   let(:expected_query) { { query: "from:#{user.identity.handle} -filter:replies since_time:1709694355 until_time:1709694357" } }
 
   describe '#call' do
-    it 'it does not update the metric in the first 23 hours' do
-      VCR.use_cassette('Twitter__ExistingTweetsUpdater_call.yml') do
+    context 'when the tweet has 1 tweet metric' do
+      it 'it does not update the metric in the first 23 hours' do
         create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
         expect(client).not_to receive(:search_tweets)
         subject.call
@@ -27,14 +27,34 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
           end
         end
       end
-    end
 
-    it 'it updates the metric after 23 hours' do
-      VCR.use_cassette('Twitter__ExistingTweetsUpdater_call.yml') do
-        create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
+      it 'updates the metric once after 23 hours' do
+        tweet_metric = create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
+
         travel_to(23.5.hours.from_now) do
           expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => [] })
           subject.call
+        end
+      end
+
+      xit 'does not update for another 24 hours after an update' do
+        create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
+
+        tweet_metric = create(:tweet_metric, tweet: updatable_tweet, pulled_at: 23.5.hours.from_now, created_at: 23.5.hours.from_now)
+        p updatable_tweet
+        p TweetMetric.all
+        p tweet_metric
+        24.upto(47) do |hour|
+          travel_to(hour.hours.from_now) do
+            p 'time after travelling'
+            p Time.current
+            begin
+              expect(client).not_to receive(:search_tweets)
+              subject.call
+            rescue RSpec::Mocks::MockExpectationError => e
+              raise "#{hour} didn't expect to call search_tweets. Original error: #{e.message}"
+            end
+          end
         end
       end
     end
