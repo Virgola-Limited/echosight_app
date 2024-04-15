@@ -109,7 +109,8 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
       end
     end
 
-    fcontext 'when handling a mix of new and old tweets' do
+    # TODO: needs to check hourly over 24 - 48 hours
+    context 'when handling a mix of new and old tweets' do
       let(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 2.days.ago) }
       let(:new_tweet) { create(:tweet, identity: user.identity, twitter_created_at: Time.current) }
 
@@ -134,8 +135,5 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
         expect(old_tweet.tweet_metrics.count).to eq(2)
       end
     end
-
-    # Not done: test scenario with both new and old tweets
-    # Not done: test scenario when a new tweet needs updating there are tweets in the middle that dont need updating and there is a tweet at the end that needs updating if its possible
   end
 end
