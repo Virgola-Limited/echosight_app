@@ -12,6 +12,8 @@ module Twitter
       tweet = initialize_or_update_tweet
       tweet_metric = find_or_initialize_tweet_metric(tweet)
 
+      raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
+
       update_tweet_metric(tweet_metric)
       {
         tweet: tweet,
@@ -68,7 +70,8 @@ module Twitter
         quote_count: metrics['quote_count'].to_i,
         impression_count: metrics['impression_count'].to_i,
         bookmark_count: metrics['bookmark_count'].to_i,
-        pulled_at: DateTime.current
+        pulled_at: DateTime.current,
+        updated_count: tweet_metric.updated_count + 1
       })
       tweet_metric.save!
       tweet_metric
