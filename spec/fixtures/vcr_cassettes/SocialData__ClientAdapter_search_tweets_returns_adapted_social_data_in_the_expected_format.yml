@@ -1,0 +1,114 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.socialdata.tools/twitter/search?query=from:tophertoy%20since_time:1709694355%20until_time:1709694357
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 13 Apr 2024 19:24:33 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=dAVujIZRBukJ4aDHUyZTQUgZoG4GAzQAbpRtrGLkXS194lCtHFBlpq4B0HeF2v0SHJnsBE7zHc9auwg%2BzCbYGaVf2bspex1xi%2FfonYi%2FmYBPMOE4l2S8ne3jKuXA09ALW%2FSHKNiVpQ%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 873dd63b0ee450ad-AKL
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[{"tweet_created_at":"2024-03-06T03:05:56.000000Z","id":1765212190418899365,"id_str":"1765212190418899365","text":null,"full_text":"to
+        come to","source":"<a href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter
+        Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Twitter\/X
+        analytics with Echosight https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":13,"friends_count":21,"listed_count":0,"favourites_count":12,"statuses_count":40,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1710884709","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1770204882819223552\/vrBPzd16_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":11,"bookmark_count":0,"is_pinned":false}],"next_cursor":"DAADDAABCgABGH9LInsbkaUKAAIYf0siexuRpQAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYsReI6EAnEAoABhixF4joP9jwAAA"}'
+  recorded_at: Sat, 13 Apr 2024 19:24:33 GMT
+- request:
+    method: get
+    uri: https://api.socialdata.tools/twitter/search?query=from:tophertoy%20since_time:1709694356%20until_time:1709694356
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 13 Apr 2024 19:30:17 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=HN0V1iETq8ggh%2BioR0%2Be%2BPutf1ZCrrucA7y6HKmtWX27UT25oI4XdJfL4IoUozwdRaCqihSq6d3KiorqwjBvlkNnPsFeOJTSd7tCmuMQ56be361NknyJcxioJWGgqBS6zzapahqOfA%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 873dde984b5d50bf-AKL
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[],"next_cursor":null}'
+  recorded_at: Sat, 13 Apr 2024 19:30:17 GMT
+recorded_with: VCR 6.2.0

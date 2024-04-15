@@ -18,7 +18,7 @@
 # end
 
 every 6.hour do
-  # Not finishing in development ideally it mimics sidekiq.yml if we have the API bandwidth
+  # Not finished in development ideally it mimics sidekiq.yml if we have the API bandwidth
 end
 
 # Learn more: http://github.com/javan/whenever

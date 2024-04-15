@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:TopherToy%20within_time:1h
+    uri: https://api.socialdata.tools/twitter/search?query=from:TopherToy%20within_time:15m
     body:
       encoding: US-ASCII
       string: ''
@@ -23,7 +23,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 15 Apr 2024 05:23:25 GMT
+      - Sat, 13 Apr 2024 19:32:36 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -35,23 +35,23 @@ http_interactions:
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '119'
+      - '118'
       Vary:
       - Origin
       Cf-Cache-Status:
       - DYNAMIC
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=qtA%2F7UBkBp4BoemJ7G6ZHs6LlRGK%2FAXgZkq%2FPdMDLjGxHsflBC1%2FfRLRz9cUu8kzkUPolnq0Kjd%2ByNa2TiVg8zlh9z5hewp9%2B9vJTlmnSv0LzqlNbDvY%2BuaoJwNg86TMxZMU2NeF7g%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=ydpUiTE2T6UAVOr2gQmBRukeNkdeKdX4vHSs%2FMG9QyMCI5%2FFnshCSmVeK9DS8j60m5u85ii3Q%2BTBLRMCxgRe5qZ%2FDMYaPZ%2FfPH0f8UzhhxjaZVktxu7Y4ehtoTiuwWfhzOBEn1simw%3D%3D"}],"group":"cf-nel","max_age":604800}'
       Nel:
       - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Cf-Ray:
-      - 874980d4a9475d28-SYD
+      - 873de204ab431c5d-AKL
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: '{"tweets":[],"next_cursor":null}'
-  recorded_at: Mon, 15 Apr 2024 05:23:24 GMT
+  recorded_at: Sat, 13 Apr 2024 19:32:36 GMT
 recorded_with: VCR 6.2.0

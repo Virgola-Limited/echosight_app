@@ -12,6 +12,7 @@
 #  quote_count         :integer          default(0), not null
 #  reply_count         :integer          default(0), not null
 #  retweet_count       :integer          default(0), not null
+#  updated_count       :integer          default(0), not null
 #  user_profile_clicks :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null

@@ -29,7 +29,7 @@ FactoryBot.define do
     uid { '1691930809756991488' }
     association :user
     provider { 'twitter2' }
-    handle { 'tophertoy' }
+    handle { 'TopherToy' }
     description { 'Twitter user bio' }
 
     trait :random_credentials do
