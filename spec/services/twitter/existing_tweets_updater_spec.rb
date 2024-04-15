@@ -15,7 +15,7 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
       allow(IdentityUpdater).to receive(:new).and_return(double(call: nil))
     end
 
-    context 'when the tweet has 1 tweet metric' do
+    context 'when dealing with 1 new tweet transitioning to an old tweet' do
       it 'it does not update the metric in the first 24 hours' do
         create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
         expect(client).not_to receive(:search_tweets)
@@ -103,14 +103,39 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
 
         expect(updatable_tweet.tweet_metrics.count).to eq(3)  # Assuming data_response results in an update
       end
+
+      it 'does not update more than 14 days' do
+        skip
+      end
     end
 
-        # need a successful VCR pull to test past here
+    fcontext 'when handling a mix of new and old tweets' do
+      let(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 2.days.ago) }
+      let(:new_tweet) { create(:tweet, identity: user.identity, twitter_created_at: Time.current) }
 
-        # test scenario with just new tweets
-        # test scenario with just old tweets
-        # test scenario with both new and old tweets
-        # test scenario when a new tweet needs updating there are tweets in the middle that dont need updating and there is a tweet at the end that needs updating if its possible
-    # end
+      let(:oldest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 48.hours.ago) }
+      let(:newest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 25.hours.ago) }
+
+      let(:expected_query) do
+        since_time = subject.send(:id_to_time, oldest_metric.tweet.twitter_id) - 1
+        until_time = subject.send(:id_to_time, newest_metric.tweet.twitter_id) + 1
+        "from:#{old_tweet.identity.handle} -filter:replies since_time:#{since_time} until_time:#{until_time}"
+      end
+
+      it 'updates old tweets and skips new tweets without metrics' do
+        expect(client).to receive(:search_tweets).with(query: expected_query).and_return({ 'data' => [] })
+        expect(client).not_to receive(:search_tweets).with(query: include("from:#{new_tweet.identity.handle}"))
+
+        subject.call
+
+        # Verifying that no new metrics were added for new_tweet
+        expect(new_tweet.tweet_metrics).to be_empty
+        # Assuming no new data returned, old_tweet should not have new metrics added
+        expect(old_tweet.tweet_metrics.count).to eq(2)
+      end
+    end
+
+    # Not done: test scenario with both new and old tweets
+    # Not done: test scenario when a new tweet needs updating there are tweets in the middle that dont need updating and there is a tweet at the end that needs updating if its possible
   end
 end

@@ -35,10 +35,10 @@ module Twitter
       return unless user.handle && params[:since].present? && params[:until].present?
 
       query = "from:#{user.handle} -filter:replies since_time:#{params[:since]} until_time:#{params[:until]}"
-      # p query
+      p "query: #{query}"
       tweets = client.search_tweets(query: query)
       today_user_data = nil
-      # p "tweets #{tweets}"
+      p "tweets #{tweets}"
       tweets['data'].each do |tweet_data|
         today_user_data ||= tweet_data['user']['data']
         process_tweet_data(tweet_data)
