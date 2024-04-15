@@ -10,13 +10,18 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
   let(:expected_query) { { query: "from:#{user.identity.handle} -filter:replies since_time:1709694355 until_time:1709694357" } }
 
   describe '#call' do
+    before do
+      allow(Twitter::UserMetricsUpdater).to receive(:new).and_return(double(call: nil))
+      allow(IdentityUpdater).to receive(:new).and_return(double(call: nil))
+    end
+
     context 'when the tweet has 1 tweet metric' do
-      it 'it does not update the metric in the first 23 hours' do
+      it 'it does not update the metric in the first 24 hours' do
         create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
         expect(client).not_to receive(:search_tweets)
         subject.call
 
-        1.upto(23) do |hour|
+        1.upto(24) do |hour|
           travel_to(hour.hours.from_now) do
             begin
               expect(client).not_to receive(:search_tweets)
@@ -28,26 +33,52 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
         end
       end
 
-      it 'updates the metric once after 23 hours' do
+      let(:data_response) do
+        [
+          {
+          'id' => '1765212190418899365',
+          'text' => 'to come to',
+          'created_at' => '2024-03-06T03:05:56.000000Z',
+          'public_metrics' => {
+            'like_count' => 0,
+            'quote_count' => 0,
+            'reply_count' => 0,
+            'retweet_count' => 0,
+            'impression_count' => 11,
+            'bookmark_count' => 0
+          },
+          'is_pinned' => 'false',
+          'user' => {
+            'data' => {
+              'id' => '1691930809756991488',
+              'name' => 'Topher',
+              'username' => 'TopherToy',
+              'description' => 'Twitter/X analytics with Echosight https://t.co/uZpeIYc5Nq',
+              'public_metrics' => {
+                'followers_count' => 13,
+                'following_count' => 21,
+                'listed_count' => 0,
+                'tweet_count' => 40
+              },
+              'image_url' => 'https://pbs.twimg.com/profile_images/1770204882819223552/vrBPzd16_normal.jpg',
+              'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1710884709'
+            }
+          }
+        }
+        ]
+      end
+
+      it 'updates the metric once every 24 hours' do
         tweet_metric = create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
 
-        travel_to(23.5.hours.from_now) do
-          expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => [] })
+        travel_to(24.5.hours.from_now) do
+          expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
           subject.call
         end
-      end
 
-      xit 'does not update for another 24 hours after an update' do
-        create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
-
-        tweet_metric = create(:tweet_metric, tweet: updatable_tweet, pulled_at: 23.5.hours.from_now, created_at: 23.5.hours.from_now)
-        p updatable_tweet
-        p TweetMetric.all
-        p tweet_metric
-        24.upto(47) do |hour|
+        expect(updatable_tweet.tweet_metrics.count).to eq(2)
+        26.upto(48) do |hour|
           travel_to(hour.hours.from_now) do
-            p 'time after travelling'
-            p Time.current
             begin
               expect(client).not_to receive(:search_tweets)
               subject.call
@@ -56,6 +87,21 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
             end
           end
         end
+      end
+
+      it 'updates the metric again after another 24 hours' do
+        create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
+        travel_to(24.5.hours.from_now) do
+          expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
+          subject.call
+        end
+
+        travel_to(49.hours.from_now) do
+          expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
+          subject.call
+        end
+
+        expect(updatable_tweet.tweet_metrics.count).to eq(3)  # Assuming data_response results in an update
       end
     end
 
