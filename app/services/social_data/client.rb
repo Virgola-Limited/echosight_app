@@ -5,7 +5,7 @@ module SocialData
     attr_reader :user
 
     # perhaps removing this or increase it a very large amount
-    MAXIMUM_TWEETS = 1600
+    MAXIMUM_TWEETS = 2000
 
     def initialize(user = nil)
       @user = user
