@@ -104,8 +104,14 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
         expect(updatable_tweet.tweet_metrics.count).to eq(3)  # Assuming data_response results in an update
       end
 
+      let!(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 15.days.ago) }
+      let!(:old_tweet_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 14.days.ago) }
+
       it 'does not update more than 14 days' do
-        skip
+        travel_to(15.days.from_now) do
+          expect(client).not_to receive(:search_tweets)
+          subject.call
+        end
       end
     end
 
