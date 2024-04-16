@@ -38,13 +38,4 @@ class Tweet < ApplicationRecord
     ["identity", "tweet_metrics"]
   end
 
-  # Alias twitter_id to id
-  def twitter_id
-    self.id
-  end
-
-  def twitter_id=(value)
-    self.id = value
-  end
-
 end
