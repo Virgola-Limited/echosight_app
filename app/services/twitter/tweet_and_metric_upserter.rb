@@ -32,7 +32,7 @@ module Twitter
     end
 
     def initialize_or_update_tweet
-      tweet = Tweet.find_or_initialize_by(twitter_id: tweet_data['id'])
+      tweet = Tweet.find_or_initialize_by(id: tweet_data['id'])
       tweet.assign_attributes(tweet_attributes)
       tweet.save! if tweet.new_record? || tweet.changed?
       tweet

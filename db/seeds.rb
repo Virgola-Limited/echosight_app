@@ -28,7 +28,7 @@ end
   def create_fake_tweets(identity_id, number_of_tweets)
     number_of_tweets.times do |n|
       Tweet.create!(
-        twitter_id: rand(1_000_000_000..9_999_999_999), # Assuming a random large number for twitter_id
+        id: rand(1_000_000_000..9_999_999_999), # Assuming a random large number for twitter_id
         text: "This is a fake tweet ##{n + 1}",
         identity_id: identity_id,
         twitter_created_at: Time.now - rand(1..7).days

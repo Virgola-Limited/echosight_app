@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_15_052423) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_16_024410) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,18 +76,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_15_052423) do
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
   end
 
-  create_table "subscriptions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "stripe_subscription_id"
-    t.string "stripe_price_id"
-    t.boolean "active", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["stripe_price_id"], name: "index_subscriptions_on_stripe_price_id"
-    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
-    t.index ["user_id"], name: "index_subscriptions_on_user_id"
-  end
-
   create_table "tweet_metrics", force: :cascade do |t|
     t.integer "retweet_count", default: 0, null: false
     t.integer "like_count", default: 0, null: false
@@ -96,23 +84,22 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_15_052423) do
     t.integer "reply_count", default: 0, null: false
     t.integer "bookmark_count", default: 0, null: false
     t.datetime "pulled_at"
-    t.bigint "tweet_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_profile_clicks"
     t.integer "updated_count", default: 0, null: false
+    t.bigint "tweet_id"
     t.index ["tweet_id"], name: "index_tweet_metrics_on_tweet_id"
   end
 
-  create_table "tweets", force: :cascade do |t|
-    t.bigint "twitter_id", null: false
+  create_table "tweets", id: :bigint, default: nil, force: :cascade do |t|
     t.text "text", null: false
     t.bigint "identity_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "twitter_created_at"
+    t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
-    t.index ["twitter_id"], name: "index_tweets_on_twitter_id", unique: true
   end
 
   create_table "twitter_user_metrics", force: :cascade do |t|
@@ -190,7 +177,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_15_052423) do
   add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
-  add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"

@@ -10,12 +10,11 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  identity_id        :bigint           not null
-#  twitter_id         :bigint           not null
 #
 # Indexes
 #
+#  index_tweets_on_id           (id) UNIQUE
 #  index_tweets_on_identity_id  (identity_id)
-#  index_tweets_on_twitter_id   (twitter_id) UNIQUE
 #
 # Foreign Keys
 #

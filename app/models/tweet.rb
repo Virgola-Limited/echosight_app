@@ -10,12 +10,11 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  identity_id        :bigint           not null
-#  twitter_id         :bigint           not null
 #
 # Indexes
 #
+#  index_tweets_on_id           (id) UNIQUE
 #  index_tweets_on_identity_id  (identity_id)
-#  index_tweets_on_twitter_id   (twitter_id) UNIQUE
 #
 # Foreign Keys
 #
@@ -28,7 +27,7 @@ class Tweet < ApplicationRecord
   has_one :user, through: :identity
   has_many :tweet_metrics, dependent: :destroy
 
-  validates :twitter_id, presence: true, uniqueness: true
+  # validates :twitter_id, presence: true, uniqueness: true
   validates :identity_id, presence: true
   validates :text, presence: true
 
@@ -38,6 +37,15 @@ class Tweet < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     ["identity", "tweet_metrics"]
+  end
+
+  # Alias twitter_id to id
+  def twitter_id
+    self.id
+  end
+
+  def twitter_id=(value)
+    self.id = value
   end
 
 end

@@ -49,7 +49,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
         # Set up the initial state: one tweet with one associated tweet metric
         tweet_creation_time = Time.current.beginning_of_day + 13.hours
         travel_to tweet_creation_time do
-          tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now) # Check this shouldnt be DateTime.current
+          tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now) # Check this shouldnt be DateTime.current
           create(:tweet_metric, tweet: tweet,
             retweet_count: 10,
             like_count: 20,
@@ -81,7 +81,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           expect { upserter.call }.not_to change { TweetMetric.count }
 
           # Fetch the updated metric and verify its attributes have been updated
-          updated_metric = Tweet.find_by(twitter_id: '1765189290131399049').tweet_metrics.last
+          updated_metric = Tweet.find_by(id: '1765189290131399049').tweet_metrics.last
 
           expect(updated_metric.retweet_count).to eq(11)
           expect(updated_metric.reply_count).to eq(22)
@@ -97,7 +97,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       it 'creates a new metric for the current time' do
         # Set up the initial state: one tweet with one associated tweet metric older than 24 hours
         tweet_creation_time = Time.current.beginning_of_day
-        tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: tweet_creation_time)
+        tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: tweet_creation_time)
 
         travel_to tweet_creation_time do
           create(:tweet_metric, tweet: tweet,
@@ -131,7 +131,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           expect { upserter.call }.to change { TweetMetric.count }.by(1)
 
           # Fetch the new metric and verify its attributes
-          new_metric = Tweet.find_by(twitter_id: '1765189290131399049').tweet_metrics.order(created_at: :desc).first
+          new_metric = Tweet.find_by(id: '1765189290131399049').tweet_metrics.order(created_at: :desc).first
 
           expect(new_metric.retweet_count).to eq(1)
           expect(new_metric.reply_count).to eq(2)
@@ -151,7 +151,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
         # Set up the initial state: one tweet with multiple associated tweet metrics, where the last one is from the same day
         early_morning = Time.current.beginning_of_day + 2.hours
         travel_to early_morning do
-          tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+          tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
           # Check this shouldnt be DateTime.current
           create(:tweet_metric, tweet: tweet, pulled_at: early_morning - 1.day) # Earlier metric from the previous day
           create(:tweet_metric, tweet: tweet, pulled_at: early_morning) # Last metric from the same day
@@ -178,7 +178,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           expect { upserter.call }.not_to change { TweetMetric.count }
 
           # Fetch the updated metric (which should be the last one) and verify its attributes have been updated
-          updated_metric = Tweet.find_by(twitter_id: '1765189290131399049').tweet_metrics.order(pulled_at: :desc).first
+          updated_metric = Tweet.find_by(id: '1765189290131399049').tweet_metrics.order(pulled_at: :desc).first
 
           expect(updated_metric.retweet_count).to eq(11)
           expect(updated_metric.reply_count).to eq(22)
@@ -197,7 +197,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           # Set up the initial state: one tweet with multiple associated tweet metrics, where the last one is from a previous day
           yesterday = Time.current.beginning_of_day - 2.hours
           travel_to yesterday do
-            tweet = create(:tweet, twitter_id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+            tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
             # Check this shouldnt be DateTime.current
             create(:tweet_metric, tweet: tweet, pulled_at: yesterday - 1.day) # An earlier metric from two days ago
             create(:tweet_metric, tweet: tweet, pulled_at: yesterday) # Last metric from yesterday
@@ -223,7 +223,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
             expect { upserter.call }.to change { TweetMetric.count }.by(1)
 
             # Fetch the newly created metric and verify its attributes
-            new_metric = Tweet.find_by(twitter_id: '1765189290131399049').tweet_metrics.order(created_at: :desc).first
+            new_metric = Tweet.find_by(id: '1765189290131399049').tweet_metrics.order(created_at: :desc).first
 
             expect(new_metric.retweet_count).to eq(12)
             expect(new_metric.reply_count).to eq(23)
