@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SocialData::ClientAdapter, :vcr do
+RSpec.describe SocialData::ClientAdapter do
   let(:identity) { create(:identity) }
   let(:user) { identity.user }
   let!(:oauth_credential) { create(:oauth_credential, identity:) }
@@ -13,10 +13,12 @@ RSpec.describe SocialData::ClientAdapter, :vcr do
     let(:params) { { query: 'from:tophertoy since_time:1709694355 until_time:1709694357' } }
 
     it 'returns adapted social data in the expected format' do
+      VCR.use_cassette('SocialData__ClientAdapter') do
         adapted_data = client_adapter.search_tweets(params, true)
         expect(adapted_data).to be_a(Hash)
         expect(adapted_data['data'].size).to eq(1)
         expect(adapted_data['data'].last).to eq(first_tweet)
+      end
     end
 
     let(:tweet_user_data) do
