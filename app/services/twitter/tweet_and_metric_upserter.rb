@@ -12,7 +12,7 @@ module Twitter
       tweet = initialize_or_update_tweet
       tweet_metric = find_or_initialize_tweet_metric(tweet)
 
-      raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
+      # raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
 
       update_tweet_metric(tweet_metric)
       {

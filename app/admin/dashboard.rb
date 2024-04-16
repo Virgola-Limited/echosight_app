@@ -28,7 +28,7 @@ ActiveAdmin.register_page "Dashboard" do
         span "Total Tweets not updated in 24 hours: #{tweets.count}"
       end
       table_for tweets.limit(10) do
-        column :twitter_id
+        column :id
         column :created_at
         column :text do |tweet|
           truncate(tweet.text, omision: "...", length: 100)

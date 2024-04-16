@@ -22,7 +22,7 @@
 #
 FactoryBot.define do
   factory :tweet do
-    twitter_id { Faker::Number.number(digits: 18) }
+    id { Faker::Number.number(digits: 18) }
     text { Faker::Lorem.sentence }
     association :identity
   end

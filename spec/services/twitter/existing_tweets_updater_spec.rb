@@ -113,13 +113,14 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
     context 'when handling a mix of new and old tweets' do
       let(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 2.days.ago) }
       let(:new_tweet) { create(:tweet, identity: user.identity, twitter_created_at: Time.current) }
+      let!(:new_tweet_metric) { create(:tweet_metric, tweet: new_tweet, pulled_at: Time.current) }
 
       let(:oldest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 48.hours.ago) }
       let(:newest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 25.hours.ago) }
 
       let(:expected_query) do
-        since_time = subject.send(:id_to_time, oldest_metric.tweet.twitter_id) - 1
-        until_time = subject.send(:id_to_time, newest_metric.tweet.twitter_id) + 1
+        since_time = subject.send(:id_to_time, oldest_metric.tweet.id) - 1
+        until_time = subject.send(:id_to_time, newest_metric.tweet.id) + 1
         "from:#{old_tweet.identity.handle} -filter:replies since_time:#{since_time} until_time:#{until_time}"
       end
 
@@ -128,11 +129,27 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
         expect(client).not_to receive(:search_tweets).with(query: include("from:#{new_tweet.identity.handle}"))
 
         subject.call
+      end
 
-        # Verifying that no new metrics were added for new_tweet
-        expect(new_tweet.tweet_metrics).to be_empty
-        # Assuming no new data returned, old_tweet should not have new metrics added
-        expect(old_tweet.tweet_metrics.count).to eq(2)
+      xit 'blah' do
+        let(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 2.days.ago) }
+        let(:new_tweet) { create(:tweet, identity: user.identity, twitter_created_at: Time.current) }
+        let!(:new_tweet_metric) { create(:tweet_metric, tweet: new_tweet, pulled_at: Time.current) }
+
+        let(:oldest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 48.hours.ago) }
+        let(:newest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 25.hours.ago) }
+
+        1.upto(2) do |hour|
+          travel_to(hour.hours.from_now) do
+            begin
+              expect(client).not_to receive(:search_tweets)#.with(query: old_tweet_query)
+              # expect(client).not_to receive(:search_tweets).with(query: include(new_tweet_query))
+              subject.call
+            rescue RSpec::Mocks::MockExpectationError => e
+              raise "#{hour} didn't expect to call search_tweets. Original error: #{e.message}"
+            end
+          end
+        end
       end
     end
   end

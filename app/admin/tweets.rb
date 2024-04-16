@@ -18,7 +18,7 @@ ActiveAdmin.register Tweet do
   index do
     column :id
     column "Tweet" do |tweet|
-      link_to tweet.text.truncate(50), "https://twitter.com/#{tweet.identity.handle}/status/#{tweet.twitter_id}", target: "_blank"
+      link_to tweet.text.truncate(50), "https://twitter.com/#{tweet.identity.handle}/status/#{tweet.id}", target: "_blank"
     end
     column "User Email" do |tweet|
       if tweet.identity&.user

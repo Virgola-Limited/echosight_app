@@ -92,8 +92,7 @@ class DemoPublicPageService < Services::Base
   def custom_tweets
     [
       {
-        id: 101,
-        twitter_id: 1772826047878516856,
+        id: 1772826047878516856,
         text: "Just asked my smart fridge for the weather forecast, and it advised me to chill. Tech humor never gets old!",
         retweet_count: 95,
         like_count: 242,
@@ -103,8 +102,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 29
       },
       {
-        id: 102,
-        twitter_id: 1772826156355764407,
+        id: 1772826156355764407,
         text: "If you think a minute goes by really fast, you've never waited for your code to compile.",
         retweet_count: 112,
         like_count: 318,
@@ -114,8 +112,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 34
       },
       {
-        id: 103,
-        twitter_id: 1754363215839142327,
+        id: 1754363215839142327,
         text: "Have you been introduced to the BOFH before?",
         retweet_count: 58,
         like_count: 139,
@@ -125,8 +122,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 15
       },
       {
-        id: 104,
-        twitter_id: 1772835317466407361,
+        id: 1772835317466407361,
         text: "In a relationship with my Wi-Fi. It's getting serious and we just shared our first password.",
         retweet_count: 76,
         like_count: 265,
@@ -136,8 +132,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 27
       },
       {
-        id: 105,
-        twitter_id: 1772829628991946912,
+        id: 1772829628991946912,
         text: "I learnt more on the job in six months with a supportive team than I ever did at school.",
         retweet_count: 83,
         like_count: 194,
@@ -147,8 +142,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 23
       },
       {
-        id: 106,
-        twitter_id: 1727444841683202207,
+        id: 1727444841683202207,
         text: "I don't like working in fields where I can't stand out. Music production became too accessible and what I did was no longer special so I moved to something harder where my efforts could be noticed.",
         retweet_count: 61,
         like_count: 157,
@@ -158,8 +152,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 18
       },
       {
-        id: 107,
-        twitter_id: 1772787456544592133,
+        id: 1772787456544592133,
         text: "TIL Why does Cloudflare use lava lamps to help with encryption?",
         retweet_count: 104,
         like_count: 476,
@@ -169,8 +162,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 31
       },
       {
-        id: 108,
-        twitter_id: 1772778052667470267,
+        id: 1772778052667470267,
         text: "I'm getting some mad ChatGPT nostalgia where it just cuts out before finishing stuff and doesn't give you the rest of the answer. How is AI a threat to anyone?",
         retweet_count: 89,
         like_count: 711,
@@ -180,8 +172,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 25
       },
       {
-        id: 109,
-        twitter_id: 1772574111882961249,
+        id: 1772574111882961249,
         text: "What do you think the next leap in machine learning and LLMs is going to be like?",
         retweet_count: 317,
         like_count: 633,
@@ -191,8 +182,7 @@ class DemoPublicPageService < Services::Base
         bookmark_count: 37
       },
       {
-        id: 110,
-        twitter_id: 1772837100993569080,
+        id: 1772837100993569080,
         text: "Just overheard two algorithms discussing privacy. They didn't say much. I guess they prefer to keep things encrypted.",
         retweet_count: 128,
         like_count: 489,
@@ -209,7 +199,6 @@ end
       # Simulate a Tweet object with necessary attributes
       tweet = OpenStruct.new(
         text: custom_tweet[:text],
-        twitter_id: custom_tweet[:twitter_id],
         id: custom_tweet[:id]
       )
 
