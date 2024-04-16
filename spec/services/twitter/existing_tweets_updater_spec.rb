@@ -4,8 +4,8 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
   let!(:user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
   let(:client) { double('SocialData::ClientAdapter') }
   let(:subject) { described_class.new(user: user, client: client) }
-  # let(:tweet) { create(:tweet, twitter_id: 1770016891555496274, identity: user.identity, twitter_created_at: 4.hour.ago)}
-  let(:updatable_tweet) { create(:tweet, twitter_id: 1765212190418899365, identity: user.identity, twitter_created_at: Time.current)}
+  # let(:tweet) { create(:tweet, id: 1770016891555496274, identity: user.identity, twitter_created_at: 4.hour.ago)}
+  let(:updatable_tweet) { create(:tweet, id: 1765212190418899365, identity: user.identity, twitter_created_at: Time.current)}
   # this is 1 second before the unix timestamp of the since id and and 1 second later than the max id
   let(:expected_query) { { query: "from:#{user.identity.handle} -filter:replies since_time:1709694355 until_time:1709694357" } }
 

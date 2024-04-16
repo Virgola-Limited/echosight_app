@@ -16,7 +16,7 @@
 #  user_profile_clicks :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  tweet_id            :bigint           not null
+#  tweet_id            :bigint
 #
 # Indexes
 #
