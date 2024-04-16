@@ -4,12 +4,13 @@ RSpec.describe Twitter::TweetsFetcherJob do
   subject { described_class.new }
 
   describe '#perform' do
-    let!(:user) { create(:user, :with_identity) }
-    let!(:user_2) { create(:user) }
+    let!(:user) { create(:user, :with_identity) }  # Assuming this user is syncable
+    let!(:user_2) { create(:user) }  # Assuming this user is not syncable
 
-    it 'calls Twitter::NewTweetsFetcherJob and ExistingTweetsUpdaterJob on each syncable user' do
-      expect(Twitter::NewTweetsFetcherJob).to receive(:perform_async).with(user.id)
-      expect(Twitter::ExistingTweetsUpdaterJob).to receive(:perform_async).with(user.id)
+    it 'enqueues a UserTweetsHandlerJob for each syncable user' do
+      # Assuming User.syncable is scoped to include users like `user` and exclude `user_2`
+      expect(Twitter::UserTweetsHandlerJob).to receive(:perform_async).with(user.id)
+      expect(Twitter::UserTweetsHandlerJob).not_to receive(:perform_async).with(user_2.id)
 
       subject.perform
     end
