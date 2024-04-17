@@ -5,20 +5,19 @@ module Twitter
     def initialize(tweet_data:, user: nil)
       @tweet_data = tweet_data
       assign_user(user)
-
     end
 
     def call
       tweet = initialize_or_update_tweet
       tweet_metric = find_or_initialize_tweet_metric(tweet)
 
-      # raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
-
-      update_tweet_metric(tweet_metric)
+      raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
+      result = update_tweet_metric(tweet_metric)
       {
-        tweet: tweet,
-        tweet_metric: tweet_metric,
-        user: @user
+        tweet_id: tweet.id,
+        success: result.saved_changes?,
+        tweet_metric: result,
+        user_id: @user.id
       }
     end
 

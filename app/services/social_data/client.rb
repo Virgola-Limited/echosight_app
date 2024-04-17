@@ -31,6 +31,11 @@ module SocialData
     def search_tweets(params = {}, single_request = false)
       endpoint = 'search'
 
+      # Ensure the query includes -filter:replies
+      if params[:query] && !params[:query].include?("-filter:replies")
+        params[:query] += " -filter:replies"
+      end
+
       received_tweet_count = 0
       all_tweets = []
       while received_tweet_count < MAXIMUM_TWEETS
@@ -55,6 +60,7 @@ module SocialData
 
       { 'tweets' => all_tweets }
     end
+
 
 
     def fetch_user_with_metrics
