@@ -4,17 +4,19 @@
 #
 # Table name: tweets
 #
-#  id                 :bigint           not null, primary key
-#  text               :text             not null
-#  twitter_created_at :datetime
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  identity_id        :bigint           not null
+#  id                    :bigint           not null, primary key
+#  text                  :text             not null
+#  twitter_created_at    :datetime
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  identity_id           :bigint           not null
+#  in_reply_to_status_id :bigint
 #
 # Indexes
 #
-#  index_tweets_on_id           (id) UNIQUE
-#  index_tweets_on_identity_id  (identity_id)
+#  index_tweets_on_id                     (id) UNIQUE
+#  index_tweets_on_identity_id            (identity_id)
+#  index_tweets_on_in_reply_to_status_id  (in_reply_to_status_id)
 #
 # Foreign Keys
 #

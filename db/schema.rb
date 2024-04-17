@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_16_024410) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_17_233953) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,8 +98,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_16_024410) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "twitter_created_at"
+    t.bigint "in_reply_to_status_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
+    t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
   end
 
   create_table "twitter_user_metrics", force: :cascade do |t|
