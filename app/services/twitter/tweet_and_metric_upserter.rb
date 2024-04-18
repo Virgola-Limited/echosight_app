@@ -12,12 +12,13 @@ module Twitter
       tweet_metric = find_or_initialize_tweet_metric(tweet)
 
       raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
+
       result = update_tweet_metric(tweet_metric)
       {
         tweet_id: tweet.id,
         success: result.saved_changes?,
         tweet_metric: result,
-        user_id: @user.id
+        user: @user
       }
     end
 
