@@ -33,7 +33,7 @@ module SocialData
 
     def adapt_tweets_response_format(response)
       adapted_tweets = response['tweets'].map do |tweet|
-        {
+        adapted_tweet = {
           'id' => tweet['id_str'],
           'text' => tweet['full_text'] || tweet['text'],
           'created_at' => tweet['tweet_created_at'],
