@@ -19,7 +19,7 @@ module Twitter
       begin
         update_user(user)
       rescue StandardError => e
-        message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
+        message = "ExistingTweetsUpdaterJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
         data_update_log.update!(error_message: message)
         raise message
       else
