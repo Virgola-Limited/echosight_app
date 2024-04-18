@@ -44,6 +44,7 @@ RSpec.describe SocialData::ClientAdapter do
     let(:first_tweet) do
       {
         'id' => '1765212190418899365',
+        "in_reply_to_status_id" => nil,
         'text' => 'to come to',
         'created_at' => '2024-03-06T03:05:56.000000Z',
         'public_metrics' => {

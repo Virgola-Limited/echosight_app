@@ -7,7 +7,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
   let(:user) { identity.user }
   let(:vcr_response_time) { Time.parse('Tue, 05 Mar 2024 18:54:26 GMT') }
   let(:subject) { described_class.new(user:, within_time: '14d') }
-  let(:expected_tweets) { 630 }
+  let(:expected_tweets) { 443 }
   let(:oldest_expected_date) { vcr_response_time - 7.days }
 
   before do
@@ -44,14 +44,14 @@ RSpec.describe Twitter::NewTweetsFetcher do
       'username' => 'loftwah',
       'name' => 'Loftwah',
       'public_metrics' => {
-        'followers_count' => 6676,
-        'following_count' => 4554,
-        'listed_count' => 42,
-        'tweet_count' => 52_729
+        "followers_count"=>7065,
+        "following_count"=>5043,
+        "listed_count"=>45,
+        "tweet_count"=>57831
       },
-      'description' => "Revolutionize Your Social Media Strategy with Echosight | https://t.co/wMI0LubEYS | https://t.co/HLB3aL1R1I | https://t.co/IbbT2ndwo1 | https://t.co/i9vT0Nnmo4",
+      'description' => "Revolutionize Your Social Media Strategy with Echosight | https://t.co/wMI0Lub79k | https://t.co/HLB3aL1jca | https://t.co/IbbT2ncYyt | https://t.co/i9vT0NmOyw",
       'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
-      'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1707817030'
+      'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1711023494'
     }
   end
 

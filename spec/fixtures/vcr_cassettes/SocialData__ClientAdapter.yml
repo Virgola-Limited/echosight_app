@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:tophertoy%20since_time:1709694355%20until_time:1709694357
+    uri: https://api.socialdata.tools/twitter/search?query=from:tophertoy%20since_time:1709694355%20until_time:1709694357%20-filter:replies
     body:
       encoding: US-ASCII
       string: ''
