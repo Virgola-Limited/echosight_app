@@ -41,7 +41,8 @@ module Twitter
       p "tweets ids returned #{tweets['data'].map {|t| t['id'] }}"
       if (tweets.count != tweet_data[:tweet_ids].count)
         message = "Tweet count mismatch for user #{user.handle}. Expected: #{tweet_data[:tweet_ids].count}, Actual: #{tweets.count}"
-        ExceptionNotifier.notify_exception(StandardError.new(message, data: { user: user.handle, tweet_data: tweet_data, tweets: tweets }))
+        ExceptionNotifier.notify_exception(StandardError.new(message), data: { user: user.handle, tweet_data: tweet_data, tweets: tweets })
+
       end
       p "tweets['data'].count: #{tweets['data'].count}"
       tweets['data'].each do |tweet_data|
