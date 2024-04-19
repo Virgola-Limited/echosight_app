@@ -4,20 +4,19 @@
 #
 # Table name: tweet_metrics
 #
-#  id                           :bigint           not null, primary key
-#  bookmark_count               :integer          default(0), not null
-#  complete_first_day_pulled_at :datetime
-#  impression_count             :integer          default(0), not null
-#  like_count                   :integer          default(0), not null
-#  pulled_at                    :datetime
-#  quote_count                  :integer          default(0), not null
-#  reply_count                  :integer          default(0), not null
-#  retweet_count                :integer          default(0), not null
-#  updated_count                :integer          default(0), not null
-#  user_profile_clicks          :integer
-#  created_at                   :datetime         not null
-#  updated_at                   :datetime         not null
-#  tweet_id                     :bigint
+#  id                  :bigint           not null, primary key
+#  bookmark_count      :integer          default(0), not null
+#  impression_count    :integer          default(0), not null
+#  like_count          :integer          default(0), not null
+#  pulled_at           :datetime
+#  quote_count         :integer          default(0), not null
+#  reply_count         :integer          default(0), not null
+#  retweet_count       :integer          default(0), not null
+#  updated_count       :integer          default(0), not null
+#  user_profile_clicks :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  tweet_id            :bigint
 #
 # Indexes
 #
