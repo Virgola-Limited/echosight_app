@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_18_225825) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_18_222709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,7 +90,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_18_225825) do
     t.integer "updated_count", default: 0, null: false
     t.bigint "tweet_id"
     t.datetime "complete_first_day_pulled_at"
-    t.integer "pulled_count"
     t.index ["tweet_id"], name: "index_tweet_metrics_on_tweet_id"
   end
 

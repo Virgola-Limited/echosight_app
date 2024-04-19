@@ -10,7 +10,6 @@
 #  impression_count             :integer          default(0), not null
 #  like_count                   :integer          default(0), not null
 #  pulled_at                    :datetime
-#  pulled_count                 :integer
 #  quote_count                  :integer          default(0), not null
 #  reply_count                  :integer          default(0), not null
 #  retweet_count                :integer          default(0), not null
