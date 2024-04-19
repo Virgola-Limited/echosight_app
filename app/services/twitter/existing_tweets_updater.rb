@@ -35,8 +35,8 @@ module Twitter
       return unless user.handle && tweet_data[:since].present? && tweet_data[:until].present?
 
       query = "from:#{user.handle} since_time:#{tweet_data[:since]} until_time:#{tweet_data[:until]}"
-      p "query: #{query}"
-      tweets = client.search_tweets(query: query)
+      params = { query: query }
+      tweets = client.search_tweets(params)
       today_user_data = nil
       p "tweets ids returned #{tweets['data'].map {|t| t['id'] }}"
       if (tweets.count != tweet_data[:tweet_ids].count)
