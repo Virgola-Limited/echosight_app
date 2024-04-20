@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_17_233953) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_20_064244) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,6 +38,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_233953) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "api_batches", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "hourly_tweet_counts", force: :cascade do |t|
@@ -99,6 +106,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_233953) do
     t.datetime "updated_at", null: false
     t.datetime "twitter_created_at"
     t.bigint "in_reply_to_status_id"
+    t.bigint "api_batch_id"
+    t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
     t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
@@ -180,6 +189,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_17_233953) do
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
   add_foreign_key "tweet_metrics", "tweets"
+  add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"
   add_foreign_key "user_twitter_data_updates", "identities"

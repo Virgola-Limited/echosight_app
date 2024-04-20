@@ -2,13 +2,13 @@
 
 module Twitter
   class NewTweetsFetcher
-    attr_reader :user, :client, :within_time
+    attr_reader :user, :client, :within_time, :api_batch_id
 
-    # dont change ApplicationConstants::TWITTER_FETCH_INTERVAL
-    def initialize(user:, client: nil, within_time: ApplicationConstants::TWITTER_FETCH_INTERVAL)
+    def initialize(user:, client: nil, within_time: ApplicationConstants::TWITTER_FETCH_INTERVAL, api_batch_id:)
       @user = user
       @client = client || SocialData::ClientAdapter.new
       @within_time = within_time
+      @api_batch_id = api_batch_id
     end
 
     def call
@@ -32,7 +32,6 @@ module Twitter
     def fetch_and_store_tweets
       params = { query: "from:#{user.handle} within_time:#{within_time}" }
       tweets = client.search_tweets(params)
-
       today_user_data = nil
       metrics_created_count = 0
       tweets_updated_count = 0
@@ -53,10 +52,7 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
-      # need to check if this is updating existing tweets as part of cost audit
-      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user)
+      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user, api_batch_id: @api_batch_id)
     end
   end
 end
-
-
