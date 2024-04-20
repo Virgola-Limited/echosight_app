@@ -9,22 +9,26 @@
 #  twitter_created_at    :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  api_batch_id          :bigint
 #  identity_id           :bigint           not null
 #  in_reply_to_status_id :bigint
 #
 # Indexes
 #
+#  index_tweets_on_api_batch_id           (api_batch_id)
 #  index_tweets_on_id                     (id) UNIQUE
 #  index_tweets_on_identity_id            (identity_id)
 #  index_tweets_on_in_reply_to_status_id  (in_reply_to_status_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (api_batch_id => api_batches.id)
 #  fk_rails_...  (identity_id => identities.id)
 #
 class Tweet < ApplicationRecord
   attr_accessor :engagement_rate_percentage
 
+  belongs_to :api_batch
   belongs_to :identity
   has_one :user, through: :identity
   has_many :tweet_metrics, dependent: :destroy
