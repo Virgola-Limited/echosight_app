@@ -52,7 +52,7 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
-      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user, api_batch_id: @api_batch_id)
+      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user, api_batch_id: api_batch_id)
     end
   end
 end

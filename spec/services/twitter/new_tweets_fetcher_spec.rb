@@ -5,8 +5,9 @@ require 'rails_helper'
 RSpec.describe Twitter::NewTweetsFetcher do
   let!(:identity) { create(:identity, :with_oauth_credential, :loftwah) }
   let(:user) { identity.user }
+  let(:api_batch) { create(:api_batch) }
   let(:vcr_response_time) { Time.parse('Tue, 05 Mar 2024 18:54:26 GMT') }
-  let(:subject) { described_class.new(user:, within_time: '14d') }
+  let(:subject) { described_class.new(user:, within_time: '14d', api_batch_id: api_batch.id) }
   let(:expected_tweets) { 443 }
   let(:oldest_expected_date) { vcr_response_time - 7.days }
 
@@ -16,7 +17,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
 
   it 'calls Twitter::TweetAndMetricUpserter with the correct arguments' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, user: user).exactly(expected_tweets).times
+      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, user: user, api_batch_id: api_batch.id).exactly(expected_tweets).times
       subject.call
     end
   end
@@ -32,6 +33,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
           "user" => include("data" => include("id", "name", "username"))
         )
         expect(args[:user]).to eq(user)
+        expect(args[:api_batch_id]).to eq(api_batch.id)
       end
 
       subject.call

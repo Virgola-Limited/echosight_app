@@ -23,9 +23,9 @@ require 'factory_bot_rails'
 
 # Comment out to configure VCR
 def record_mode
+  return :none
   return :new_episodes
   return :all
-  return :none
 end
 
 VCR.configure do |config|
