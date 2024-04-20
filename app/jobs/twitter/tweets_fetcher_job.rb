@@ -8,7 +8,7 @@ module Twitter
       User.syncable.find_each do |user|
         Twitter::NewTweetsFetcherJob.perform_async(user.id, api_batch.id)
         # What do we do if the code above fails?
-        Twitter::ExistingTweetsUpdaterJob.perform_in(23.5.hours, user.id, api_batch.id)
+        Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
       end
       # Not sure if this is the best approach.
       api_batch.update!(status: 'completed', completed_at: Time.current)
