@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe Twitter::TweetAndMetricUpserter do
   let!(:identity) { create(:identity, :with_oauth_credential, :loftwah) }
   let(:user) { identity.user }
-  let(:subject) { described_class.new(user: user, tweet_data: tweet_data) }
+  let(:api_batch) { create(:api_batch) }
+  let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id) }
   let(:tweet_data) {
   {
     "id" => "1765189290131399049",
@@ -41,7 +42,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
     allow(IdentityUpdater).to receive(:new).with(any_args).and_return(double(call: nil))
   end
 
-  let(:subject) { described_class.new(user: user, tweet_data: tweet_data) }
+  let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id) }
 
   context 'when there is only one tweet metric for the tweet' do
     context 'and the existing metric was created less than 24 hours from the current time' do
@@ -49,7 +50,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
         # Set up the initial state: one tweet with one associated tweet metric
         tweet_creation_time = Time.current.beginning_of_day + 13.hours
         travel_to tweet_creation_time do
-          tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now) # Check this shouldnt be DateTime.current
+          tweet = create(:tweet, api_batch: api_batch, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now) # Check this shouldnt be DateTime.current
           create(:tweet_metric, tweet: tweet,
             retweet_count: 10,
             like_count: 20,
@@ -74,7 +75,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           "bookmark_count" => 0  # Assuming a nil bookmark_count should be treated as 0
         })
 
-        upserter = described_class.new(user: user, tweet_data: updated_tweet_data)
+        upserter = described_class.new(user: user, tweet_data: updated_tweet_data, api_batch_id: api_batch.id)
 
         # Travel less than 24 hours into the future and call the upserter
         travel_to tweet_creation_time + 23.hours do
@@ -97,7 +98,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       it 'creates a new metric for the current time' do
         # Set up the initial state: one tweet with one associated tweet metric older than 24 hours
         tweet_creation_time = Time.current.beginning_of_day
-        tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: tweet_creation_time)
+        tweet = create(:tweet, api_batch: api_batch, id: '1765189290131399049', identity: user.identity, twitter_created_at: tweet_creation_time)
 
         travel_to tweet_creation_time do
           create(:tweet_metric, tweet: tweet,
@@ -124,7 +125,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           "bookmark_count" => nil  # Assuming a nil bookmark_count should be treated as 0
         })
 
-        upserter = described_class.new(user: user, tweet_data: new_tweet_data)
+        upserter = described_class.new(user: user, tweet_data: new_tweet_data, api_batch_id: api_batch.id)
 
         # Travel more than 24 hours into the future and call the upserter
         travel_to tweet_creation_time + 25.hours do
@@ -151,7 +152,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
         # Set up the initial state: one tweet with multiple associated tweet metrics, where the last one is from the same day
         early_morning = Time.current.beginning_of_day + 2.hours
         travel_to early_morning do
-          tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+          tweet = create(:tweet, api_batch: api_batch, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
           # Check this shouldnt be DateTime.current
           create(:tweet_metric, tweet: tweet, pulled_at: early_morning - 1.day) # Earlier metric from the previous day
           create(:tweet_metric, tweet: tweet, pulled_at: early_morning) # Last metric from the same day
@@ -170,7 +171,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           "bookmark_count" => nil  # Assuming a nil bookmark_count should be treated as 0
         })
 
-        upserter = described_class.new(user: user, tweet_data: updated_tweet_data)
+        upserter = described_class.new(user: user, tweet_data: updated_tweet_data, api_batch_id: api_batch.id)
 
         # Travel to a later time on the same day and call the upserter
         later_today = early_morning + 10.hours
@@ -197,7 +198,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
           # Set up the initial state: one tweet with multiple associated tweet metrics, where the last one is from a previous day
           yesterday = Time.current.beginning_of_day - 2.hours
           travel_to yesterday do
-            tweet = create(:tweet, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
+            tweet = create(:tweet, api_batch: api_batch, id: '1765189290131399049', identity: user.identity, twitter_created_at: DateTime.now)
             # Check this shouldnt be DateTime.current
             create(:tweet_metric, tweet: tweet, pulled_at: yesterday - 1.day) # An earlier metric from two days ago
             create(:tweet_metric, tweet: tweet, pulled_at: yesterday) # Last metric from yesterday
@@ -216,7 +217,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
             "bookmark_count" => nil  # Assuming a nil bookmark_count should be treated as 0
           })
 
-          upserter = described_class.new(user: user, tweet_data: new_tweet_data)
+          upserter = described_class.new(user: user, tweet_data: new_tweet_data, api_batch_id: api_batch.id)
 
           # Travel to the current day, after the last metric was created, and call the upserter
           travel_to Time.current.beginning_of_day + 10.hours do
