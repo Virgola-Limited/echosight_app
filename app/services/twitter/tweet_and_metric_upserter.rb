@@ -39,7 +39,7 @@ module Twitter
 
       tweet.save! if tweet.changed?
       tweet
-    end
+  end
 
 
     def tweet_attributes
