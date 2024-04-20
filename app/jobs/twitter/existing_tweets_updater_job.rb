@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+require 'sidekiq-unique-jobs'
+
 module Twitter
   class ExistingTweetsUpdaterJob
     include Sidekiq::Job
     sidekiq_options retry: false
+    sidekiq_options unique: :until_executed, unique_args: ->(args) { args }
 
     attr_reader :api_batch_id, :user
 
