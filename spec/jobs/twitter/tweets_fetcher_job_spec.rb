@@ -1,18 +1,41 @@
 require 'rails_helper'
-
 RSpec.describe Twitter::TweetsFetcherJob do
-  subject { described_class.new }
+  include ActiveJob::TestHelper
 
   describe '#perform' do
-    let!(:user) { create(:user, :with_identity) }  # Assuming this user is syncable
-    let!(:user_2) { create(:user) }  # Assuming this user is not syncable
+    let(:another_identity) { create(:identity, :loftwah) }
+    let!(:syncable_users) { [create(:user, :with_identity), create(:user, identity: another_identity)] }
+    let!(:non_syncable_users) { create_list(:user, 2) }  # Assuming this user is not syncable
 
-    it 'enqueues a UserTweetsHandlerJob for each syncable user' do
-      # Assuming User.syncable is scoped to include users like `user` and exclude `user_2`
-      expect(Twitter::UserTweetsHandlerJob).to receive(:perform_async).with(user.id)
-      expect(Twitter::UserTweetsHandlerJob).not_to receive(:perform_async).with(user_2.id)
+    before do
+      # allow(User).to receive(:syncable).and_return(User.where(syncable: true))
+    end
 
-      subject.perform
+    it 'creates an ApiBatch with processing status' do
+      expect { described_class.new.perform }.to change(ApiBatch, :count).by(1)
+    end
+
+    it 'enqueues NewTweetsFetcherJob and ExistingTweetsUpdaterJob for each syncable user' do
+      syncable_users.each do |user|
+        expect(Twitter::NewTweetsFetcherJob).to receive(:perform_async).with(user.id, anything)
+        expect(Twitter::ExistingTweetsUpdaterJob).to receive(:perform_in).with(24.hours, user.id, anything)
+      end
+      described_class.new.perform
+    end
+
+    it 'does not enqueue jobs for non-syncable users' do
+      non_syncable_users.each do |user|
+        expect(Twitter::NewTweetsFetcherJob).not_to receive(:perform_async).with(user.id, anything)
+        expect(Twitter::ExistingTweetsUpdaterJob).not_to receive(:perform_in).with(24.hours, user.id, anything)
+      end
+      described_class.new.perform
+    end
+
+    it 'updates the ApiBatch status to completed' do
+      described_class.new.perform
+      api_batch = ApiBatch.last
+      expect(api_batch.status).to eq('completed')
+      expect(api_batch.completed_at).not_to be_nil
     end
   end
 end

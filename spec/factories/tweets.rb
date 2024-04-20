@@ -30,5 +30,6 @@ FactoryBot.define do
     id { Faker::Number.number(digits: 18) }
     text { Faker::Lorem.sentence }
     association :identity
+    association :api_batch
   end
 end

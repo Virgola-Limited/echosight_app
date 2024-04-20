@@ -17,9 +17,13 @@ module Twitter
       begin
         update_user(user, api_batch)
       rescue StandardError => e
-        message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}"
+        backtrace = e.backtrace.join("\n")  # Join the full backtrace into a single string
+        # Optionally, you could select just the first few lines to avoid overly verbose output:
+        # backtrace = e.backtrace.take(5).join("\n")
+
+        message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
         data_update_log.update!(error_message: message)
-        raise message
+        raise e
       else
         data_update_log.update!(completed_at: Time.current)
       end
