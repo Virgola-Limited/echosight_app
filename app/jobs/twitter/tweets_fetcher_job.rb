@@ -4,20 +4,17 @@ module Twitter
     sidekiq_options retry: false
 
     def perform
+      api_batch = ApiBatch.create!(status: 'processing')
       User.syncable.find_each do |user|
-        Twitter::UserTweetsHandlerJob.perform_async(user.id)
+        Twitter::NewTweetsFetcherJob.perform_async(user.id, api_batch.id)
+        # What do we do if the code above fails?
+        Twitter::ExistingTweetsUpdater.perform_in(23.5.hours, user.id, api_batch_id)
       end
-    end
-  end
+      # Not sure if this is the best approach.
+      api_batch.update!(status: 'completed', completed_at: Time.current)
 
-  # Keep this private for now only run through TweetsFetcherJob
-  class UserTweetsHandlerJob
-    include Sidekiq::Job
-    sidekiq_options retry: false
 
-    def perform(user_id)
-      Twitter::NewTweetsFetcherJob.new.perform(user_id)
-      Twitter::ExistingTweetsUpdaterJob.new.perform(user_id)
+
     end
   end
 end
