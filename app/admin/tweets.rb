@@ -27,6 +27,7 @@ ActiveAdmin.register Tweet do
         "No User"
       end
     end
+    column :in_reply_to_status_id
     column :created_at
     column :updated_at
     column :twitter_created_at
