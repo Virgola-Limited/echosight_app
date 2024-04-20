@@ -8,11 +8,11 @@ module Twitter
     sidekiq_options retry: false
     sidekiq_options unique: :until_executed, unique_args: ->(args) { args }
 
-    attr_reader :api_batch_id, :user
+    attr_reader :api_batch, :user
 
     def perform(user_id, api_batch_id)
       @user = User.find(user_id)
-      @api_batch_id = api_batch_id
+      @api_batch = ApiBatch.find(api_batch_id)
       fetch_and_log_twitter_data
     end
 
@@ -28,9 +28,13 @@ module Twitter
       begin
         update_user
       rescue StandardError => e
-        message = "ExistingTweetsUpdaterJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message}"
+        backtrace = e.backtrace.join("\n")  # Join the full backtrace into a single string
+        # Optionally, you could select just the first few lines to avoid overly verbose output:
+        # backtrace = e.backtrace.take(5).join("\n")
+
+        message = "ExistingTweetsUpdaterJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
         data_update_log.update!(error_message: message)
-        raise message
+        raise e
       else
         data_update_log.update!(completed_at: Time.current)
       end
@@ -38,14 +42,12 @@ module Twitter
     end
 
     def update_user
-      Twitter::ExistingTweetsUpdater.new(user: user, api_batch_id: api_batch_id).call
+      Twitter::ExistingTweetsUpdater.new(user: user, api_batch_id: api_batch.id).call
     end
 
     def schedule_next_update
-      api_batch = ApiBatch.find(api_batch_id)
-      # Only schedule the next update if the ApiBatch is less than 15 days old
       if api_batch.created_at > 15.days.ago
-        Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch_id)
+        Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
       end
     end
   end
