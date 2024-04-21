@@ -67,21 +67,24 @@ module Twitter
     end
 
     def send_slack_notification
-      if updated_tweets.empty? && unupdated_tweets.empty?
-        message = "User: #{user.handle}: had no existing tweets to update"
-      else
-        updated_tweet_ids = []
-        unupdated_tweets_ids = []
-        if updated_tweets.count.positive?
-          user = updated_tweets.first[:user]
-          updated_tweet_ids = updated_tweets.map { |t| t[:tweet_id] }
-        end
-        if unupdated_tweets.count.positive?
-          unupdated_tweets_ids = unupdated_tweets.map { |t| t[:tweet_id] }
-        end
-        message = "User: #{user.handle}: updated_tweets: #{updated_tweet_ids.join(' ')}, unupdated_tweets: #{unupdated_tweets_ids.join(' ')}"
-      end
-      Notifications::SlackNotifier.call(message: message, channel: :general)
+      return
+      # Disable this for now - too spammy
+      # Could enable for VIP users
+      # if updated_tweets.empty? && unupdated_tweets.empty?
+      #   message = "User: #{user.handle}: had no existing tweets to update"
+      # else
+      #   updated_tweet_ids = []
+      #   unupdated_tweets_ids = []
+      #   if updated_tweets.count.positive?
+      #     user = updated_tweets.first[:user]
+      #     updated_tweet_ids = updated_tweets.map { |t| t[:tweet_id] }
+      #   end
+      #   if unupdated_tweets.count.positive?
+      #     unupdated_tweets_ids = unupdated_tweets.map { |t| t[:tweet_id] }
+      #   end
+      #   message = "User: #{user.handle}: updated_tweets: #{updated_tweet_ids.join(' ')}, unupdated_tweets: #{unupdated_tweets_ids.join(' ')}"
+      # end
+      # Notifications::SlackNotifier.call(message: message, channel: :general)
     end
   end
 end

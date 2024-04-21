@@ -61,6 +61,17 @@ ActiveAdmin.register_page "Dashboard" do
       end
     end
 
+    h2 "Users with No Recent Twitter User Metrics"
+    section do
+      users = Twitter::TweetDataQuery.users_with_no_recent_twitter_user_metrics
+
+      table_for users do
+        column :id
+        column :email
+        column :recent_metric_date
+      end
+    end
+
     h2 "Aggregated TweetMetrics by Day"
     section do
       # Define a scope or method in your TweetMetric model that performs the aggregation

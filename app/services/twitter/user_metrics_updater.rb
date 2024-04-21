@@ -33,11 +33,15 @@ module Twitter
     end
 
     def send_slack_notification(metrics_updated)
-      if metrics_updated
-        message = "User: #{user_data['username']}: Twitter user metrics updated: #{metrics_updated}"
-        Notifications::SlackNotifier.call(message: message, channel: :general)
-      end
-      message
+      return
+      # Disable this for now - too spammy
+      # Could enable for VIP users
+
+      # if metrics_updated
+      #   message = "User: #{user_data['username']}: Twitter user metrics updated: #{metrics_updated}"
+      #   Notifications::SlackNotifier.call(message: message, channel: :general)
+      # end
+      # message
     end
   end
 end

@@ -7,7 +7,7 @@ module Twitter
       check_and_notify(Twitter::TweetDataQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch), "Incomplete User Updates")
       check_and_notify(Twitter::TweetDataQuery.problematic_tweets, "Problematic Tweets")
       check_and_notify(Twitter::TweetDataQuery.tweets_needing_refresh(Twitter::NewTweetsFetcher.days_to_fetch), "Tweets Needing Refresh")
-      # check_and_notify(Twitter::TweetDataQuery.aggregated_metrics, "Aggregated Metrics Issues")
+      check_and_notify(Twitter::TweetDataQuery.users_with_no_recent_twitter_user_metrics, "Users with No Recent Twitter User Metrics")
     end
 
     private

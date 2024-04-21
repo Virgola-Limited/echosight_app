@@ -2,6 +2,7 @@ module Twitter
   class TweetDataQuery
     def self.incomplete_user_updates(days)
       UserTwitterDataUpdate.joins(identity: :user)
+                          .merge(User.syncable)
                           .where(completed_at: nil)
                           .where('user_twitter_data_updates.created_at > ?', days.days.ago)
                           .order('user_twitter_data_updates.started_at DESC')
@@ -9,8 +10,10 @@ module Twitter
     end
 
     def self.problematic_tweets
-      earliest_metrics_subquery = TweetMetric.select('MIN(id) AS id')
-                                            .where('created_at < ?', 26.hours.ago)
+      earliest_metrics_subquery = TweetMetric.joins(tweet: {identity: :user})
+                                            .select('MIN(tweet_metrics.id) AS id')
+                                            .where('tweet_metrics.created_at < ?', 26.hours.ago)
+                                            .merge(User.syncable)
                                             .group(:tweet_id)
 
       Tweet.joins(:tweet_metrics)
@@ -35,9 +38,21 @@ module Twitter
     def self.aggregated_metrics
       TweetMetric.joins(tweet: { identity: :user })
                  .select("date(tweet_metrics.pulled_at) as day, users.id as user_id, count(*) as count")
-                 .group("date(tweet_metrics.pulled_at), users.id")  # Changed here
-                 .order("date(tweet_metrics.pulled_at) DESC")  # And here
+                 .group("date(tweet_metrics.pulled_at), users.id")  # Ensure no typo here
+                 .order("date(tweet_metrics.pulled_at) DESC")       # Ensure correct field references
                  .limit(10)
+    end
+
+
+    def self.users_with_no_recent_twitter_user_metrics
+      # Select users with their most recent TwitterUserMetric date
+      User.syncable
+          .joins('LEFT JOIN identities ON identities.user_id = users.id')
+          .joins('LEFT JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
+          .select('users.id, users.email, MAX(twitter_user_metrics.updated_at) AS recent_metric_date')
+          .group('users.id, users.email')
+          .having('MAX(twitter_user_metrics.updated_at) < ? OR MAX(twitter_user_metrics.updated_at) IS NULL', 6.hours.ago)
+          .distinct
     end
   end
 end
