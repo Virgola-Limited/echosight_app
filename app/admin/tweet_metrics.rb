@@ -9,6 +9,7 @@ ActiveAdmin.register TweetMetric do
   filter :reply_count
   filter :bookmark_count
   filter :pulled_at
+  filter :updated_count
 
   index do
     column :id
@@ -18,6 +19,7 @@ ActiveAdmin.register TweetMetric do
     column "Twitter Link" do |tweet_metric|
       link_to tweet_metric.tweet.text.truncate(50), "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.id}", target: "_blank"
     end
+    column :updated_count
     column :retweet_count
     column :quote_count
     column :like_count
@@ -36,6 +38,7 @@ ActiveAdmin.register TweetMetric do
       row "Tweet" do
         link_to tweet_metric.tweet.text, "https://twitter.com/#{tweet_metric.tweet.identity.handle}/status/#{tweet_metric.tweet.id}", target: "_blank"
       end
+      column :updated_count
       row :retweet_count
       row :quote_count
       row :like_count
