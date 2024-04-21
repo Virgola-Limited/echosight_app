@@ -2,6 +2,10 @@ require 'rails_helper'
 RSpec.describe Twitter::TweetsFetcherJob do
   include ActiveJob::TestHelper
 
+  before(:each) do
+    Sidekiq::Testing.fake!
+  end
+
   describe '#perform' do
     let(:another_identity) { create(:identity, :loftwah) }
     let!(:syncable_users) { [create(:user, :with_identity), create(:user, identity: another_identity)] }
