@@ -57,10 +57,16 @@ module Twitter
       end
     end
 
+    # chat gtp mistake
+    # def id_to_time(tweet_id)
+    #   # Shift right by 22 bits and add the Twitter epoch offset, then convert to seconds
+    #   time = ((tweet_id >> 22) + 1288834974657) / 1000
+    #   Time.at(time).utc.strftime('%Y-%m-%dT%H:%M:%SZ') # Format time as ISO 8601 string
+    # end
+
     def id_to_time(tweet_id)
       # Shift right by 22 bits and add the Twitter epoch offset, then convert to seconds
-      time = ((tweet_id >> 22) + 1288834974657) / 1000
-      Time.at(time).utc.strftime('%Y-%m-%dT%H:%M:%SZ') # Format time as ISO 8601 string
+      ((tweet_id >> 22) + 1288834974657) / 1000
     end
 
     def process_tweet_data(tweet_data)
