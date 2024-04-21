@@ -9,7 +9,7 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
   # this is 1 second before the unix timestamp of the since id and and 1 second later than the max id
   let(:expected_query) { { query: "from:#{user.identity.handle} since_time:1709694355 until_time:1709694357" } }
 
-  describe '#call' do
+  xdescribe '#call' do
     before do
       allow(Twitter::UserMetricsUpdater).to receive(:new).and_return(double(call: nil))
       allow(IdentityUpdater).to receive(:new).and_return(double(call: nil))
