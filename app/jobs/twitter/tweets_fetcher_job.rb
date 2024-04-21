@@ -7,9 +7,6 @@ module Twitter
       api_batch = ApiBatch.create!(status: 'processing')
       User.syncable.find_each do |user|
         Twitter::NewTweetsFetcherJob.perform_async(user.id, api_batch.id)
-        # What do we do if the code above fails?
-        # Maybe only schedule this if the user has tweets in the batch?
-        Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
       end
       # Not sure if this is the best approach.
       api_batch.update!(status: 'completed', completed_at: Time.current)

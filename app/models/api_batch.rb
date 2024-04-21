@@ -12,4 +12,6 @@ class ApiBatch < ApplicationRecord
   has_many :tweets
   has_many :user_twitter_data_updates
 
+  scope :tweets_for_user, ->(user) { joins(:tweets).where(tweets: { identity_id: user.identity.id }) }
+
 end
