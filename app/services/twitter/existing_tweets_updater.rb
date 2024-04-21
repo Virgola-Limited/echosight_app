@@ -81,7 +81,6 @@ module Twitter
         end
         message = "User: #{user.handle}: updated_tweets: #{updated_tweet_ids.join(' ')}, unupdated_tweets: #{unupdated_tweets_ids.join(' ')}"
       end
-      # p message
       Notifications::SlackNotifier.call(message: message, channel: :general)
     end
   end

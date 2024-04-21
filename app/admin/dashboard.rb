@@ -5,7 +5,7 @@ ActiveAdmin.register_page "Dashboard" do
   content title: proc { I18n.t("active_admin.dashboard") } do
     h2 "Last 10 Incomplete User Twitter Data Updates in last #{days_to_fetch} days"
     section do
-      table_for UserTwitterDataUpdate.joins(identity: :user).where(completed_at: nil).where('user_twitter_data_updates.created_at > ?', days_to_fetch.days.ago).order('user_twitter_data_updates.started_at DESC').limit(10) do
+      table_for Twitter::TweetDataQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch) do
         column :started_at
         column "Error Message", :error_message do |update|
           span truncate(update.error_message, length: 300), title: update.error_message
@@ -23,14 +23,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Tweets with First Metric Issues"
     section do
-      earliest_metrics_subquery = TweetMetric.select('MIN(id) AS id')
-      .where('created_at < ?', 26.hours.ago)
-      .group(:tweet_id)
-
-      # Main query to fetch tweets with their earliest metric info, filtering those not having updated_count of 1
-      problematic_tweets = Tweet.joins(:tweet_metrics)
-      .where('tweet_metrics.id IN (?)', earliest_metrics_subquery)
-      .where(tweet_metrics: { updated_count: [nil, 0] })
+      problematic_tweets = Twitter::TweetDataQuery.problematic_tweets
 
       table_for problematic_tweets.limit(10) do
         column :id
@@ -49,16 +42,7 @@ ActiveAdmin.register_page "Dashboard" do
     end
 
     h2 "Tweets Needing Refresh"
-    recent_metric_tweet_ids = TweetMetric.joins(tweet: { identity: :user })
-    .where('tweet_metrics.updated_at >= ?', 24.hours.ago)
-    .merge(User.syncable)
-    .select('tweet_metrics.tweet_id')
-
-    # Fetch tweets either missing metrics entirely or not in the list of recent metrics, and ensure they're from syncable users
-    tweets = Tweet.joins(identity: :user)
-    .merge(User.syncable)
-    .where('tweets.twitter_created_at > ?', days_to_fetch.days.ago)
-    .where.not(id: recent_metric_tweet_ids)
+    tweets = Twitter::TweetDataQuery.tweets_needing_refresh(days_to_fetch)
 
     section do
       div do
@@ -80,10 +64,7 @@ ActiveAdmin.register_page "Dashboard" do
     h2 "Aggregated TweetMetrics by Day"
     section do
       # Define a scope or method in your TweetMetric model that performs the aggregation
-      aggregated_metrics = TweetMetric.joins(tweet: { identity: :user })
-                                      .select("date(tweet_metrics.pulled_at) as day, users.id as user_id, count(*) as count")
-                                      .group("day, users.id")
-                                      .order("day DESC")
+      aggregated_metrics = Twitter::TweetDataQuery.aggregated_metrics
 
       table_for aggregated_metrics do
         column :day

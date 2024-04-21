@@ -13,6 +13,7 @@ module Twitter
         # This ensure block runs whether the fetch_and_log_twitter_data succeeds or fails
         schedule_updater_if_needed(user, api_batch)
       end
+      Twitter::TweetDataCheckJob.perform_in(30.minutes)
     end
 
     private
