@@ -52,12 +52,11 @@ module Twitter
 
     def find_or_initialize_tweet_metric(tweet)
       last_metric = tweet.tweet_metrics.order(pulled_at: :desc).first
-      if last_metric.nil? || (last_metric.pulled_at.to_date != DateTime.current.to_date && tweet.tweet_metrics.count > 1)
+
+      if last_metric.nil? || last_metric.updated_count >= 2
         tweet.tweet_metrics.build
-      elsif (DateTime.current.to_time - last_metric.pulled_at.to_time) / 1.hour < 24
-        last_metric
       else
-        tweet.tweet_metrics.build
+        last_metric
       end
     end
 
