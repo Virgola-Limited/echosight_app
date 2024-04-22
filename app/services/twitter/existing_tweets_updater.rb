@@ -16,7 +16,6 @@ module Twitter
 
     def call
       fetch_and_process_tweets
-      send_slack_notification
     end
 
     private
@@ -31,16 +30,16 @@ module Twitter
 
         query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
-        tweets_data = client.search_tweets(params)
+        tweets_data = client.search_tweets(params) || {}
+        tweet_ids = tweets_data.fetch(:tweet_ids, [])
         today_user_data = nil
-
-        if (tweets.count != tweet_data[:tweet_ids].count)
-          message = "Tweet count mismatch for user #{user.handle}. Expected: #{tweet_data[:tweet_ids].count}, Actual: #{tweets.count}"
-          ExceptionNotifier.notify_exception(StandardError.new(message, data: { user: user.handle, tweet_data: tweet_data, tweets: tweets }))
+        if (tweets.count != tweet_ids.count)
+          message = "Tweet count mismatch for user #{user.handle}. Expected: #{tweet_ids.count}, Actual: #{tweets.count}"
+          ExceptionNotifier.notify_exception(StandardError.new(message), data: { user: user.handle, tweets_data: tweets_data, tweets: tweets })
         end
 
-
         tweets_data.each do |tweet_data|
+          p tweet_data
           today_user_data ||= tweet_data['user']['data']
           result = process_tweet_data(tweet_data)
           if result[:success]
@@ -54,9 +53,9 @@ module Twitter
           @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
           IdentityUpdater.new(today_user_data).call
         end
-
       end
     end
+
 
     def id_to_time(tweet_id)
       # Shift right by 22 bits and add the Twitter epoch offset, then convert to seconds
@@ -65,27 +64,6 @@ module Twitter
 
     def process_tweet_data(tweet_data)
       Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user)
-    end
-
-    def send_slack_notification
-      return
-      # Disable this for now - too spammy
-      # Could enable for VIP users
-      # if updated_tweets.empty? && unupdated_tweets.empty?
-      #   message = "User: #{user.handle}: had no existing tweets to update"
-      # else
-      #   updated_tweet_ids = []
-      #   unupdated_tweets_ids = []
-      #   if updated_tweets.count.positive?
-      #     user = updated_tweets.first[:user]
-      #     updated_tweet_ids = updated_tweets.map { |t| t[:tweet_id] }
-      #   end
-      #   if unupdated_tweets.count.positive?
-      #     unupdated_tweets_ids = unupdated_tweets.map { |t| t[:tweet_id] }
-      #   end
-      #   message = "User: #{user.handle}: updated_tweets: #{updated_tweet_ids.join(' ')}, unupdated_tweets: #{unupdated_tweets_ids.join(' ')}"
-      # end
-      # Notifications::SlackNotifier.call(message: message, channel: :general)
     end
   end
 end
