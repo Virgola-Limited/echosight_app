@@ -31,6 +31,7 @@ module Twitter
         query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
         tweets_data = client.search_tweets(params) || {}
+        ExceptionHandling.notify_or_raise("tweet request was a #{tweets_data.class}")
         tweet_ids = tweets_data.fetch(:tweet_ids, [])
         today_user_data = nil
         if (tweets.count != tweet_ids.count)
