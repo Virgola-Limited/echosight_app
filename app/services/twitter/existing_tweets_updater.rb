@@ -35,7 +35,7 @@ module Twitter
         today_user_data = nil
         if (tweets.count != tweet_ids.count)
           message = "Tweet count mismatch for user #{user.handle}. Expected: #{tweet_ids.count}, Actual: #{tweets.count}"
-          ExceptionNotifier.notify_exception(StandardError.new(message), data: { user: user.handle, tweets_data: tweets_data, tweets: tweets })
+          ExceptionNotifier.notify_exception(StandardError.new(message), data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: tweets.map(&:id) })
         end
 
         tweets_data.each do |tweet_data|
