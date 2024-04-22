@@ -38,8 +38,6 @@ module Twitter
           ExceptionHandling.notify_or_raise(message, data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: tweets.map(&:id) })
         end
 
-        tweets_data.each do |tweet_data|
-          p tweet_data
         tweets_data['data'].each do |tweet_data|
           today_user_data ||= tweet_data['user']['data']
           result = process_tweet_data(tweet_data)
