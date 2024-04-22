@@ -6,6 +6,7 @@ module Twitter
     attr_accessor :updated_tweets, :unupdated_tweets
 
     def initialize(user:, api_batch_id:, client: nil)
+      # This needs to check if the user account is still active
       @client = client || SocialData::ClientAdapter.new
       @user = user
       @api_batch_id = api_batch_id

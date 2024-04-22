@@ -10,6 +10,7 @@ module Twitter
       end
       # Not sure if this is the best approach.
       api_batch.update!(status: 'completed', completed_at: Time.current)
+      Twitter::TweetDataCheckJob.perform_in(30.minutes)
     end
   end
 end
