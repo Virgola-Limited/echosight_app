@@ -40,6 +40,7 @@ module Twitter
 
         tweets_data.each do |tweet_data|
           p tweet_data
+        tweets_data['data'].each do |tweet_data|
           today_user_data ||= tweet_data['user']['data']
           result = process_tweet_data(tweet_data)
           if result[:success]
@@ -63,7 +64,7 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
-      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user)
+      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user, api_batch_id: api_batch_id)
     end
   end
 end
