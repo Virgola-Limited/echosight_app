@@ -29,7 +29,7 @@ module Twitter
         since_time = min_tweet ? id_to_time(min_tweet.id) - 1 : nil
         until_time = max_tweet ? id_to_time(max_tweet.id) + 1 : nil
 
-        query = "from:#{user.handle} since_time:#{tweet_data[:since]} until_time:#{tweet_data[:until]}"
+        query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
         tweets_data = client.search_tweets(params)
         today_user_data = nil
