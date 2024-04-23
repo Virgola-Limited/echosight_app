@@ -37,7 +37,7 @@ class Tweet < ApplicationRecord
   validates :text, presence: true
 
   def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "id", "id_value", "identity_id", "text", "twitter_created_at", "updated_at"]
+    ["created_at", "id", "id_value", "identity_id", "text", "twitter_created_at", "updated_at", "updated_count"]
   end
 
   def self.ransackable_associations(auth_object = nil)
