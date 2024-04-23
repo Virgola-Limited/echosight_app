@@ -6,7 +6,7 @@ module SocialData
 
     def initialize(user: nil)
       @user = user
-      @social_data_client = SocialData::Client.new(user)
+      @social_data_client = SocialData::Client.new(user: user)
     end
 
     def fetch_user_tweets(next_token = nil)

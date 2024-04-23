@@ -7,7 +7,7 @@ module SocialData
     # perhaps removing this or increase it a very large amount
     MAXIMUM_TWEETS = 2000
 
-    def initialize(user:)
+    def initialize(user: nil)
       @user = user
     end
 
