@@ -14,18 +14,6 @@ module SocialData
     def api_key
       Rails.application.credentials.social_data[:api_key]
     end
-
-    # TODO: Internalize the next_token handling to prevent
-    # pullling too many tweets
-    def fetch_user_tweets(next_token = nil)
-      endpoint = "user/#{user.identity.uid}/tweets"
-      params = {
-        'cursor' => next_token
-      }
-
-      make_api_call(endpoint, params, :oauth2)
-    end
-
     # https://socialdata.gitbook.io/docs/twitter-tweets/retrieve-search-results-by-keyword
     # https://github.com/igorbrigadir/twitter-advanced-search
     def search_tweets(params = {}, single_request = false)
@@ -62,6 +50,16 @@ module SocialData
     end
 
 
+    # TODO: Internalize the next_token handling to prevent
+    # pullling too many tweets
+    def fetch_user_tweets(next_token = nil)
+      endpoint = "user/#{user.identity.uid}/tweets"
+      params = {
+        'cursor' => next_token
+      }
+
+      make_api_call(endpoint, params, :oauth2)
+    end
 
     def fetch_user_with_metrics
       endpoint = "user/#{user.identity.uid}"
