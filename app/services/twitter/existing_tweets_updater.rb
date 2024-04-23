@@ -30,15 +30,14 @@ module Twitter
 
         query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
-        tweets_data = client.search_tweets(params) || {}
-        ExceptionHandling.notify_or_raise("tweet request was a #{tweets_data.class}")
-        tweet_ids = tweets_data.fetch(:tweet_ids, [])
+        tweets_data = client.search_tweets(params)
+        tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }
         today_user_data = nil
         if (tweets.count != tweet_ids.count)
-          message = "Tweet count mismatch for user #{user.handle}. Expected: #{tweet_ids.count}, Actual: #{tweets.count}"
-          ExceptionHandling.notify_or_raise(message, data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: tweets.map(&:id) })
+          expected_tweet_ids = tweets.map(&:id)
+          message = "Tweet count mismatch for user #{user.handle}. Expected: #{expected_tweet_ids}, Actual: #{tweet_ids}"
+          ExceptionHandling.notify_or_raise(message, data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: expected_tweet_ids })
         end
-
         tweets_data['data'].each do |tweet_data|
           today_user_data ||= tweet_data['user']['data']
           result = process_tweet_data(tweet_data)
@@ -58,8 +57,10 @@ module Twitter
 
 
     def id_to_time(tweet_id)
-      # Shift right by 22 bits and add the Twitter epoch offset, then convert to seconds
-      ((tweet_id >> 22) + 1288834974657) / 1000
+      # Ensure tweet_id is treated as a BigInt and perform the bit shift and addition
+      timestamp_ms = (tweet_id >> 22) + 1288834974657
+      # Convert from milliseconds to seconds to match the expected Unix timestamp format
+      timestamp_s = timestamp_ms / 1000
     end
 
     def process_tweet_data(tweet_data)
