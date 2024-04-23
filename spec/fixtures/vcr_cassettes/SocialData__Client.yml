@@ -1,0 +1,151 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20within_time:2h%20-filter:replies
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 23 Apr 2024 02:59:32 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=PQ4OdC35tEUjQdHnCFXw0Qi0oXiCbXBWNZnR7ykf3C5Ij5WFeL8PQ6xQKVRWfhvpAoRHk%2F%2F7UevBO8OlTRwG%2FoUIEVEJAbg3uWVf3F3qNQcJu7sX91m1J6Xk5uptQmW8G1dnBEKVlQ%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 878a990e2f59a89a-SYD
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[{"tweet_created_at":"2024-04-23T02:59:18.000000Z","id":1782605136961126562,"id_str":"1782605136961126562","text":null,"full_text":"One
+        of the most underrated experiences is starting a dumpster fire online before
+        bed and reading the responses with your morning coffee when you wake up.","source":"<a
+        href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":0,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":null,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-04-23T01:28:56.000000Z","id":1782582397382644063,"id_str":"1782582397382644063","text":null,"full_text":"When
+        Twitter\/X fixes video views but yours start in the red. https:\/\/t.co\/e5ayEjOS9k","source":"<a
+        href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":"1782580815584796922","is_quote_status":true,"quoted_status":{"tweet_created_at":"2024-04-23T01:22:39.000000Z","id":1782580815584796922,"id_str":"1782580815584796922","text":null,"full_text":"Great
+        mine are in the red lol. https:\/\/t.co\/w00XNt2Zww","source":"<a href=\"https:\/\/mobile.twitter.com\"
+        rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":"1782579062336336083","is_quote_status":true,"quoted_status":null,"retweeted_status":null,"quote_count":1,"reply_count":0,"retweet_count":0,"favorite_count":3,"lang":"en","entities":{"hashtags":[],"media":[{"display_url":"pic.twitter.com\/w00XNt2Zww","expanded_url":"https:\/\/twitter.com\/loftwah\/status\/1782580815584796922\/photo\/1","id_str":"1782580770797940737","indices":[31,54],"media_key":"3_1782580770797940737","media_url_https":"https:\/\/pbs.twimg.com\/media\/GLz_xDracAE6GOF.png","type":"photo","url":"https:\/\/t.co\/w00XNt2Zww","ext_media_availability":{"status":"Available"},"features":{"large":{"faces":[]},"medium":{"faces":[]},"small":{"faces":[]},"orig":{"faces":[]}},"sizes":{"large":{"h":664,"w":753,"resize":"fit"},"medium":{"h":664,"w":753,"resize":"fit"},"small":{"h":600,"w":680,"resize":"fit"},"thumb":{"h":150,"w":150,"resize":"crop"}},"original_info":{"height":664,"width":753,"focus_rects":[{"x":0,"y":33,"w":753,"h":422},{"x":89,"y":0,"w":664,"h":664},{"x":141,"y":0,"w":582,"h":664},{"x":266,"y":0,"w":332,"h":664},{"x":0,"y":0,"w":753,"h":664}]}}],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":605,"bookmark_count":0,"is_pinned":false},"retweeted_status":null,"quote_count":0,"reply_count":2,"retweet_count":2,"favorite_count":8,"lang":"en","entities":{"hashtags":[],"media":[{"display_url":"pic.twitter.com\/e5ayEjOS9k","expanded_url":"https:\/\/twitter.com\/loftwah\/status\/1782582397382644063\/video\/1","id_str":"1782582290138456064","indices":[61,84],"media_key":"7_1782582290138456064","media_url_https":"https:\/\/pbs.twimg.com\/ext_tw_video_thumb\/1782582290138456064\/pu\/img\/Hp76rOUjT1DTvtTY.jpg","type":"video","url":"https:\/\/t.co\/e5ayEjOS9k","additional_media_info":{"monetizable":false},"ext_media_availability":{"status":"Available"},"sizes":{"large":{"h":1246,"w":576,"resize":"fit"},"medium":{"h":1200,"w":555,"resize":"fit"},"small":{"h":680,"w":314,"resize":"fit"},"thumb":{"h":150,"w":150,"resize":"crop"}},"original_info":{"height":1246,"width":576,"focus_rects":[]},"video_info":{"aspect_ratio":[288,623],"duration_millis":9054,"variants":[{"content_type":"application\/x-mpegURL","url":"https:\/\/video.twimg.com\/ext_tw_video\/1782582290138456064\/pu\/pl\/Y5cQWbRjUvEwI6_n.m3u8?tag=12&container=cmaf"},{"bitrate":632000,"content_type":"video\/mp4","url":"https:\/\/video.twimg.com\/ext_tw_video\/1782582290138456064\/pu\/vid\/avc1\/320x692\/pNBASvnvrLTKrZbq.mp4?tag=12"},{"bitrate":950000,"content_type":"video\/mp4","url":"https:\/\/video.twimg.com\/ext_tw_video\/1782582290138456064\/pu\/vid\/avc1\/480x1038\/FcSTBJiTEo2yg_L7.mp4?tag=12"},{"bitrate":2176000,"content_type":"video\/mp4","url":"https:\/\/video.twimg.com\/ext_tw_video\/1782582290138456064\/pu\/vid\/avc1\/576x1246\/_CEtPoBPLrtZN2C7.mp4?tag=12"}]}}],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":443,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-04-23T01:25:03.000000Z","id":1782581418243309655,"id_str":"1782581418243309655","text":null,"full_text":"Lenny
+        could never be aggressive. https:\/\/t.co\/0nb5Ky3uxo","source":"<a href=\"https:\/\/mobile.twitter.com\"
+        rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":"1782581182884089881","is_quote_status":true,"quoted_status":{"tweet_created_at":"2024-04-23T01:24:07.000000Z","id":1782581182884089881,"id_str":"1782581182884089881","text":null,"full_text":"@ImLunaHey
+        I remember a time where \ud83d\udc4d was a good thing and buddy and champ
+        were the same as mate (also good). It was a shock to learn they changed and
+        took a bit of training to get out of.","source":"<a href=\"https:\/\/mobile.twitter.com\"
+        rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":1782539252695482663,"in_reply_to_status_id_str":"1782539252695482663","in_reply_to_user_id":1599733568292651008,"in_reply_to_user_id_str":"1599733568292651008","in_reply_to_screen_name":"ImLunaHey","user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":1,"reply_count":0,"retweet_count":0,"favorite_count":2,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[{"id_str":"1599733568292651008","name":"luna","screen_name":"ImLunaHey","indices":[0,10]}]},"views_count":192,"bookmark_count":0,"is_pinned":false},"retweeted_status":null,"quote_count":0,"reply_count":0,"retweet_count":0,"favorite_count":3,"lang":"en","entities":{"hashtags":[],"media":[{"display_url":"pic.twitter.com\/0nb5Ky3uxo","expanded_url":"https:\/\/twitter.com\/loftwah\/status\/1782581418243309655\/photo\/1","ext_alt_text":"Thumbs
+        Up GIF","id_str":"1782581410194395136","indices":[33,56],"media_key":"16_1782581410194395136","media_url_https":"https:\/\/pbs.twimg.com\/tweet_video_thumb\/GL0AWRnaEAAMhGC.jpg","type":"animated_gif","url":"https:\/\/t.co\/0nb5Ky3uxo","ext_media_availability":{"status":"Available"},"sizes":{"large":{"h":372,"w":498,"resize":"fit"},"medium":{"h":372,"w":498,"resize":"fit"},"small":{"h":372,"w":498,"resize":"fit"},"thumb":{"h":150,"w":150,"resize":"crop"}},"original_info":{"height":372,"width":498,"focus_rects":[]},"video_info":{"aspect_ratio":[83,62],"variants":[{"bitrate":0,"content_type":"video\/mp4","url":"https:\/\/video.twimg.com\/tweet_video\/GL0AWRnaEAAMhGC.mp4"}]}}],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":175,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-04-23T01:22:39.000000Z","id":1782580815584796922,"id_str":"1782580815584796922","text":null,"full_text":"Great
+        mine are in the red lol. https:\/\/t.co\/w00XNt2Zww","source":"<a href=\"https:\/\/mobile.twitter.com\"
+        rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":"1782579062336336083","is_quote_status":true,"quoted_status":{"tweet_created_at":"2024-04-23T01:15:41.000000Z","id":1782579062336336083,"id_str":"1782579062336336083","text":null,"full_text":"they
+        fixed video views finally. \ud83d\udc40 https:\/\/t.co\/w0g7riKRdO","source":"<a
+        href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\">Twitter for
+        iPhone<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1599733568292651008,"id_str":"1599733568292651008","name":"luna","screen_name":"ImLunaHey","location":"australia","url":"http:\/\/studio.fish.lgbt\/beta","description":"\ud83d\udc69\u200d\ud83d\udcbb
+        @axiomfm | tracking 292M domains | notifications on? | https:\/\/t.co\/w6cIVAkQoD
+        \ud83c\udff3\ufe0f\u200d\u26a7\ufe0f\ud83c\udff3\ufe0f\u200d\ud83c\udf08 \ud83c\uddf5\ud83c\uddf8
+        | i ask a lot of \"pointless\" questions","protected":false,"verified":true,"followers_count":3074,"friends_count":3500,"listed_count":9,"favourites_count":42776,"statuses_count":19683,"created_at":"2022-12-05T11:53:10.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1599733568292651008\/1705749468","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1779392736803835904\/56l2lTYf_normal.jpg","can_dm":true},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":1,"reply_count":2,"retweet_count":1,"favorite_count":10,"lang":"en","entities":{"hashtags":[],"media":[{"display_url":"pic.twitter.com\/w0g7riKRdO","expanded_url":"https:\/\/twitter.com\/ImLunaHey\/status\/1782579062336336083\/photo\/1","id_str":"1782579056002871296","indices":[34,57],"media_key":"3_1782579056002871296","media_url_https":"https:\/\/pbs.twimg.com\/media\/GLz-NPkaMAANOzF.jpg","type":"photo","url":"https:\/\/t.co\/w0g7riKRdO","ext_media_availability":{"status":"Available"},"features":{"large":{"faces":[]},"medium":{"faces":[]},"small":{"faces":[]},"orig":{"faces":[]}},"sizes":{"large":{"h":1546,"w":1108,"resize":"fit"},"medium":{"h":1200,"w":860,"resize":"fit"},"small":{"h":680,"w":487,"resize":"fit"},"thumb":{"h":150,"w":150,"resize":"crop"}},"original_info":{"height":1546,"width":1108,"focus_rects":[{"x":0,"y":192,"w":1108,"h":620},{"x":0,"y":0,"w":1108,"h":1108},{"x":0,"y":0,"w":1108,"h":1263},{"x":335,"y":0,"w":773,"h":1546},{"x":0,"y":0,"w":1108,"h":1546}]}}],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":436,"bookmark_count":0,"is_pinned":false},"retweeted_status":null,"quote_count":1,"reply_count":0,"retweet_count":0,"favorite_count":3,"lang":"en","entities":{"hashtags":[],"media":[{"display_url":"pic.twitter.com\/w00XNt2Zww","expanded_url":"https:\/\/twitter.com\/loftwah\/status\/1782580815584796922\/photo\/1","id_str":"1782580770797940737","indices":[31,54],"media_key":"3_1782580770797940737","media_url_https":"https:\/\/pbs.twimg.com\/media\/GLz_xDracAE6GOF.png","type":"photo","url":"https:\/\/t.co\/w00XNt2Zww","ext_media_availability":{"status":"Available"},"features":{"large":{"faces":[]},"medium":{"faces":[]},"small":{"faces":[]},"orig":{"faces":[]}},"sizes":{"large":{"h":664,"w":753,"resize":"fit"},"medium":{"h":664,"w":753,"resize":"fit"},"small":{"h":600,"w":680,"resize":"fit"},"thumb":{"h":150,"w":150,"resize":"crop"}},"original_info":{"height":664,"width":753,"focus_rects":[{"x":0,"y":33,"w":753,"h":422},{"x":89,"y":0,"w":664,"h":664},{"x":141,"y":0,"w":582,"h":664},{"x":266,"y":0,"w":332,"h":664},{"x":0,"y":0,"w":753,"h":664}]}}],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":605,"bookmark_count":0,"is_pinned":false},{"tweet_created_at":"2024-04-23T01:02:08.000000Z","id":1782575650882392505,"id_str":"1782575650882392505","text":null,"full_text":"I
+        noticed a pattern when I was in school of teachers who had grown up to become
+        teachers and who also never had a life outside of teaching and yet they were
+        the ones teaching the next generation. See the problem?","source":"<a href=\"https:\/\/mobile.twitter.com\"
+        rel=\"nofollow\">Twitter Web App<\/a>","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/biodrop.io\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0Lub79k | https:\/\/t.co\/HLB3aL1jca
+        | https:\/\/t.co\/IbbT2ncYyt | https:\/\/t.co\/i9vT0NmOyw","protected":false,"verified":true,"followers_count":7187,"friends_count":5175,"listed_count":45,"favourites_count":174155,"statuses_count":58696,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1711023494","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false},"quoted_status_id":null,"quoted_status_id_str":null,"is_quote_status":false,"quoted_status":null,"retweeted_status":null,"quote_count":0,"reply_count":7,"retweet_count":0,"favorite_count":9,"lang":"en","entities":{"hashtags":[],"symbols":[],"timestamps":[],"urls":[],"user_mentions":[]},"views_count":404,"bookmark_count":0,"is_pinned":false}],"next_cursor":"DAADDAABCgABGL0V7WtawKIKAAIYvPscKBsRuQAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvRX51cAnEAoABhi9FfnVv9jwAAA"}'
+  recorded_at: Tue, 23 Apr 2024 02:59:31 GMT
+- request:
+    method: get
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0V7WtawKIKAAIYvPscKBsRuQAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvRX51cAnEAoABhi9FfnVv9jwAAA&query=from:loftwah%20within_time:2h%20-filter:replies
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 23 Apr 2024 02:59:34 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '118'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=4no6SIh1kiQKx5qJ1qPpkXTRGpvKbwfUInY6vulHpHe8IkFi2TRVpOFF%2BDMY9xZ%2BQqvh3qcdFJL5%2FuHH6OBAQJ7AC5aItWtLNKLtiEFPT9yudcGdIYXRp%2BJp0NljPJIbccUq7Pxn%2BQ%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 878a991eaafd5d22-SYD
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"tweets":[],"next_cursor":null}'
+  recorded_at: Tue, 23 Apr 2024 02:59:33 GMT
+recorded_with: VCR 6.2.0
