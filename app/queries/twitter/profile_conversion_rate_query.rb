@@ -1,6 +1,7 @@
 module Twitter
   class ProfileConversionRateQuery
     def conversion_rates_data_for_graph(profile_clicks_data:, followers_data:)
+      raise "not currently used private twitter"
       sorted_dates = (profile_clicks_data.keys + followers_data.keys).uniq.sort
       complete_data = {}
 

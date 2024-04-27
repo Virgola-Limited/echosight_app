@@ -60,7 +60,6 @@ class PublicPageService < Services::Base
     @generate_public_page_data ||= PublicPageData.new(
       engagement_rate_percentage_per_day:,
       first_day_impressions:,
-      first_impressions_message:,
       follower_daily_data_points_for_graph:,
       follower_formatted_labels_for_graph:,
       followers_comparison_days:,
@@ -215,16 +214,6 @@ class PublicPageService < Services::Base
     end
   end
 
-  def first_impressions_message
-    # dont use until we decide if the impression count at the top works the same as the graphs
-    return ''
-    @first_impressions_message ||= if first_day_impressions
-                                     "Based on #{first_day_impressions[:impression_count]} on #{first_day_impressions[:date]} "
-                                   else
-                                     ''
-                                   end
-  end
-
   def first_day_impressions
     @first_day_impressions ||= current_admin_user ? impressions_query.first_day_impressions : nil
   end
@@ -241,10 +230,6 @@ class PublicPageService < Services::Base
 
   def engagement_rate_query
     Twitter::TweetMetrics::EngagementRateQuery.new(user:)
-  end
-
-  def profile_conversion_rate_query
-    Twitter::ProfileConversionRateQuery.new
   end
 
   def tweet_metrics_query

@@ -71,19 +71,6 @@ module Twitter
         end
       end
 
-      # Old version not used
-      # def impression_counts_per_day_old
-      #   grouped_metrics, sorted_dates = fetch_grouped_metrics(number_of_days:  8)
-      #   daily_total_impressions = calculate_total_impressions(grouped_metrics, sorted_dates)
-
-      #   # Calculate daily impression differences, excluding the first day
-      #   sorted_dates.each_cons(2).map do |previous_date, current_date|
-      #     difference = daily_total_impressions[current_date] - daily_total_impressions[previous_date]
-      #     { date: current_date, impression_count: difference } # Replace negative differences with 0
-      #   end
-      # end
-      # Old version not used
-
       def maximum_days_of_data
         start_time
       end

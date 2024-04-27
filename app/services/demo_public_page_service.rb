@@ -11,7 +11,6 @@ class DemoPublicPageService < Services::Base
     PublicPageData.new(
       engagement_rate_percentage_per_day: generate_engagement_data,
       first_day_impressions: generate_first_day_impressions,
-      first_impressions_message: "Based on #{generate_first_day_impressions[:impression_count]} on #{generate_first_day_impressions[:date]}",
       follower_daily_data_points_for_graph: follower_info[:data_points], # Use data points from the refactored method
       follower_formatted_labels_for_graph: follower_info[:labels], # Use labels from the refactored method
 

@@ -13,14 +13,6 @@ module Twitter
       start_time
     end
 
-    def days_until_last_weeks_data_available
-      earliest_data_date = HourlyTweetCount.where(identity_id: @user.identity.id).minimum(:start_time)
-      return 7 unless earliest_data_date # If no data, assume a full week is needed.
-
-      days_of_data = (Time.current.beginning_of_day - earliest_data_date.to_date).to_i
-      [0, 14 - days_of_data].max # Return how many more days of data are needed, but not less than 0.
-    end
-
     def top_tweets_for_user
       last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
                                                                                    start_time)
