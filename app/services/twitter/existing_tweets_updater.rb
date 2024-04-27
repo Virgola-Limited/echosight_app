@@ -34,9 +34,9 @@ module Twitter
         tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }
         today_user_data = nil
         if (tweets.count != tweet_ids.count)
-          expected_tweet_ids = tweets.map(&:id)
-          message = "Tweet count mismatch for user #{user.handle}. Expected: #{expected_tweet_ids}, Actual: #{tweet_ids}"
-          ExceptionHandling.notify_or_raise(message, data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: expected_tweet_ids })
+          if (tweets.count != tweet_ids.count)
+            handle_tweet_count_mismatch(tweets, tweet_ids)
+          end
         end
         tweets_data['data'].each do |tweet_data|
           today_user_data ||= tweet_data['user']['data']
@@ -55,6 +55,13 @@ module Twitter
       end
     end
 
+    def handle_tweet_count_mismatch(tweets, tweet_ids)
+      expected_tweet_ids = tweets.map(&:id)
+      missing_tweet_ids = expected_tweet_ids - tweet_ids
+      extra_tweet_ids = tweet_ids - expected_tweet_ids
+      message = "Tweet count mismatch for user #{user.handle}. Expected: #{expected_tweet_ids}, Actual: #{tweet_ids}, Missing: #{missing_tweet_ids}, Extra: #{extra_tweet_ids}"
+      ExceptionHandling.notify_or_raise(message, data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: expected_tweet_ids })
+    end
 
     def id_to_time(tweet_id)
       # Ensure tweet_id is treated as a BigInt and perform the bit shift and addition
