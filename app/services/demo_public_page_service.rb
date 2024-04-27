@@ -10,7 +10,6 @@ class DemoPublicPageService < Services::Base
 
     PublicPageData.new(
       engagement_rate_percentage_per_day: generate_engagement_data,
-      first_day_impressions: generate_first_day_impressions,
       follower_daily_data_points_for_graph: follower_info[:data_points], # Use data points from the refactored method
       follower_formatted_labels_for_graph: follower_info[:labels], # Use labels from the refactored method
 
@@ -47,10 +46,6 @@ class DemoPublicPageService < Services::Base
 
   def calculate_engagement_rate_for_day(date)
     4.51 - (date.wday * 0.3)
-  end
-
-  def generate_first_day_impressions
-    { date: Date.today - 6, impression_count: 332539 }
   end
 
   def generate_follower_info

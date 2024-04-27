@@ -59,7 +59,6 @@ class PublicPageService < Services::Base
   def generate_public_page_data
     @generate_public_page_data ||= PublicPageData.new(
       engagement_rate_percentage_per_day:,
-      first_day_impressions:,
       follower_daily_data_points_for_graph:,
       follower_formatted_labels_for_graph:,
       followers_comparison_days:,
@@ -212,10 +211,6 @@ class PublicPageService < Services::Base
     @impression_formatted_labels_for_graph ||= impressions_query.impression_counts_per_day.map do |data|
       format_label_with_impression_count(data)
     end
-  end
-
-  def first_day_impressions
-    @first_day_impressions ||= current_admin_user ? impressions_query.first_day_impressions : nil
   end
 
   def format_label_with_impression_count(data)

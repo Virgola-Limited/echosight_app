@@ -10,19 +10,6 @@ module Twitter
         @start_time = start_time || 1.week.ago.utc
       end
 
-      def first_day_impressions
-        # dont use until we decide if the impression count at the top works the same as the graphs
-        ''
-
-        # grouped_metrics, sorted_dates = fetch_grouped_metrics
-        # return nil if sorted_dates.empty?
-
-        # first_date = sorted_dates.first
-        # first_day_impression_count = grouped_metrics[first_date].sum(&:impression_count)
-
-        # { date: first_date, impression_count: first_day_impression_count }
-      end
-
       def impressions_count
         return 0 if user.tweet_metrics.count.zero?
 
