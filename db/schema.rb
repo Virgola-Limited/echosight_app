@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_20_064244) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_01_224323) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,6 +130,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_20_064244) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "sync_class"
+    t.bigint "api_batch_id"
+    t.index ["api_batch_id"], name: "index_user_twitter_data_updates_on_api_batch_id"
     t.index ["identity_id"], name: "index_user_twitter_data_updates_on_identity_id"
     t.index ["started_at"], name: "index_user_twitter_data_updates_on_started_at"
   end
@@ -192,5 +194,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_20_064244) do
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"
+  add_foreign_key "user_twitter_data_updates", "api_batches"
   add_foreign_key "user_twitter_data_updates", "identities"
 end

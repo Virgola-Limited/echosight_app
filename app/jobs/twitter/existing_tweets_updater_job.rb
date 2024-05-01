@@ -22,7 +22,8 @@ module Twitter
       user_twitter_data_update = UserTwitterDataUpdate.create!(
         identity_id: user.identity.id,
         started_at: Time.current,
-        sync_class: Twitter::ExistingTweetsUpdater
+        sync_class: Twitter::ExistingTweetsUpdater,
+        api_batch_id: api_batch.id
       )
 
       begin

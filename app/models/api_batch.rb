@@ -14,4 +14,11 @@ class ApiBatch < ApplicationRecord
 
   scope :tweets_for_user, ->(user) { joins(:tweets).where(tweets: { identity_id: user.identity.id }) }
 
+  def self.ransackable_associations(auth_object = nil)
+    %w[tweets user_twitter_data_updates]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["completed_at", "status"]
+  end
 end
