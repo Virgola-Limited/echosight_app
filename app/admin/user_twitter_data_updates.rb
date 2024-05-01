@@ -19,7 +19,9 @@ ActiveAdmin.register UserTwitterDataUpdate do
       span truncate(update.error_message, length: 300), title: update.error_message
     end
     column :sync_class
-    column :api_batch_id
+    column "API Batch ID", :api_batch_id do |update|
+      link_to update.api_batch_id, admin_api_batch_path(update.api_batch_id) if update.api_batch_id
+    end
     column :updated_at
     actions
   end
