@@ -5,7 +5,7 @@ ActiveAdmin.register_page "Dashboard" do
   content title: proc { I18n.t("active_admin.dashboard") } do
     h2 "Last 10 Incomplete User Twitter Data Updates in last #{days_to_fetch} days"
     section do
-      table_for Twitter::TweetDataQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch) do
+      table_for Twitter::TweetDataChecksQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch) do
         column :started_at
         column "Error Message", :error_message do |update|
           span truncate(update.error_message, length: 300), title: update.error_message
@@ -23,7 +23,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Tweets with First Metric Issues"
     section do
-      problematic_tweets = Twitter::TweetDataQuery.problematic_tweets
+      problematic_tweets = Twitter::TweetDataChecksQuery.problematic_tweets
 
       table_for problematic_tweets.limit(10) do
         column :id
@@ -42,7 +42,7 @@ ActiveAdmin.register_page "Dashboard" do
     end
 
     h2 "Tweets Needing Refresh"
-    tweets = Twitter::TweetDataQuery.tweets_needing_refresh(days_to_fetch)
+    tweets = Twitter::TweetDataChecksQuery.tweets_needing_refresh(days_to_fetch)
 
     section do
       div do
@@ -63,7 +63,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Users with No Recent Twitter User Metrics"
     section do
-      users = Twitter::TweetDataQuery.users_with_no_recent_twitter_user_metrics
+      users = Twitter::TweetDataChecksQuery.users_with_no_recent_twitter_user_metrics
 
       table_for users do
         column :id
@@ -75,7 +75,7 @@ ActiveAdmin.register_page "Dashboard" do
     h2 "Aggregated TweetMetrics by Day"
     section do
       # Define a scope or method in your TweetMetric model that performs the aggregation
-      aggregated_metrics = Twitter::TweetDataQuery.aggregated_metrics
+      aggregated_metrics = Twitter::TweetDataChecksQuery.aggregated_metrics
 
       table_for aggregated_metrics do
         column :day

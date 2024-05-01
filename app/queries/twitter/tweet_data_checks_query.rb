@@ -1,5 +1,5 @@
 module Twitter
-  class TweetDataQuery
+  class TweetDataChecksQuery
     def self.incomplete_user_updates(days)
       UserTwitterDataUpdate.joins(identity: :user)
                           .merge(User.syncable)
