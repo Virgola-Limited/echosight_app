@@ -64,33 +64,6 @@ module Twitter
 
       private
 
-      ############
-      # Old version not used
-      # def calculate_total_impressions(grouped_metrics, sorted_dates)
-      #   # Initialize a hash to keep track of total impressions per day
-      #   daily_total_impressions = {}
-      #   sorted_dates.each do |date|
-      #     daily_total_impressions[date] = grouped_metrics[date].sum { |metric| metric.impression_count || 0 }
-      #   end
-      #   daily_total_impressions
-      # end
-
-      # def fetch_grouped_metrics(number_of_days: nil)
-      #   pulled_at_date_time = number_of_days&.days&.ago || start_time
-      #   # Fetch the latest TweetMetric record for each day for each tweet
-      #   tweet_metrics = TweetMetric.select('DISTINCT ON (tweet_id, DATE(pulled_at)) *')
-      #                              .joins(:tweet)
-      #                              .where('pulled_at > ?', pulled_at_date_time)
-      #                              .where(tweets: { identity_id: user.identity.id })
-      #                              .order('tweet_id, DATE(pulled_at), pulled_at DESC')
-
-      #   # Group the metrics by date and sort the dates
-      #   grouped_metrics = tweet_metrics.group_by { |metric| metric.pulled_at.to_date }
-      #   sorted_dates = grouped_metrics.keys.sort
-
-      #   [grouped_metrics, sorted_dates]
-      # end
-
       def total_impressions_for_period(start_time, end_time)
         TweetMetric.joins(:tweet)
                    .where(tweets: { identity_id: user.identity.id })
