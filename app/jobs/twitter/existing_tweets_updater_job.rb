@@ -19,7 +19,7 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data
-      data_update_log = UserTwitterDataUpdate.create!(
+      user_twitter_data_update = UserTwitterDataUpdate.create!(
         identity_id: user.identity.id,
         started_at: Time.current,
         sync_class: Twitter::ExistingTweetsUpdater
@@ -33,10 +33,10 @@ module Twitter
         # backtrace = e.backtrace.take(5).join("\n")
 
         message = "ExistingTweetsUpdaterJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
-        data_update_log.update!(error_message: message)
+        user_twitter_data_update.update!(error_message: message)
         raise e
       else
-        data_update_log.update!(completed_at: Time.current)
+        user_twitter_data_update.update!(completed_at: Time.current)
       end
       schedule_next_update
     end

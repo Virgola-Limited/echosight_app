@@ -18,7 +18,7 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data(user, api_batch)
-      data_update_log = UserTwitterDataUpdate.create!(
+      user_twitter_data_update = UserTwitterDataUpdate.create!(
         identity_id: user.identity.id,
         started_at: Time.current,
         sync_class: Twitter::NewTweetsFetcher
@@ -27,9 +27,9 @@ module Twitter
       begin
         update_user(user, api_batch)
       rescue StandardError => e
-        handle_error(user, api_batch, e, data_update_log)
+        handle_error(user, api_batch, e, user_twitter_data_update)
       else
-        data_update_log.update!(completed_at: Time.current)
+        user_twitter_data_update.update!(completed_at: Time.current)
       end
     end
 
@@ -37,10 +37,10 @@ module Twitter
       Twitter::NewTweetsFetcher.new(user: user, api_batch_id: api_batch.id).call
     end
 
-    def handle_error(user, api_batch, e, data_update_log)
+    def handle_error(user, api_batch, e, user_twitter_data_update)
       backtrace = e.backtrace.join("\n")
       message = "NewTweetsFetcherJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
-      data_update_log.update!(error_message: message)
+      user_twitter_data_update.update!(error_message: message)
       raise e
     end
 
