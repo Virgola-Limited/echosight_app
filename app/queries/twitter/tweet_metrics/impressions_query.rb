@@ -27,8 +27,8 @@ module Twitter
 
       def impressions_change_since_last_week
         # Calculate impressions for the last 7 days and the previous 7 days
-        current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
-        previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
+        current_week_impressions = total_impressions_for_period(7.days.ago, Time.current)
+        previous_week_impressions = total_impressions_for_period(14.days.ago, 7.days.ago)
 
         return false if previous_week_impressions.zero? # No data from last week
 
