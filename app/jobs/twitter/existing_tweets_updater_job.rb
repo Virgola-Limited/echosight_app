@@ -47,7 +47,7 @@ module Twitter
     end
 
     def schedule_next_update
-      if api_batch.created_at > 3.days.ago
+      if api_batch.created_at > 14.days.ago
         # Maybe only schedule this if the user has tweets in the batch?
         Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
       end
