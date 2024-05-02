@@ -20,9 +20,9 @@ module SocialData
       endpoint = 'search'
 
       # Ensure the query includes -filter:replies
-      if params[:query] && !params[:query].include?("-filter:replies")
-        params[:query] += " -filter:replies"
-      end
+      # if params[:query] && !params[:query].include?("-filter:replies")
+      #   params[:query] += " -filter:replies"
+      # end
 
       received_tweet_count = 0
       all_tweets = []
