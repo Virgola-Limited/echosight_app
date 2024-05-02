@@ -1,7 +1,7 @@
 module Twitter
   class TweetDataCheckJob
     include Sidekiq::Job
-    sidekiq_options retry: 3, queue: 'data_integrity'
+    sidekiq_options retry: false, queue: 'low_priority'
 
     def perform
       check_and_notify(Twitter::TweetDataChecksQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch), "Incomplete User Updates")
