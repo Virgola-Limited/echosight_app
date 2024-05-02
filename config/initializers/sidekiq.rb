@@ -41,11 +41,11 @@ if !Rails.env.development? && !Rails.env.test?
           'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
           'class' => 'Twitter::TweetsFetcherJob'
         },
-        {
-          'name' => 'Remove old empty ApiBatches',
-          'cron' => '0 0 * * *',
-          'class' => 'RemoveOldEmptyApiBatchJob'
-        }
+        # {
+        #   'name' => 'Remove old empty ApiBatches',
+        #   'cron' => '0 0 * * *',
+        #   'class' => 'RemoveOldEmptyApiBatchJob'
+        # }
       ]
     )
   end
