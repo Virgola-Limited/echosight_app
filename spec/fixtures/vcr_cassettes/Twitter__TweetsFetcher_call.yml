@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -224,7 +224,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:35 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtldGEtpQYAAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYtpYEikAnEAoABhi2lgSKP9jwAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtldGEtpQYAAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYtpYEikAnEAoABhi2lgSKP9jwAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -456,7 +456,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:39 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtXYe81cwfwAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYtpYEikAnEAoABhi2lgSKP7HgAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtXYe81cwfwAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYtpYEikAnEAoABhi2lgSKP7HgAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -673,7 +673,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:42 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtUsot1qhoQAIAAIAAAACCAADAAAAAAgABAAAAAIKAAUYtpYEikAnEAoABhi2lgSKP4rQAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtUsot1qhoQAIAAIAAAACCAADAAAAAAgABAAAAAIKAAUYtpYEikAnEAoABhi2lgSKP4rQAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -878,7 +878,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:45 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtGbVq9tRTAAIAAIAAAACCAADAAAAAAgABAAAAAMKAAUYtpYEikAnEAoABhi2lgSKP2PAAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYtGbVq9tRTAAIAAIAAAACCAADAAAAAAgABAAAAAMKAAUYtpYEikAnEAoABhi2lgSKP2PAAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -1045,7 +1045,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:48 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYs-SgSlqRWQAIAAIAAAACCAADAAAAAAgABAAAAAQKAAUYtpYEikAnEAoABhi2lgSKPzywAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYs-SgSlqRWQAIAAIAAAACCAADAAAAAAgABAAAAAQKAAUYtpYEikAnEAoABhi2lgSKPzywAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -1234,7 +1234,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:51 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYsww6XVtx_QAIAAIAAAACCAADAAAAAAgABAAAAAUKAAUYtpYEikAnEAoABhi2lgSKPxWgAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYsww6XVtx_QAIAAIAAAACCAADAAAAAAgABAAAAAUKAAUYtpYEikAnEAoABhi2lgSKPxWgAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -1425,7 +1425,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:53 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYspCwapqBtgAIAAIAAAACCAADAAAAAAgABAAAAAYKAAUYtpYEikAnEAoABhi2lgSKPu6QAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYspCwapqBtgAIAAIAAAACCAADAAAAAAgABAAAAAYKAAUYtpYEikAnEAoABhi2lgSKPu6QAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -1626,7 +1626,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:56 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYscx8oNoQ1QAIAAIAAAACCAADAAAAAAgABAAAAAcKAAUYtpYEikAnEAoABhi2lgSKPseAAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYscx8oNoQ1QAIAAIAAAACCAADAAAAAAgABAAAAAcKAAUYtpYEikAnEAoABhi2lgSKPseAAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -1815,7 +1815,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:49:58 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYsJyGIRqA-wAIAAIAAAACCAADAAAAAAgABAAAAAgKAAUYtpYEikAnEAoABhi2lgSKPqBwAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYsJyGIRqA-wAIAAIAAAACCAADAAAAAAgABAAAAAgKAAUYtpYEikAnEAoABhi2lgSKPqBwAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -1984,7 +1984,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:00 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrxHKY5ohVgAIAAIAAAACCAADAAAAAAgABAAAAAkKAAUYtpYEikAnEAoABhi2lgSKPnlgAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrxHKY5ohVgAIAAIAAAACCAADAAAAAAgABAAAAAkKAAUYtpYEikAnEAoABhi2lgSKPnlgAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -2161,7 +2161,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:03 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrsnS6FowrgAIAAIAAAACCAADAAAAAAgABAAAAAoKAAUYtpYEikAnEAoABhi2lgSKPlJQAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrsnS6FowrgAIAAIAAAACCAADAAAAAAgABAAAAAoKAAUYtpYEikAnEAoABhi2lgSKPlJQAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -2354,7 +2354,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:06 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrcv2TdoxNAAIAAIAAAACCAADAAAAAAgABAAAAAsKAAUYtpYEikAnEAoABhi2lgSKPitAAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrcv2TdoxNAAIAAIAAAACCAADAAAAAAgABAAAAAsKAAUYtpYEikAnEAoABhi2lgSKPitAAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -2552,7 +2552,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:08 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrXGqaBtg0gAIAAIAAAACCAADAAAAAAgABAAAAAwKAAUYtpYEikAnEAoABhi2lgSKPgQwAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrXGqaBtg0gAIAAIAAAACCAADAAAAAAgABAAAAAwKAAUYtpYEikAnEAoABhi2lgSKPgQwAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -2733,7 +2733,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:11 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrK_ggZpxqAAIAAIAAAACCAADAAAAAAgABAAAAA0KAAUYtpYEikAnEAoABhi2lgSKPd0gAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrK_ggZpxqAAIAAIAAAACCAADAAAAAAgABAAAAA0KAAUYtpYEikAnEAoABhi2lgSKPd0gAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -2913,7 +2913,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:13 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrEFYgZtBEgAIAAIAAAACCAADAAAAAAgABAAAAA4KAAUYtpYEikAnEAoABhi2lgSKPbYQAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYrEFYgZtBEgAIAAIAAAACCAADAAAAAAgABAAAAA4KAAUYtpYEikAnEAoABhi2lgSKPbYQAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -3080,7 +3080,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:16 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqx0WyZuwQQAIAAIAAAACCAADAAAAAAgABAAAAA8KAAUYtpYEikAnEAoABhi2lgSKPY8AAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqx0WyZuwQQAIAAIAAAACCAADAAAAAAgABAAAAA8KAAUYtpYEikAnEAoABhi2lgSKPY8AAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -3254,7 +3254,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:18 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqkHv4RswigAIAAIAAAACCAADAAAAAAgABAAAABAKAAUYtpYEikAnEAoABhi2lgSKPWfwAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqkHv4RswigAIAAIAAAACCAADAAAAAAgABAAAABAKAAUYtpYEikAnEAoABhi2lgSKPWfwAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -3419,7 +3419,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:21 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqZQXtFogkQAIAAIAAAACCAADAAAAAAgABAAAABEKAAUYtpYEikAnEAoABhi2lgSKPUDgAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqZQXtFogkQAIAAIAAAACCAADAAAAAAgABAAAABEKAAUYtpYEikAnEAoABhi2lgSKPUDgAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -3589,7 +3589,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:23 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqNjgopcg5wAIAAIAAAACCAADAAAAAAgABAAAABIKAAUYtpYEikAnEAoABhi2lgSKPRnQAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYqNjgopcg5wAIAAIAAAACCAADAAAAAAgABAAAABIKAAUYtpYEikAnEAoABhi2lgSKPRnQAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -3753,7 +3753,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:26 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYp7lYS9dguwAIAAIAAAACCAADAAAAAAgABAAAABMKAAUYtpYEikAnEAoABhi2lgSKPPLAAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYp7lYS9dguwAIAAIAAAACCAADAAAAAAgABAAAABMKAAUYtpYEikAnEAoABhi2lgSKPPLAAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -3938,7 +3938,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:28 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYpb3w6powiAAIAAIAAAACCAADAAAAAAgABAAAABQKAAUYtpYEikAnEAoABhi2lgSKPMuwAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYpb3w6powiAAIAAIAAAACCAADAAAAAAgABAAAABQKAAUYtpYEikAnEAoABhi2lgSKPMuwAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -4148,7 +4148,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:31 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYpMjfphshvgAIAAIAAAACCAADAAAAAAgABAAAABUKAAUYtpYEikAnEAoABhi2lgSKPKSgAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYpMjfphshvgAIAAIAAAACCAADAAAAAAgABAAAABUKAAUYtpYEikAnEAoABhi2lgSKPKSgAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''
@@ -4255,7 +4255,7 @@ http_interactions:
   recorded_at: Thu, 18 Apr 2024 01:50:32 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYpJIpLFsAJwAIAAIAAAACCAADAAAAAAgABAAAABYKAAUYtpYEikAnEAoABhi2lgSKPH2QAAA&query=from:loftwah%20within_time:14d%20-filter:replies
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGLaTBe0aAX4KAAIYpJIpLFsAJwAIAAIAAAACCAADAAAAAAgABAAAABYKAAUYtpYEikAnEAoABhi2lgSKPH2QAAA&query=from:loftwah%20within_time:14d
     body:
       encoding: US-ASCII
       string: ''

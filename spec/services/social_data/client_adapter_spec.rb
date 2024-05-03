@@ -25,7 +25,7 @@ RSpec.describe SocialData::ClientAdapter do
       it 'returns adapted social data in the expected format' do
         VCR.use_cassette('SocialData__Client') do
           adapted_data = client_adapter.search_tweets(params)
-          expect(adapted_data['data'].size).to eq(21)
+          expect(adapted_data['data'].size).to eq(80)
           adapted_data['data'].each do |tweet|
             tweet_time = id_to_time(tweet['id'].to_i)
             expect(tweet_time).to be >= since_time
