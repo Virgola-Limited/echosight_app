@@ -2,17 +2,15 @@ module Twitter
   class TweetAndMetricUpserter < Services::Base
     attr_reader :tweet_data, :user, :api_batch_id
 
-    def initialize(tweet_data:, user: nil, api_batch_id:)
+    def initialize(tweet_data:, user:, api_batch_id:)
       @tweet_data = tweet_data
       @user = user
       @api_batch_id = api_batch_id
-      raise ActiveRecord::RecordNotFound unless @user
     end
 
     def call
       tweet = initialize_or_update_tweet
       tweet_metric = find_or_initialize_tweet_metric(tweet)
-      raise "Metric has been updated too many times within 24 hours" if tweet_metric.updated_count >= 2
 
       result = update_tweet_metric(tweet_metric)
       {
