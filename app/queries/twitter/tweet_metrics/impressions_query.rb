@@ -42,20 +42,21 @@ module Twitter
       end
 
       def impression_counts_per_day
-        # Define the range of days for which you want to fetch the data
-        end_date = Date.current # Assuming you want data up to the current date
-        start_date = end_date - 6.days # Adjust this as needed
+        end_date = Date.current
+        start_date = end_date - 6.days
 
-        (start_date..end_date).map do |date|
-          # Fetch tweets created on 'date' and sum up their impressions from the same day
-          impressions_sum = TweetMetric.joins(:tweet)
-                                       .where(tweets: { identity_id: user.identity.id,
-                                                        twitter_created_at: date.beginning_of_day..date.end_of_day })
-                                       .where('tweet_metrics.pulled_at::date = ?', date)
-                                       .sum(:impression_count)
+        results = (start_date..end_date).map do |date|
+          tweets_from_date = Tweet.where(identity_id: user.identity.id,
+                                         twitter_created_at: date.beginning_of_day..date.end_of_day)
 
-          { date:, impression_count: impressions_sum }
+          impressions_sum = tweets_from_date.map do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :asc).first.try(:impression_count) || 0
+          end.sum
+
+          { date: date, impression_count: impressions_sum }
         end
+
+        results
       end
 
       def maximum_days_of_data
