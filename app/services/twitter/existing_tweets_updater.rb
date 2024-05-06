@@ -34,9 +34,7 @@ module Twitter
         received_tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }
         today_user_data = nil
         if (expected_tweets.count != received_tweet_ids.count)
-          if (expected_tweets.count != received_tweet_ids.count)
-            handle_tweet_count_mismatch(expected_tweets, received_tweet_ids)
-          end
+          handle_tweet_count_mismatch(expected_tweets, received_tweet_ids)
         end
         tweets_data['data'].each do |tweet_data|
           today_user_data ||= tweet_data['user']['data']
