@@ -13,10 +13,6 @@ module Twitter
 
     def call
       metrics_created_count, tweets_updated_count = fetch_and_store_tweets
-      # Notifications::SlackNotifier.call(
-      #   message: "User: #{user.identity.handle}: #{metrics_created_count} tweet metrics created, #{tweets_updated_count} tweets updated.",
-      #   channel: :general
-      # )
       response_message = "Fetched and stored #{metrics_created_count} tweet metrics and updated #{tweets_updated_count} tweets.\n\n"
       response_message += @user_metrics_updated_message if @user_metrics_updated_message
       response_message

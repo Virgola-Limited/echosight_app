@@ -5,7 +5,8 @@ class UrlRewriter
 
   def call
     URI.extract(@text).each do |url|
-      original_url = resolve_url(url)
+      url_without_trailing_slash = url.chomp('/')
+      original_url = resolve_url(url_without_trailing_slash)
       @text.gsub!(url, original_url) if original_url
     end
     @text
