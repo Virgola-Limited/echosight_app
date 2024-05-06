@@ -26,10 +26,10 @@
 #
 FactoryBot.define do
   factory :identity do
-    uid { '1691930809756991488' }
+    uid { Faker::Alphanumeric.alpha(number: 19) }
     association :user
     provider { 'twitter2' }
-    handle { 'TopherToy' }
+    handle { Faker::Internet.username }
     description { 'Twitter user bio' }
 
     trait :random_credentials do
@@ -41,6 +41,11 @@ FactoryBot.define do
       after(:create) do |identity|
         create(:oauth_credential, identity:)
       end
+    end
+
+    trait :tophertoy do
+      uid { '1691930809756991488' }
+      handle { 'TopherToy' }
     end
 
     trait :loftwah do

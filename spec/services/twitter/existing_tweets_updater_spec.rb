@@ -1,178 +1,59 @@
 require 'rails_helper'
 
 RSpec.describe Twitter::ExistingTweetsUpdater do
-  let!(:user) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
-  let(:client) { double('SocialData::ClientAdapter') }
-  let(:subject) { described_class.new(user: user, client: client) }
-  # let(:tweet) { create(:tweet, id: 1770016891555496274, identity: user.identity, twitter_created_at: 4.hour.ago)}
-  let(:updatable_tweet) { create(:tweet, id: 1765212190418899365, identity: user.identity, twitter_created_at: Time.current)}
-  # this is 1 second before the unix timestamp of the since id and and 1 second later than the max id
-  let(:expected_query) { { query: "from:#{user.identity.handle} since_time:1709694355 until_time:1709694357" } }
+  let(:identity) { create(:identity, :loftwah) }
+  let!(:user) { create(:user, identity: identity, confirmed_at: 1.day.ago) }
+  let(:client) { SocialData::ClientAdapter.new }
+  let!(:tweets) do
+    [
+      create(:tweet, id: '1782582389109686272', identity: user.identity, api_batch: api_batch),
+      create(:tweet, id: '1782582401692598271', identity: user.identity, api_batch: api_batch)
+    ]
+  end
+  let(:api_batch) { create(:api_batch) }
+  let(:service) { described_class.new(user: user, api_batch_id: api_batch.id, client: client) }
+
 
   xdescribe '#call' do
-    before do
-      allow(Twitter::UserMetricsUpdater).to receive(:new).and_return(double(call: nil))
-      allow(IdentityUpdater).to receive(:new).and_return(double(call: nil))
-    end
+    context 'when there are no tweets in the batch for the user' do
+      let!(:user_2) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
 
-    after do
-      travel_back
-    end
-
-    it 'it does not update the metric in the first 24 hours' do
-      create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
-      expect(client).not_to receive(:search_tweets)
-      subject.call
-
-      1.upto(24) do |hour|
-        travel_to(hour.hours.from_now) do
-          begin
-            expect(client).not_to receive(:search_tweets)
-            subject.call
-          rescue RSpec::Mocks::MockExpectationError => e
-            raise "#{hour} didn't expect to call search_tweets. Original error: #{e.message}"
-          end
-        end
-      end
-    end
-
-    let(:data_response) do
-      [
-        {
-        'id' => '1765212190418899365',
-        'text' => 'to come to',
-        'created_at' => '2024-03-06T03:05:56.000000Z',
-        'public_metrics' => {
-          'like_count' => 0,
-          'quote_count' => 0,
-          'reply_count' => 0,
-          'retweet_count' => 0,
-          'impression_count' => 11,
-          'bookmark_count' => 0
-        },
-        'is_pinned' => 'false',
-        'user' => {
-          'data' => {
-            'id' => '1691930809756991488',
-            'name' => 'Topher',
-            'username' => 'TopherToy',
-            'description' => 'Twitter/X analytics with Echosight https://t.co/uZpeIYc5Nq',
-            'public_metrics' => {
-              'followers_count' => 13,
-              'following_count' => 21,
-              'listed_count' => 0,
-              'tweet_count' => 40
-            },
-            'image_url' => 'https://pbs.twimg.com/profile_images/1770204882819223552/vrBPzd16_normal.jpg',
-            'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1710884709'
-          }
-        }
-      }
-      ]
-    end
-
-    it 'updates the metric once every 24 hours' do
-      tweet_metric = create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
-
-      travel_to(24.5.hours.from_now) do
-        expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
-        subject.call
-      end
-
-      expect(updatable_tweet.tweet_metrics.count).to eq(2)
-      26.upto(48) do |hour|
-        travel_to(hour.hours.from_now) do
-          begin
-            expect(client).not_to receive(:search_tweets)
-            subject.call
-          rescue RSpec::Mocks::MockExpectationError => e
-            raise "#{hour} didn't expect to call search_tweets. Original error: #{e.message}"
-          end
-        end
-      end
-    end
-
-    it 'updates the metric again after another 24 hours' do
-      create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
-
-      travel_to(24.5.hours.from_now) do
-        expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
-        subject.call
-      end
-
-      expect(updatable_tweet.tweet_metrics.count).to eq(2)
-    end
-
-    before do
-      allow(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
-    end
-
-    xit 'updates the metric again after another 48 hours' do
-      p "initial count" + updatable_tweet.tweet_metrics.count.inspect
-      create(:tweet_metric, tweet: updatable_tweet, pulled_at: Time.current)
-
-      p updatable_tweet.tweet_metrics.count
-      travel_to(24.5.hours.from_now) do
-        p '**should save tweet metric first'
-        subject.call
-      end
-
-      p "updatable_tweet.tweet_metrics.count after 24 hours" + updatable_tweet.tweet_metrics.count.inspect
-
-      p updatable_tweet.tweet_metrics.last
-
-
-      25.upto(55) do |hour|
-          travel_to(hour.hours.from_now) do
-          p '**should save tweet metric second'
-          p DateTime.current
-          expect(client).to receive(:search_tweets).with(expected_query).and_return({ 'data' => data_response })
-          subject.call
-        end
-      end
-
-      # expect(updatable_tweet.tweet_metrics.count).to eq(3)
-    end
-
-    let!(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 15.days.ago) }
-    let!(:old_tweet_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 14.days.ago) }
-
-    it 'does not update more than 14 days' do
-      travel_to(15.days.from_now) do
+      it 'does not update any tweets' do
+        service = described_class.new(user: user_2, api_batch_id: api_batch.id, client: client)
+        expect(Twitter::TweetAndMetricUpserter).not_to receive(:call)
         expect(client).not_to receive(:search_tweets)
-        subject.call
+        service.call
+        expect(service.updated_tweets).to be_empty
+        expect(service.unupdated_tweets).to be_empty
       end
     end
 
-    # need to ensure that the tweet can be marked as not pullable? (deleting it could be dangerous)
-    # it 'need to test when a tweet is deleted it might mean we pull too many tweets' do
-    #   pending
-    # end
-
-    # it 'need a test to check if the number of results is the same as the number of tweets' do
-    #   pending
-    # end
-
-    # TODO: needs to check hourly over 24 - 48 hours
-    context 'when handling a mix of new and old tweets' do
-      let(:old_tweet) { create(:tweet, identity: user.identity, twitter_created_at: 2.days.ago) }
-      let(:new_tweet) { create(:tweet, identity: user.identity, twitter_created_at: Time.current) }
-      let!(:new_tweet_metric) { create(:tweet_metric, tweet: new_tweet, pulled_at: Time.current) }
-
-      let(:oldest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 48.hours.ago) }
-      let(:newest_metric) { create(:tweet_metric, tweet: old_tweet, pulled_at: 25.hours.ago) }
-
-      let(:expected_query) do
-        since_time = subject.send(:id_to_time, oldest_metric.tweet.id) - 1
-        until_time = subject.send(:id_to_time, newest_metric.tweet.id) + 1
-        "from:#{old_tweet.identity.handle} since_time:#{since_time} until_time:#{until_time}"
+    context 'when there are tweets in the batch for the user' do
+      it 'updates tweets and handles them accordingly' do
+        VCR.use_cassette('SocialData__ClientAdapter') do
+          service.call
+          expect(service.updated_tweets).not_to be_empty
+          expect(service.unupdated_tweets).to be_empty
+        end
       end
+    end
 
-      it 'updates old tweets and skips new tweets without metrics' do
-        expect(client).to receive(:search_tweets).with(query: expected_query).and_return({ 'data' => [] })
-        expect(client).not_to receive(:search_tweets).with(query: include("from:#{new_tweet.identity.handle}"))
+    context 'when there is a mismatch in tweet counts' do
+      # add tweet to batch?
+      it 'handles mismatch by notifying an exception' do
+        allow(client).to receive(:search_tweets).and_return({ tweet_ids: [] }) # Mocking an empty response
+        expect(ExceptionHandling).to receive(:notify_or_raise)
+        service.call
+      end
+    end
 
-        subject.call
+    describe 'integration with user metrics' do
+      it 'updates user metrics if relevant data is available' do
+        user_data = { 'data' => { 'id' => user.identity.id } }
+        allow(client).to receive(:search_tweets).and_return({ 'user' => user_data })
+        expect(Twitter::UserMetricsUpdater).to receive(:new).and_call_original
+        expect(IdentityUpdater).to receive(:new).and_call_original
+        service.call
       end
     end
   end

@@ -21,8 +21,8 @@ module Twitter
     private
 
     def fetch_and_process_tweets
-      tweets = Tweet.where(api_batch_id: @api_batch_id, identity_id: user.identity.id).order(:id)
-      min_tweet, max_tweet = tweets.first, tweets.last
+      expected_tweets = Tweet.where(api_batch_id: @api_batch_id, identity_id: user.identity.id).order(:id)
+      min_tweet, max_tweet = expected_tweets.first, expected_tweets.last
 
       if min_tweet && max_tweet
         since_time = min_tweet ? id_to_time(min_tweet.id) - 1 : nil
@@ -31,11 +31,11 @@ module Twitter
         query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
         tweets_data = client.search_tweets(params)
-        tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }
+        received_tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }
         today_user_data = nil
-        if (tweets.count != tweet_ids.count)
-          if (tweets.count != tweet_ids.count)
-            handle_tweet_count_mismatch(tweets, tweet_ids)
+        if (expected_tweets.count != received_tweet_ids.count)
+          if (expected_tweets.count != received_tweet_ids.count)
+            handle_tweet_count_mismatch(expected_tweets, received_tweet_ids)
           end
         end
         tweets_data['data'].each do |tweet_data|
@@ -55,12 +55,12 @@ module Twitter
       end
     end
 
-    def handle_tweet_count_mismatch(tweets, tweet_ids)
-      expected_tweet_ids = tweets.map(&:id)
-      missing_tweet_ids = expected_tweet_ids - tweet_ids
-      extra_tweet_ids = tweet_ids - expected_tweet_ids
-      message = "Tweet count mismatch for user #{user.handle}. Expected: #{expected_tweet_ids}, Actual: #{tweet_ids}, Missing: #{missing_tweet_ids}, Extra: #{extra_tweet_ids}"
-      ExceptionHandling.notify_or_raise(message, data: { user: user.handle, received_tweet_ids: tweet_ids, expected_tweet_ids: expected_tweet_ids })
+    def handle_tweet_count_mismatch(expected_tweets, received_tweet_ids)
+      expected_tweet_ids = expected_tweets.map(&:id)
+      missing_tweet_ids = expected_tweet_ids - received_tweet_ids
+      extra_tweet_ids = received_tweet_ids - expected_tweet_ids
+      message = "Tweet count mismatch for user #{user.handle}. \n\nExpected: #{expected_tweet_ids},  \n\nActual: #{received_tweet_ids},  \n\nMissing: #{missing_tweet_ids},  \n\nExtra: #{extra_tweet_ids}"
+      ExceptionHandling.notify_or_raise(message)
     end
 
     def id_to_time(tweet_id)
@@ -75,3 +75,9 @@ module Twitter
     end
   end
 end
+
+
+# Expected: [1783321322455720191, 1783321479628902508, 1783322723458113595, 1783324935555010570, 1783327379039146126, 1783327662234378383, 1783328123943260659],
+# Actual: ["1783321322455720191"],
+# Missing: [1783321322455720191, 1783321479628902508, 1783322723458113595, 1783324935555010570, 1783327379039146126, 1783327662234378383, 1783328123943260659],
+# Extra: ["1783321322455720191"]

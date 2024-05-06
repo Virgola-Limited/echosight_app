@@ -506,7 +506,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 05:56:13 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20since:1713841157%20since:1713785823
+    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20since_time:1713841157%20since_time:1713785823
     body:
       encoding: US-ASCII
       string: ''
@@ -667,7 +667,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:51:50 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL1W8ODbEXgKAAIYvTXEz9pB0wAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvVjhW4AnEAoABhi9WOFbf9jwAAA&query=from:loftwah%20since:1713841157%20since:1713785823
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL1W8ODbEXgKAAIYvTXEz9pB0wAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvVjhW4AnEAoABhi9WOFbf9jwAAA&query=from:loftwah%20since_time:1713841157%20since_time:1713785823
     body:
       encoding: US-ASCII
       string: ''
@@ -736,7 +736,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:51:53 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL1W8ODbEXgKAAIYvRXta1rAogAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYvVjhW4AnEAoABhi9WOFbf7HgAAA&query=from:loftwah%20since:1713841157%20since:1713785823
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL1W8ODbEXgKAAIYvRXta1rAogAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYvVjhW4AnEAoABhi9WOFbf7HgAAA&query=from:loftwah%20since_time:1713841157%20since_time:1713785823
     body:
       encoding: US-ASCII
       string: ''
@@ -790,7 +790,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:51:54 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -959,7 +959,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:58:45 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvPSaDhqBswAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvVp2kwAnEAoABhi9WnaS_9jwAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvPSaDhqBswAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvVp2kwAnEAoABhi9WnaS_9jwAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1121,7 +1121,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:58:48 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvN7kjZpwswAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYvVp2kwAnEAoABhi9WnaS_7HgAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvN7kjZpwswAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYvVp2kwAnEAoABhi9WnaS_7HgAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1264,7 +1264,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:58:50 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvFEziZsxrQAIAAIAAAACCAADAAAAAAgABAAAAAIKAAUYvVp2kwAnEAoABhi9WnaS_4rQAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvFEziZsxrQAIAAIAAAACCAADAAAAAAgABAAAAAIKAAUYvVp2kwAnEAoABhi9WnaS_4rQAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1405,7 +1405,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:58:53 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvET32NshIgAIAAIAAAACCAADAAAAAAgABAAAAAMKAAUYvVp2kwAnEAoABhi9WnaS_2PAAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvET32NshIgAIAAIAAAACCAADAAAAAAgABAAAAAMKAAUYvVp2kwAnEAoABhi9WnaS_2PAAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1473,7 +1473,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:58:54 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvEPv3NuQNAAIAAIAAAACCAADAAAAAAgABAAAAAQKAAUYvVp2kwAnEAoABhi9WnaS_zywAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0B-H5aQMkKAAIYvEPv3NuQNAAIAAIAAAACCAADAAAAAAgABAAAAAQKAAUYvVp2kwAnEAoABhi9WnaS_zywAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1527,7 +1527,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 07:58:56 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1704,7 +1704,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 08:14:26 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0BPvLbUV8KAAIYvE83P5thsgAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvV4M1AAnEAoABhi9XgzT_9jwAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0BPvLbUV8KAAIYvE83P5thsgAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUYvV4M1AAnEAoABhi9XgzT_9jwAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''
@@ -1763,7 +1763,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 08:14:27 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0BPvLbUV8KAAIYvEPv3NuQNAAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYvV4M1AAnEAoABhi9XgzT_7HgAAA&query=from:loftwah%20since:1713785823%20until:1713841157
+    uri: https://api.socialdata.tools/twitter/search?cursor=DAADDAABCgABGL0BPvLbUV8KAAIYvEPv3NuQNAAIAAIAAAACCAADAAAAAAgABAAAAAEKAAUYvV4M1AAnEAoABhi9XgzT_7HgAAA&query=from:loftwah%20since_time:1713785823%20until_time:1713841157
     body:
       encoding: US-ASCII
       string: ''

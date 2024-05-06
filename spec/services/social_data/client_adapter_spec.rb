@@ -20,7 +20,7 @@ RSpec.describe SocialData::ClientAdapter do
       let(:since_time) { 1713785823 } # Earlier time
       let(:until_time) { 1713841157 } # Later time
 
-      let(:params) { { query: "from:#{user.handle} since:#{since_time} until:#{until_time}" } }
+      let(:params) { { query: "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}" } }
 
       it 'returns adapted social data in the expected format' do
         VCR.use_cassette('SocialData__Client') do
