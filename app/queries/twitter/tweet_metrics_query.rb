@@ -30,7 +30,7 @@ module Twitter
           results << tweet_metric.id
           used_tweets << tweet_metric.tweet_id
         end
-        break if used_tweets.count == 5
+        break if used_tweets.count == 10
       end
 
       TweetMetric.where(id: results)
