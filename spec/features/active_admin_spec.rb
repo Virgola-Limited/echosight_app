@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Active Admin navigation links', type: :feature do
+RSpec.describe 'Active Admin navigation links' do
   let(:admin_user) { create(:admin_user) }
 
   before do
@@ -14,11 +14,10 @@ RSpec.describe 'Active Admin navigation links', type: :feature do
     expect(links.count).to be > 5
     # Then visit each link, ignoring the 'sidekiq' link
     links.each do |href, text|
-      next if text == 'sidekiq'
+      next if text == 'Sidekiq'
       visit href
       expect(page).not_to have_content('404')
       expect(page).not_to have_content('500')
-      # Add additional checks as necessary
     end
   end
 end
