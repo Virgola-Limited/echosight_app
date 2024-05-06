@@ -19,38 +19,40 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data
-      user_twitter_data_update = UserTwitterDataUpdate.create!(
-        identity_id: user.identity.id,
-        started_at: Time.current,
-        sync_class: Twitter::ExistingTweetsUpdater,
-        api_batch_id: api_batch.id
-      )
+      if user.syncable?
+        user_twitter_data_update = UserTwitterDataUpdate.create!(
+          identity_id: user.identity.id,
+          started_at: Time.current,
+          sync_class: Twitter::ExistingTweetsUpdater,
+          api_batch_id: api_batch.id
+        )
 
-      begin
-        update_user
-      rescue StandardError => e
-        backtrace = e.backtrace.join("\n")  # Join the full backtrace into a single string
-        # Optionally, you could select just the first few lines to avoid overly verbose output:
-        # backtrace = e.backtrace.take(5).join("\n")
+        begin
+          update_user
+        rescue StandardError => e
+          backtrace = e.backtrace.join("\n")  # Join the full backtrace into a single string
+          # Optionally, you could select just the first few lines to avoid overly verbose output:
+          # backtrace = e.backtrace.take(5).join("\n")
 
-        message = "ExistingTweetsUpdaterJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
-        user_twitter_data_update.update!(error_message: message)
-        raise e
-      else
-        user_twitter_data_update.update!(completed_at: Time.current)
+          message = "ExistingTweetsUpdaterJob: Failed to complete update for user #{user.id} #{user.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
+          user_twitter_data_update.update!(error_message: message)
+          raise e
+        else
+          user_twitter_data_update.update!(completed_at: Time.current)
+        end
+
+        if user_tweets_updatable?
+          Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
+        end
       end
-      schedule_next_update
     end
 
     def update_user
       Twitter::ExistingTweetsUpdater.new(user: user, api_batch_id: api_batch.id).call
     end
 
-    def schedule_next_update
-      if api_batch.created_at > 3.days.ago
-        # Maybe only schedule this if the user has tweets in the batch?
-        Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
-      end
+    def user_tweets_updatable?
+      api_batch.created_at > 3.days.ago && user.syncable?
     end
   end
 end

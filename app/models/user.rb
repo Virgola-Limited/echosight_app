@@ -125,6 +125,11 @@ class User < ApplicationRecord
     user
   end
 
+  def syncable?
+    confirmed? && identity&.valid_identity?
+  end
+
+  # Not currently used
   def self.create_or_update_identity_from_omniauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     user = identity.try(:user)
