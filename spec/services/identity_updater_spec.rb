@@ -26,7 +26,7 @@ RSpec.describe IdentityUpdater do
       let(:expected_image_url) { user_data['image_url'].gsub('_normal', '_400x400') }
 
       it 'updates the user images with transformed URL' do
-        VCR.use_cassette('IdentityUpdater_call_when_the_400x400_image_exists_updates_the_user_images_with_transformed_URL') do
+        VCR.use_cassette('IdentityUpdater') do
           expect(identity.banner_url).to be_nil
           expect(identity.image_url).to be_nil
           expect(identity.description).to eq'Twitter user bio'

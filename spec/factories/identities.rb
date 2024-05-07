@@ -4,16 +4,18 @@
 #
 # Table name: identities
 #
-#  id          :bigint           not null, primary key
-#  banner_data :text
-#  description :string
-#  handle      :string
-#  image_data  :text
-#  provider    :string
-#  uid         :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  user_id     :bigint           not null
+#  id              :bigint           not null, primary key
+#  banner_checksum :string
+#  banner_data     :text
+#  description     :string
+#  handle          :string
+#  image_checksum  :string
+#  image_data      :text
+#  provider        :string
+#  uid             :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  user_id         :bigint           not null
 #
 # Indexes
 #
