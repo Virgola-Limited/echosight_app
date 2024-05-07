@@ -36,6 +36,10 @@ class Tweet < ApplicationRecord
   validates :identity_id, presence: true
   validates :text, presence: true
 
+  def self.max_age_for_refresh
+   3.days.ago
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "id", "id_value", "identity_id", "text", "twitter_created_at", "updated_at", "updated_count"]
   end

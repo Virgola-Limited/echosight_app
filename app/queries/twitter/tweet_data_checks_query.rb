@@ -22,7 +22,7 @@ module Twitter
           .limit(10)
     end
 
-    def self.tweets_needing_refresh(days)
+    def self.tweets_needing_refresh
       recent_metric_tweet_ids = TweetMetric.joins(tweet: { identity: :user })
                                           .where('tweet_metrics.updated_at >= ?', 24.hours.ago)
                                           .merge(User.syncable)
@@ -30,7 +30,7 @@ module Twitter
 
       Tweet.joins(identity: :user)
           .merge(User.syncable)
-          .where('tweets.twitter_created_at > ?', days.days.ago)
+          .where('tweets.twitter_created_at > ?', Tweet.max_age_for_refresh)
           .where.not(id: recent_metric_tweet_ids)
           .limit(10)
     end

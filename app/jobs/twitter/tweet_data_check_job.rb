@@ -5,9 +5,8 @@ module Twitter
 
     def perform
       check_and_notify(Twitter::TweetDataChecksQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch), "Incomplete User Updates")
-      check_and_notify(Twitter::TweetDataChecksQuery.problematic_tweets, "Problematic Tweets")
-      check_and_notify(Twitter::TweetDataChecksQuery.tweets_needing_refresh(Twitter::NewTweetsFetcher.days_to_fetch), "Tweets Needing Refresh")
-      check_and_notify(Twitter::TweetDataChecksQuery.users_with_no_recent_twitter_user_metrics, "Users with No Recent Twitter User Metrics")
+      check_and_notify(Twitter::TweetDataChecksQuery.problematic_tweets, "Tweets with First Metric Issues")
+      check_and_notify(Twitter::TweetDataChecksQuery.tweets_needing_refresh, "Tweets Needing Refresh")
     end
 
     private

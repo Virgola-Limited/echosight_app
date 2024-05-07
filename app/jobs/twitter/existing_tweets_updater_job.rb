@@ -52,7 +52,7 @@ module Twitter
     end
 
     def user_tweets_updatable?
-      api_batch.created_at > 3.days.ago && user.syncable?
+      api_batch.created_at > Tweet.max_age_for_refresh && user.syncable?
     end
   end
 end
