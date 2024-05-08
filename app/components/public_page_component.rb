@@ -8,11 +8,14 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def page_user_handle
-    page_user&.handle || "techsavvysammy"
+    return 'techsavvysammy' if public_page_data.demo?
+
+    page_user&.handle
   end
 
   def page_user_name
-    page_user&.name || "Sammy Circuit"
+    return "Sammy Circuit" if public_page_data.demo?
+    page_user&.name
   end
 
   def page_user_banner_url
