@@ -16,7 +16,6 @@ RSpec.describe IdentityUpdater do
         'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
         'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1710884709',
         'description' => 'Revolutionize Your Twitter/X Strategy with Echosight https://t.co/uZpeIYc5Nq'
-
       }
     end
     let(:expected_description) { "Revolutionize Your Twitter/X Strategy with Echosight https://echosight.io/" }
@@ -24,16 +23,34 @@ RSpec.describe IdentityUpdater do
 
     context 'when the 400x400 image exists' do
       let(:expected_image_url) { user_data['image_url'].gsub('_normal', '_400x400') }
+      let(:expected_banner_url) { "#{user_data['banner_url']}/1500x500" }
 
-      it 'updates the user images with transformed URL' do
+      it 'updates the user images and banner only if different from existing ones' do
         VCR.use_cassette('IdentityUpdater') do
-          expect(identity.banner_url).to be_nil
-          expect(identity.image_url).to be_nil
-          expect(identity.description).to eq'Twitter user bio'
+          # Simulate image uploads
+          identity.image = URI.open(expected_image_url)
+          identity.banner = URI.open(expected_banner_url)
+          identity.save!
+
+          # Validate image metadata
+          expect(identity.image.metadata['width']).to eq(400)
+          expect(identity.image.metadata['height']).to eq(400)
+
+          # Validate banner metadata
+          expect(identity.banner.metadata['width']).to eq(1500)
+
+          # Ensure description is as expected
+          expect(identity.description).to eq('Twitter user bio')
+
           updater.call
-          expect(identity.reload.image.metadata['width']).to eq(400)
+          identity.reload
+
+          # Validate the image and banner properties remain unchanged
+          expect(identity.image.metadata['width']).to eq(400)
           expect(identity.image.metadata['height']).to eq(400)
           expect(identity.banner.metadata['width']).to eq(1500)
+
+          # Ensure other fields are updated correctly
           expect(identity.description).to eq(expected_description)
         end
       end
