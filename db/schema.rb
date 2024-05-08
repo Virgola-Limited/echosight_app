@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_07_042352) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,17 +45,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_042352) do
     t.string "status", default: "pending"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "hourly_tweet_counts", force: :cascade do |t|
-    t.bigint "identity_id", null: false
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.integer "tweet_count"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "pulled_at"
-    t.index ["identity_id"], name: "index_hourly_tweet_counts_on_identity_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -189,7 +178,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_07_042352) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  add_foreign_key "hourly_tweet_counts", "identities"
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
   add_foreign_key "tweet_metrics", "tweets"
