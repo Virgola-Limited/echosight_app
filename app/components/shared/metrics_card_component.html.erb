@@ -20,7 +20,7 @@
   </div>
 </div>
 <% if @tooltip_target.present? %>
-  <div id="<%= @tooltip_target %>" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-  <%= @tooltip_text %>
-  </div>
+  <!-- Example usage in another view -->
+  <%= render Shared::TooltipComponent.new(id: @tooltip_target, text: @tooltip_text, classes: 'custom-class') %>
+
 <% end %>

@@ -75,11 +75,6 @@
                     </svg>
                   </div>
                   </div>
-                  <div id="tooltip-engagement-<%= tweet_metric.tweet.id %>" role="tooltip" class="tooltip absolute z-10 invisible bg-gray-900 text-white p-2 rounded-lg shadow-lg text-xs">
-                    Engagement rate is calculated as (interactions / impressions) * 100. For this tweet:
-                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet_metric.retweet_count || 0, tweet_metric.quote_count || 0, tweet_metric.like_count || 0, tweet_metric.reply_count || 0, tweet_metric.bookmark_count || 0, tweet_metric.impression_count || 0] %> = <%= tweet_metric.engagement_rate_percentage %>
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                  </div>
                 </td>
                   <td class="hidden md:table-cell px-6 py-4">
                     <a href="https://twitter.com/user/status/<%= tweet_metric.tweet.id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
@@ -93,4 +88,11 @@
           <% end %>
       </tbody>
     </table>
+    <% top_posts.each do |tweet_metric| %>
+    <div id="tooltip-engagement-<%= tweet_metric.tweet.id %>" role="tooltip" class="tooltip absolute z-10 invisible bg-gray-900 text-white p-2 rounded-lg shadow-lg text-xs">
+                    Engagement rate is calculated as (interactions / impressions) * 100. For this tweet:
+                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet_metric.retweet_count || 0, tweet_metric.quote_count || 0, tweet_metric.like_count || 0, tweet_metric.reply_count || 0, tweet_metric.bookmark_count || 0, tweet_metric.impression_count || 0] %> = <%= tweet_metric.engagement_rate_percentage %>
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                  </div>
+                  <% end %>
 </div>

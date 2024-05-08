@@ -38,22 +38,35 @@ module Twitter
       end
 
       def impression_counts_per_day
-        end_date = Date.current
-        start_date = end_date - 6.days
+        # Calculate end date and start date based on the current time minus 24 hours.
+        end_time = 24.hours.ago
+        start_time = end_time - 7.days
 
-        results = (start_date..end_date).map do |date|
+        # Initialize an empty array to store the results
+        results = []
+
+        # Iterate over each day within the time range.
+        (start_time.to_date..end_time.to_date).each do |date|
+          # Define the time range for the current day.
+          day_start = date.beginning_of_day
+          day_end = date.end_of_day
+
+          # Retrieve the relevant tweets.
           tweets_from_date = Tweet.where(identity_id: user.identity.id,
-                                         twitter_created_at: date.beginning_of_day..date.end_of_day)
+                                         twitter_created_at: day_start..day_end)
 
+          # Sum the impression counts of all tweets for the day.
           impressions_sum = tweets_from_date.map do |tweet|
             tweet.tweet_metrics.order(pulled_at: :asc).first.try(:impression_count) || 0
           end.sum
 
-          { date: date, impression_count: impressions_sum }
+          # Add the results for this day to the results array.
+          results << { date: date, impression_count: impressions_sum }
         end
 
         results
       end
+
 
       def maximum_days_of_data
         start_time
