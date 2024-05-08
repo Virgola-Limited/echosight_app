@@ -69,7 +69,7 @@ module Twitter
 
 
       def maximum_days_of_data
-        start_time
+        start_time.to_date.upto(Date.current).count
       end
 
       private
