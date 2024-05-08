@@ -10,10 +10,9 @@
     </span>
   </h2>
 </div>
-<div id="top-posts-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    We show the top posts from the last <%= maximum_days_of_data %> days showing the highest impressions first
-    <div class="tooltip-arrow" data-popper-arrow></div>
-</div>
+
+<% tooltip_text = "We show the top posts from the last #{maximum_days_of_data} days showing the highest impressions first" %>
+<%= render Shared::TooltipComponent.new(id: "top-posts-tooltip", text: tooltip_text) %>
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
     <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
@@ -89,10 +88,10 @@
       </tbody>
     </table>
     <% top_posts.each do |tweet_metric| %>
-    <div id="tooltip-engagement-<%= tweet_metric.tweet.id %>" role="tooltip" class="tooltip absolute z-10 invisible bg-gray-900 text-white p-2 rounded-lg shadow-lg text-xs">
-                    Engagement rate is calculated as (interactions / impressions) * 100. For this tweet:
-                    <%= '(%.2f + %.2f + %.2f + %.2f + %.2f) / %.2f * 100' % [tweet_metric.retweet_count || 0, tweet_metric.quote_count || 0, tweet_metric.like_count || 0, tweet_metric.reply_count || 0, tweet_metric.bookmark_count || 0, tweet_metric.impression_count || 0] %> = <%= tweet_metric.engagement_rate_percentage %>
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                  </div>
-                  <% end %>
+      <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet_metric.engagement_rate_percentage}" %>
+
+      <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet_metric.tweet.id}", text: tooltip_text) %>
+    <% end %>
+
+
 </div>

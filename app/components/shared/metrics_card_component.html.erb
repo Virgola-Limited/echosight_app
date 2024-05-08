@@ -20,7 +20,5 @@
   </div>
 </div>
 <% if @tooltip_target.present? %>
-  <!-- Example usage in another view -->
-  <%= render Shared::TooltipComponent.new(id: @tooltip_target, text: @tooltip_text, classes: 'custom-class') %>
-
+  <%= render Shared::TooltipComponent.new(id: @tooltip_target, text: @tooltip_text) %>
 <% end %>

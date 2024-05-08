@@ -10,11 +10,9 @@
     </span>
   </h2>
 </div>
-<div id="impressions-over-time-tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-    We collect new impression data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to <%= maximum_days_of_data %> days of data.
-    <div class="tooltip-arrow" data-popper-arrow></div>
-</div>
 
+<% tooltip_text = "We collect new impression data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to #{maximum_days_of_data} days of data." %>
+<%= render Shared::TooltipComponent.new(id: "impressions-over-time-tooltip", text: tooltip_text) %>
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
   <% if impression_daily_data_points_for_graph.count < 2 || impression_daily_data_points_for_graph.all? { |data| data.zero? } %>
