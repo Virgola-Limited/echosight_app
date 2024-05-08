@@ -20,6 +20,7 @@ class IdentityUpdater
         Notifications::SlackNotifier.call(message: message, channel: :general)
         identity.image = download_image(transformed_image_url)
         identity.image_checksum = new_image_checksum
+        clear_public_page_cache
       end
     end
 
@@ -31,6 +32,7 @@ class IdentityUpdater
         Notifications::SlackNotifier.call(message: message, channel: :general)
         identity.banner = download_image(transformed_banner_url)
         identity.banner_checksum = new_banner_checksum
+        clear_public_page_cache
       end
     end
 
@@ -39,6 +41,12 @@ class IdentityUpdater
   end
 
   private
+
+  def clear_public_page_cache
+    # clear user cache
+    prefix = "user/#{user_data['username']}/public_page"
+    Rails.cache.delete_matched(/^#{Regexp.escape(prefix)}/)
+  end
 
   def download_image(url)
     URI.open(url)
