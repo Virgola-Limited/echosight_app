@@ -11,41 +11,30 @@ module Twitter
       end
 
       def impressions_count
-        return 0 if user.tweet_metrics.count.zero?
-
-        # Calculate impressions for the last 7 days and the previous 7 days
-        current_week_impressions = total_impressions_for_period(7.days.ago.beginning_of_day, Time.current)
-        previous_week_impressions = total_impressions_for_period(14.days.ago.beginning_of_day, 7.days.ago.end_of_day)
-
-        # Return the difference in impressions between the last two 7-day periods
-        current_week_impressions - previous_week_impressions
+        total_impressions_for_period(7.days.ago, Time.current)
       end
 
       def impressions_change_since_last_week
-        # Calculate impressions for the last 7 days and the previous 7 days
-        current_week_impressions = total_impressions_for_period(7.days.ago, Time.current)
+        current_week_impressions = impressions_count
+
         previous_week_impressions = total_impressions_for_period(14.days.ago, 7.days.ago)
+        return false if previous_week_impressions.zero?
 
-        return false if previous_week_impressions.zero? # No data from last week
-
-        # Calculate the percentage change in impressions
-        percentage_change = if previous_week_impressions.positive?
-                              ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
-                            else
-                              0 # No change if both current and previous week impressions are zero
-                            end
+        percentage_change = ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
         percentage_change.round(2)
       end
 
+
       def impression_counts_per_day
         # Calculate end date and start date based on the current time minus 24 hours.
-        end_time = 24.hours.ago
-        start_time = end_time - 7.days
+        end_time = 24.hours.ago.end_of_day
+        start_time = end_time - 6.days
 
         # Initialize an empty array to store the results
         results = []
 
         # Iterate over each day within the time range.
+        Rails.logger.debug('paul' + (start_time.to_date..end_time.to_date).count.inspect)
         (start_time.to_date..end_time.to_date).each do |date|
           # Define the time range for the current day.
           day_start = date.beginning_of_day
@@ -63,7 +52,7 @@ module Twitter
           # Add the results for this day to the results array.
           results << { date: date, impression_count: impressions_sum }
         end
-
+        Rails.logger.debug('paul' + results.inspect)
         results
       end
 
@@ -75,14 +64,26 @@ module Twitter
       private
 
       def total_impressions_for_period(start_time, end_time)
-        TweetMetric.joins(:tweet)
-                   .where(tweets: { identity_id: user.identity.id })
-                   .where(pulled_at: start_time..end_time)
-                   .select('DISTINCT ON (tweet_metrics.tweet_id, DATE(tweet_metrics.pulled_at)) tweet_metrics.*')
-                   .order('tweet_metrics.tweet_id', Arel.sql('DATE(tweet_metrics.pulled_at)'), 'tweet_metrics.pulled_at DESC')
-                   .group_by { |tm| [tm.tweet_id, tm.pulled_at.to_date] }
-                   .map { |_, tweet_metrics| tweet_metrics.max_by(&:pulled_at).impression_count.to_i }
-                   .sum
+        # Collect tweet IDs that match the given conditions
+        tweet_ids = Tweet.where(identity_id: user.identity.id,
+                                twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
+                         .pluck(:id)
+
+        # If there are no matching tweet IDs, return 0 immediately to prevent SQL errors
+        return 0 if tweet_ids.empty?
+
+        query = <<-SQL
+          WITH first_metrics AS (
+            SELECT DISTINCT ON (tweet_id) *
+            FROM tweet_metrics
+            WHERE tweet_id IN (#{tweet_ids.join(', ')})
+              AND pulled_at BETWEEN '#{start_time}' AND '#{end_time}'
+            ORDER BY tweet_id, pulled_at
+          )
+          SELECT SUM(impression_count) FROM first_metrics
+        SQL
+
+        ActiveRecord::Base.connection.execute(query).first['sum'].to_i
       end
     end
   end
