@@ -49,7 +49,6 @@
 
   <%= render partial:"public_pages/engagement_rate", locals: {engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
 
-  <% #render "public_pages/profile_conversion_rate" %>
   <%= render partial: "public_pages/top_posts", locals: {top_posts: top_posts, maximum_days_of_data: maximum_days_of_data} %>
 
   <% unless current_user %>
