@@ -1,6 +1,8 @@
 module Twitter
   class NewTweetsFetcherJob < Services::Base
     include Sidekiq::Job
+    # Need to decide how to handle retries for this job
+    # since it could fail in here or the child jobs
     sidekiq_options retry: false
 
     def perform(user_id, api_batch_id)
