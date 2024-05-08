@@ -7,15 +7,14 @@ RSpec.feature 'Public Page Access' do
     # Create a user but don't log in
     user = create(:user)
 
-    # Attempt to visit the "mine" page without being logged in
-    # Expect redirection to the login page
+    # Context: When the user is not logged in
     visit public_page_path(:demo)
     expect(page.body).to include('This is a demo page showing how your public page could look')
 
     # Log in as the created user
     login_user(user)
 
-    # Now logged in, revisit the "mine" page
+    # Context: When the user is logged in but not signed up to Twitter
     visit public_page_path(:demo)
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
@@ -23,12 +22,22 @@ RSpec.feature 'Public Page Access' do
       end
     end
 
-    # Simulate the user connecting their Twitter account
+    # Context: When the user is logged inm signed up to Twitter but not enough data
     simulate_twitter_connection(user)
+    # After connecting Twitter, visit demo page
+    # Should redirect to the user's public page
 
-    # After connecting Twitter, visit the "mine" page again
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
+    within('[data-test="user-profile"]') do
+      DEMO_PAGE_TEXTS.each do |content|
+        expect(page).to have_text(content)
+      end
+    end
+
+    # Context: When all the criteria are met to show the users public page
+    create_list(:user_twitter_data_update, 2, identity: user.identity, completed_at: 1.day.ago)
+    visit public_page_path(user.handle)
     DEMO_PAGE_TEXTS.each do |content|
       expect(page.body).not_to include(content)
     end
