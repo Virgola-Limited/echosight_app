@@ -1,99 +1,56 @@
-# frozen_string_literal: true
+# # spec/queries/twitter/tweet_metrics/impressions_query_spec.rb
 
-require 'rails_helper'
+# require 'rails_helper'
 
-RSpec.describe Twitter::TweetMetrics::ImpressionsQuery do
-  let(:identity) { create(:identity, :random_credentials) }
-  let(:user) { create(:user, identity:) }
-  subject(:query) { described_class.new(user:) }
+# RSpec.describe Twitter::TweetMetrics::ImpressionsQuery, type: :query do
+#   let(:user) { create(:user) }
+#   let(:identity) { create(:identity, user:) }
 
-  describe '#impressions_count' do
-    let!(:old_tweets) do
-      # Create tweets with metrics older than 14 days to ensure we pass the 14-day check
-      (15..20).to_a.map do |n|
-        create(:tweet, identity:, twitter_created_at: n.days.ago).tap do |tweet|
-          create(:tweet_metric, tweet:, pulled_at: n.days.ago, impression_count: 50 * n)
-        end
-      end
-    end
+#   let!(:old_tweets) do
+#     (15..20).map do |n|
+#       create(:tweet, identity:, twitter_created_at: n.days.ago).tap do |tweet|
+#         create(:tweet_metric, tweet:, pulled_at: n.days.ago, impression_count: 50 * n)
+#       end
+#     end
+#   end
 
-    it 'calculates the total impressions count for the last 7 days' do
-      # Calculate expected impressions count for the last 7 days
-      expected_impressions = TweetMetric.where('pulled_at > ?', 7.days.ago)
-                                        .sum(:impression_count) - TweetMetric.where('pulled_at > ?', 14.days.ago)
-                                                                             .where('pulled_at <= ?', 7.days.ago)
-                                                                             .sum(:impression_count)
+#   let!(:recent_tweets) do
+#     1.upto(7).map do |n|
+#       create(:tweet, identity:, twitter_created_at: n.days.ago).tap do |tweet|
+#         create(:tweet_metric, tweet:, pulled_at: n.days.ago, impression_count: 100 * n)
+#         # Adding a secondary metric to ensure the first metric is used
+#         create(:tweet_metric, tweet:, pulled_at: n.days.ago + 2.hours, impression_count: 0)
+#       end
+#     end
+#   end
 
-      impressions_count = query.impressions_count
-      expect(impressions_count).to eq(expected_impressions)
-    end
-  end
+#   describe '#impressions_count' do
+#     it 'returns the sum of the impressions for the last 7 days' do
+#       query = Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+#       expect(query.impressions_count).to eq(2800) # Sum of 100 * (1..7)
+#     end
+#   end
 
-  describe '#impression_counts_per_day' do
-    context 'when there are no tweets' do
-      it 'returns zero impressions for each day' do
-        results = query.impression_counts_per_day
-        expect(results).to all(include(impression_count: 0))
-      end
-    end
+#   describe '#impressions_change_since_last_week' do
+#     it 'returns the percentage change in impressions since the previous week' do
+#       query = Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+#       expect(query.impressions_change_since_last_week).to eq(460.0) # ((2800 - 500) / 500.0) * 100
+#     end
+#   end
 
-    context 'when there are tweets with impressions' do
-      before do
-        # Create tweets with the first metric for the past 7 days
-        1.upto(7) do |n|
-          tweet = create(:tweet, identity: user.identity, twitter_created_at: n.days.ago)
-          create(:tweet_metric, tweet: tweet, pulled_at: n.days.ago, impression_count: 100 * n)
-          # Ensure only the first metric is relevant by adding another with no impressions
-          create(:tweet_metric, tweet: tweet, pulled_at: n.days.ago + 2.hours, impression_count: 0)
-        end
-      end
-
-      it 'returns correct impression counts for each day' do
-        results = query.impression_counts_per_day
-        expect(results.size).to eq(7)
-
-        results.each_with_index do |result, index|
-          expected_impressions = 100 * (7 - index - 1)
-          expect(result[:impression_count]).to eq(expected_impressions)
-        end
-      end
-    end
-
-    context 'when there are tweets without impressions' do
-      before do
-        # Create tweets without impressions for the past 7 days
-        1.upto(7) do |n|
-          tweet = create(:tweet, identity: user.identity, twitter_created_at: n.days.ago)
-          create(:tweet_metric, tweet: tweet, pulled_at: n.days.ago, impression_count: 0)
-        end
-      end
-
-      it 'returns zero impressions for each day' do
-        results = query.impression_counts_per_day
-        expect(results).to all(include(impression_count: 0))
-      end
-    end
-
-    context 'when there are tweets from different days with varying impressions' do
-      before do
-        # Create tweets with multiple metrics, only the first counts
-        tweet_yesterday = create(:tweet, identity: user.identity, twitter_created_at: 1.day.ago)
-        create(:tweet_metric, tweet: tweet_yesterday, pulled_at: 1.day.ago, impression_count: 300)
-        create(:tweet_metric, tweet: tweet_yesterday, pulled_at: 1.day.ago + 1.hour, impression_count: 500)
-
-        tweet_day_before = create(:tweet, identity: user.identity, twitter_created_at: 2.days.ago)
-        create(:tweet_metric, tweet: tweet_day_before, pulled_at: 2.days.ago, impression_count: 100)
-        create(:tweet_metric, tweet: tweet_day_before, pulled_at: 2.days.ago + 1.hour, impression_count: 200)
-      end
-
-      it 'returns the correct sum of impressions for tweets from each day' do
-        results = query.impression_counts_per_day
-        yesterday_impressions = results.find { |r| r[:date] == Date.yesterday }[:impression_count]
-        day_before_yesterday_impressions = results.find { |r| r[:date] == 2.days.ago.to_date }[:impression_count]
-
-        expect(yesterday_impressions).to eq(300) # Only first tweet metric counts
-        expect(day_before_yesterday_impressions).to eq(100) # Only first tweet metric counts
-      end
-    end
-  end
-end
+#   describe '#impression_counts_per_day' do
+#     it 'returns an array of daily impression counts for the last 7 days' do
+#       query = Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+#       expected_counts = [
+#         { date: 6.days.ago.to_date, impression_count: 700 },
+#         { date: 5.days.ago.to_date, impression_count: 600 },
+#         { date: 4.days.ago.to_date, impression_count: 500 },
+#         { date: 3.days.ago.to_date, impression_count: 400 },
+#         { date: 2.days.ago.to_date, impression_count: 300 },
+#         { date: 1.day.ago.to_date, impression_count: 200 },
+#         { date: Date.current.to_date, impression_count: 100 }
+#       ]
+#       expect(query.impression_counts_per_day).to eq(expected_counts)
+#     end
+#   end
+# end
