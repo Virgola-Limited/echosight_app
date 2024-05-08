@@ -1,7 +1,7 @@
 ActiveAdmin.register Identity do
   permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data
 
-  actions :index, :show, :destroy  # Changed :delete to :destroy
+  actions :index, :show, :destroy
 
   index do
     selectable_column
@@ -11,7 +11,10 @@ ActiveAdmin.register Identity do
     column :updated_at
     column :description
     column :handle
-    actions  # Ensure this is added to display the default actions including the delete option
+
+    actions defaults: true do |identity|
+      link_to "Public Page", public_page_path(handle: identity.handle), target: "_blank"
+    end
   end
 
   filter :handle
