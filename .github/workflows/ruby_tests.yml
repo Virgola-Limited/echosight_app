@@ -36,12 +36,9 @@ jobs:
 
     # Cache gems
     - name: Cache gems
-      uses: actions/cache@v2
+      uses: ruby/setup-ruby@v1
       with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
+        bundler-cache: true
 
     - name: Set up Node
       uses: actions/setup-node@v3
