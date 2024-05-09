@@ -3,7 +3,11 @@ module ApplicationHelper
 
   def html_description_with_links(description)
     description.to_s.gsub(/(https?:\/\/[^\s]+)/) do |url|
-      link_to(url, url, target: '_blank', rel: 'noopener noreferrer')
+      uri = URI.parse(url)
+      host_and_path = uri.host + uri.path.chomp('/')
+
+      # Use the full URL for the href, and the simplified URL for display
+      link_to(host_and_path, url, target: '_blank', rel: 'noopener noreferrer')
     end.html_safe
   end
 end
