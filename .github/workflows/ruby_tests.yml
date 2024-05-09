@@ -34,6 +34,15 @@ jobs:
       with:
         ruby-version: 3.2.2
 
+    # Cache gems
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+
     - name: Set up Node
       uses: actions/setup-node@v3
       with:
@@ -41,6 +50,7 @@ jobs:
 
     - name: Install Ruby and JavaScript dependencies
       run: |
+        bundle config set path 'vendor/bundle'
         bundle install --jobs 4 --retry 3
         npm install
 
@@ -71,5 +81,6 @@ jobs:
         RAILS_ENV: test
         RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         DISABLE_SLACK_NOTIFY: true
+        HEADLESS: true
       run: |
         bundle exec rspec
