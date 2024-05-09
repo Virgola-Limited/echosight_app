@@ -5,7 +5,6 @@ class IdentityUpdater
   attr_reader :user_data
 
   def initialize(user_data)
-    Notifications::SlackNotifier.call(message: "Debugging: Updating identity for #{user_data}.", channel: :errors)
     @user_data = user_data
   end
 
