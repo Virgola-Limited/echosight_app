@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
   resources :dashboard, only: :index
-  get 'public_page/:handle', to: 'public_pages#show', as: :public_page
+  get 'p/:handle', to: 'public_pages#show', as: :public_page
 
   resources :single_message, only: :index
   devise_for :users, controllers: {
