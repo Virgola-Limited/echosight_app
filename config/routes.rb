@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   get 'p/:handle', to: 'public_pages#show', as: :public_page
 
   resources :single_message, only: :index
+  get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
+
   devise_for :users, controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
