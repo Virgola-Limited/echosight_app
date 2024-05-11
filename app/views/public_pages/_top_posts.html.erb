@@ -33,10 +33,10 @@
                 <th scope="col" class="hidden md:hidden lg:table-cell p-1">
                     Replies
                 </th>
-                <th scope="col" class="hidden md:table-cell p-1">
+                <th scope="col" class="md:table-cell p-1">
                     Impressions
                 </th>
-                <th scope="col" class="md:table-cell p-1">
+                <th scope="col" class="hidden md:table-cell p-1">
                     Engagement Rate
                 </th>
                 <th scope="col" class="hidden md:table-cell p-1">
@@ -62,10 +62,10 @@
                   <td class="hidden md:hidden lg:table-cell p-1">
                       <%= tweet_metric.reply_count %>
                   </td>
-                  <td class="hidden md:table-cell p-1">
+                  <td class="md:table-cell px-6 py-4">
                       <%= tweet_metric.impression_count %>
                   </td>
-                 <td class="px-6 py-4 relative">
+                 <td class="hidden md:table-cell px-6 py-4 relative">
                  <div class="engagement-rate-cell">
                   <%= tweet_metric.engagement_rate_percentage %>%
                   <div data-tooltip-target="tooltip-engagement-<%= tweet_metric.tweet.id %>" class="ml-2">
