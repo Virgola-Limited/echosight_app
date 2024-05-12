@@ -45,6 +45,14 @@ class Identity < ApplicationRecord
     where(provider: "twitter2")
   }
 
+  def self.find_by_handle(handle)
+    Identity.where('lower(handle) = ?', handle.downcase).first
+  end
+
+  def self.find_by_handle!(handle)
+    Identity.where('lower(handle) = ?', handle.downcase).first!
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     ["banner_url", "created_at", "description", "handle", "id", "id_value", "image_url", "provider", "uid", "updated_at", "user_id"]
   end

@@ -16,22 +16,21 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When the user is logged in but not signed up to Twitter
     visit public_page_path(:demo)
+
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
         expect(page).to have_text(content)
       end
     end
 
-    # Context: When the user is logged inm signed up to Twitter but not enough data
+    # Context: When the user is logged in signed up to Twitter
     simulate_twitter_connection(user)
-    # After connecting Twitter, visit demo page
-    # Should redirect to the user's public page
 
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
-        expect(page).to have_text(content)
+        expect(page).not_to have_text(content)
       end
     end
 
