@@ -16,7 +16,7 @@ class IdentityUpdater
       new_image_checksum = checksum(transformed_image_url)
       if identity.image_checksum != new_image_checksum
         message = "Updating image for #{identity.handle} from #{identity.image_checksum} to #{new_image_checksum}. transformed_image_url #{transformed_image_url} user_data['image_url'] #{user_data['image_url']} identity.image: #{identity.image}"
-        Notifications::SlackNotifier.call(message: message, channel: :general)
+        Notifications::SlackNotifier.call(message: message, channel: :error)
         identity.image = download_image(transformed_image_url)
         identity.image_checksum = new_image_checksum
         clear_public_page_cache
@@ -28,7 +28,7 @@ class IdentityUpdater
       new_banner_checksum = checksum(transformed_banner_url)
       if identity.banner_checksum != new_banner_checksum
         message = "Updating image for #{identity.handle} from #{identity.image_checksum} to #{new_image_checksum}. transformed_image_url #{transformed_image_url} user_data['image_url'] #{user_data['image_url']} identity.image: #{identity.image}"
-        Notifications::SlackNotifier.call(message: message, channel: :general)
+        Notifications::SlackNotifier.call(message: message, channel: :error)
         identity.banner = download_image(transformed_banner_url)
         identity.banner_checksum = new_banner_checksum
         clear_public_page_cache
