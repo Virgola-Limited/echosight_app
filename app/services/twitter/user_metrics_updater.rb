@@ -18,7 +18,7 @@ module Twitter
     def update_followers_count
       raise "#{self.class.name}: Invalid user data: #{@user_data}" unless @user_data.is_a?(Hash)
 
-      identity = Identity.find_by_handle(user_data['username'])
+      identity = Identity.find_by_handle!(user_data['username'])
 
       twitter_user_metric = TwitterUserMetric.find_or_initialize_by(
         identity_id: identity.id,
