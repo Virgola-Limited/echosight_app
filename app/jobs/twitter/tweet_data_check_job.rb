@@ -4,7 +4,7 @@ module Twitter
     sidekiq_options retry: false, queue: 'low_priority'
 
     def perform
-      check_and_notify(Twitter::TweetDataChecksQuery.incomplete_user_updates(3), "Incomplete User Updates")
+      check_and_notify(Twitter::TweetDataChecksQuery.incomplete_user_updates(1.hour.ago), "Incomplete User Updates")
       check_and_notify(Twitter::TweetDataChecksQuery.problematic_tweets, "Tweets with First Metric Issues")
       check_and_notify(Twitter::TweetDataChecksQuery.tweets_needing_refresh, "Tweets Needing Refresh")
     end

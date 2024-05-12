@@ -1,10 +1,10 @@
 module Twitter
   class TweetDataChecksQuery
-    def self.incomplete_user_updates(days)
+    def self.incomplete_user_updates(time_ago)
       UserTwitterDataUpdate.joins(identity: :user)
                           .merge(User.syncable)
                           .where(completed_at: nil)
-                          .where('user_twitter_data_updates.created_at > ?', days.days.ago)
+                          .where('user_twitter_data_updates.created_at > ?', time_ago)
                           .order('user_twitter_data_updates.started_at DESC')
                           .limit(10)
     end
