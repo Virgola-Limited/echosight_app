@@ -9,7 +9,7 @@ class PublicPageService < Services::Base
   def initialize(handle:, current_user: nil, current_admin_user: nil)
     @handle = handle
     @current_user = current_user
-    identity = Identity.find_by(handle:)
+    identity = Identity.find_by_handle(handle)
     @user = identity.user if identity.present?
     @current_admin_user = current_admin_user
   end
@@ -29,7 +29,7 @@ class PublicPageService < Services::Base
   Result = Struct.new(:status, :message, :redirect_path, keyword_init: true)
 
   def show_public_page_demo?
-    user&.identity.nil? || not_enough_data?
+    user&.identity.nil?
   end
 
   # Crap ChatGTP code fix later no need for result object
