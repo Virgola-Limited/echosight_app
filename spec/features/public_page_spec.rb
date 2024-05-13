@@ -16,7 +16,6 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When the user is logged in but not signed up to Twitter
     visit public_page_path(:demo)
-
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
         expect(page).to have_text(content)

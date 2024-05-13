@@ -46,7 +46,7 @@ class Identity < ApplicationRecord
   }
 
   def self.find_by_handle(handle)
-    Identity.where('lower(handle) = ?', handle.downcase).first!
+    Identity.where('lower(handle) = ?', handle.downcase)&.first
   end
 
   def self.ransackable_attributes(auth_object = nil)
