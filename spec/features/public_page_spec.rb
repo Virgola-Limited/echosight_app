@@ -9,6 +9,7 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When the user is not logged in
     visit public_page_path(:demo)
+    expect(page.title).to eq("Sammy Circuit's Public Page")
     expect(page.body).to include('This is a demo page showing how your public page could look')
 
     # Log in as the created user
@@ -16,6 +17,7 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When the user is logged in but not signed up to Twitter
     visit public_page_path(:demo)
+    expect(page.title).to eq("Sammy Circuit's Public Page")
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
         expect(page).to have_text(content)
@@ -27,6 +29,7 @@ RSpec.feature 'Public Page Access' do
 
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
+    expect(page.title).to eq("Twitter User's Public Page")
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
         expect(page).not_to have_text(content)
@@ -35,6 +38,7 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When all the criteria are met to show the users public page
     create_list(:user_twitter_data_update, 2, identity: user.identity, completed_at: 1.day.ago)
+    expect(page.title).to eq("Twitter User's Public Page")
     visit public_page_path(user.handle)
     DEMO_PAGE_TEXTS.each do |content|
       expect(page.body).not_to include(content)
