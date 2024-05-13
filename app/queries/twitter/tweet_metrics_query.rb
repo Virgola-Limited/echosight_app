@@ -20,7 +20,6 @@ module Twitter
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
                                  .group(:tweet_id, :pulled_at, :impression_count, :id)
                                  .where.not(impression_count: nil)
-                                 #  .select('*, MAX(impression_count) as max_impression_count')
                                  .order(impression_count: :desc)
 
       results = []
@@ -38,77 +37,46 @@ module Twitter
                  .order(impression_count: :desc)
     end
 
+    # same as impressions_count dry up later
     def likes_count
-      return 0 if user.tweet_metrics.count.zero?
-
-      # Check if we have at least 14 days of data
-      earliest_record_date = user.tweet_metrics.order(:pulled_at).first.pulled_at.to_date
-      return false if (Date.current - earliest_record_date).to_i < 14
-
-      # Calculate likes for the last 7 days and the previous 7 days
-      current_week_likes = TweetMetric.joins(:tweet)
-                                      .where(tweets: { identity_id: user.identity.id })
-                                      .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
-                                      .sum(:like_count)
-      previous_week_likes = TweetMetric.joins(:tweet)
-                                       .where(tweets: { identity_id: user.identity.id })
-                                       .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
-                                       .sum(:like_count)
-
-      # Return the difference in likes between the last two 7-day periods
-      current_week_likes - previous_week_likes
+      total_likes_for_period(7.days.ago, Time.current)
     end
 
+    # same as impressions_change_since_last_week dry up later
     def likes_change_since_last_week
-      # Calculate likes for the last 7 days and the previous 7 days
-      current_week_likes = TweetMetric.joins(:tweet)
-                                      .where(tweets: { identity_id: user.identity.id })
-                                      .where('tweet_metrics.pulled_at >= ?', 7.days.ago)
-                                      .sum(:like_count)
-      previous_week_likes = TweetMetric.joins(:tweet)
-                                       .where(tweets: { identity_id: user.identity.id })
-                                       .where('tweet_metrics.pulled_at >= ? AND tweet_metrics.pulled_at < ?', 14.days.ago, 7.days.ago)
-                                       .sum(:like_count)
+      current_week_likes = likes_count
 
-      return false if previous_week_likes.zero? # No data from last week
+      previous_week_likes = total_likes_for_period(14.days.ago, 7.days.ago)
+      return false if previous_week_likes.zero?
 
-      # Calculate the percentage change in likes
-      percentage_change = if previous_week_likes.positive?
-                            ((current_week_likes - previous_week_likes) / previous_week_likes.to_f) * 100
-                          else
-                            0 # No change if both current and previous week likes are zero
-                          end
+      percentage_change = ((current_week_likes - previous_week_likes) / previous_week_likes.to_f) * 100
       percentage_change.round(2)
     end
 
     private
 
-    def determine_comparison_days(days_of_data)
-      case days_of_data
-      when 2..3
-        1
-      when 4..5
-        2
-      when 6..13
-        (days_of_data / 2).floor
-      else
-        7
-      end
-    end
+    # same as total_impressions_for_period dry up later
+    def total_likes_for_period(start_time, end_time)
+      # Collect tweet IDs that match the given conditions
+      tweet_ids = Tweet.where(identity_id: user.identity.id,
+                              twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
+                       .pluck(:id)
 
-    # Helper method to format the created_at timestamp for grouping by date
-    def grouping_date
-      ->(table) { Arel::Nodes::NamedFunction.new('DATE', [table[:created_at]]) }
-    end
+      # If there are no matching tweet IDs, return 0 immediately to prevent SQL errors
+      return 0 if tweet_ids.empty?
 
-    def last_weeks_tweets_count
-      start_of_last_week = 1.week.ago.beginning_of_week
-      end_of_last_week = 1.week.ago.end_of_week
+      query = <<-SQL
+        WITH first_metrics AS (
+          SELECT DISTINCT ON (tweet_id) *
+          FROM tweet_metrics
+          WHERE tweet_id IN (#{tweet_ids.join(', ')})
+            AND pulled_at BETWEEN '#{start_time}' AND '#{end_time}'
+          ORDER BY tweet_id, pulled_at
+        )
+        SELECT SUM(like_count) FROM first_metrics
+      SQL
 
-      # Query the Tweet table using twitter_created_at within the last week's range
-      Tweet.where(identity_id: user.identity.id)
-           .where(twitter_created_at: start_of_last_week..end_of_last_week)
-           .count
+      ActiveRecord::Base.connection.execute(query).first['sum'].to_i
     end
   end
 end

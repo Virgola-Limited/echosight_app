@@ -10,10 +10,12 @@ module Twitter
         @start_time = start_time || 1.week.ago.utc
       end
 
+      # same as likes_count dry up later
       def impressions_count
         total_impressions_for_period(7.days.ago, Time.current)
       end
 
+      # same as likes_change_since_last_week dry up later
       def impressions_change_since_last_week
         current_week_impressions = impressions_count
 
@@ -34,7 +36,6 @@ module Twitter
         results = []
 
         # Iterate over each day within the time range.
-        Rails.logger.debug('paul' + (start_time.to_date..end_time.to_date).count.inspect)
         (start_time.to_date..end_time.to_date).each do |date|
           # Define the time range for the current day.
           day_start = date.beginning_of_day
@@ -52,7 +53,6 @@ module Twitter
           # Add the results for this day to the results array.
           results << { date: date, impression_count: impressions_sum }
         end
-        Rails.logger.debug('paul' + results.inspect)
         results
       end
 
@@ -63,6 +63,7 @@ module Twitter
 
       private
 
+      # same as total_likes_for_period dry up later
       def total_impressions_for_period(start_time, end_time)
         # Collect tweet IDs that match the given conditions
         tweet_ids = Tweet.where(identity_id: user.identity.id,
