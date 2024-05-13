@@ -9,7 +9,7 @@ class IdentityUpdater
   end
 
   def call
-    identity = Identity.find_by_handle!(user_data['username'])
+    identity = Identity.find_by_handle(user_data['username'])
 
     if user_data['image_url']
       transformed_image_url = transform_image_url(user_data['image_url'])

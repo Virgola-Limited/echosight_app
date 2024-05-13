@@ -46,10 +46,6 @@ class Identity < ApplicationRecord
   }
 
   def self.find_by_handle(handle)
-    Identity.where('lower(handle) = ?', handle.downcase).first
-  end
-
-  def self.find_by_handle!(handle)
     Identity.where('lower(handle) = ?', handle.downcase).first!
   end
 
