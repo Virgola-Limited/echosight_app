@@ -11,7 +11,7 @@
   </h2>
 </div>
 
-<% tooltip_text = "We collect new impression data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to #{maximum_days_of_data} days of data." %>
+<% tooltip_text = "We collect new impression data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to 7 days of data." %>
 <%= render Shared::TooltipComponent.new(id: "impressions-over-time-tooltip", text: tooltip_text) %>
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">

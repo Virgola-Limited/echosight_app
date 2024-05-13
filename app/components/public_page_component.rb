@@ -84,25 +84,24 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def posts_tooltip_text
-    if days_of_data_in_recent_count < 7
-      # For 7 days or less of recent data
-      posts_tooltip_text = "This is the total number of tweets you have made in the last #{days_of_data_in_recent_count} days."
-      posts_tooltip_text += " We will continue to collect data to provide more comprehensive insights."
-    elsif days_of_data_in_difference_count < 7
+    # if days_of_data_in_recent_count < 7
+      posts_tooltip_text = "This sections shows tweet / post counts for the last 7 days compared to the previous 7 days. #{low_data_message}"
+      # posts_tooltip_text += " We will continue to collect data to provide more comprehensive insights."
+    # elsif days_of_data_in_difference_count < 7
       # For less than 7 days of data in the difference count
-      posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous period."
-      posts_tooltip_text += " We are still collecting data to show a full week comparison."
-    else
+      # posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous period."
+      # posts_tooltip_text += " We are still collecting data to show a full week comparison."
+    # else
       # After having 14 days of data
-      posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous 7 days."
-    end
+      # posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous 7 days."
+    # end
 
     posts_tooltip_text
   end
 
   def impressions_card
-    impressions_tooltip_text = "This is the total number of impressions your posts have made in the last 7 days compared to the previous 7 days."
-    impressions_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if impressions_comparison_days < 7
+    impressions_tooltip_text = "This is the total number of impressions your posts have made in the last 7 days compared to the previous 7 days. #{low_data_message}"
+    # impressions_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if impressions_comparison_days < 7
 
     render Shared::MetricsCardComponent.new(
       title: "Impressions",
@@ -114,8 +113,8 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def likes_card
-    likes_tooltip_text = "This is the total number of likes you've received in the last #{likes_comparison_days} days. Compared to the previous #{likes_comparison_days} days."
-    likes_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if likes_comparison_days < 7
+    likes_tooltip_text = "This is the total number of likes you've received in the last 7 days compared to the previous 7 days. #{low_data_message}"
+    # likes_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if likes_comparison_days < 7
 
     render Shared::MetricsCardComponent.new(
       title: "Likes",
@@ -127,8 +126,8 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def followers_card
-    followers_tooltip_text = "This is the total number of followers you have acquired in the last #{followers_comparison_days} days compared to the previous #{followers_comparison_days} days."
-    followers_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if followers_comparison_days < 7
+    followers_tooltip_text = "This is the total number of followers you have acquired in the last 7 days compared to the previous 7 days. #{low_data_message}"
+    # followers_tooltip_text += "<br /><br />We will continue to collect data so we can show you a whole week compared to the week before" if followers_comparison_days < 7
 
     render Shared::MetricsCardComponent.new(
       title: "Followers",
@@ -137,5 +136,9 @@ class PublicPageComponent <  ApplicationComponent
       change_text: followers_count_change_percentage_text,
       tooltip_text: followers_tooltip_text.html_safe
     )
+  end
+
+  def low_data_message
+    'If you have less than 14 days of data, we will show the available data.'
   end
 end
