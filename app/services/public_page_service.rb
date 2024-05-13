@@ -177,7 +177,7 @@ class PublicPageService < Services::Base
   end
 
   def followers_comparison_days
-    @followers_comparison_days ||= dynamic_followers_comparison_days
+    @followers_comparison_days ||= twitter_user_metrics_query.followers_comparison_days
   end
 
   def follower_formatted_labels_for_graph
@@ -191,10 +191,6 @@ class PublicPageService < Services::Base
   # Helper method to encapsulate fetching both formatted follower data and daily data points in one call to minimize database queries.
   def followers_data_for_graph
     @followers_data_for_graph ||= twitter_user_metrics_query.followers_data_for_graph
-  end
-
-  def dynamic_followers_comparison_days
-    7
   end
 
   def engagement_rate_percentage_per_day

@@ -46,6 +46,10 @@ module Twitter
       [formatted_data, daily_data_points]
     end
 
+    def followers_comparison_days
+      time_periods[:current_period]
+    end
+
     private
 
     def format_for_graph(data)
