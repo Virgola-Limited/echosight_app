@@ -47,7 +47,7 @@ module Twitter
     end
 
     def followers_comparison_days
-      time_periods[:current_period]
+      time_periods[:current_period] || 0
     end
 
     private
