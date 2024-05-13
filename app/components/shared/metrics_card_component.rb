@@ -12,7 +12,7 @@ module Shared
     private
 
     def change_text
-      return missing_data_message if @change_text == false || @change_text.nil?
+      return missing_data_message(' change') if @change_text == false || @change_text.nil?
 
       @change_text.to_s
     end
@@ -23,8 +23,8 @@ module Shared
       @count.to_s
     end
 
-    def missing_data_message
-      "Awaiting change data..."
+    def missing_data_message(change_text = nil)
+      "Awaiting#{change_text} data..."
     end
   end
 end
