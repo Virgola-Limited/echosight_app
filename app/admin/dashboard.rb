@@ -6,6 +6,7 @@ ActiveAdmin.register_page "Dashboard" do
     h2 "Last 10 Incomplete User Twitter Data Updates in last #{days_to_fetch} days"
     section do
       table_for Twitter::TweetDataChecksQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch.days.ago) do
+        column :id
         column :started_at
         column "Error Message", :error_message do |update|
           span truncate(update.error_message, length: 300), title: update.error_message
@@ -18,6 +19,9 @@ ActiveAdmin.register_page "Dashboard" do
           update.identity.user.email # Adjust according to your user association
         end
         column :completed_at
+        column "Actions" do |update|
+          link_to "View", admin_user_twitter_data_update_path(update), class: "member_link"
+        end
       end
     end
 
