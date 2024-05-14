@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <%= render 'shared/analytics' %>
-    <title>Echosight</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+     <title><%= content_for?(:title) ? yield(:title) : "Echosight" %></title>
+    <%= render('shared/meta') %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 

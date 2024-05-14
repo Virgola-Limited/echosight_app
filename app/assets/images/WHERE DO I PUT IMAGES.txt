@@ -1,0 +1,3 @@
+If use vite_image_tag it goes in app/javascript/images
+
+If using asset_url or image_tag it goes in here
