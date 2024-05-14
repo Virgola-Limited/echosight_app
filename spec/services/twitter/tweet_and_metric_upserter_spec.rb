@@ -4,6 +4,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
   let!(:identity) { create(:identity, :with_oauth_credential, :loftwah) }
   let(:user) { identity.user }
   let(:api_batch) { create(:api_batch) }
+  let(:different_api_batch) { create(:api_batch) }
   let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id) }
   let(:tweet_data) {
   {
@@ -53,7 +54,6 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       tweet = Tweet.last
       expect(tweet.text).to eq(tweet_data["text"])
       expect(tweet.identity_id).to eq(user.identity.id)
-      # expect(tweet.twitter_created_at.to_s).to eq(DateTime.parse(tweet_data["created_at"]).to_s)
 
       tweet_metric = TweetMetric.last
       expect(tweet_metric.retweet_count).to eq(1)
@@ -66,20 +66,34 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
   end
 
   context 'when the tweet exists' do
-    describe 'when there is a batch ID mismatch' do
-      before do
-        create(:tweet, id: tweet_data["id"])
-      end
+    let!(:existing_tweet) { create(:tweet, id: tweet_data["id"], api_batch_id: api_batch.id) }
 
-      it 'raises an error' do
+    context 'when allow_update is false' do
+      let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id, allow_update: false) }
+
+      it 'does not update the tweet and notifies slack' do
+        expect(Notifications::SlackNotifier).to receive(:call)
         expect {
           subject.call
-        }.to raise_error(RuntimeError, /Mismatched batch ID/)
+        }.not_to change(Tweet, :count)
+        expect(existing_tweet.reload.text).not_to eq(tweet_data["text"])
+      end
+    end
+
+    context 'when allow_update is true' do
+      describe 'when there is a batch ID mismatch' do
+        before do
+          existing_tweet.update(api_batch_id: different_api_batch.id)
+        end
+
+        it 'notifies about an error' do
+          expect(Notifications::SlackNotifier).to receive(:call).with(message: /Mismatched batch ID/, channel: :errors)
+          subject.call
+        end
       end
     end
 
     context 'when the tweet metrics update count is less than 2' do
-      let!(:existing_tweet) { create(:tweet, id: tweet_data["id"], api_batch_id: api_batch.id) }
       let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 1) }
 
       it 'updates the tweet and updates the last tweet metric' do
@@ -95,7 +109,6 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
 
 
     context 'when the tweet metrics update count is 2 or more' do
-      let!(:existing_tweet) { create(:tweet, id: tweet_data["id"], api_batch_id: api_batch.id) }
       let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 2) }
 
       it 'updates the tweet and creates a new tweet metric' do
