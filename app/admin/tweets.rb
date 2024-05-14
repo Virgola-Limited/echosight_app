@@ -1,9 +1,12 @@
 ActiveAdmin.register Tweet do
   actions :index, :show
 
+  # Existing filter
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 
-  # Preload tweet_metrics association
+  # Add filter for tweet_id
+  filter :id, as: :numeric, label: 'Tweet ID'
+
   includes :identity, :tweet_metrics
 
   scope :with_latest_metrics, default: true do |tweets|
@@ -12,7 +15,7 @@ ActiveAdmin.register Tweet do
                     FROM tweet_metrics
                     GROUP BY tweet_id
                   ) latest_metrics ON tweets.id = latest_metrics.tweet_id")
-          .joins("LEFT JOIN tweet_metrics ON tweet_metrics.tweet_id = tweets.id AND tweet_metrics.pulled_at = latest_metrics.latest_pulled_at")
+          .joins("LEFT JOIN tweet_metrics ON tweet_metrics.tweet_id = tweets.id AND tweet_metrics.pulled_at = latest_pulled_at")
   end
 
   index do
