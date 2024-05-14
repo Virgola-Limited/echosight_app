@@ -1,0 +1,26 @@
+# app/views/admin_users/sessions/new.html.slim
+#login
+  h2
+    = active_admin_application.site_title
+    = title t('active_admin.devise.login.title')
+  = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: "formtastic" }) do |f|
+    fieldset.inputs
+      ol
+        li.input.required.autofocus.stringish
+          = f.label :email, "Email", class: "label"
+          = f.email_field :email, autofocus: true
+        li.input.required.stringish.password
+          = f.label :password, "Password", class: "label"
+          = f.password_field :password
+        li.input
+          = f.label :otp_attempt, "Six-Digit Authentication Code"
+          = f.text_field :otp_attempt
+        li.boolean.input.optional
+          label
+            = f.check_box :remember_me
+            | Remember Me
+    fieldset.actions
+      ol
+        li.action.input_action
+          = f.submit "Login"
+  = render partial: "active_admin/devise/shared/links"
