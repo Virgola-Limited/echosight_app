@@ -1,21 +1,21 @@
 <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
   <% unless controller_name == 'sessions' %>
-    <%= link_to "Log in", new_session_path(resource_name) %><br />
+    <%= link_to "Log in", new_session_path(resource_name) %><br>
   <% end %>
 
   <% if devise_mapping.registerable? && !(controller_name == 'registrations' && action_name == 'new') %>
     <%
 =begin%>
- Not registered? <%= link_to "Create account", new_registration_path(resource_name) %><br />
+ Not registered? <%= link_to "Create account", new_registration_path(resource_name) %><br>
 <%
 =end%>
   <% end %>
 
   <% if devise_mapping.confirmable? && !(controller_name == 'confirmations' && action_name == 'show') %>
-    <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+    <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br>
   <% end %>
 
   <% if devise_mapping.lockable? && !(controller_name == 'unlocks' && action_name == 'new') %>
-    <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+    <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br>
   <% end %>
 </div>

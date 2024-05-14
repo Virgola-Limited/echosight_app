@@ -88,7 +88,7 @@
       </tbody>
     </table>
     <% top_posts.each do |tweet_metric| %>
-      <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br />For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet_metric.engagement_rate_percentage}".html_safe %>
+      <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet_metric.engagement_rate_percentage}".html_safe %>
 
       <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet_metric.tweet.id}", text: tooltip_text) %>
     <% end %>

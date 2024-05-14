@@ -12,8 +12,7 @@
   </h2>
 </div>
 
-<% tooltip_text = "We collect new follower counts each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available.
-    <div class\tooltip-arrow\" data-popper-arrow></div>".html_safe %>
+<% tooltip_text = "We collect new follower counts each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available.".html_safe %>
 
 <%= render Shared::TooltipComponent.new(id: "followers-tooltip", text: tooltip_text) %>
 

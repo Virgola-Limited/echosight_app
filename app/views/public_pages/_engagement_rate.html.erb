@@ -10,8 +10,7 @@
     </span>
   </h2>
 </div>
-<% tooltip_text = "We collect new engagement data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to 7 days of data.
-    <div class=\"tooltip-arrow\" data-popper-arrow></div>".html_safe %>
+<% tooltip_text = "We collect new engagement data each day if your graph isn't showing enough data yet, it's because we are waiting for more data to be available. We will show up to 7 days of data.".html_safe %>
 <%= render Shared::TooltipComponent.new(id: 'engagement-tooltip', text: tooltip_text) %>
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
