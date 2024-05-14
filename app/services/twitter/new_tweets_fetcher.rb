@@ -12,10 +12,7 @@ module Twitter
     end
 
     def call
-      metrics_created_count, tweets_updated_count = fetch_and_store_tweets
-      response_message = "Fetched and stored #{metrics_created_count} tweet metrics and updated #{tweets_updated_count} tweets.\n\n"
-      response_message += @user_metrics_updated_message if @user_metrics_updated_message
-      response_message
+      fetch_and_store_tweets
     end
 
     # fix this later
@@ -29,22 +26,16 @@ module Twitter
       params = { query: "from:#{user.handle} within_time:#{within_time}" }
       tweets = client.search_tweets(params)
       today_user_data = nil
-      metrics_created_count = 0
-      tweets_updated_count = 0
 
       tweets['data'].each do |tweet_data|
         today_user_data ||= tweet_data['user']['data']
-        metrics_created, tweet_updated = process_tweet_data(tweet_data)
-        metrics_created_count += 1 if metrics_created
-        tweets_updated_count += 1 if tweet_updated
+        process_tweet_data(tweet_data)
       end
 
       if today_user_data
         @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
         IdentityUpdater.new(today_user_data).call
       end
-
-      [metrics_created_count, tweets_updated_count]
     end
 
     def process_tweet_data(tweet_data)
