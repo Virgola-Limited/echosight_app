@@ -1,23 +1,32 @@
 module Twitter
   class TweetAndMetricUpserter < Services::Base
-    attr_reader :tweet_data, :user, :api_batch_id
+    attr_reader :tweet_data, :user, :api_batch_id, :allow_update
 
-    def initialize(tweet_data:, user:, api_batch_id:)
+    def initialize(tweet_data:, user:, api_batch_id:, allow_update: true)
       @tweet_data = tweet_data
       @user = user
       @api_batch_id = api_batch_id
+      @allow_update = allow_update
     end
 
     def call
       tweet = initialize_or_update_tweet
-      tweet_metric = find_or_initialize_tweet_metric(tweet)
+      if tweet
+        tweet_metric = find_or_initialize_tweet_metric(tweet)
 
-      result = update_tweet_metric(tweet_metric)
+        result = update_tweet_metric(tweet_metric)
+        {
+          tweet_id: tweet.id,
+          success: result.saved_changes?,
+          tweet_metric: result,
+          user: @user,
+          tweet_data: tweet_data,
+        }
+      end
       {
-        tweet_id: tweet.id,
-        success: result.saved_changes?,
-        tweet_metric: result,
-        user: @user
+        success: false,
+        api_batch_id: api_batch_id,
+        tweet_data: tweet_data,
       }
     end
 
@@ -25,19 +34,25 @@ module Twitter
 
     def initialize_or_update_tweet
       tweet = Tweet.find_or_initialize_by(id: tweet_data['id'])
-
       if tweet.new_record?
-        # If it's a new tweet, assign all attributes including the api_batch_id
         tweet.assign_attributes(tweet_attributes.merge(api_batch_id: @api_batch_id))
       else
-        # If it's an existing tweet, just update necessary attributes and check api_batch_id
-        tweet.assign_attributes(tweet_attributes)
-        raise "Mismatched batch ID for existing tweet: #{tweet.id}" unless tweet.api_batch_id == @api_batch_id
+        if allow_update
+          unless tweet.api_batch_id == @api_batch_id
+            @message = "Mismatched batch ID for existing tweet. https://app.echosight.io/admin/tweets/#{tweet.id} for batch https://app.echosight.io/admin/api_batches/#{api_batch_id}, tweet_data: #{tweet_data.inspect}"
+            Notifications::SlackNotifier.call(message: @message, channel: :errors)
+            return
+          end
+
+          tweet.assign_attributes(tweet_attributes)
+        else
+          Notifications::SlackNotifier.call(message: "Trying to update an existing tweet when updates are not allowed. https://app.echosight.io/admin/tweets/#{tweet.id} for batch https://app.echosight.io/admin/api_batches/#{api_batch_id}, tweet_data: #{tweet_data.inspect}", channel: :errors)
+        end
       end
 
       tweet.save! if tweet.changed?
       tweet
-  end
+    end
 
 
     def tweet_attributes

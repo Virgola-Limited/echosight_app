@@ -17,7 +17,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
 
   it 'calls Twitter::TweetAndMetricUpserter with the correct arguments' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, user: user, api_batch_id: api_batch.id).exactly(expected_tweets).times
+      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, user: user, api_batch_id: api_batch.id, allow_update: false).exactly(expected_tweets).times
       subject.call
     end
   end
