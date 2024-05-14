@@ -4,6 +4,7 @@ ActiveAdmin.register UserTwitterDataUpdate do
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 
   index do
+    column :id
     column :created_at
     column :identity_id
     column "User Email" do |user_twitter_data_update|
