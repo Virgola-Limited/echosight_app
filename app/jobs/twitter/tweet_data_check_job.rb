@@ -14,7 +14,7 @@ module Twitter
     def check_and_notify(query_result, issue_type)
       if query_result.any?
         message = "There are issues with #{issue_type}. Please check the dashboard for more details."
-        Notifications::SlackNotifier.call(message: message, channel: :error)
+        Notifications::SlackNotifier.call(message: message, channel: :errors)
       end
     end
   end
