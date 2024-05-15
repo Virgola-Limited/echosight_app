@@ -31,7 +31,7 @@ module Twitter
         query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
         tweets_data = client.search_tweets(params)
-        received_tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }
+        received_tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }.map(&:to_i)
         today_user_data = nil
         if (expected_tweets.count != received_tweet_ids.count)
           handle_tweet_count_mismatch(expected_tweets, received_tweet_ids)
@@ -58,7 +58,7 @@ module Twitter
       missing_tweet_ids = expected_tweet_ids - received_tweet_ids
       extra_tweet_ids = received_tweet_ids - expected_tweet_ids
       message = "Tweet count mismatch for user #{user.handle}. \n\nExpected: #{expected_tweet_ids},  \n\nActual: #{received_tweet_ids},  \n\nMissing: #{missing_tweet_ids},  \n\nExtra: #{extra_tweet_ids}"
-      ExceptionHandling.notify_or_raise(message)
+      Notifications::SlackNotifier.call(message: message, channel: :errors)
     end
 
     def id_to_time(tweet_id)
