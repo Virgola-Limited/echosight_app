@@ -55,7 +55,7 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
       end
     end
 
-    context 'when there are tweets in the batch for the user', :vcr2 do
+    context 'when there are tweets in the batch for the user' do
       it 'updates tweets and handles them accordingly' do
         VCR.use_cassette('Twitter__ExistingTweetsUpdater') do
           expect(IdentityUpdater).to receive(:new).with(hash_including(*identity_parameters)).and_return(identity_updater)
