@@ -37,7 +37,7 @@ class Tweet < ApplicationRecord
   validates :text, presence: true
 
   def self.max_age_for_refresh
-   3.days.ago
+    2.days.ago
   end
 
   def self.ransackable_attributes(auth_object = nil)
