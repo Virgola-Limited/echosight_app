@@ -1,12 +1,13 @@
 ActiveAdmin.register Identity do
-  permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data
+  permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data, :uid
 
-  actions :index, :show, :destroy
+  actions :index, :show, :destroy, :new, :edit, :create, :update
 
   index do
     selectable_column
     id_column
     column :user_id
+    column :uid
     column :created_at
     column :updated_at
     column :description
@@ -22,6 +23,7 @@ ActiveAdmin.register Identity do
   form do |f|
     f.inputs do
       f.input :description
+      f.input :uid
       f.input :handle
     end
     f.actions
