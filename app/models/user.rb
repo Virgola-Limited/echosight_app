@@ -70,10 +70,18 @@ class User < ApplicationRecord
   scope :syncable, -> { confirmed.joins(:identity).merge(Identity.valid_identity) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
+
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
 
   def self.ransackable_attributes(auth_object = nil)
     ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_name", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
+  end
+
+  def active_subscription?
+    if subscriptions.active.count > 1
+      ExceptionNotifier.notify_exception(StandardError.new("User has more than one active subscription"), data: { user_id: id })
+    end
+    subscriptions.active.count.positive?
   end
 
   def syncable?
