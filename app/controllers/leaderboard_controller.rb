@@ -8,10 +8,33 @@ class LeaderboardController < ApplicationController
   end
 
   def users
+    start_date = case params[:period]
+                 when '7_days'
+                   7.days.ago
+                 when '28_days'
+                   28.days.ago
+                 when '3_months'
+                   3.months.ago
+                 when '1_year'
+                   1.year.ago
+                 end
+
     @users = Identity.joins(tweets: :tweet_metrics)
-                     .select('identities.*, SUM(tweet_metrics.impression_count) AS total_impressions, SUM(tweet_metrics.retweet_count) AS total_retweets, SUM(tweet_metrics.like_count) AS total_likes, SUM(tweet_metrics.quote_count) AS total_quotes, SUM(tweet_metrics.reply_count) AS total_replies, SUM(tweet_metrics.bookmark_count) AS total_bookmarks')
+                     .joins('LEFT JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
+                     .select('identities.*,
+                                SUM(tweet_metrics.impression_count) AS total_impressions,
+                                SUM(tweet_metrics.retweet_count) AS total_retweets,
+                                SUM(tweet_metrics.like_count) AS total_likes,
+                                SUM(tweet_metrics.quote_count) AS total_quotes,
+                                SUM(tweet_metrics.reply_count) AS total_replies,
+                                SUM(tweet_metrics.bookmark_count) AS total_bookmarks,
+                                MAX(twitter_user_metrics.followers_count) AS total_followers,
+                                (SUM(tweet_metrics.retweet_count) + SUM(tweet_metrics.like_count) + SUM(tweet_metrics.quote_count) + SUM(tweet_metrics.reply_count) + SUM(tweet_metrics.bookmark_count)) / NULLIF(SUM(tweet_metrics.impression_count), 0) * 100 AS engagement_rate,
+                                MIN(tweet_metrics.created_at) AS first_collection_date')
                      .group('identities.id')
                      .order('total_impressions DESC')
                      .limit(50)
+
+    @users = @users.where('tweet_metrics.created_at >= ?', start_date) if start_date
   end
 end

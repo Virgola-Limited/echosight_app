@@ -1,12 +1,19 @@
 <!-- app/views/leaderboard/users.html.erb -->
 <h1 class="text-xl text-gray-300 p-4">User Leaderboard</h1>
 
+<div class="flex justify-around p-4 bg-gray-800">
+  <%= link_to 'Last 7 Days', leaderboard_users_path(period: '7_days'), class: 'text-gray-300 px-4 py-2 hover:bg-gray-700' %>
+  <%= link_to 'Last 28 Days', leaderboard_users_path(period: '28_days'), class: 'text-gray-300 px-4 py-2 hover:bg-gray-700' %>
+  <%= link_to 'Last 3 Months', leaderboard_users_path(period: '3_months'), class: 'text-gray-300 px-4 py-2 hover:bg-gray-700' %>
+  <%= link_to 'Last 1 Year', leaderboard_users_path(period: '1_year'), class: 'text-gray-300 px-4 py-2 hover:bg-gray-700' %>
+  <%= link_to 'Total', leaderboard_users_path(period: 'total'), class: 'text-gray-300 px-4 py-2 hover:bg-gray-700' %>
+</div>
+
 <div class="flex flex-col space-y-4 p-4">
   <div class="overflow-x-auto">
     <table class="min-w-full bg-gray-800 text-gray-300 text-sm">
       <thead class="bg-gray-700 text-gray-400">
         <tr>
-          <th class="px-4 py-2 text-left">User ID</th>
           <th class="px-4 py-2 text-left">Handle</th>
           <th class="px-4 py-2 text-left">Total Impressions</th>
           <th class="px-4 py-2 text-left">Total Retweets</th>
@@ -14,19 +21,26 @@
           <th class="px-4 py-2 text-left">Total Quotes</th>
           <th class="px-4 py-2 text-left">Total Replies</th>
           <th class="px-4 py-2 text-left">Total Bookmarks</th>
+          <th class="px-4 py-2 text-left">Total Followers</th>
+          <% if params[:period] == 'total' %>
+            <th class="px-4 py-2 text-left">First Collected</th>
+          <% end %>
         </tr>
       </thead>
       <tbody class="bg-gray-900">
         <% @users.each do |user| %>
           <tr class="border-b border-gray-700">
-            <td class="px-4 py-2"><%= user.id %></td>
             <td class="px-4 py-2"><%= user.handle %></td>
-            <td class="px-4 py-2"><%= user.total_impressions %></td>
-            <td class="px-4 py-2"><%= user.total_retweets %></td>
-            <td class="px-4 py-2"><%= user.total_likes %></td>
-            <td class="px-4 py-2"><%= user.total_quotes %></td>
-            <td class="px-4 py-2"><%= user.total_replies %></td>
-            <td class="px-4 py-2"><%= user.total_bookmarks %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_impressions) %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_retweets) %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_likes) %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_quotes) %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_replies) %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_bookmarks) %></td>
+            <td class="px-4 py-2"><%= number_to_human_readable(user.total_followers) %></td>
+            <% if params[:period] == 'total' %>
+              <td class="px-4 py-2"><%= user.first_collection_date.strftime('%Y-%m-%d') %></td>
+            <% end %>
           </tr>
         <% end %>
       </tbody>
