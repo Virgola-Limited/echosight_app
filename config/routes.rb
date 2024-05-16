@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   resources :dashboard, only: :index
   get 'p/:handle', to: 'public_pages#show', as: :public_page
 
+  get 'leaderboard/tweets', to: 'leaderboard#tweets'
+  get 'leaderboard/users', to: 'leaderboard#users'
+
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
 

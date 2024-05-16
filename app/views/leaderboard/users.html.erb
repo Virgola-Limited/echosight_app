@@ -1,0 +1,35 @@
+<!-- app/views/leaderboard/users.html.erb -->
+<h1 class="text-xl text-gray-300 p-4">User Leaderboard</h1>
+
+<div class="flex flex-col space-y-4 p-4">
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-gray-800 text-gray-300 text-sm">
+      <thead class="bg-gray-700 text-gray-400">
+        <tr>
+          <th class="px-4 py-2 text-left">User ID</th>
+          <th class="px-4 py-2 text-left">Handle</th>
+          <th class="px-4 py-2 text-left">Total Impressions</th>
+          <th class="px-4 py-2 text-left">Total Retweets</th>
+          <th class="px-4 py-2 text-left">Total Likes</th>
+          <th class="px-4 py-2 text-left">Total Quotes</th>
+          <th class="px-4 py-2 text-left">Total Replies</th>
+          <th class="px-4 py-2 text-left">Total Bookmarks</th>
+        </tr>
+      </thead>
+      <tbody class="bg-gray-900">
+        <% @users.each do |user| %>
+          <tr class="border-b border-gray-700">
+            <td class="px-4 py-2"><%= user.id %></td>
+            <td class="px-4 py-2"><%= user.handle %></td>
+            <td class="px-4 py-2"><%= user.total_impressions %></td>
+            <td class="px-4 py-2"><%= user.total_retweets %></td>
+            <td class="px-4 py-2"><%= user.total_likes %></td>
+            <td class="px-4 py-2"><%= user.total_quotes %></td>
+            <td class="px-4 py-2"><%= user.total_replies %></td>
+            <td class="px-4 py-2"><%= user.total_bookmarks %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
