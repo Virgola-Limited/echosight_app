@@ -14,9 +14,6 @@
   <li class="mr-2">
     <%= link_to 'Last 1 Year', leaderboard_users_path(period: '1_year'), class: "inline-block p-4 #{params[:period] == '1_year' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
   </li>
-  <li class="mr-2">
-    <%= link_to 'Total', leaderboard_users_path(period: 'total'), class: "inline-block p-4 #{params[:period] == 'total' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
-  </li>
 </ul>
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
@@ -24,13 +21,13 @@
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
         <th scope="col" class="px-6 py-3">Handle</th>
-        <th scope="col" class="px-6 py-3">Total Impressions</th>
-        <th scope="col" class="px-6 py-3">Total Retweets</th>
-        <th scope="col" class="px-6 py-3">Total Likes</th>
-        <th scope="col" class="px-6 py-3">Total Quotes</th>
-        <th scope="col" class="px-6 py-3">Total Replies</th>
-        <th scope="col" class="px-6 py-3">Total Bookmarks</th>
-        <th scope="col" class="px-6 py-3">Total Followers</th>
+        <th scope="col" class="px-6 py-3">Impressions</th>
+        <th scope="col" class="px-6 py-3">Reposts</th>
+        <th scope="col" class="px-6 py-3">Likes</th>
+        <th scope="col" class="px-6 py-3">Quotes</th>
+        <th scope="col" class="px-6 py-3">Replies</th>
+        <th scope="col" class="px-6 py-3">Bookmarks</th>
+        <th scope="col" class="px-6 py-3">Followers</th>
       </tr>
     </thead>
     <tbody>
