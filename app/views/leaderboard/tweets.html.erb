@@ -1,0 +1,36 @@
+<!-- app/views/leaderboard/tweets.html.erb -->
+<h1 class="text-xl text-gray-300 p-4">Tweet Leaderboard</h1>
+
+<div class="flex flex-col space-y-4 p-4">
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-gray-800 text-gray-300 text-sm">
+      <thead class="bg-gray-700 text-gray-400">
+        <tr>
+          <th class="px-4 py-2 text-left">Tweet ID</th>
+          <th class="px-4 py-2 text-left">Text</th>
+          <th class="px-4 py-2 text-left">Impressions</th>
+          <th class="px-4 py-2 text-left">Retweets</th>
+          <th class="px-4 py-2 text-left">Likes</th>
+          <th class="px-4 py-2 text-left">Quotes</th>
+          <th class="px-4 py-2 text-left">Replies</th>
+          <th class="px-4 py-2 text-left">Bookmarks</th>
+        </tr>
+      </thead>
+      <tbody class="bg-gray-900">
+        <% @tweets.each do |tweet| %>
+          <% metrics = tweet.tweet_metrics.first %>
+          <tr class="border-b border-gray-700">
+            <td class="px-4 py-2"><%= tweet.id %></td>
+            <td class="px-4 py-2"><%= tweet.text %></td>
+            <td class="px-4 py-2"><%= metrics.impression_count %></td>
+            <td class="px-4 py-2"><%= metrics.retweet_count %></td>
+            <td class="px-4 py-2"><%= metrics.like_count %></td>
+            <td class="px-4 py-2"><%= metrics.quote_count %></td>
+            <td class="px-4 py-2"><%= metrics.reply_count %></td>
+            <td class="px-4 py-2"><%= metrics.bookmark_count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
