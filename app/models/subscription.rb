@@ -48,7 +48,6 @@ class Subscription < ApplicationRecord
   #   'inactive'
   # end
 
-
   private
 
   def only_one_active_subscription
