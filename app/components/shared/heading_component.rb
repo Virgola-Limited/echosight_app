@@ -12,7 +12,7 @@ module Shared
       when :h1
         "text-5xl font-extrabold dark:text-white"
       when :h2
-        "text-4xl font-bold dark:text-white"
+        "text-2xl font-bold text-gray-900 dark:text-white"
       when :h3
         "text-3xl font-bold dark:text-white"
       when :h4

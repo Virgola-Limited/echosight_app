@@ -1,8 +1,11 @@
 <div class="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
     <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-            Choose Your Subscription Plan
-        </h2>
+      <%= render Shared::HeadingComponent.new(text: 'Subscriptions', heading_type: :h2) %>
+      <p class="paragraph-base">Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.</p>
+    </div>
+    <br>
+    <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
+        <%= render Shared::HeadingComponent.new(text: 'Choose Your Subscription Plan', heading_type: :h2) %>
               <%= form_with url: subscription_path, id: 'payment-form', method: :post do |form| %>
 
         <% @products.each do |product| %>
