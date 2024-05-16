@@ -2,6 +2,8 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  mount StripeEvent::Engine, at: '/stripe/webhook'
+
   resources :dashboard, only: :index
   root 'dashboard#index'
 

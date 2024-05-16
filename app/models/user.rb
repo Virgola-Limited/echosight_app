@@ -85,7 +85,7 @@ class User < ApplicationRecord
   end
 
   def syncable?
-    confirmed? && identity&.valid_identity?
+    confirmed? && identity&.valid_identity? && active_subscription?
   end
 
   def self.create_or_update_identity_from_omniauth(auth)

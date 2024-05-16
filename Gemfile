@@ -53,6 +53,7 @@ gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs'
 gem 'slack-notifier'
 gem 'stripe'
+gem 'stripe_event'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
