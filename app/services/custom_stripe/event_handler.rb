@@ -36,7 +36,6 @@ module CustomStripe
       Notifications::SlackNotifier.call(
         message: "Subscription deleted: #{subscription.inspect}"
       )
-    end
       # user = User.find_by(stripe_subscription_id: subscription.id)
       # return unless user
 
