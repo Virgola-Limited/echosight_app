@@ -30,7 +30,7 @@ class LeaderboardController < ApplicationController
                                 SUM(tweet_metrics.bookmark_count) AS total_bookmarks,
                                 MAX(twitter_user_metrics.followers_count) AS total_followers,
                                 (SUM(tweet_metrics.retweet_count) + SUM(tweet_metrics.like_count) + SUM(tweet_metrics.quote_count) + SUM(tweet_metrics.reply_count) + SUM(tweet_metrics.bookmark_count)) / NULLIF(SUM(tweet_metrics.impression_count), 0) * 100 AS engagement_rate,
-                                MIN(tweet_metrics.created_at) AS first_collection_date')
+                                MIN(tweet_metrics.created_at) AS date_first_collected')
                      .group('identities.id')
                      .order('total_impressions DESC')
                      .limit(50)
