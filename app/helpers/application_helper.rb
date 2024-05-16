@@ -9,7 +9,7 @@ module ApplicationHelper
     else
       number.to_s
     end
-  end  
+  end
 
   def html_description_with_links(description)
     description.to_s.gsub(%r{(https?://[^\s]+)}) do |url|
