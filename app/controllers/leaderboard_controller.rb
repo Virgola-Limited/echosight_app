@@ -9,6 +9,8 @@ class LeaderboardController < ApplicationController
 
   def users
     start_date = case params[:period]
+                 when 'today'
+                   Time.current.beginning_of_day
                  when '7_days'
                    7.days.ago
                  when '28_days'
@@ -18,6 +20,14 @@ class LeaderboardController < ApplicationController
                  when '1_year'
                    1.year.ago
                  end
+
+    # Check if there are any tweets from today
+    if params[:period] == 'today'
+      tweets_today = Tweet.where('created_at >= ?', Time.current.beginning_of_day)
+      if tweets_today.empty?
+        start_date = 1.day.ago.beginning_of_day
+      end
+    end
 
     @users = Identity.joins(tweets: :tweet_metrics)
                      .joins('LEFT JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
