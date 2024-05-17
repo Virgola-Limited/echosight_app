@@ -42,7 +42,7 @@
                 <div id="card-errors" role="alert" class="mt-2 text-sm text-red-600 dark:text-red-400"></div>
             </div>
 
-         <%= form.submit "Subscribe", id: "submit-button", class: "flex items-center justify-center w-full px-5 py-3 text-base font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" %>
+         <%= render Shared::ButtonComponent.new(text: 'Subscribe', url: '', classes: 'w-full') %>
 <% end %>
     </div>
 </div>
