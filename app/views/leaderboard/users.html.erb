@@ -1,5 +1,5 @@
 <!-- app/views/leaderboard/users.html.erb -->
-<h1 class="text-xl text-gray-300 p-4">User Leaderboard</h1>
+<h1 class="text-xl text-gray-900 dark:text-gray-300 p-4">User Leaderboard</h1>
 
 <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
   <li class="mr-2">
@@ -23,7 +23,7 @@
   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
-        <th scope="col" class="px-2 py-3">#</th>
+        <th scope="col" class="px-2 py-3 text-center">#</th>
         <th scope="col" class="px-2 py-3">Handle</th>
         <th scope="col" class="px-2 py-3">Impressions</th>
         <th scope="col" class="px-2 py-3">Reposts</th>
@@ -37,7 +37,7 @@
     <tbody>
       <% @users.each_with_index do |user, index| %>
         <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-          <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
             <% if index == 0 %>
               <span class="text-yellow-500">🥇 <%= index + 1 %></span>
             <% elsif index == 1 %>
