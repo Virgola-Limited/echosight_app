@@ -20,27 +20,29 @@
   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr>
-        <th scope="col" class="px-6 py-3">Handle</th>
-        <th scope="col" class="px-6 py-3">Impressions</th>
-        <th scope="col" class="px-6 py-3">Reposts</th>
-        <th scope="col" class="px-6 py-3">Likes</th>
-        <th scope="col" class="px-6 py-3">Quotes</th>
-        <th scope="col" class="px-6 py-3">Replies</th>
-        <th scope="col" class="px-6 py-3">Bookmarks</th>
-        <th scope="col" class="px-6 py-3">Followers</th>
+        <th scope="col" class="px-2 py-3">#</th>
+        <th scope="col" class="px-2 py-3">Handle</th>
+        <th scope="col" class="px-2 py-3">Impressions</th>
+        <th scope="col" class="px-2 py-3">Reposts</th>
+        <th scope="col" class="px-2 py-3">Likes</th>
+        <th scope="col" class="px-2 py-3">Quotes</th>
+        <th scope="col" class="px-2 py-3">Replies</th>
+        <th scope="col" class="px-2 py-3">Bookmarks</th>
+        <th scope="col" class="px-2 py-3">Followers</th>
       </tr>
     </thead>
     <tbody>
-      <% @users.each do |user| %>
+      <% @users.each_with_index do |user, index| %>
         <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-          <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= user.handle %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_impressions) %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_retweets) %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_likes) %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_quotes) %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_replies) %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_bookmarks) %></td>
-          <td class="px-6 py-4"><%= number_to_human_readable(user.total_followers) %></td>
+          <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= index + 1 %></td>
+          <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= user.handle %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_impressions) %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_retweets) %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_likes) %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_quotes) %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_replies) %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_bookmarks) %></td>
+          <td class="px-2 py-4"><%= number_to_human_readable(user.total_followers) %></td>
         </tr>
       <% end %>
     </tbody>
