@@ -1,5 +1,5 @@
 # app/services/stripe_subscription_checker.rb
-module Stripe
+module CustomStripe
   class SubscriptionChecker
     def self.check_subscription(subscription)
       return unless subscription.stripe_subscription_id
