@@ -31,8 +31,8 @@ Yep 1. is perfect
 <% if show_waiting_message? %>
   <%= render ContentBoxComponent.new do %>
     <%= render Shared::HeadingComponent.new(text: 'When can I see my public page?', heading_type: :h2) %>
-    <p class="paragraph-base">Thanks for connecting your Twitter/X account. In order to show you your public page we need at least 3 days, ideally 7, of data from Twitter.</p>
-    <p class="paragraph-base">Regardless of this you are welcome to take a look at your <%= link_to "public page", public_page_path(handle: current_user.handle) %>.</p>
+    <p class="paragraph-base">Your public page will start to show data after 1 day. It will look it's best after 14 days when we can compare this week to the previous one.</p>
+    <p class="paragraph-base">Regardless of this you are welcome to take a look at your <%= link_to "public page", public_page_path(handle: current_user.handle) %> at any time.</p>
     </p>
   <% end %>
 <% end %>
