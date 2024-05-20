@@ -123,7 +123,6 @@ class User < ApplicationRecord
     user
   end
 
-
   def assign_from_auth(auth)
     self.name = auth.info.name if name.blank?
     self.email = auth.info.email if email.blank?
@@ -148,6 +147,10 @@ class User < ApplicationRecord
 
   def connected_to_twitter?
     identity&.provider == 'twitter2'
+  end
+
+  def user_should_be_syncing?
+    connected_to_twitter? && active_subscription?
   end
 
   private

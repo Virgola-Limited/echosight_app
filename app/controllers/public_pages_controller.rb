@@ -33,11 +33,12 @@ class PublicPagesController < ApplicationController
 
     # TODO: handle public page where data is lacking for logged out users
 
-    # handle logged in user with no subscription
-    if @public_page_data.owns_page && !current_or_guest_user.active_subscription?
-      link = view_context.link_to('Subscribe', new_subscription_path).html_safe
-      flash.now[:notice] = "#{link} to start pulling #{t(:twitter_title)} data into your public page!".html_safe
+    # handle logged in user that isnt set up properly
+    if @public_page_data.owns_page && !current_or_guest_user.user_should_be_syncing?
+      link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
+      flash.now[:alert] = "Check your #{link} for the steps to enable your public page.".html_safe
       return
     end
+
   end
 end

@@ -12,6 +12,8 @@ class SubscriptionsController < AuthenticatedController
   end
 
   def show
+    # blah = "Subscription created successfully. We will start collecting daily data for your #{ view_context.link_to("public page", public_page_path(handle: current_user.handle)).html_safe }".html_safe
+    # flash.now[:notice] = blah
     if @subscription.present?
       @stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
 
@@ -23,9 +25,11 @@ class SubscriptionsController < AuthenticatedController
   def create
     result = CreateSubscriptionService.new(current_user, params[:plan_id], params[:stripeToken]).call
     if result[:success]
-      redirect_to subscription_path, notice: 'Subscription created successfully.'
+      notice = "Subscription created successfully. We will start collecting daily data for your #{ view_context.link_to("public page", public_page_path(handle: current_user.handle)).html_safe }".html_safe
+      redirect_to subscription_path, notice: notice
     else
-      redirect_to new_subscription_path, alert: "Failed to create subscription. Please contact x@echosight.io for support. Error: #{result[:error]}"
+      redirect_to new_subscription_path, alert: "Failed to create subscription. Please contact x@echosight.io for support."
+      ExceptionNotifier.notify_exception(result[:error], data: { user: current_user, plan_id: params[:plan_id] })
     end
   end
 
