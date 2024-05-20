@@ -58,7 +58,6 @@ class User < ApplicationRecord
   has_many :tweets, through: :identity
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
-  has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 
   [:handle, :banner_url, :image_url, :enough_data_for_public_page?, :page_low_on_recent_data?].each do |method|
     delegate method, to: :identity, allow_nil: true

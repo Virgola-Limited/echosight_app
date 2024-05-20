@@ -31,7 +31,6 @@ class Identity < ApplicationRecord
   include ImageUploader::Attachment(:banner) # adds a 'banner' virtual attribute
 
   belongs_to :user
-  has_many :hourly_tweet_counts, dependent: :destroy
   has_many :tweets, dependent: :destroy
   has_many :twitter_user_metrics, dependent: :destroy
   has_many :user_twitter_data_updates, dependent: :destroy
