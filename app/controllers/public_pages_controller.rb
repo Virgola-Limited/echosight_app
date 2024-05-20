@@ -17,6 +17,7 @@ class PublicPagesController < ApplicationController
   private
 
   def set_flash_message
+    Rails.logger.debug('paul' + @public_page_data.demo?.inspect)
     if @public_page_data.demo?
       # handle logged out user on demo page
       if current_or_guest_user.guest?
@@ -36,7 +37,7 @@ class PublicPagesController < ApplicationController
     # handle logged in user that isnt set up properly
     if @public_page_data.owns_page && !current_or_guest_user.user_should_be_syncing?
       link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
-      flash.now[:alert] = "Check your #{link} for the steps to enable your public page.".html_safe
+      flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
       return
     end
 
