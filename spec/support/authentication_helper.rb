@@ -6,7 +6,8 @@ module AuthenticationHelper
   end
 
   def simulate_twitter_connection(user)
-    create(:identity, user: user)
+    identity = create(:identity, user: user)
     user.update!(name: 'Twitter User')
+    identity
   end
 end

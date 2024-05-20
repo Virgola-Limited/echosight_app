@@ -60,10 +60,9 @@ class User < ApplicationRecord
   has_many :twitter_user_metrics, through: :identity
   has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
 
-  delegate :handle, to: :identity, allow_nil: true
-  delegate :banner_url, to: :identity, allow_nil: true
-  delegate :image_url, to: :identity, allow_nil: true
-  delegate :enough_data_for_public_page?, to: :identity, allow_nil: true
+  [:handle, :banner_url, :image_url, :enough_data_for_public_page?, :page_low_on_recent_data?].each do |method|
+    delegate method, to: :identity, allow_nil: true
+  end
 
   after_create :enqueue_create_stripe_customer
 

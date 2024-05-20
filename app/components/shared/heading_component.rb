@@ -14,7 +14,7 @@ module Shared
       when :h2
         "text-2xl font-bold text-gray-900 dark:text-white"
       when :h3
-        "text-3xl font-bold dark:text-white"
+        "text-1xl font-bold dark:text-white"
       when :h4
         "text-2xl font-bold dark:text-white"
       when :h5

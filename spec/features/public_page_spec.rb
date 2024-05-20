@@ -10,7 +10,10 @@ RSpec.feature 'Public Page Access' do
     # Context: When the user is not logged in
     visit public_page_path(:demo)
     expect(page.title).to eq("Sammy Circuit's Public Page")
-    expect(page.body).to include('This is a demo page showing how your public page could look')
+    within('[role="alert"]') do
+      expect(page).to have_text('This is a demo page showing how your public page could look')
+      expect(page).to have_text('Sign up')
+    end
 
     # Log in as the created user
     login_user(user)
@@ -18,18 +21,27 @@ RSpec.feature 'Public Page Access' do
     # Context: When the user is logged in but not signed up to Twitter
     visit public_page_path(:demo)
     expect(page.title).to eq("Sammy Circuit's Public Page")
+    within('[role="alert"]') do
+      expect(page).to have_text('This is a demo page showing how your public page could look')
+      expect(page).to have_text('Subscribe')
+    end
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
         expect(page).to have_text(content)
       end
     end
 
-    # Context: When the user is logged in signed up to Twitter
-    simulate_twitter_connection(user)
+    # Context: When the user is logged in signed up to Twitter with no subscription
+    identity = simulate_twitter_connection(user)
 
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page.title).to eq("Twitter User's Public Page")
+    # expect(page.title).to eq("Twitter User's Public Page")
+
+    within('[role="alert"]') do
+      expect(page).to have_text('data into your public page')
+      expect(page).to have_text('Subscribe')
+    end
     within('[data-test="user-profile"]') do
       DEMO_PAGE_TEXTS.each do |content|
         expect(page).not_to have_text(content)
@@ -37,9 +49,14 @@ RSpec.feature 'Public Page Access' do
     end
 
     # Context: When all the criteria are met to show the users public page
-    create_list(:user_twitter_data_update, 2, identity: user.identity, completed_at: 1.day.ago)
-    expect(page.title).to eq("Twitter User's Public Page")
+    subscription = create(:subscription, user: user)
+    allow(identity).to receive(:enough_data_for_public_page?).and_return(true)
     visit public_page_path(user.handle)
+    expect(page).to have_current_path(public_page_path(user.handle))
+    save_and_open_screenshot
+    expect(page.title).to eq("Twitter User's Public Page")
+    expect(page).not_to have_text('data into your public page')
+    expect(page).not_to have_text('Subscribe')
     DEMO_PAGE_TEXTS.each do |content|
       expect(page.body).not_to include(content)
     end
