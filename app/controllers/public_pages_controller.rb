@@ -18,8 +18,6 @@ class PublicPagesController < ApplicationController
 
   def set_flash_message
     if @public_page_data.demo?
-      link = view_context.link_to('Sign up', new_user_registration_path).html_safe
-
       # handle logged out user on demo page
       if current_or_guest_user.guest?
         link = view_context.link_to('Sign up', new_user_registration_path).html_safe
@@ -29,7 +27,7 @@ class PublicPagesController < ApplicationController
         end
 
       end
-      flash.now[:notice] = "This is a demo page showing how your public page could look. #{link} to get your own!".html_safe
+      flash.now[:notice] = "This is a demo page showing how your public page could look. #{link} to get your own!".html_safe if link
       return
     end
 
