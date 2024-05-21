@@ -65,9 +65,16 @@ class User < ApplicationRecord
 
   after_create :enqueue_create_stripe_customer
 
-  scope :syncable, -> { confirmed.joins(:identity).merge(Identity.valid_identity) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-
+  scope :syncable, -> {
+    confirmed
+      .joins(:identity)
+      .merge(Identity.valid_identity)
+      .joins(:subscriptions)
+      .merge(Subscription.active)
+      .group('users.id')
+      .having('COUNT(subscriptions.id) > 0')
+  }
 
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
 
@@ -80,10 +87,6 @@ class User < ApplicationRecord
       ExceptionNotifier.notify_exception(StandardError.new("User has more than one active subscription"), data: { user_id: id })
     end
     subscriptions.active.count.positive?
-  end
-
-  def syncable?
-    confirmed? && identity&.valid_identity? && active_subscription?
   end
 
   def self.create_or_update_identity_from_omniauth(auth)

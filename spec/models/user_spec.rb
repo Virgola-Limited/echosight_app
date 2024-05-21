@@ -1,55 +1,42 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                     :bigint           not null, primary key
-#  confirmation_sent_at   :datetime
-#  confirmation_token     :string
-#  confirmed_at           :datetime
-#  current_sign_in_at     :datetime
-#  current_sign_in_ip     :string
-#  email                  :string           default(""), not null
-#  encrypted_password     :string           default(""), not null
-#  failed_attempts        :integer          default(0), not null
-#  invitation_accepted_at :datetime
-#  invitation_created_at  :datetime
-#  invitation_limit       :integer
-#  invitation_sent_at     :datetime
-#  invitation_token       :string
-#  invitations_count      :integer          default(0)
-#  invited_by_type        :string
-#  last_name              :string
-#  last_sign_in_at        :datetime
-#  last_sign_in_ip        :string
-#  locked_at              :datetime
-#  name                   :string
-#  remember_created_at    :datetime
-#  reset_password_sent_at :datetime
-#  reset_password_token   :string
-#  sign_in_count          :integer          default(0), not null
-#  unconfirmed_email      :string
-#  unlock_token           :string
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  invited_by_id          :bigint
-#  stripe_customer_id     :string
-#
-# Indexes
-#
-#  index_users_on_confirmation_token    (confirmation_token) UNIQUE
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_invitation_token      (invitation_token) UNIQUE
-#  index_users_on_invited_by            (invited_by_type,invited_by_id)
-#  index_users_on_invited_by_id         (invited_by_id)
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_stripe_customer_id    (stripe_customer_id)
-#  index_users_on_unlock_token          (unlock_token) UNIQUE
-#
 require 'rails_helper'
 
-RSpec.describe User do
-  subject { described_class.new }
+RSpec.describe User, type: :model do
+  fdescribe '.syncable' do
+    let!(:confirmed_user_with_valid_identity_and_active_subscription) do
+      user = create(:user, confirmed_at: Time.current)
+      create(:identity, user: user, provider: 'twitter2')
+      create(:subscription, user: user, active: true)
+      user
+    end
 
+    let!(:confirmed_user_without_identity) do
+      create(:user, confirmed_at: Time.current)
+    end
+
+    let!(:confirmed_user_with_invalid_identity) do
+      user = create(:user, confirmed_at: Time.current)
+      create(:identity, user: user, provider: 'facepalm')
+      user
+    end
+
+    let!(:confirmed_user_with_valid_identity_but_no_active_subscription) do
+      user = create(:user, confirmed_at: Time.current)
+      create(:identity, user: user, provider: 'twitter2')
+      create(:subscription, user: user, active: false)
+      user
+    end
+
+    let!(:unconfirmed_user) do
+      user = create(:user, confirmed_at: nil)
+      create(:identity, user: user, provider: 'twitter2')
+      create(:subscription, user: user, active: true)
+      user
+    end
+
+    it 'returns only users who are confirmed, have a valid identity, and an active subscription' do
+      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription])
+    end
+  end
 
   describe '#syncable?' do
     context 'when the user is not confirmed' do
@@ -71,7 +58,7 @@ RSpec.describe User do
 
       context 'when the user has an identity' do
         context 'when the identity is not valid' do
-          let!(:identity) { create(:identity, user: user, provider: 'facepalm')}
+          let!(:identity) { create(:identity, user: user, provider: 'facepalm') }
           let(:user) { create(:user, confirmed_at: Time.current) }
 
           it 'returns false' do
