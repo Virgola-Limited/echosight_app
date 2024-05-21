@@ -64,36 +64,22 @@
       <%= vite_image_tag("images/logo.png", height: '32', width: '32', alt: "Echosight") %>
     </div>
 
-  <!-- Email Content -->
-  <div class="content">
-    <%= yield %>
-  </div>
+    <!-- Email Content -->
+    <div class="content">
+      <%= yield %>
+    </div>
 
     <!-- Footer -->
     <div class="footer">
-      <%
-=begin%>
- <p>If you no longer wish to receive these emails, you can <a href="UNSUBSCRIBE_URL_PLACEHOLDER">unsubscribe here</a>.</p>
-<%
-=end%>
-      <%
-=begin%>
- <p>
-        Echosight Inc.<br>
-        1234 Example Street<br>
-        City, State, Zip Code<br>
-        United States
+      <% if @is_transactional_email %>
+        <p>This is a transactional email related to your account or subscription. You cannot unsubscribe from these emails.</p>
+      <% else %>
+        <p>If you no longer wish to receive these emails, you can <a href="<%= mailkick_unsubscribe_url(@user.email) %>">unsubscribe here</a>.</p>
+      <% end %>
+      <p>
+        This email was sent to <%= @user.email %>.<br>
+        If you did not sign up for this subscription, please get in touch with us at x@echosight.io
       </p>
-<%
-=end%>
-      <%
-=begin%>
- <p>
-        This email was sent to EMAIL_ADDRESS_PLACEHOLDER.<br>
-        If you did not sign up for this subscription, please ignore this email.
-      </p>
-<%
-=end%>
     </div>
   </div>
 </body>

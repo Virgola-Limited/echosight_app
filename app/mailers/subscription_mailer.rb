@@ -3,6 +3,7 @@ class SubscriptionMailer < ApplicationMailer
   def subscription_confirmation(user, subscription)
     @user = user
     @subscription = subscription
+    @is_transactional_email = true
 
     # Fetch the Stripe subscription object
     stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
