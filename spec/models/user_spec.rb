@@ -57,6 +57,12 @@ RSpec.describe User, type: :model do
       user
     end
 
+    let!(:confirmed_user_with_valid_identity_and_enabled_without_subscription) do
+      user = create(:user, confirmed_at: Time.current, enabled_without_subscription: true)
+      create(:identity, user: user, provider: 'twitter2')
+      user
+    end
+
     let!(:confirmed_user_without_identity) do
       create(:user, confirmed_at: Time.current)
     end
@@ -82,7 +88,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns only users who are confirmed, have a valid identity, and an active subscription' do
-      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription])
+      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription, confirmed_user_with_valid_identity_and_enabled_without_subscription])
     end
   end
 

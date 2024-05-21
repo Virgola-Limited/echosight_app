@@ -71,10 +71,14 @@ class User < ApplicationRecord
     confirmed
       .joins(:identity)
       .merge(Identity.valid_identity)
-      .joins(:subscriptions)
-      .merge(Subscription.active)
-      .group('users.id')
-      .having('COUNT(subscriptions.id) > 0')
+      .where(
+        'users.enabled_without_subscription = ? OR EXISTS (
+          SELECT 1
+          FROM subscriptions
+          WHERE subscriptions.user_id = users.id
+          AND subscriptions.active = ?
+        )', true, true
+      )
   }
 
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
