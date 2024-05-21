@@ -25,8 +25,8 @@ class SubscriptionsController < AuthenticatedController
   def create
     result = CreateSubscriptionService.new(current_user, params[:plan_id], params[:stripeToken]).call
     if result[:success]
-      notice = "Subscription created successfully. We will start collecting daily data for your #{ view_context.link_to("public page", public_page_path(handle: current_user.handle)).html_safe }".html_safe
-      redirect_to subscription_path, notice: notice
+      notice = "Subscription created successfully."
+      redirect_to dashboard_index_path, notice: notice
     else
       redirect_to new_subscription_path, alert: "Failed to create subscription. Please contact x@echosight.io for support."
       ExceptionNotifier.notify_exception(result[:error], data: { user: current_user, plan_id: params[:plan_id] })
