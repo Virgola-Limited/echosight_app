@@ -1,6 +1,6 @@
 # config/initializers/stripe.rb
 Stripe.api_key = Rails.application.credentials.dig(:stripe, :secret_key)
-StripeEvent.signing_secret = Rails.application.credentials.stripe[:webhook_secret]
+StripeEvent.signing_secret = Rails.application.credentials.dig(:stripe, :webhook_secret)
 # StripeEvent.configure do |events|
 #   events.subscribe 'charge.failed' do |event|
 #     # Define subscriber behavior based on the event object
