@@ -5,6 +5,7 @@
 # Table name: tweets
 #
 #  id                    :bigint           not null, primary key
+#  status                :string
 #  text                  :text             not null
 #  twitter_created_at    :datetime
 #  created_at            :datetime         not null
@@ -35,6 +36,8 @@ class Tweet < ApplicationRecord
 
   validates :identity_id, presence: true
   validates :text, presence: true
+
+  scope :empty_status, -> { where(status: nil) }
 
   def self.max_age_for_refresh
     2.days.ago
