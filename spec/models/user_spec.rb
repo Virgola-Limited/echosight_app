@@ -49,7 +49,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  fdescribe '.syncable' do
+  describe '.syncable' do
     let!(:confirmed_user_with_valid_identity_and_active_subscription) do
       user = create(:user, confirmed_at: Time.current)
       create(:identity, user: user, provider: 'twitter2')
