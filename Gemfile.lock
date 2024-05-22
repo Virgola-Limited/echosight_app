@@ -394,8 +394,8 @@ GEM
       ffi (~> 1.0)
     rdoc (6.6.0)
       psych (>= 4.0.0)
-    redis (5.0.8)
-      redis-client (>= 0.17.0)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
     redis-client (0.22.2)
       connection_pool
     regexp_parser (2.8.3)
@@ -568,7 +568,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-mini-profiler
   rails (~> 7.1.1)
-  redis (>= 4.0.1)
+  redis
   rspec-rails (~> 6.1.0)
   rubocop
   sassc
