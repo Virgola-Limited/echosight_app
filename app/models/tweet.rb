@@ -37,6 +37,8 @@ class Tweet < ApplicationRecord
   validates :identity_id, presence: true
   validates :text, presence: true
 
+  scope :empty_status, -> { where(status: nil) }
+
   def self.max_age_for_refresh
     2.days.ago
   end

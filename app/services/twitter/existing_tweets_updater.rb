@@ -21,7 +21,7 @@ module Twitter
     private
 
     def fetch_and_process_tweets
-      expected_tweets = Tweet.where(api_batch_id: @api_batch_id, identity_id: user.identity.id).order(:id)
+      expected_tweets = Tweet.empty_status.where(api_batch_id: @api_batch_id, identity_id: user.identity.id).order(:id)
       min_tweet, max_tweet = expected_tweets.first, expected_tweets.last
 
       if min_tweet && max_tweet
