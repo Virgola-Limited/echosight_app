@@ -76,13 +76,17 @@ RSpec.configure do |config|
 
   Capybara.register_driver :selenium_chrome_headless do |app|
     options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument('--headless') if ENV['HEADLESS']
+    options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end
-
-  Capybara.javascript_driver = :selenium_chrome_headless
-  Capybara.default_driver = :selenium_chrome_headless
+  if ENV['HEADLESS']
+    driver = :selenium_chrome_headless
+  else
+    driver = :selenium_chrome
+  end
+  Capybara.javascript_driver = driver
+  Capybara.default_driver = driver
   # Capybara.default_driver = :selenium
 
   config.include Capybara::DSL, type: :feature
