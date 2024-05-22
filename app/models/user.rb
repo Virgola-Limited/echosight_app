@@ -66,7 +66,7 @@ class User < ApplicationRecord
     delegate method, to: :identity, allow_nil: true
   end
 
-  after_create :enqueue_create_stripe_customer
+  after_create :subscribe_to_all_lists, :enqueue_create_stripe_customer
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :syncable, -> {
@@ -170,5 +170,11 @@ class User < ApplicationRecord
 
   def enqueue_create_stripe_customer
     CreateStripeCustomerWorkerJob.perform_async(self.id)
+  end
+
+  def subscribe_to_all_lists
+    MAILKICK_SUBSCRIPTION_LISTS.each do |list|
+      Mailkick::Subscription.create!(subscriber: self, list: list)
+    end
   end
 end

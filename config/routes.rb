@@ -2,18 +2,23 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  mount StripeEvent::Engine, at: '/stripe/webhook'
-
-  resources :dashboard, only: :index
-  root 'dashboard#index'
-
+  #########################################
+  # admin
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
   authenticate :admin_user do
     mount Sidekiq::Web => '/sidekiq'
   end
+  #########################################
+  mount StripeEvent::Engine, at: '/stripe/webhook'
 
+  resources :dashboard, only: :index
+  root 'dashboard#index'
+
+
+
+  resource :email_subscription, only: [:edit, :update]
   get 'p/:handle', to: 'public_pages#show', as: :public_page
 
   resources :single_message, only: :index
