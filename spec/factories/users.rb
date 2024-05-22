@@ -61,5 +61,11 @@ FactoryBot.define do
     trait :with_identity do
       association :identity
     end
+
+    trait :with_subscription do
+      after(:create) do |user|
+        create(:subscription, user: user)
+      end
+    end
   end
 end
