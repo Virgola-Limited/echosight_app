@@ -48,10 +48,6 @@ class PublicPageService < Services::Base
     UserTwitterDataUpdate.recent_data(page_user.identity).count < 2
   end
 
-  def owns_page
-    current_user&.id == page_user&.id
-  end
-
   def public_page_data
     cache_key = cache_key_for_user(page_user)
 
@@ -84,7 +80,6 @@ class PublicPageService < Services::Base
       tweet_count_over_available_time_period:,
       tweets_change_over_available_time_period:,
       user:,
-      owns_page:,
     )
   end
 

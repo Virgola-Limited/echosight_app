@@ -7,7 +7,6 @@ class PublicPagesController < ApplicationController
     if params[:handle] == 'demo' && current_user&.identity.present?
       redirect_to public_page_path(current_user.identity.handle) and return
     end
-
     @public_page_data = PublicPageService.call(handle: params[:handle], current_user: current_or_guest_user, current_admin_user: current_admin_user)
     set_flash_message
 
@@ -17,29 +16,30 @@ class PublicPagesController < ApplicationController
   private
 
   def set_flash_message
-    Rails.logger.debug('paul' + @public_page_data.demo?.inspect)
+    # Rails.logger.debug('paul demo' + @public_page_data.demo?.inspect)
+
     if @public_page_data.demo?
-      # handle logged out user on demo page
       if current_or_guest_user.guest?
         link = view_context.link_to('Sign up', new_user_registration_path).html_safe
+        flash.now[:notice] = "This is a demo page showing how your public page could look. #{link} to get your own!".html_safe if link
       else
-        unless current_or_guest_user.active_subscription?
-          link = view_context.link_to('Subscribe', new_subscription_path).html_safe
+        unless current_or_guest_user.user_should_be_syncing?
+          link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
+          flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
         end
-
       end
-      flash.now[:notice] = "This is a demo page showing how your public page could look. #{link} to get your own!".html_safe if link
-      return
+    else
+      if current_or_guest_user.guest?
+        link = view_context.link_to('Sign up', new_user_registration_path).html_safe
+        flash.now[:notice] = "This is a demo page showing how your public page could look. #{link} to get your own!".html_safe if link
+      else
+        unless current_or_guest_user.user_should_be_syncing?
+          link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
+          flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
+        end
+      end
     end
 
     # TODO: handle public page where data is lacking for logged out users
-
-    # handle logged in user that isnt set up properly
-    if @public_page_data.owns_page && !current_or_guest_user.user_should_be_syncing?
-      link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
-      flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
-      return
-    end
-
   end
 end
