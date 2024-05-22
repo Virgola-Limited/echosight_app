@@ -35,6 +35,9 @@ RSpec.feature 'Devise Emails', type: :feature do
     expect(email.to).to include(user.email)
     expect(email.subject).to eq('Echosight Password Reset Instructions')
     expect(email.body.encoded).to include('Reset Your Password')
+    # Fix later
+    # p (email.body)
+    # expect_transactional_email(email)
   end
 
   scenario 'sends an unlock instructions email' do
