@@ -267,6 +267,8 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mailkick (1.3.0)
+      activesupport (>= 6.1)
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
@@ -564,6 +566,7 @@ DEPENDENCIES
   htmlbeautifier
   jbuilder
   launchy
+  mailkick
   omniauth-rails_csrf_protection
   omniauth-twitter2
   paper_trail
