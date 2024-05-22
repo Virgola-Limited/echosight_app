@@ -74,16 +74,8 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
       context 'when there is an missing tweet' do
         fit 'handles mismatch by notifying an exception' do
           VCR.use_cassette('Twitter__ExistingTweetsUpdater_missing_tweet') do
-            expect(Notifications::SlackNotifier).to receive(:call).with(
-              hash_including(
-                message: satisfy { |msg|
-                  msg.match(/Tweet count mismatch for user loftwah/) &&
-                  msg.match(/Missing: \[1782676620073177464\]/)
-                },
-                channel: :errors
-              )
-            )
-            service.call
+            expect { service.call }.to change { Tweet.where(status: 'potentially_deleted').count }.by(1)
+            expect(Tweet.find(1782676620073177464)).to have_attributes(status: 'potentially_deleted')
           end
         end
       end

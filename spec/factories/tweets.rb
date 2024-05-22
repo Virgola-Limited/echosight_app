@@ -5,6 +5,7 @@
 # Table name: tweets
 #
 #  id                    :bigint           not null, primary key
+#  status                :string
 #  text                  :text             not null
 #  twitter_created_at    :datetime
 #  created_at            :datetime         not null
