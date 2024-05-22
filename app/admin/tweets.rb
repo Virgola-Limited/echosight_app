@@ -68,6 +68,50 @@ ActiveAdmin.register Tweet do
     actions
   end
 
+  show do
+    attributes_table do
+      row :id
+      row :text do |tweet|
+        link_to tweet.text.truncate(50), "https://twitter.com/#{tweet.identity.handle}/status/#{tweet.id}", target: "_blank"
+      end
+      row :identity
+      row :in_reply_to_status_id
+      row :created_at
+      row :updated_at
+      row :twitter_created_at
+
+      Tweet.reflect_on_all_associations(:has_many).each do |association|
+        if association.name == :tweet_metrics
+          row :retweet_count do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.retweet_count || "N/A"
+          end
+          row :quote_count do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.quote_count || "N/A"
+          end
+          row :like_count do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.like_count || "N/A"
+          end
+          row :impression_count do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.impression_count || "N/A"
+          end
+          row :reply_count do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.reply_count || "N/A"
+          end
+          row :bookmark_count do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.bookmark_count || "N/A"
+          end
+          row :user_profile_clicks do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.user_profile_clicks || "N/A"
+          end
+          row :pulled_at do |tweet|
+            tweet.tweet_metrics.order(pulled_at: :desc).first&.pulled_at || "N/A"
+          end
+        end
+      end
+    end
+    active_admin_comments
+  end
+
   controller do
     def scoped_collection
       super.includes :tweet_metrics
