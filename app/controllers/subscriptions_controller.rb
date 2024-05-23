@@ -12,8 +12,6 @@ class SubscriptionsController < AuthenticatedController
   end
 
   def show
-    # blah = "Subscription created successfully. We will start collecting daily data for your #{ view_context.link_to("public page", public_page_path(handle: current_user.handle)).html_safe }".html_safe
-    # flash.now[:notice] = blah
     if @subscription.present?
       @stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
 
