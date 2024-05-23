@@ -19,15 +19,22 @@ if !Rails.env.development? && !Rails.env.test?
     end
   end
 
+
+  Sidekiq.configure_client do |config|
+    config.redis = {
+        url: ENV["REDIS_URL"],
+        ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+    }
+  end
+
   Sidekiq.configure_server do |config|
     # Add your custom middleware to the Sidekiq server middleware chain
     config.server_middleware do |chain|
       chain.add Sidekiq::ExceptionNotificationMiddleware
     end
 
-    # SSL verification mode configuration for Redis
     config.redis = {
-      url: ENV['REDIS_URL'], # Assuming you have your Redis URL in this ENV var
+      url: ENV["REDIS_URL"],
       ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
     }
 
