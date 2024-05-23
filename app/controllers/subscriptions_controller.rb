@@ -3,6 +3,12 @@ class SubscriptionsController < AuthenticatedController
 
 
   def new
+    @subscription = current_user.subscriptions.active.first
+
+    if @subscription.present?
+      redirect_to subscription_path(@subscription)
+    end
+
     @products = Stripe::Product.list(active: true).select do |product|
       product.metadata['admin'] != 'true'
     end.map do |product|
@@ -12,12 +18,14 @@ class SubscriptionsController < AuthenticatedController
   end
 
   def show
-    if @subscription.present?
-      @stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
-
-      @stripe_product = Stripe::Product.retrieve(@stripe_subscription.items.data[0].price.product)
-      @stripe_invoices = Stripe::Invoice.list(customer: @stripe_subscription.customer, subscription: @subscription.stripe_subscription_id)
+    unless @subscription.present?
+      redirect_to new_subscription_path
     end
+
+    @stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
+
+    @stripe_product = Stripe::Product.retrieve(@stripe_subscription.items.data[0].price.product)
+    @stripe_invoices = Stripe::Invoice.list(customer: @stripe_subscription.customer, subscription: @subscription.stripe_subscription_id)
   end
 
   def create
