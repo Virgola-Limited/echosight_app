@@ -1,5 +1,5 @@
 ActiveAdmin.register UserTwitterDataUpdate do
-  actions :index, :show  # Makes the resource read-only
+  actions :index, :show, :delete  # Makes the resource read-only
 
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
 

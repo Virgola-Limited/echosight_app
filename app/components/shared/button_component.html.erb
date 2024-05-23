@@ -1,6 +1,6 @@
 <% # Consider replacing with <%- link_to @text, @url, class: "#{classes}", data: { turbo: false }, method: :get %>
 
-<%= button_to @url, data: { turbo: false } do %>
+<%= button_to @url, method: @method , data: { turbo: false } do %>
   <button type="submit" class="<%=classes %>">
     <%= @text %>
   </button>

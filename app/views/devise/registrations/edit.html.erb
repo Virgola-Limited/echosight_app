@@ -1,6 +1,6 @@
-<div class="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
+<div class="flex flex-col items-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
   <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">My Profile &amp; Settings</h2>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Profile</h2>
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
@@ -42,10 +42,5 @@
       </div>
     <% end %>
 
-    <div class="mb-4">
-      <%= link_to "Cancel my account", registration_path(resource_name),
-    data: { confirm: "Are you sure?" }, method: :delete,
-    class: 'text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-600' %>
-    </div>
   </div>
 </div>

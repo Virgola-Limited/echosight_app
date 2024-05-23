@@ -1,0 +1,44 @@
+class SubscriptionsController < AuthenticatedController
+  before_action :set_user_subscription, only: [:show]
+
+
+  def new
+    @products = Stripe::Product.list(active: true).select do |product|
+      product.metadata['admin'] != 'true'
+    end.map do |product|
+      prices = Stripe::Price.list(product: product.id, active: true)
+      OpenStruct.new(id: product.id, name: product.name, description: product.description, prices: prices.data)
+    end
+  end
+
+  def show
+    # blah = "Subscription created successfully. We will start collecting daily data for your #{ view_context.link_to("public page", public_page_path(handle: current_user.handle)).html_safe }".html_safe
+    # flash.now[:notice] = blah
+    if @subscription.present?
+      @stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
+
+      @stripe_product = Stripe::Product.retrieve(@stripe_subscription.items.data[0].price.product)
+      @stripe_invoices = Stripe::Invoice.list(customer: @stripe_subscription.customer, subscription: @subscription.stripe_subscription_id)
+    end
+  end
+
+  def create
+    result = CreateSubscriptionService.new(current_user, params[:plan_id], params[:stripeToken]).call
+    if result[:success]
+      notice = "Subscription created successfully."
+      redirect_to dashboard_index_path, notice: notice
+    else
+      redirect_to new_subscription_path, alert: "Failed to create subscription. Please contact x@echosight.io for support."
+      ExceptionNotifier.notify_exception(result[:error], data: { user: current_user, plan_id: params[:plan_id] })
+    end
+  end
+
+  private
+
+  def set_user_subscription
+    @subscription = current_user.subscriptions.active.first
+    unless @subscription
+      redirect_to new_subscription_path, notice: 'Setup your subscription below to enable your public page'
+    end
+  end
+end

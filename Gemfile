@@ -41,6 +41,7 @@ gem 'devise', '~> 4.9'
 gem 'devise_invitable'
 gem 'exception_notification'
 gem 'fastimage'
+gem 'mailkick'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'paper_trail'
@@ -53,6 +54,7 @@ gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs'
 gem 'slack-notifier'
 gem 'stripe'
+gem 'stripe_event'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
@@ -84,6 +86,7 @@ group :development do
   gem 'binding_of_caller'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'guard-rspec', require: false
+  gem 'terminal-notifier'
   gem 'rack-mini-profiler'
   gem 'rubocop'
   gem 'web-console'

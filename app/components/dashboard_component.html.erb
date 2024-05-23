@@ -1,17 +1,45 @@
-<% if !current_user.connected_to_twitter? || current_user.email.nil? %>
+<!--
+
+Would the steps be:
+Choose subscription: monthly / yearly (small print request trial)
+After payment connect twitter
+Await email confirming we have enough data or check back later?
+
+
+Yep 1. is perfect
+2. is perfect
+3. Do both? Email and a notice to say check back (with an explanation or link to how it works and what to expect).
+
+-->
+<div class="flex flex-col items-center">
+<% if show_steps_to_complete_message? %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
     To start leveraging the full capabilities of Echosight, please complete the steps below:
   </div>
 <% end %>
-<% if show_waiting_message? %>
-  <%= render Shared::HeadingComponent.new(text: 'When can I see my public page?', heading_type: :h3) %>
-  <p class="paragraph-base">Thanks for connecting your Twitter/X account. In order to show you your public page we need at least 3 days, ideally 7, of data from Twitter.</p>
-  <p class="paragraph-base">While you wait, why dont you check out our <%= link_to "demo page", public_page_path(:demo) %> to see what your public page will look like.</p>
-  </p>
+
+<% if show_subscription_message? %>
+  <%= render ContentBoxComponent.new do %>
+    <%= render Shared::HeadingComponent.new(text: 'Subscribe', heading_type: :h2) %>
+    <p class="paragraph-base">
+      Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.
+    </p>
+    <%= render Shared::ButtonComponent.new(text: "Subscribe", url: subscription_path, method: :get) %>
+  <% end %>
 <% end %>
 
-<% if show_connect_to_twiter_message? %>
-  <%= render Shared::HeadingComponent.new(text: 'Steps to complete', heading_type: :h3) %>
+<% if show_waiting_message? %>
+  <%= render ContentBoxComponent.new do %>
+    <%= render Shared::HeadingComponent.new(text: 'When can I see my public page?', heading_type: :h2) %>
+    <p class="paragraph-base">Your public page will start to show data after 1 day. It will look it's best after 14 days when we can compare this week to the previous one.</p>
+    <p class="paragraph-base">Regardless of this you are welcome to take a look at your <%= link_to "public page", public_page_path(handle: current_user.handle) %> at any time.</p>
+    </p>
+  <% end %>
+<% end %>
+
+<% if show_connect_to_twitter_message? %>
+<%= render ContentBoxComponent.new do %>
+  <%= render Shared::HeadingComponent.new(text: 'Steps to complete', heading_type: :h2) %>
     <p class="paragraph-base">To start collecting data from Twitter/X to generate your public page, please connect your Twitter/X account.</p>
     <p>
       <%= button_to helpers.omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
@@ -21,12 +49,16 @@
       <% end %>
     </p>
 <% end %>
+<% end %>
 
 <% if show_happy_message? %>
-  <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h3) %>
-  <p class="paragraph-base">You are connected to Twitter/X and we are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
-  <% if false %>
-    <% render Shared::HeadingComponent.new(text: 'Next steps', heading_type: :h4) %>
-    <p class="paragraph-base">Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+  <%= render ContentBoxComponent.new do %>
+    <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h2) %>
+    <p class="paragraph-base">You are connected to Twitter/X and we are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+    <% if false %>
+      <% render Shared::HeadingComponent.new(text: 'Next steps', heading_type: :h4) %>
+      <p class="paragraph-base">Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+    <% end %>
   <% end %>
 <% end %>
+</div>

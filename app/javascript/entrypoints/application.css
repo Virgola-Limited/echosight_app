@@ -71,3 +71,18 @@ body {
   justify-content: center; /* Horizontally center the content, if needed */
   /* Add more styling here as needed */
 }
+
+/****************************************************
+ * Stripe Elements styles
+ ****************************************************/
+
+ :root {
+  --stripe-color: #1F2937; /* Tailwind's gray-900 */
+  --stripe-placeholder-color: #9CA3AF; /* A lighter gray, you can adjust this */
+}
+
+/* Dark mode variables */
+[data-theme='dark'] {
+  --stripe-color: #D1D5DB; /* Tailwind's gray-300 */
+  --stripe-placeholder-color: #4B5563; /* A darker gray for placeholder in dark mode, adjust as needed */
+}

@@ -4,18 +4,19 @@ class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
   include Cacheable
 
-  attr_reader :current_admin_user, :current_user, :user, :handle
+  attr_reader :current_admin_user, :current_user, :page_user, :handle
+  alias_method :user, :page_user
 
   def initialize(handle:, current_user: nil, current_admin_user: nil)
     @handle = handle
     @current_user = current_user
     identity = Identity.find_by_handle(handle)
-    @user = identity.user if identity.present?
+    @page_user = identity.user if identity.present?
     @current_admin_user = current_admin_user
   end
 
   def call
-    @user = current_user if @user.nil? && (handle == 'demo' && !current_user.guest?)
+    @page_user = current_user if @page_user.nil? && (handle == 'demo' && !current_user.guest?)
     result = determine_public_page_status
     case result.status
     when :demo
@@ -29,7 +30,7 @@ class PublicPageService < Services::Base
   Result = Struct.new(:status, :message, :redirect_path, keyword_init: true)
 
   def show_public_page_demo?
-    user&.identity.nil?
+    page_user&.identity.nil?
   end
 
   # Crap ChatGTP code fix later no need for result object
@@ -44,11 +45,11 @@ class PublicPageService < Services::Base
   private
 
   def not_enough_data?
-    UserTwitterDataUpdate.recent_data(user.identity).count < 2
+    UserTwitterDataUpdate.recent_data(page_user.identity).count < 2
   end
 
   def public_page_data
-    cache_key = cache_key_for_user(user)
+    cache_key = cache_key_for_user(page_user)
 
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       # The block to generate data if cache miss occurs
@@ -78,7 +79,7 @@ class PublicPageService < Services::Base
       days_of_data_in_difference_count:,
       tweet_count_over_available_time_period:,
       tweets_change_over_available_time_period:,
-      user:
+      user:,
     )
   end
 
@@ -232,7 +233,7 @@ class PublicPageService < Services::Base
   end
 
   def twitter_user_metrics_query
-    Twitter::TwitterUserMetricsQuery.new(user)
+    Twitter::TwitterUserMetricsQuery.new(page_user)
   end
 
   def post_counts_query

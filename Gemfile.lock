@@ -267,6 +267,8 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mailkick (1.3.0)
+      activesupport (>= 6.1)
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
@@ -483,6 +485,10 @@ GEM
       railties (>= 6.0.0)
     stringio (3.0.9)
     stripe (10.6.0)
+    stripe_event (2.9.0)
+      activesupport (>= 3.1)
+      stripe (>= 2.8, < 12)
+    terminal-notifier (2.0.0)
     thor (1.3.1)
     timeout (0.4.1)
     turbo-rails (1.5.0)
@@ -560,6 +566,7 @@ DEPENDENCIES
   htmlbeautifier
   jbuilder
   launchy
+  mailkick
   omniauth-rails_csrf_protection
   omniauth-twitter2
   paper_trail
@@ -580,6 +587,8 @@ DEPENDENCIES
   sprockets-rails
   stimulus-rails
   stripe
+  stripe_event
+  terminal-notifier
   turbo-rails
   tzinfo-data
   vcr

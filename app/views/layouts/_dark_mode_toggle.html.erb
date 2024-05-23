@@ -4,27 +4,42 @@
       var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
       var themeToggleBtn = document.getElementById('theme-toggle');
 
+      // Function to update Stripe Element styles based on the theme
+      function updateStripeElementStyles(theme) {
+        var newStyles = {
+          base: {
+            fontSize: '16px',
+            color: theme === 'dark' ? '#D1D5DB' : '#1F2937', // Update to match Tailwind's gray-900 and gray-300
+            '::placeholder': {
+              color: theme === 'dark' ? '#9CA3AF' : '#6B7280', // Adjust placeholder colors as needed
+            },
+          },
+        };
+        card.update({style: newStyles});
+      }
+
       function setThemeFromLocalStorage() {
         var storedTheme = localStorage.getItem('color-theme');
 
-        // Default to dark mode if no preference is stored
         if (!storedTheme) {
           document.documentElement.classList.add('dark');
           themeToggleLightIcon.classList.remove('hidden');
           themeToggleDarkIcon.classList.add('hidden');
           localStorage.setItem('color-theme', 'dark'); // Save default preference
+          updateStripeElementStyles('dark'); // Update Stripe styles for dark mode
           return;
         }
 
-        // Apply stored theme
         if (storedTheme === 'dark') {
           themeToggleLightIcon.classList.remove('hidden');
           themeToggleDarkIcon.classList.add('hidden');
           document.documentElement.classList.add('dark');
+          updateStripeElementStyles('dark'); // Update Stripe styles for dark mode
         } else {
           themeToggleDarkIcon.classList.remove('hidden');
           themeToggleLightIcon.classList.add('hidden');
           document.documentElement.classList.remove('dark');
+          updateStripeElementStyles('light'); // Update Stripe styles for light mode
         }
       }
 
@@ -36,6 +51,8 @@
         themeToggleDarkIcon.classList.toggle('hidden');
         themeToggleLightIcon.classList.toggle('hidden');
         localStorage.setItem('color-theme', isDarkMode ? 'light' : 'dark');
+
+        updateStripeElementStyles(isDarkMode ? 'light' : 'dark'); // Update Stripe styles based on new theme
       });
     });
 </script>
