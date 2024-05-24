@@ -1,0 +1,15 @@
+<!-- app/views/feature_requests/index.html.erb -->
+<%= form_with(model: @new_feature_request, local: true) do |form| %>
+  <%= form.text_area :description, placeholder: 'Enter feature request' %>
+  <%= form.submit 'Submit' %>
+<% end %>
+
+<ul>
+  <% @feature_requests.each do |feature_request| %>
+    <li>
+      <%= feature_request.description %>
+      <%= link_to 'Upvote', votes_path(votable_type: 'FeatureRequest', votable_id: feature_request.id), method: :post %>
+      (Votes: <%= feature_request.votes.count %>)
+    </li>
+  <% end %>
+</ul>

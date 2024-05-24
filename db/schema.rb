@@ -47,6 +47,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_033057) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bug_reports", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "feature_requests", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider"
     t.string "uid"
@@ -232,6 +242,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_033057) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "votable_type", null: false
+    t.bigint "votable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_votes_on_user_id"
+    t.index ["votable_type", "votable_id"], name: "index_votes_on_votable"
+  end
+
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
   add_foreign_key "sent_emails", "users"
@@ -243,4 +263,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_05_033057) do
   add_foreign_key "user_settings", "users"
   add_foreign_key "user_twitter_data_updates", "api_batches"
   add_foreign_key "user_twitter_data_updates", "identities"
+  add_foreign_key "votes", "users"
 end

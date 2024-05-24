@@ -1,0 +1,15 @@
+<!-- app/views/bug_reports/index.html.erb -->
+<%= form_with(model: @new_bug_report, local: true) do |form| %>
+  <%= form.text_area :description, placeholder: 'Enter bug report' %>
+  <%= form.submit 'Submit' %>
+<% end %>
+
+<ul>
+  <% @bug_reports.each do |bug_report| %>
+    <li>
+      <%= bug_report.description %>
+      <%= link_to 'Upvote', votes_path(votable_type: 'BugReport', votable_id: bug_report.id), method: :post %>
+      (Votes: <%= bug_report.votes.count %>)
+    </li>
+  <% end %>
+</ul>
