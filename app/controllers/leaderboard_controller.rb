@@ -1,4 +1,3 @@
-# app/controllers/leaderboard_controller.rb
 class LeaderboardController < ApplicationController
   def tweets
     @tweets = Tweet.joins(:tweet_metrics)
@@ -29,22 +28,40 @@ class LeaderboardController < ApplicationController
       end
     end
 
-    @users = Identity.joins(tweets: :tweet_metrics)
+    Rails.logger.info "Start date: #{start_date}"
+
+    subquery = Tweet.joins(:tweet_metrics)
+                    .where('tweet_metrics.created_at >= ?', start_date)
+                    .group('tweets.identity_id')
+                    .select('tweets.identity_id,
+                             COALESCE(SUM(tweet_metrics.impression_count), 0) AS total_impressions,
+                             COALESCE(SUM(tweet_metrics.retweet_count), 0) AS total_retweets,
+                             COALESCE(SUM(tweet_metrics.like_count), 0) AS total_likes,
+                             COALESCE(SUM(tweet_metrics.quote_count), 0) AS total_quotes,
+                             COALESCE(SUM(tweet_metrics.reply_count), 0) AS total_replies,
+                             COALESCE(SUM(tweet_metrics.bookmark_count), 0) AS total_bookmarks')
+
+    @users = Identity.joins("LEFT JOIN (#{subquery.to_sql}) AS tweet_data ON tweet_data.identity_id = identities.id")
                      .joins('LEFT JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
-                     .select('identities.*,
-                                SUM(tweet_metrics.impression_count) AS total_impressions,
-                                SUM(tweet_metrics.retweet_count) AS total_retweets,
-                                SUM(tweet_metrics.like_count) AS total_likes,
-                                SUM(tweet_metrics.quote_count) AS total_quotes,
-                                SUM(tweet_metrics.reply_count) AS total_replies,
-                                SUM(tweet_metrics.bookmark_count) AS total_bookmarks,
-                                MAX(twitter_user_metrics.followers_count) AS total_followers,
-                                (SUM(tweet_metrics.retweet_count) + SUM(tweet_metrics.like_count) + SUM(tweet_metrics.quote_count) + SUM(tweet_metrics.reply_count) + SUM(tweet_metrics.bookmark_count)) / NULLIF(SUM(tweet_metrics.impression_count), 0) * 100 AS engagement_rate,
-                                MIN(tweet_metrics.created_at) AS date_first_collected')
-                     .group('identities.id')
-                     .order('total_impressions DESC')
+                     .select('identities.id,
+                              identities.handle,
+                              tweet_data.total_impressions,
+                              tweet_data.total_retweets,
+                              tweet_data.total_likes,
+                              tweet_data.total_quotes,
+                              tweet_data.total_replies,
+                              tweet_data.total_bookmarks,
+                              MAX(twitter_user_metrics.followers_count) AS total_followers,
+                              (COALESCE(tweet_data.total_retweets, 0) + COALESCE(tweet_data.total_likes, 0) + COALESCE(tweet_data.total_quotes, 0) + COALESCE(tweet_data.total_replies, 0) + COALESCE(tweet_data.total_bookmarks, 0)) / NULLIF(COALESCE(tweet_data.total_impressions, 0), 0) * 100 AS engagement_rate')
+                     .where('tweet_data.total_impressions > 0')
+                     .group('identities.id, identities.handle, tweet_data.total_impressions, tweet_data.total_retweets, tweet_data.total_likes, tweet_data.total_quotes, tweet_data.total_replies, tweet_data.total_bookmarks')
+                     .order('tweet_data.total_impressions DESC')
                      .limit(50)
 
-    @users = @users.where('tweet_metrics.created_at >= ?', start_date) if start_date
+    @users.each do |user|
+      Rails.logger.info "User: #{user.handle}, Impressions: #{user.total_impressions}"
+    end
+
+    render :users
   end
 end
