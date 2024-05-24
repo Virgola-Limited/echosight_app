@@ -1,14 +1,7 @@
 class LeaderboardController < ApplicationController
   def tweets
-    @tweets = Tweet.joins(:tweet_metrics)
-                   .select('tweets.*, tweet_metrics.impression_count, tweet_metrics.retweet_count, tweet_metrics.like_count, tweet_metrics.quote_count, tweet_metrics.reply_count, tweet_metrics.bookmark_count')
-                   .order('tweet_metrics.impression_count DESC')
-                   .limit(50)
-  end
-
-  def users
     period = params[:period] || '7_days'
-    
+
     start_date = case period
                  when 'today'
                    Time.current.beginning_of_day
@@ -27,9 +20,41 @@ class LeaderboardController < ApplicationController
     # Check if there are any tweets from today
     if period == 'today'
       tweets_today = Tweet.where('created_at >= ?', Time.current.beginning_of_day)
-      if tweets_today.empty?
-        start_date = 1.day.ago.beginning_of_day
-      end
+      start_date = 1.day.ago.beginning_of_day if tweets_today.empty?
+    end
+
+    Rails.logger.info "Start date: #{start_date}"
+
+    @tweets = Tweet.joins(:tweet_metrics)
+                   .joins(:identity)
+                   .where('tweet_metrics.created_at >= ?', start_date)
+                   .select('tweets.*, identities.handle, tweet_metrics.impression_count, tweet_metrics.retweet_count, tweet_metrics.like_count, tweet_metrics.quote_count, tweet_metrics.reply_count, tweet_metrics.bookmark_count')
+                   .order('tweet_metrics.impression_count DESC')
+                   .limit(50)
+  end
+
+  def users
+    period = params[:period] || '7_days'
+
+    start_date = case period
+                 when 'today'
+                   Time.current.beginning_of_day
+                 when '7_days'
+                   7.days.ago
+                 when '28_days'
+                   28.days.ago
+                 when '3_months'
+                   3.months.ago
+                 when '1_year'
+                   1.year.ago
+                 else
+                   7.days.ago
+                 end
+
+    # Check if there are any tweets from today
+    if period == 'today'
+      tweets_today = Tweet.where('created_at >= ?', Time.current.beginning_of_day)
+      start_date = 1.day.ago.beginning_of_day if tweets_today.empty?
     end
 
     Rails.logger.info "Start date: #{start_date}"
