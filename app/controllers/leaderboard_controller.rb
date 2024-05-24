@@ -7,7 +7,9 @@ class LeaderboardController < ApplicationController
   end
 
   def users
-    start_date = case params[:period]
+    period = params[:period] || '7_days'
+    
+    start_date = case period
                  when 'today'
                    Time.current.beginning_of_day
                  when '7_days'
@@ -18,10 +20,12 @@ class LeaderboardController < ApplicationController
                    3.months.ago
                  when '1_year'
                    1.year.ago
+                 else
+                   7.days.ago
                  end
 
     # Check if there are any tweets from today
-    if params[:period] == 'today'
+    if period == 'today'
       tweets_today = Tweet.where('created_at >= ?', Time.current.beginning_of_day)
       if tweets_today.empty?
         start_date = 1.day.ago.beginning_of_day
