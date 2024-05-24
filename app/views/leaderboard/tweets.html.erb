@@ -1,12 +1,30 @@
-<!-- app/views/leaderboard/tweets.html.erb -->
 <h1 class="text-xl text-gray-300 p-4">Tweet Leaderboard</h1>
+
+<ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+  <li class="mr-2">
+    <%= link_to 'Today', leaderboard_tweets_path(period: 'today'), class: "inline-block p-4 #{params[:period] == 'today' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
+  </li>
+  <li class="mr-2">
+    <%= link_to 'Last 7 Days', leaderboard_tweets_path(period: '7_days'), class: "inline-block p-4 #{params[:period].nil? || params[:period] == '7_days' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
+  </li>
+  <li class="mr-2">
+    <%= link_to 'Last 28 Days', leaderboard_tweets_path(period: '28_days'), class: "inline-block p-4 #{params[:period] == '28_days' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
+  </li>
+  <li class="mr-2">
+    <%= link_to 'Last 3 Months', leaderboard_tweets_path(period: '3_months'), class: "inline-block p-4 #{params[:period] == '3_months' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
+  </li>
+  <li class="mr-2">
+    <%= link_to 'Last 1 Year', leaderboard_tweets_path(period: '1_year'), class: "inline-block p-4 #{params[:period] == '1_year' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
+  </li>
+</ul>
 
 <div class="flex flex-col space-y-4 p-4">
   <div class="overflow-x-auto">
     <table class="min-w-full bg-gray-800 text-gray-300 text-sm">
       <thead class="bg-gray-700 text-gray-400">
         <tr>
-          <th class="px-4 py-2 text-left">Tweet ID</th>
+          <th class="px-4 py-2 text-left">Rank</th>
+          <th class="px-4 py-2 text-left">Owner</th>
           <th class="px-4 py-2 text-left">Text</th>
           <th class="px-4 py-2 text-left">Impressions</th>
           <th class="px-4 py-2 text-left">Retweets</th>
@@ -17,17 +35,27 @@
         </tr>
       </thead>
       <tbody class="bg-gray-900">
-        <% @tweets.each do |tweet| %>
-          <% metrics = tweet.tweet_metrics.first %>
+        <% @tweets.each_with_index do |tweet, index| %>
           <tr class="border-b border-gray-700">
-            <td class="px-4 py-2"><%= tweet.id %></td>
+            <td class="px-4 py-2">
+              <% if index == 0 %>
+                <span class="text-yellow-500">🥇 <%= index + 1 %></span>
+              <% elsif index == 1 %>
+                <span class="text-gray-500">🥈 <%= index + 1 %></span>
+              <% elsif index == 2 %>
+                <span class="text-orange-500">🥉 <%= index + 1 %></span>
+              <% else %>
+                <%= index + 1 %>
+              <% end %>
+            </td>
+            <td class="px-4 py-2"><%= tweet.handle %></td>
             <td class="px-4 py-2"><%= tweet.text %></td>
-            <td class="px-4 py-2"><%= metrics.impression_count %></td>
-            <td class="px-4 py-2"><%= metrics.retweet_count %></td>
-            <td class="px-4 py-2"><%= metrics.like_count %></td>
-            <td class="px-4 py-2"><%= metrics.quote_count %></td>
-            <td class="px-4 py-2"><%= metrics.reply_count %></td>
-            <td class="px-4 py-2"><%= metrics.bookmark_count %></td>
+            <td class="px-4 py-2"><%= tweet.impression_count %></td>
+            <td class="px-4 py-2"><%= tweet.retweet_count %></td>
+            <td class="px-4 py-2"><%= tweet.like_count %></td>
+            <td class="px-4 py-2"><%= tweet.quote_count %></td>
+            <td class="px-4 py-2"><%= tweet.reply_count %></td>
+            <td class="px-4 py-2"><%= tweet.bookmark_count %></td>
           </tr>
         <% end %>
       </tbody>
