@@ -15,8 +15,8 @@ class NullUser
     nil
   end
 
-  def user_should_be_syncing?
-    true
+  def syncable?
+    false
   end
 
 end

@@ -162,10 +162,6 @@ class User < ApplicationRecord
     identity&.provider == 'twitter2'
   end
 
-  def user_should_be_syncing?
-    connected_to_twitter? && active_subscription?
-  end
-
   private
 
   def enqueue_create_stripe_customer
