@@ -1,6 +1,12 @@
 <div class="flex flex-col items-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
+    <% if ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive? %>
+    <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-green-300" role="alert">
+      We are currently offering a 90 day free trial for our early adopters. Subscibe now and pay in 90 days.
+    </div>
+    <% end %>
     <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
       <%= render Shared::HeadingComponent.new(text: 'Subscription', heading_type: :h2) %>
+
       <p class="paragraph-base">Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.</p>
     </div>
     <br>
