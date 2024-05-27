@@ -21,11 +21,11 @@ if defined?(ExceptionNotification)
     # Notifiers =================================================================
     unless Rails.env.development? || Rails.env.test?
       # Email notifier sends notifications by email.
-      # config.add_notifier :email, {
-      #   email_prefix: '[ERROR] ',
-      #   sender_address: %{"Chris Toynbee" <chris@echosight.io>},
-      #   exception_recipients: %w{ctoynbee@gmail.com},
-      # }
+      config.add_notifier :email, {
+        email_prefix: '[ERROR] ',
+        sender_address: %{"Chris Toynbee" <chris@echosight.io>},
+        exception_recipients: %w{ctoynbee@gmail.com},
+      }
       config.add_notifier :slack, {
         webhook_url: Rails.application.credentials.slack[:webhook_url][:errors],
         additional_parameters: {
