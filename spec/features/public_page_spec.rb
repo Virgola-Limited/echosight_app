@@ -66,10 +66,27 @@ RSpec.feature 'Public Page Access' do
     expect(page.body).to include(user.name)
     expect(page.body).to include(user.identity.description)
     expect(page.body).to include(user.handle)
+    ##################################
 
+    # Context: when the user does not have a subscription but is enabled_without_subscription
+    user.update(enabled_without_subscription: true)
+    subscription.destroy
+    visit public_page_path(user.handle)
+    expect(page).to have_current_path(public_page_path(user.handle))
+    expect(page.title).to eq("Twitter User's Public Page")
+
+    expect(page).not_to have_text('This is a demo or inactive page showing')
+
+     # Context user is logged out and visiting a public page
+     logout(:user)
+     visit public_page_path(user.handle)
+     expect(page).not_to have_text('This is a demo or inactive page showing')
+    ##################################
 
     # Context: Subscription without Twitter connection
+    subscription = create(:subscription, user: user)
     identity.destroy
+    login_user(user)
     visit public_page_path(user.handle)
     expect(page).to have_current_path(public_page_path(user.handle))
     within('[role="alert"]') do
