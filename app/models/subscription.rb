@@ -48,6 +48,14 @@ class Subscription < ApplicationRecord
   #   'inactive'
   # end
 
+  def self.ransackable_associations(auth_object = nil)
+    ["user"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id"]
+  end
+
   private
 
   def only_one_active_subscription
