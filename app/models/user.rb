@@ -162,6 +162,10 @@ class User < ApplicationRecord
     identity&.provider == 'twitter2'
   end
 
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
+  end
+
   private
 
   def enqueue_create_stripe_customer

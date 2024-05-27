@@ -76,5 +76,7 @@ module EchosightApp
     }
     # Raise delivery errors only in development
     config.action_mailer.raise_delivery_errors = Rails.env.development?
+
+    config.active_job.queue_adapter = :sidekiq
   end
 end
