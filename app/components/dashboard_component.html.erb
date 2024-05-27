@@ -44,7 +44,7 @@ Yep 1. is perfect
 
 <% if show_connect_to_twitter_message? %>
 <%= render ContentBoxComponent.new do %>
-  <%= render Shared::HeadingComponent.new(text: 'Steps to complete', heading_type: :h2) %>
+  <%= render Shared::HeadingComponent.new(text: 'Connect to Twitter/X', heading_type: :h2) %>
     <p class="paragraph-base">To start collecting data from Twitter/X to generate your public page, please connect your Twitter/X account.</p>
     <p>
       <%= button_to helpers.omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
