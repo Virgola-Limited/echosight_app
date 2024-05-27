@@ -15,7 +15,7 @@ Yep 1. is perfect
 <% if show_steps_to_complete_message? %>
   <% if ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive? %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-green-300" role="alert">
-    We are currently offering a 90 day free trial for our early adopters. Subscibe now and pay in 90 days.
+    We are currently offering a 90 day free trial for our early adopters. Subscribe now and pay in 90 days.
   </div>
   <% end %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
@@ -27,7 +27,10 @@ Yep 1. is perfect
   <%= render ContentBoxComponent.new do %>
     <%= render Shared::HeadingComponent.new(text: 'Subscribe', heading_type: :h2) %>
     <p class="paragraph-base">
-      Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.
+      Subscribe to allow us to collect your Twitter data each day in order to show your aggregated Twitter metrics.
+      <% if ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive? %>
+        Subscribing requires a credit card, but we won't charge you until <%= ENV.fetch('TRIAL_PERIOD_DAYS') %> days have passed.<br>
+      <% end %>
     </p>
     <%= render Shared::ButtonComponent.new(text: "Subscribe", url: subscription_path, method: :get) %>
   <% end %>
