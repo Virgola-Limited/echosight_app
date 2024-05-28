@@ -2,62 +2,58 @@ module CustomStripe
   class EventHandler
     def call(event)
       case event.type
-        when 'customer.subscription.created'
-          handle_subscription_created(event.data.object)
-        when 'customer.subscription.paused'
-          handle_subscription_paused(event.data.object)
-        when 'customer.subscription.resumed'
-          handle_subscription_resumed(event.data.object)
-        when 'customer.subscription.updated'
-          handle_subscription_updated(event.data.object)
-        when 'customer.subscription.deleted'
-          handle_subscription_deleted(event.data.object)
-        else
-          Rails.logger.info "Unhandled event type: #{event.type}"
-        end
+      when 'customer.subscription.created'
+        handle_event(event.data.object, 'created')
+      when 'customer.subscription.paused'
+        handle_event(event.data.object, 'paused')
+      when 'customer.subscription.resumed'
+        handle_event(event.data.object, 'resumed')
+      when 'customer.subscription.updated'
+        handle_event(event.data.object, 'updated')
+      when 'customer.subscription.deleted'
+        handle_event(event.data.object, 'deleted')
+      else
+        Rails.logger.info "Unhandled event type: #{event.type}"
+      end
     end
 
     private
 
-    def handle_subscription_updated(subscription)
-      Notifications::SlackNotifier.call(
-        message: "Subscription updated: #{subscription.inspect}"
-      )
-      # user = User.find_by(stripe_subscription_id: subscription.id)
-      # return unless user
+    def handle_event(subscription, action)
+      user = find_user(subscription)
+      product_name = find_product_name(subscription)
 
-      # user.update(
-      #   stripe_status: subscription.status,
-      #   current_period_end: Time.at(subscription.current_period_end).to_datetime
-      # )
+      Notifications::SlackNotifier.call(
+        message: "Subscription #{action}: Product: #{product_name}, User: #{user&.email}"
+      )
+
+      update_user_subscription(user, subscription, action) if user && %w[updated deleted].include?(action)
     end
 
-    def handle_subscription_deleted(subscription)
-      Notifications::SlackNotifier.call(
-        message: "Subscription deleted: #{subscription.inspect}"
-      )
-      # user = User.find_by(stripe_subscription_id: subscription.id)
-      # return unless user
-
-      # user.update(stripe_status: 'canceled')
+    def find_user(subscription)
+      Subscription.find_by(stripe_subscription_id: subscription.id)&.user
     end
 
-    def handle_subscription_resumed(subscription)
-      Notifications::SlackNotifier.call(
-        message: "Subscription resumed: #{subscription.inspect}"
-      )
+    def find_product_name(subscription)
+      item = subscription.items.data.first
+      price = Stripe::Price.retrieve(item.price.id)
+      product = Stripe::Product.retrieve(price.product)
+      product.name
+    rescue StandardError => e
+      Rails.logger.error "Error fetching product name: #{e.message}"
+      "Unknown Product"
     end
 
-    def handle_subscription_paused(subscription)
-      Notifications::SlackNotifier.call(
-        message: "Subscription paused: #{subscription.inspect}"
-      )
-    end
-
-    def handle_subscription_created(subscription)
-      Notifications::SlackNotifier.call(
-        message: "Subscription created: #{subscription.inspect}"
-      )
+    def update_user_subscription(user, subscription, action)
+      user_subscription = user.subscriptions.find_by(stripe_subscription_id: subscription.id)
+      if action == 'updated'
+        user_subscription.update(
+          status: subscription.status,
+          current_period_end: Time.at(subscription.current_period_end).to_datetime
+        )
+      elsif action == 'deleted'
+        user_subscription.update(status: 'canceled')
+      end
     end
   end
 end
