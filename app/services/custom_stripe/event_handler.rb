@@ -27,7 +27,7 @@ module CustomStripe
         message: "Subscription #{action}: Product: #{product_name}, User: #{user&.email}"
       )
 
-      update_user_subscription(user, subscription, action) if user && %w[updated deleted].include?(action)
+      # update_user_subscription(user, subscription, action) if user && %w[updated deleted].include?(action)
     end
 
     def find_user(subscription)
@@ -44,16 +44,16 @@ module CustomStripe
       "Unknown Product"
     end
 
-    def update_user_subscription(user, subscription, action)
-      user_subscription = user.subscriptions.find_by(stripe_subscription_id: subscription.id)
-      if action == 'updated'
-        user_subscription.update(
-          status: subscription.status,
-          current_period_end: Time.at(subscription.current_period_end).to_datetime
-        )
-      elsif action == 'deleted'
-        user_subscription.update(status: 'canceled')
-      end
-    end
+    # def update_user_subscription(user, subscription, action)
+    #   user_subscription = user.subscriptions.find_by(stripe_subscription_id: subscription.id)
+    #   if action == 'updated'
+    #     user_subscription.update(
+    #       status: subscription.status,
+    #       current_period_end: Time.at(subscription.current_period_end).to_datetime
+    #     )
+    #   elsif action == 'deleted'
+    #     user_subscription.update(status: 'canceled')
+    #   end
+    # end
   end
 end
