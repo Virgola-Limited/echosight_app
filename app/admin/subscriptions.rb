@@ -8,10 +8,16 @@ ActiveAdmin.register Subscription do
     column :stripe_price_id
     column :stripe_subscription_id
     column :user_id
+
     actions defaults: true do |subscription|
-      link_to "Public Page", public_page_path(handle: subscription.user.identity.handle), target: "_blank"
+      if subscription.user.identity.present?
+        link_to "Public Page", public_page_path(handle: subscription.user.identity.handle), target: "_blank"
+      else
+        "Not connected to X/Twitter"
+      end
     end
   end
+
   # Additional configurations or customizations if needed
 
 end
