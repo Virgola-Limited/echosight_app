@@ -15,7 +15,7 @@
                 <div class="p-4 border border-gray-200 rounded dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white"><%= product.name %></h3>
                     <label class="flex items-center mt-3 space-x-3">
-                        <input type="radio" name="plan_id" value="<%= price.id %>" class="form-radio h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:check:border-white">
+                        <input type="radio" name="plan_id" value="<%= price.id %>" class="form-radio h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:check:border-white" <%='checked' if @auto_select_product && @auto_select_product.id == product.id %>>
                         <% if price.recurring.present? %>
                             <span class="text-gray-900 dark:text-white"><%= "#{price.unit_amount / 100.0} #{price.currency.upcase} / #{price.recurring.interval}" %></span>
                         <% else %>

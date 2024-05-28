@@ -15,6 +15,8 @@ class SubscriptionsController < AuthenticatedController
       prices = Stripe::Price.list(product: product.id, active: true)
       OpenStruct.new(id: product.id, name: product.name, description: product.description, prices: prices.data)
     end
+
+    @auto_select_product = @products.size == 1 && @products.first.prices.size == 1 ? @products.first : nil
   end
 
   def show
