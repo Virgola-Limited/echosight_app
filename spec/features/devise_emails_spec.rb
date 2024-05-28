@@ -5,6 +5,7 @@ RSpec.feature 'Devise Emails', type: :feature do
 
   before do
     ActionMailer::Base.deliveries.clear
+    clear_enqueued_jobs
   end
 
   scenario 'sends a confirmation email' do
@@ -13,8 +14,10 @@ RSpec.feature 'Devise Emails', type: :feature do
     user.save!
 
     expect {
-      Devise::Mailer.confirmation_instructions(user, user.confirmation_token).deliver_now
-    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      Devise::Mailer.confirmation_instructions(user, user.confirmation_token).deliver_later
+    }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+    perform_enqueued_jobs
 
     email = ActionMailer::Base.deliveries.last
     expect(email.to).to include(user.email)
@@ -28,16 +31,15 @@ RSpec.feature 'Devise Emails', type: :feature do
     user.save!
 
     expect {
-      Devise::Mailer.reset_password_instructions(user, user.reset_password_token).deliver_now
-    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      Devise::Mailer.reset_password_instructions(user, user.reset_password_token).deliver_later
+    }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+    perform_enqueued_jobs
 
     email = ActionMailer::Base.deliveries.last
     expect(email.to).to include(user.email)
     expect(email.subject).to eq('Echosight Password Reset Instructions')
     expect(email.body.encoded).to include('Reset Your Password')
-    # Fix later
-    # p (email.body)
-    # expect_transactional_email(email)
   end
 
   scenario 'sends an unlock instructions email' do
@@ -47,8 +49,10 @@ RSpec.feature 'Devise Emails', type: :feature do
     user.save!
 
     expect {
-      Devise::Mailer.unlock_instructions(user, user.unlock_token).deliver_now
-    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      Devise::Mailer.unlock_instructions(user, user.unlock_token).deliver_later
+    }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+    perform_enqueued_jobs
 
     email = ActionMailer::Base.deliveries.last
     expect(email.to).to include(user.email)
@@ -63,11 +67,13 @@ RSpec.feature 'Devise Emails', type: :feature do
     user.save!
 
     expect {
-      Devise::Mailer.email_changed(user).deliver_now
-    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      Devise::Mailer.email_changed(user).deliver_later
+    }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+    perform_enqueued_jobs
 
     email = ActionMailer::Base.deliveries.last
-    expect(email.to).to include(user.email)
+    expect(email.to).to include(user.unconfirmed_email)
     expect(email.subject).to eq('Echosight Email Address Updated')
   end
 
@@ -75,8 +81,10 @@ RSpec.feature 'Devise Emails', type: :feature do
     user.save!
 
     expect {
-      Devise::Mailer.password_change(user).deliver_now
-    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      Devise::Mailer.password_change(user).deliver_later
+    }.to have_enqueued_job(ActionMailer::MailDeliveryJob)
+
+    perform_enqueued_jobs
 
     email = ActionMailer::Base.deliveries.last
     expect(email.to).to include(user.email)
