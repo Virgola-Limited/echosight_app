@@ -41,8 +41,9 @@ class SubscriptionsController < AuthenticatedController
       notice = "Subscription created successfully."
       redirect_to dashboard_index_path, notice: notice
     else
+      error = result[:error] || StandardError.new("Unknown error: #{result.inspect}")
+      ExceptionNotifier.notify_exception(error, data: { user: current_user, plan_id: params[:plan_id] })
       redirect_to new_subscription_path, alert: "Failed to create subscription. Please contact x@echosight.io for support."
-      ExceptionNotifier.notify_exception(result[:error], data: { user: current_user, plan_id: params[:plan_id] })
     end
   end
 
