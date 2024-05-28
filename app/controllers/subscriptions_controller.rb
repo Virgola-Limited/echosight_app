@@ -29,6 +29,11 @@ class SubscriptionsController < AuthenticatedController
   end
 
   def create
+    if params[:plan_id].blank?
+      redirect_to new_subscription_path, alert: "Please select a subscription plan."
+      return
+    end
+
     result = CreateSubscriptionService.new(current_user, params[:plan_id], params[:stripeToken]).call
     if result[:success]
       notice = "Subscription created successfully."
