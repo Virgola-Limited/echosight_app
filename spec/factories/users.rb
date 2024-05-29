@@ -65,7 +65,7 @@ FactoryBot.define do
 
     trait :with_subscription do
       after(:create) do |user|
-        create(:subscription, user: user)
+        create(:subscription, user:)
       end
     end
   end

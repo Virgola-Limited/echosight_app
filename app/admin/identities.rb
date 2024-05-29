@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveAdmin.register Identity do
   permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data, :uid
 
@@ -34,7 +36,7 @@ ActiveAdmin.register Identity do
     end
 
     actions defaults: true do |identity|
-      link_to "Public Page", public_page_path(handle: identity.handle), target: "_blank"
+      link_to 'Public Page', public_page_path(handle: identity.handle), target: '_blank'
     end
   end
 

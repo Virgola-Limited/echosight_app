@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveAdmin.register Subscription do
   index do
     selectable_column
@@ -11,19 +13,19 @@ ActiveAdmin.register Subscription do
 
     column 'Identity' do |subscription|
       if subscription.user.identity.present?
-        link_to subscription.user.identity.handle, public_page_path(handle: subscription.user.identity.handle), target: "_blank"
+        link_to subscription.user.identity.handle, public_page_path(handle: subscription.user.identity.handle),
+                target: '_blank'
       end
     end
 
     actions defaults: true do |subscription|
       if subscription.user.identity.present?
-        link_to "Public Page", public_page_path(handle: subscription.user.identity.handle), target: "_blank"
+        link_to 'Public Page', public_page_path(handle: subscription.user.identity.handle), target: '_blank'
       else
-        "Not connected to X/Twitter"
+        'Not connected to X/Twitter'
       end
     end
   end
 
   # Additional configurations or customizations if needed
-
 end

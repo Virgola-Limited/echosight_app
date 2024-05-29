@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -53,14 +55,14 @@ RSpec.describe User, type: :model do
   describe '.syncable' do
     let!(:confirmed_user_with_valid_identity_and_active_subscription) do
       user = create(:user, confirmed_at: Time.current)
-      create(:identity, user: user, provider: 'twitter2')
-      create(:subscription, user: user, active: true)
+      create(:identity, user:, provider: 'twitter2')
+      create(:subscription, user:, active: true)
       user
     end
 
     let!(:confirmed_user_with_valid_identity_and_enabled_without_subscription) do
       user = create(:user, confirmed_at: Time.current, enabled_without_subscription: true)
-      create(:identity, user: user, provider: 'twitter2')
+      create(:identity, user:, provider: 'twitter2')
       user
     end
 
@@ -70,26 +72,27 @@ RSpec.describe User, type: :model do
 
     let!(:confirmed_user_with_invalid_identity) do
       user = create(:user, confirmed_at: Time.current)
-      create(:identity, user: user, provider: 'facepalm')
+      create(:identity, user:, provider: 'facepalm')
       user
     end
 
     let!(:confirmed_user_with_valid_identity_but_no_active_subscription) do
       user = create(:user, confirmed_at: Time.current)
-      create(:identity, user: user, provider: 'twitter2')
-      create(:subscription, user: user, active: false)
+      create(:identity, user:, provider: 'twitter2')
+      create(:subscription, user:, active: false)
       user
     end
 
     let!(:unconfirmed_user) do
       user = create(:user, confirmed_at: nil)
-      create(:identity, user: user, provider: 'twitter2')
-      create(:subscription, user: user, active: true)
+      create(:identity, user:, provider: 'twitter2')
+      create(:subscription, user:, active: true)
       user
     end
 
     it 'returns only users who are confirmed, have a valid identity, and an active subscription' do
-      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription, confirmed_user_with_valid_identity_and_enabled_without_subscription])
+      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription,
+                                            confirmed_user_with_valid_identity_and_enabled_without_subscription])
     end
   end
 
@@ -113,7 +116,7 @@ RSpec.describe User, type: :model do
 
       context 'when the user has an identity' do
         context 'when the identity is not valid' do
-          let!(:identity) { create(:identity, user: user, provider: 'facepalm') }
+          let!(:identity) { create(:identity, user:, provider: 'facepalm') }
           let(:user) { create(:user, confirmed_at: Time.current) }
 
           it 'returns false' do
@@ -131,9 +134,9 @@ RSpec.describe User, type: :model do
           end
 
           context 'when the user has an active subscription' do
-            let!(:identity) { create(:identity, user: user)}
+            let!(:identity) { create(:identity, user:) }
             let(:user) { create(:user, confirmed_at: Time.current) }
-            let!(:subscription) { create(:subscription, user: user, active: true) }
+            let!(:subscription) { create(:subscription, user:, active: true) }
 
             it 'returns true' do
               expect(user.syncable?).to be_truthy
@@ -141,7 +144,7 @@ RSpec.describe User, type: :model do
           end
 
           context 'when the user is enabled_without_subscription' do
-            let!(:identity) { create(:identity, user: user)}
+            let!(:identity) { create(:identity, user:) }
             let(:user) { create(:user, confirmed_at: Time.current, enabled_without_subscription: true) }
 
             it 'returns true' do

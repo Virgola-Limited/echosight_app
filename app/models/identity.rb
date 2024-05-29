@@ -40,22 +40,23 @@ class Identity < ApplicationRecord
   validates :uid, presence: true, uniqueness: { scope: :provider }
   validates :handle, uniqueness: true, presence: true
 
-  scope :valid_identity, -> {
-    where(provider: "twitter2")
+  scope :valid_identity, lambda {
+    where(provider: 'twitter2')
   }
-  scope :sorted_by_followers_count, -> {
+  scope :sorted_by_followers_count, lambda {
     joins('LEFT OUTER JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
-    .select('identities.*, COALESCE(MAX(twitter_user_metrics.followers_count), 0) AS max_followers_count')
-    .group('identities.id')
-    .order('max_followers_count DESC')
+      .select('identities.*, COALESCE(MAX(twitter_user_metrics.followers_count), 0) AS max_followers_count')
+      .group('identities.id')
+      .order('max_followers_count DESC')
   }
 
   def self.find_by_handle(handle)
     Identity.where('lower(handle) = ?', handle.downcase)&.first
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["banner_url", "created_at", "description", "handle", "id", "id_value", "image_url", "provider", "uid", "updated_at", "user_id"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[banner_url created_at description handle id id_value image_url provider uid
+       updated_at user_id]
   end
 
   def assign_attributes_from_auth(auth)
@@ -66,7 +67,7 @@ class Identity < ApplicationRecord
   end
 
   def enough_data_for_public_page?
-    user_twitter_data_updates.recent_data(self.id).count > 40
+    user_twitter_data_updates.recent_data(id).count > 40
   end
 
   def page_low_on_recent_data?
@@ -74,6 +75,6 @@ class Identity < ApplicationRecord
   end
 
   def valid_identity?
-    provider == "twitter2"
+    provider == 'twitter2'
   end
 end

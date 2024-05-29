@@ -63,14 +63,14 @@ class User < ApplicationRecord
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
 
-  [:handle, :banner_url, :image_url, :enough_data_for_public_page?, :page_low_on_recent_data?].each do |method|
+  %i[handle banner_url image_url enough_data_for_public_page? page_low_on_recent_data?].each do |method|
     delegate method, to: :identity, allow_nil: true
   end
 
   after_create :subscribe_to_all_lists, :enqueue_create_stripe_customer
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  scope :syncable, -> {
+  scope :syncable, lambda {
     confirmed
       .joins(:identity)
       .merge(Identity.valid_identity)
@@ -86,13 +86,15 @@ class User < ApplicationRecord
 
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_name", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[confirmation_sent_at confirmation_token confirmed_at created_at current_sign_in_at
+       current_sign_in_ip email encrypted_password failed_attempts id id_value last_name last_sign_in_at last_sign_in_ip locked_at name remember_created_at reset_password_sent_at reset_password_token sign_in_count unconfirmed_email unlock_token updated_at]
   end
 
   def active_subscription?
     if subscriptions.active.count > 1
-      ExceptionNotifier.notify_exception(StandardError.new("User has more than one active subscription"), data: { user_id: id })
+      ExceptionNotifier.notify_exception(StandardError.new('User has more than one active subscription'),
+                                         data: { user_id: id })
     end
     subscriptions.active.count.positive?
   end
@@ -154,7 +156,6 @@ class User < ApplicationRecord
     identity.save!
   end
 
-
   def guest?
     !persisted?
   end
@@ -166,12 +167,12 @@ class User < ApplicationRecord
   private
 
   def enqueue_create_stripe_customer
-    CreateStripeCustomerWorkerJob.perform_async(self.id)
+    CreateStripeCustomerWorkerJob.perform_async(id)
   end
 
   def subscribe_to_all_lists
     MAILKICK_SUBSCRIPTION_LISTS.each do |list|
-      Mailkick::Subscription.create!(subscriber: self, list: list)
+      Mailkick::Subscription.create!(subscriber: self, list:)
     end
   end
 end

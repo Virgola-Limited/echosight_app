@@ -37,7 +37,7 @@ module Twitter
           end
 
           engagement_rate = daily_impressions.positive? ? (daily_interactions.to_f / daily_impressions * 100).round(2) : 0
-          { date: date, engagement_rate_percentage: engagement_rate }
+          { date:, engagement_rate_percentage: engagement_rate }
         end
       end
     end
