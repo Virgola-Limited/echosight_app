@@ -43,6 +43,12 @@ class Identity < ApplicationRecord
   scope :valid_identity, -> {
     where(provider: "twitter2")
   }
+  scope :sorted_by_followers_count, -> {
+    joins('LEFT OUTER JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
+    .select('identities.*, COALESCE(MAX(twitter_user_metrics.followers_count), 0) AS max_followers_count')
+    .group('identities.id')
+    .order('max_followers_count DESC')
+  }
 
   def self.find_by_handle(handle)
     Identity.where('lower(handle) = ?', handle.downcase)&.first
