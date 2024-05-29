@@ -16,6 +16,7 @@ ActiveAdmin.register User do
     column "Identity Handle" do |user|
       user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
     end
+    column :vip_since
     actions
   end
 
@@ -38,7 +39,7 @@ ActiveAdmin.register User do
       f.input :name
       f.input :last_name
       f.input :email
-      # Add other inputs here if needed
+      f.input :vip_since
     end
     f.actions
   end

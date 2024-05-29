@@ -5,9 +5,15 @@ ActiveAdmin.register Subscription do
     column :active
     column :created_at
     column :updated_at
-    column :stripe_price_id
-    column :stripe_subscription_id
+    # column :stripe_price_id
+    # column :stripe_subscription_id
     column :user_id
+
+    column 'Identity' do |subscription|
+      if subscription.user.identity.present?
+        link_to subscription.user.identity.handle, public_page_path(handle: subscription.user.identity.handle), target: "_blank"
+      end
+    end
 
     actions defaults: true do |subscription|
       if subscription.user.identity.present?
