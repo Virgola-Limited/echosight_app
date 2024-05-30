@@ -1,3 +1,4 @@
+# app/controllers/user_settings_controller.rb
 class UserSettingsController < AuthenticatedController
   before_action :authenticate_user!
 
@@ -10,9 +11,15 @@ class UserSettingsController < AuthenticatedController
       params[:user_settings].each do |key, value|
         current_user.update_setting(key, value)
       end
-      redirect_to edit_user_settings_path, notice: 'Settings updated successfully.'
+      respond_to do |format|
+        format.json { render json: { message: 'Settings updated successfully.' }, status: :ok }
+        format.html { redirect_to edit_user_settings_path, notice: 'Settings updated successfully.' }
+      end
     else
-      redirect_to edit_user_settings_path, alert: 'No settings provided.'
+      respond_to do |format|
+        format.json { render json: { message: 'No settings provided.' }, status: :unprocessable_entity }
+        format.html { redirect_to edit_user_settings_path, alert: 'No settings provided.' }
+      end
     end
   end
 end
