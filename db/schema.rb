@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_29_235133) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -135,6 +135,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.index ["identity_id"], name: "index_twitter_user_metrics_on_identity_id"
   end
 
+  create_table "user_settings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "key"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_settings_on_user_id"
+  end
+
   create_table "user_twitter_data_updates", force: :cascade do |t|
     t.bigint "identity_id", null: false
     t.datetime "started_at", null: false
@@ -181,6 +190,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.integer "invitations_count", default: 0
     t.string "stripe_customer_id"
     t.boolean "enabled_without_subscription", default: false
+    t.date "vip_since"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -208,6 +218,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"
+  add_foreign_key "user_settings", "users"
   add_foreign_key "user_twitter_data_updates", "api_batches"
   add_foreign_key "user_twitter_data_updates", "identities"
 end

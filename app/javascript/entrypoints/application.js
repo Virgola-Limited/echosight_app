@@ -33,3 +33,4 @@ import "flowbite/dist/flowbite.turbo.js";
 import 'flowbite/dist/flowbite.min.js';
 import ApexCharts from 'apexcharts'
 window.ApexCharts = ApexCharts
+import '../controllers'; // Ensure this line is present

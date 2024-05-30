@@ -13,15 +13,20 @@ module Twitter
         end_date = Date.current
         start_date = end_date - 6.days
 
-        (start_date..end_date).map do |date|
-          tweets_from_date = Tweet.where(identity_id: user.identity.id,
-                                         twitter_created_at: date.beginning_of_day..date.end_of_day)
+        date_range = (start_date..end_date)
 
+        # Load all tweets and their metrics in one go
+        tweets_with_metrics = Tweet.includes(:tweet_metrics)
+                                   .where(identity_id: user.identity.id, twitter_created_at: date_range)
+                                   .order('tweet_metrics.pulled_at ASC')
+
+        date_range.map do |date|
+          daily_tweets = tweets_with_metrics.select { |tweet| tweet.twitter_created_at.to_date == date }
           daily_interactions = 0
           daily_impressions = 0
 
-          tweets_from_date.each do |tweet|
-            first_metric = tweet.tweet_metrics.order(pulled_at: :asc).first
+          daily_tweets.each do |tweet|
+            first_metric = tweet.tweet_metrics.first
             next unless first_metric
 
             interactions = first_metric.retweet_count.to_i + first_metric.quote_count.to_i +
@@ -32,7 +37,7 @@ module Twitter
           end
 
           engagement_rate = daily_impressions.positive? ? (daily_interactions.to_f / daily_impressions * 100).round(2) : 0
-          { date: date, engagement_rate_percentage: engagement_rate }
+          { date:, engagement_rate_percentage: engagement_rate }
         end
       end
     end

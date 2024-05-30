@@ -324,6 +324,8 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
+    pghero (3.5.0)
+      activerecord (>= 6)
     premailer (1.21.0)
       addressable
       css_parser (>= 1.12.0)
@@ -571,6 +573,7 @@ DEPENDENCIES
   omniauth-twitter2
   paper_trail
   pg (~> 1.1)
+  pghero
   premailer-rails
   puma (>= 5.0)
   rack-mini-profiler

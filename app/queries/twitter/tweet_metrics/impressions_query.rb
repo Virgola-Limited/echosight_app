@@ -26,34 +26,24 @@ module Twitter
         percentage_change.round(2)
       end
 
-
       def impression_counts_per_day
-        # Calculate end date and start date based on the current time minus 24 hours.
         end_time = 24.hours.ago.end_of_day
-        start_time = end_time - 6.days
+        start_time = (end_time - 6.days).beginning_of_day
 
-        # Initialize an empty array to store the results
-        results = []
+        tweets_with_metrics = Tweet.includes(:tweet_metrics)
+                                   .where(identity_id: user.identity.id, twitter_created_at: start_time..end_time)
+                                   .order('tweet_metrics.pulled_at ASC')
 
-        # Iterate over each day within the time range.
-        (start_time.to_date..end_time.to_date).each do |date|
-          # Define the time range for the current day.
-          day_start = date.beginning_of_day
-          day_end = date.end_of_day
+        grouped_tweets = tweets_with_metrics.group_by { |tweet| tweet.twitter_created_at.to_date }
 
-          # Retrieve the relevant tweets.
-          tweets_from_date = Tweet.where(identity_id: user.identity.id,
-                                         twitter_created_at: day_start..day_end)
+        (start_time.to_date..end_time.to_date).map do |date|
+          daily_tweets = grouped_tweets[date] || []
+          impressions_sum = daily_tweets.sum do |tweet|
+            tweet.tweet_metrics.first.try(:impression_count) || 0
+          end
 
-          # Sum the impression counts of all tweets for the day.
-          impressions_sum = tweets_from_date.map do |tweet|
-            tweet.tweet_metrics.order(pulled_at: :asc).first.try(:impression_count) || 0
-          end.sum
-
-          # Add the results for this day to the results array.
-          results << { date: date, impression_count: impressions_sum }
+          { date: date, impression_count: impressions_sum }
         end
-        results
       end
 
       def maximum_days_of_data

@@ -32,6 +32,7 @@
 #  sign_in_count                :integer          default(0), not null
 #  unconfirmed_email            :string
 #  unlock_token                 :string
+#  vip_since                    :date
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  invited_by_id                :bigint
@@ -61,15 +62,16 @@ class User < ApplicationRecord
   has_many :tweets, through: :identity
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
+  has_many :user_settings, dependent: :destroy
 
-  [:handle, :banner_url, :image_url, :enough_data_for_public_page?, :page_low_on_recent_data?].each do |method|
+  %i[handle banner_url image_url enough_data_for_public_page? page_low_on_recent_data?].each do |method|
     delegate method, to: :identity, allow_nil: true
   end
 
   after_create :subscribe_to_all_lists, :enqueue_create_stripe_customer
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  scope :syncable, -> {
+  scope :syncable, lambda {
     confirmed
       .joins(:identity)
       .merge(Identity.valid_identity)
@@ -85,15 +87,21 @@ class User < ApplicationRecord
 
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_name", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[confirmation_sent_at confirmation_token confirmed_at created_at current_sign_in_at
+       current_sign_in_ip email encrypted_password failed_attempts id id_value last_name last_sign_in_at last_sign_in_ip locked_at name remember_created_at reset_password_sent_at reset_password_token sign_in_count unconfirmed_email unlock_token updated_at]
   end
 
   def active_subscription?
     if subscriptions.active.count > 1
-      ExceptionNotifier.notify_exception(StandardError.new("User has more than one active subscription"), data: { user_id: id })
+      ExceptionNotifier.notify_exception(StandardError.new('User has more than one active subscription'),
+                                         data: { user_id: id })
     end
     subscriptions.active.count.positive?
+  end
+
+  def setting(key)
+    get_setting_value(key)
   end
 
   def syncable?
@@ -153,7 +161,6 @@ class User < ApplicationRecord
     identity.save!
   end
 
-
   def guest?
     !persisted?
   end
@@ -162,15 +169,53 @@ class User < ApplicationRecord
     identity&.provider == 'twitter2'
   end
 
+  def method_missing(method_name, *arguments, &block)
+    if setting_method?(method_name)
+      key = extract_key_from_method(method_name)
+      get_setting_value(key)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    setting_method?(method_name) || super
+  end
+
+  def update_setting(key, value)
+    setting = user_settings.find_or_initialize_by(key: key.to_s)
+    setting.value = value
+    setting.save!
+  end
+
   private
 
+  def convert_to_boolean(value)
+    return true if value == 'true'
+    return false if value == 'false'
+    value
+  end
+
+  def get_setting_value(key)
+    value = user_settings.find_by(key: key.to_s)&.value || UserSetting.default_value(key.to_s)
+    convert_to_boolean(value)
+  end
+
+  def setting_method?(method_name)
+    method_name.to_s.end_with?('?') && UserSetting::VALID_KEYS.include?(extract_key_from_method(method_name).to_s)
+  end
+
+  def extract_key_from_method(method_name)
+    method_name.to_s.chomp('?')
+  end
+
   def enqueue_create_stripe_customer
-    CreateStripeCustomerWorkerJob.perform_async(self.id)
+    CreateStripeCustomerWorkerJob.perform_async(id)
   end
 
   def subscribe_to_all_lists
     MAILKICK_SUBSCRIPTION_LISTS.each do |list|
-      Mailkick::Subscription.create!(subscriber: self, list: list)
+      Mailkick::Subscription.create!(subscriber: self, list:)
     end
   end
 end

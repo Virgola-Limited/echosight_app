@@ -32,6 +32,7 @@
 #  sign_in_count                :integer          default(0), not null
 #  unconfirmed_email            :string
 #  unlock_token                 :string
+#  vip_since                    :date
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  invited_by_id                :bigint
@@ -64,7 +65,7 @@ FactoryBot.define do
 
     trait :with_subscription do
       after(:create) do |user|
-        create(:subscription, user: user)
+        create(:subscription, user:)
       end
     end
   end
