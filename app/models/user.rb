@@ -101,7 +101,7 @@ class User < ApplicationRecord
   end
 
   def setting(key)
-    user_settings.find_by(key: key.to_s)&.value || UserSetting.default_value(key.to_s)
+    get_setting_value(key)
   end
 
   def syncable?
@@ -192,8 +192,15 @@ class User < ApplicationRecord
 
   private
 
+  def convert_to_boolean(value)
+    return true if value == 'true'
+    return false if value == 'false'
+    value
+  end
+
   def get_setting_value(key)
-    user_settings.find_by(key: key.to_s)&.value || UserSetting.default_value(key.to_s)
+    value = user_settings.find_by(key: key.to_s)&.value || UserSetting.default_value(key.to_s)
+    convert_to_boolean(value)
   end
 
   def setting_method?(method_name)
