@@ -185,9 +185,7 @@ class User < ApplicationRecord
   def update_setting(key, value)
     setting = user_settings.find_or_initialize_by(key: key.to_s)
     setting.value = value
-    # byebug
     setting.save!
-    # need to clear the cache if there is a change
   end
 
   private
