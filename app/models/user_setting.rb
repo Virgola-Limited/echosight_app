@@ -23,14 +23,31 @@ class UserSetting < ApplicationRecord
 
   VALID_KEYS = %w[hide_profile_banner].freeze
 
-  DEFAULT_SETTINGS = {
-    'hide_profile_banner' => 'false',
+  SETTINGS = {
+    'hide_profile_banner' => {
+      default: 'false',
+      description: 'Hide the profile banner on the public page',
+      on_image: '',
+      off_image: ''
+    }
   }.freeze
 
   validates :key, presence: true, uniqueness: { scope: :user_id }, inclusion: { in: VALID_KEYS }
   validates :value, presence: true
 
   def self.default_value(key)
-    DEFAULT_SETTINGS[key]
+    SETTINGS[key][:default]
+  end
+
+  def self.description(key)
+    SETTINGS[key][:description]
+  end
+
+  def self.on_image(key)
+    SETTINGS[key][:on_image]
+  end
+
+  def self.off_image(key)
+    SETTINGS[key][:off_image]
   end
 end
