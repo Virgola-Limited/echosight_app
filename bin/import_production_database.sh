@@ -16,3 +16,4 @@ pg_restore --no-owner -d echosight_app_development latest.dump
 
 # Run any pending migrations
 rails db:migrate
+ruby ../lib/fetch_images.rb
