@@ -1,9 +1,4 @@
 class DemoPublicPageService < Services::Base
-  attr_reader :user
-  def initialize(user:)
-    @user = user
-  end
-
   def call
     follower_info = generate_follower_info
     impression_info = generate_impression_info
@@ -29,7 +24,7 @@ class DemoPublicPageService < Services::Base
       days_of_data_in_recent_count: 3,
       tweet_count_over_available_time_period: 20,
       tweets_change_over_available_time_period: "231 decrease",
-      user: user,
+      user: NullUser.new,
       demo: true
     )
   end

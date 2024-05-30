@@ -20,7 +20,7 @@ class PublicPageService < Services::Base
     result = determine_public_page_status
     case result.status
     when :demo
-      DemoPublicPageService.call(user:)
+      DemoPublicPageService.call
     when :success
       public_page_data
     end
