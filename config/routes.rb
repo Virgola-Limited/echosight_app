@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
   resource :subscription, only: [:new, :create, :show]
+  resource :user_settings, only: [:edit, :update]
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

@@ -61,6 +61,10 @@ class PublicPageComponent <  ApplicationComponent
     end
   end
 
+  def hide_profile_banner?
+    page_user.hide_profile_banner?
+  end
+
   private
 
   def twitter_link
