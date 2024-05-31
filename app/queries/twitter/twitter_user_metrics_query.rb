@@ -12,10 +12,8 @@ module Twitter
       current_period, past_period = time_periods[:current_period], time_periods[:past_period]
       return false unless current_period && past_period
 
-      latest_follower_count = TwitterUserMetric.where(identity_id: user.identity.id)
-                                               .order(date: :desc).first&.followers_count
-      followers_count_period_ago = TwitterUserMetric.where(identity_id: user.identity.id, date: current_period.days.ago.to_date)
-                                                    .last&.followers_count
+      latest_follower_count = metrics.last&.followers_count
+      followers_count_period_ago = metrics.find { |m| m.date == current_period.days.ago.to_date }&.followers_count
 
       return false unless followers_count_period_ago && latest_follower_count
 
@@ -26,10 +24,8 @@ module Twitter
       current_period, past_period = time_periods[:current_period], time_periods[:past_period]
       return false unless current_period && past_period
 
-      followers_count_past = TwitterUserMetric.where(identity_id: user.identity.id, date: past_period.days.ago.to_date)
-                                              .last&.followers_count
-      followers_count_current = TwitterUserMetric.where(identity_id: user.identity.id, date: current_period.days.ago.to_date)
-                                                 .first&.followers_count
+      followers_count_past = metrics.find { |m| m.date == past_period.days.ago.to_date }&.followers_count
+      followers_count_current = metrics.find { |m| m.date == current_period.days.ago.to_date }&.followers_count
 
       return false unless followers_count_past && followers_count_current
 
@@ -37,10 +33,7 @@ module Twitter
     end
 
     def followers_data_for_graph(number_of_days: 7)
-      data = TwitterUserMetric.where(identity_id: @user.identity.id)
-                                  .where('date >= ?', number_of_days.days.ago.to_date)
-                                  .order(date: :asc)
-                                  .pluck(:date, :followers_count)
+      data = metrics.select { |m| m.date >= number_of_days.days.ago.to_date }.map { |m| [m.date, m.followers_count] }
       formatted_data, daily_data_points = format_for_graph(data)
 
       [formatted_data, daily_data_points]
@@ -51,6 +44,10 @@ module Twitter
     end
 
     private
+
+    def metrics
+      @metrics ||= TwitterUserMetric.where(identity_id: user.identity.id).order(date: :asc)
+    end
 
     def format_for_graph(data)
       formatted_data = daily_format(data)
@@ -89,7 +86,7 @@ module Twitter
     end
 
     def time_periods
-      oldest_metric_date = TwitterUserMetric.where(identity_id: user.identity.id).order(date: :asc).limit(1).first&.date
+      oldest_metric_date = metrics.first&.date
       return { current_period: nil, past_period: nil } unless oldest_metric_date
 
       days_since_oldest = (Date.current - oldest_metric_date.to_date).to_i
