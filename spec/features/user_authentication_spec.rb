@@ -55,7 +55,6 @@ RSpec.feature 'User Authentication' do
 
     expect(page).to have_content("If your email is registered with Echosight, you'll get an email with confirmation instructions soon.")
 
-
     # Step 7: Attempt to send confirmation instructions with a valid, unconfirmed email
     visit new_user_confirmation_path
     fill_in 'Email', with: user.email
