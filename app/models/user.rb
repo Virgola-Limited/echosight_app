@@ -144,6 +144,10 @@ class User < ApplicationRecord
     self.email = auth.info.email if email.blank?
   end
 
+  def eligible_for_trial?
+    accepted_invitation? && ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive?
+  end
+
   def guest?
     !persisted?
   end

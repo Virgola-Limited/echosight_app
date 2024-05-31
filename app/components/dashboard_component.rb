@@ -24,7 +24,7 @@ class DashboardComponent < ApplicationComponent
   end
 
   def eligible_for_trial?
-    current_user.accepted_invitation? && ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive?
+    current_user.eligible_for_trial?
   end
 
   private
