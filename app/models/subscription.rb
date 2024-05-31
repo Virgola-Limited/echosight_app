@@ -56,6 +56,10 @@ class Subscription < ApplicationRecord
     ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id"]
   end
 
+  def self.trial_period
+    ENV.fetch('TRIAL_PERIOD_DAYS', 0)
+  end
+
   private
 
   def only_one_active_subscription

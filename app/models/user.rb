@@ -101,6 +101,10 @@ class User < ApplicationRecord
     subscriptions.active.count.positive?
   end
 
+  def accepted_invitation?
+    invitation_accepted_at.present?
+  end
+
   def setting(key)
     get_setting_value(key)
   end

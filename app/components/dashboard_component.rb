@@ -23,6 +23,10 @@ class DashboardComponent < ApplicationComponent
     current_user.connected_to_twitter? && current_user.enough_data_for_public_page? && current_user.active_subscription?
   end
 
+  def eligible_for_trial?
+    current_user.accepted_invitation? && ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive?
+  end
+
   private
 
   attr_reader :current_user
