@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   resource :email_subscription, only: [:edit, :update]
   get 'p/:handle', to: 'public_pages#show', as: :public_page
-
+  get 'track/open/:tracking_id', to: 'tracker#open'
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
   resource :subscription, only: [:new, :create, :show]
