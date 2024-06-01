@@ -26,5 +26,13 @@
 class SentEmail < ApplicationRecord
   belongs_to :user
   validates :recipient, :subject, :body, :tracking_id, :email_type, presence: true
+
+  def self.ransackable_associations(auth_object = nil)
+    ["user"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["body", "created_at", "email_type", "id", "opened", "opened_at", "recipient", "subject", "tracking_id", "updated_at"]
+  end
 end
 
