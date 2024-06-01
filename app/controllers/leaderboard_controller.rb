@@ -28,7 +28,7 @@ class LeaderboardController < ApplicationController
     @tweets = Tweet.joins(:tweet_metrics)
                    .joins(:identity)
                    .where('tweet_metrics.created_at >= ?', start_date)
-                   .select('tweets.*, identities.handle, tweet_metrics.impression_count, tweet_metrics.retweet_count, tweet_metrics.like_count, tweet_metrics.quote_count, tweet_metrics.reply_count, tweet_metrics.bookmark_count')
+                   .select('tweets.*, identities.handle, identities.image_data, tweet_metrics.impression_count, tweet_metrics.retweet_count, tweet_metrics.like_count, tweet_metrics.quote_count, tweet_metrics.reply_count, tweet_metrics.bookmark_count')
                    .order('tweet_metrics.impression_count DESC')
                    .limit(50)
   end
@@ -74,6 +74,7 @@ class LeaderboardController < ApplicationController
                      .joins('LEFT JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
                      .select('identities.id,
                               identities.handle,
+                              identities.image_data,
                               tweet_data.total_impressions,
                               tweet_data.total_retweets,
                               tweet_data.total_likes,
