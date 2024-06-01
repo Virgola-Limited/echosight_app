@@ -7,7 +7,22 @@ module.exports = {
     './node_modules/flowbite/**/*.js'
   ],
   safelist: [
-    // Add any classes here you wish to always include in the final build
+    // 'w-full',
+    // 'px-5',
+    // 'py-3',
+    // 'text-base',
+    // 'font-medium',
+    // 'text-center',
+    // 'text-blue-100',
+    'transition',
+    'duration-150',
+    'ease-in-out',
+    'bg-blue-500',
+    'rounded-lg',
+    'hover:bg-blue-600',
+    'focus:outline-none',
+    'focus:ring-4',
+    'focus:ring-blue-300'
   ],
   darkMode: "class", // or 'media' or false
   theme: {
@@ -37,6 +52,6 @@ module.exports = {
   plugins: [
     require('flowbite/plugin')({
       charts: true,
-  }),
+    }),
   ],
 }
