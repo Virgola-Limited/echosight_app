@@ -48,7 +48,10 @@
                 <%= index + 1 %>
               <% end %>
             </td>
-            <td class="px-4 py-2"><%= tweet.handle %></td>
+            <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <img src="<%= tweet.image_data %>" alt="Avatar" class="inline-block h-8 w-8 rounded-full mr-2">
+              <%= tweet.handle %>
+            </td>
             <td class="px-4 py-2"><%= tweet.text %></td>
             <td class="px-4 py-2"><%= tweet.impression_count %></td>
             <td class="px-4 py-2"><%= tweet.retweet_count %></td>

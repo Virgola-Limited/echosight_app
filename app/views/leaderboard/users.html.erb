@@ -47,7 +47,10 @@
               <%= index + 1 %>
             <% end %>
           </td>
-          <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= user.handle %></td>
+          <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <img src="<%= user.image_data %>" alt="Avatar" class="inline-block h-8 w-8 rounded-full mr-2">
+            <%= user.handle %>
+          </td>
           <td class="px-2 py-4"><%= number_to_human_readable(user.total_impressions) %></td>
           <td class="px-2 py-4"><%= number_to_human_readable(user.total_retweets) %></td>
           <td class="px-2 py-4"><%= number_to_human_readable(user.total_likes) %></td>
