@@ -9,7 +9,6 @@ export default class extends Controller {
   }
 
   handleClick(event) {
-    console.log('Button clicked')
     if (this.timeout) {
       event.preventDefault()
       return
