@@ -2,11 +2,6 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [ "toggle" ]
-
-  connect() {
-    console.log('Stimulus controller connected')
-  }
-
   updateSetting(event) {
     const key = event.target.name.split("[")[1].split("]")[0]
     const value = event.target.checked ? 'true' : 'false'

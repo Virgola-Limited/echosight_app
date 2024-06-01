@@ -20,12 +20,12 @@ module Shared
 
     def render_button
       if @in_form
-        tag.button type: 'submit', class: classes, data: { controller: 'button', button_target: 'button', original_text: @text } do
+        tag.button type: 'submit', class: classes, data: { controller: 'debounce', button_target: 'button', original_text: @text, action: 'click->debounce#handleClick' } do
           @text
         end
       else
         form_with url: @url, method: @method, data: { turbo: false } do
-          tag.button type: 'submit', class: classes, data: { controller: 'button', button_target: 'button', original_text: @text } do
+          tag.button type: 'submit', class: classes, data: { controller: 'debounce', button_target: 'button', original_text: @text, action: 'click->debounce#handleClick' } do
             @text
           end
         end
