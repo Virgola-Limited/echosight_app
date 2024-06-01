@@ -58,6 +58,7 @@ class User < ApplicationRecord
          omniauth_providers: [:twitter2]
 
   has_one :identity, dependent: :destroy
+  has_many :sent_emails, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
   has_many :tweets, through: :identity
   has_many :tweet_metrics, through: :tweets

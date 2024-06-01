@@ -1,4 +1,6 @@
 class DeviseMailer < Devise::Mailer
+  include EmailLogger
+
   layout 'mailer'
 
   before_action :set_email_type
