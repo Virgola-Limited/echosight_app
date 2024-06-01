@@ -72,21 +72,30 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
     # message: "Tweet count mismatch for user loftwah. \n\nExpected: [1782605136961126562, 1782605405429899725, 1782638481090769015, 1782640146925634003, 1782648064190341511, 1782648485600428415, 1782649347097936368, 1782649740553048287, 1782652269693145287, 1782656658994557274, 1782656898891915502, 1782658440911061293, 1782658557298749524, 1782658845543895296, 1782659194925269202, 1782661357135098075, 1782661458914095313, 1782668267930460624, 1782669590713299365, 1782671069113164111, 1782671383706902763, 1782676620073177464],  \n\nActual: [1782671383706902763, 1782671069113164111, 1782669590713299365, 1782668267930460624, 1782661458914095313, 1782661357135098075, 1782659194925269202, 1782658845543895296, 1782658557298749524, 1782658440911061293, 1782656898891915502, 1782656658994557274, 1782652269693145287, 1782649740553048287, 1782649347097936368, 1782648485600428415, 1782648064190341511, 1782640146925634003, 1782638481090769015, 1782605405429899725, 1782605136961126562],  \n\nMissing: [1782676620073177464],  \n\nExtra: []"}]
     context 'when there is a mismatch in tweet counts' do
       context 'when there is an missing tweet' do
-        fit 'handles mismatch by notifying an exception' do
+        it 'handles mismatch by notifying an exception' do
           VCR.use_cassette('Twitter__ExistingTweetsUpdater_missing_tweet') do
-            expect(Notifications::SlackNotifier).to receive(:call).with(
-              hash_including(
-                message: satisfy { |msg|
-                  msg.match(/Tweet count mismatch for user loftwah/) &&
-                  msg.match(/Missing: \[1782676620073177464\]/)
-                },
-                channel: :errors
-              )
-            )
-            service.call
+            expect { service.call }.to change { Tweet.where(status: 'potentially_deleted').count }.by(1)
+            expect(Tweet.find(1782676620073177464)).to have_attributes(status: 'potentially_deleted')
           end
         end
       end
     end
+
+    context 'when one of the tweets has a status of potentially_deleted' do
+      before do
+        Tweet.find('1782676620073177464').update(status: 'potentially_deleted')
+      end
+
+      it 'does not update the tweet' do
+        VCR.use_cassette('Twitter__ExistingTweetsUpdater') do
+          expect(Twitter::TweetAndMetricUpserter).to receive(:call).exactly(21).times.and_return({ success: true })
+          service.call
+          expect(service.updated_tweets.count).to eq(21)
+          expect(service.updated_tweets.map { |tweet| tweet[:tweet_id] }).not_to include('1782676620073177464')
+          expect(service.unupdated_tweets).to be_empty
+        end
+      end
+    end
+
   end
 end

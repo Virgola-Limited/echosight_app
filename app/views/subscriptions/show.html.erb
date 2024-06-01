@@ -1,0 +1,88 @@
+<div class="max-w-4xl mx-auto py-8 px-4">
+  <h1 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Your Subscription Details</h1>
+  <% if @subscription.present? %>
+    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+          Subscription Information
+        </h3>
+      </div>
+      <div class="border-t border-gray-200 dark:border-gray-700">
+        <dl>
+          <div class="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Plan
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+             <%= @stripe_product.name %>
+            </dd>
+          </div>
+          <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Status
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+              <%= @stripe_subscription.status.capitalize %>
+            </dd>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Expiry Date
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+            <%= Time.at(@stripe_subscription.current_period_end).strftime("%B %d, %Y") %>
+          </dd>
+        </div>
+        </dl>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-gray-900 dark:text-white">You currently do not have an active subscription.</p>
+  <% end %>
+
+  <% if @stripe_invoices.data.present? %>
+  <div class="mt-8">
+    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+          Payment History
+        </h3>
+      </div>
+      <div class="border-t border-gray-200 dark:border-gray-700">
+        <ul>
+          <% @stripe_invoices.data.each do |invoice| %>
+          <li class="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Date
+            </div>
+            <div class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-3">
+              <%= Time.at(invoice.created).strftime("%B %d, %Y") %>
+            </div>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Amount
+            </div>
+            <div class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-3">
+              $<%= invoice.amount_paid / 100.0 %>
+            </div>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Status
+            </div>
+            <div class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-3">
+              <%= invoice.status.capitalize %>
+            </div>
+          </li>
+        <% end %>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+  <div class="mt-4 flex justify-end">
+  <% if @subscription.present? %>
+    <%= link_to('Cancel Subscription', "mailto:x@echosight.io?subject=Cancel Subscription Request for #{current_user.handle}", class: 'text-blue-500 hover:underline') %>
+  <% end %>
+</div>
+</div>

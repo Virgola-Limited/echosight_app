@@ -19,16 +19,28 @@ if !Rails.env.development? && !Rails.env.test?
     end
   end
 
+  Sidekiq.configure_client do |config|
+    config.redis = {
+      url: ENV["REDIS_URL"],
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
+      connect_timeout: 2,   # Default is 1 second
+      read_timeout: 2,      # Default is 1 second
+      write_timeout: 2      # Default is 1 second
+    }
+  end
+
   Sidekiq.configure_server do |config|
     # Add your custom middleware to the Sidekiq server middleware chain
     config.server_middleware do |chain|
       chain.add Sidekiq::ExceptionNotificationMiddleware
     end
 
-    # SSL verification mode configuration for Redis
     config.redis = {
-      url: ENV['REDIS_URL'], # Assuming you have your Redis URL in this ENV var
-      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+      url: ENV["REDIS_URL"],
+      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
+      connect_timeout: 2,   # Default is 1 second
+      read_timeout: 2,      # Default is 1 second
+      write_timeout: 2      # Default is 1 second
     }
 
     Sidekiq::Cron::Job.destroy_all!
@@ -46,6 +58,11 @@ if !Rails.env.development? && !Rails.env.test?
         #   'cron' => '0 0 * * *',
         #   'class' => 'RemoveOldEmptyApiBatchJob'
         # }
+        {
+          'name' => 'Sync Subscriptions - every 1 hour',
+          'cron' => '0 * * * *',
+          'class' => 'SubscriptionSyncJob'
+      }
       ]
     )
   end

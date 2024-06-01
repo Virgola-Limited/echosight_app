@@ -13,6 +13,10 @@ module Users
       single_message_index_path(message_type: :after_sign_up)
     end
 
+    def destroy
+      raise 'You cannot delete your account'
+    end
+
     protected
 
     # Override update_resource method

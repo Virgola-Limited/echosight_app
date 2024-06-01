@@ -15,7 +15,7 @@ RSpec.describe Twitter::ExistingTweetsUpdaterJob do
     context 'when the user is syncable and the api_batch is fresh' do
       before do
         allow(user).to receive(:syncable?).and_return(true)
-        allow(api_batch).to receive(:created_at).and_return(2.days.ago)
+        allow(api_batch).to receive(:created_at).and_return(2.days.ago + 10.minute)
       end
 
       it 'calls update_user and schedules next job' do

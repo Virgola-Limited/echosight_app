@@ -1,7 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
   default template_path: 'mailers'
 
-  default from: "chris@echosight.io"
+  default from: "x@echosight.io"
   layout "mailer"
 
 end

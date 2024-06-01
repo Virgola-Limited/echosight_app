@@ -1,4 +1,4 @@
-if defined?(ExceptionNotification) && !Rails.env.development? && !Rails.env.test?
+if defined?(ExceptionNotification)
 
   require 'exception_notification/rails'
   require 'exception_notification/sidekiq'
@@ -19,39 +19,35 @@ if defined?(ExceptionNotification) && !Rails.env.development? && !Rails.env.test
     # config.ignore_crawlers %w{Googlebot bingbot}
 
     # Notifiers =================================================================
+    unless Rails.env.development? || Rails.env.test?
+      # Email notifier sends notifications by email.
+      config.add_notifier :email, {
+        email_prefix: '[ERROR] ',
+        sender_address: %{"Chris Toynbee" <chris@echosight.io>},
+        exception_recipients: %w{ctoynbee@gmail.com},
+      }
+      config.add_notifier :slack, {
+        webhook_url: Rails.application.credentials.slack[:webhook_url][:errors],
+        additional_parameters: {
+          mrkdwn: true
+        },
+      }
+    end
 
-    # Email notifier sends notifications by email.
-    config.add_notifier :email, {
-      email_prefix: '[ERROR] ',
-      sender_address: %{"Chris Toynbee" <chris@echosight.io>},
-      exception_recipients: %w{ctoynbee@gmail.com},
-    }
+    if ENV['DEVELOPMENT_EXCEPTION_NOTIFICATIONS']
+      require 'terminal-notifier'
 
-    # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.
-    # config.add_notifier :campfire, {
-    #   subdomain: 'my_subdomain',
-    #   token: 'my_token',
-    #   room_name: 'my_room'
-    # }
+      config.add_notifier :terminal_notifier, lambda { |exception, options|
+        message = "Exception occurred: #{exception.message}"
 
-    # HipChat notifier sends notifications to your HipChat room. Requires 'hipchat' gem.
-    # config.add_notifier :hipchat, {
-    #   api_token: 'my_token',
-    #   room_name: 'my_room'
-    # }
+        # Log the error to the Rails log
+        Rails.logger.error("**Exception Notification: #{message}")
+        Rails.logger.error(exception.backtrace.join("\n")) if exception.backtrace
 
-    # Webhook notifier sends notifications over HTTP protocol. Requires 'httparty' gem.
-    # config.add_notifier :webhook, {
-    #   url: 'http://example.com:5555/hubot/path',
-    #   http_method: :post
-    # }
-
-    config.add_notifier :slack, {
-      webhook_url: Rails.application.credentials.slack[:webhook_url][:errors],
-      additional_parameters: {
-        mrkdwn: true
-      },
-    }
+        # Send desktop notification
+        TerminalNotifier.notify(message, title: 'Exception Notification')
+      }
+    end
 
   end
 end

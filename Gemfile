@@ -26,7 +26,7 @@ gem 'stimulus-rails'
 gem 'jbuilder'
 
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '>= 4.0.1'
+gem 'redis'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[windows jruby]
@@ -41,9 +41,11 @@ gem 'devise', '~> 4.9'
 gem 'devise_invitable'
 gem 'exception_notification'
 gem 'fastimage'
+gem 'mailkick'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'paper_trail'
+gem 'pghero'
 gem 'premailer-rails'
 # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sassc'
@@ -53,6 +55,7 @@ gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs'
 gem 'slack-notifier'
 gem 'stripe'
+gem 'stripe_event'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
@@ -84,6 +87,7 @@ group :development do
   gem 'binding_of_caller'
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'guard-rspec', require: false
+  gem 'terminal-notifier'
   gem 'rack-mini-profiler'
   gem 'rubocop'
   gem 'web-console'

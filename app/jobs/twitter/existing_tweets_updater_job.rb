@@ -39,7 +39,6 @@ module Twitter
         else
           user_twitter_data_update.update!(completed_at: Time.current)
         end
-
         if user_tweets_updatable?
           Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, user.id, api_batch.id)
         end

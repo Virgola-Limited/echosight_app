@@ -7,7 +7,7 @@ class UrlRewriter
     URI.extract(@text).each do |url|
       url_without_trailing_slash = url.chomp('/')
       original_url = resolve_url(url_without_trailing_slash)
-      @text.gsub!(url, original_url) if original_url
+      @text.gsub!(url, original_url || url)
     end
     @text
   end
@@ -24,5 +24,7 @@ class UrlRewriter
     else
       nil
     end
+  rescue
+    short_url
   end
 end

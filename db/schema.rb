@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_29_235133) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +63,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "mailkick_subscriptions", force: :cascade do |t|
+    t.string "subscriber_type"
+    t.bigint "subscriber_id"
+    t.string "list"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscriber_type", "subscriber_id", "list"], name: "index_mailkick_subscriptions_on_subscriber_and_list", unique: true
+  end
+
   create_table "oauth_credentials", force: :cascade do |t|
     t.bigint "identity_id", null: false
     t.string "provider"
@@ -72,6 +81,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "stripe_subscription_id"
+    t.string "stripe_price_id"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_price_id"], name: "index_subscriptions_on_stripe_price_id"
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "tweet_metrics", force: :cascade do |t|
@@ -98,6 +119,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
     t.datetime "twitter_created_at"
     t.bigint "in_reply_to_status_id"
     t.bigint "api_batch_id"
+    t.string "status"
     t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
@@ -111,6 +133,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_twitter_user_metrics_on_identity_id"
+  end
+
+  create_table "user_settings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "key"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_settings_on_user_id"
   end
 
   create_table "user_twitter_data_updates", force: :cascade do |t|
@@ -158,6 +189,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.string "stripe_customer_id"
+    t.boolean "enabled_without_subscription", default: false
+    t.date "vip_since"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -180,10 +213,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_08_003251) do
 
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"
+  add_foreign_key "user_settings", "users"
   add_foreign_key "user_twitter_data_updates", "api_batches"
   add_foreign_key "user_twitter_data_updates", "identities"
 end

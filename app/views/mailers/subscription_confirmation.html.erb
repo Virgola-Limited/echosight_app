@@ -1,0 +1,22 @@
+<p>🎉 Hello, <%= @user.email %>! 🎉</p>
+
+<p>We're excited to confirm your subscription to Echosight. Welcome aboard!</p>
+
+<p>Here are the details of your subscription:</p>
+
+<ul>
+  <li><strong>Plan:</strong> <%= @stripe_product.name %></li>
+  <li><strong>Expiry Date:</strong> <%= Time.at(@stripe_subscription.current_period_end).strftime("%B %d, %Y") %></li>
+</ul>
+
+<p>And here's the information about your recent payment:</p>
+
+<ul>
+  <li><strong>Date:</strong> <%= Time.at(@latest_invoice.created).strftime("%B %d, %Y") %></li>
+  <li><strong>Amount:</strong> $<%= @latest_invoice.amount_paid / 100.0 %></li>
+  <li><strong>Status:</strong> <%= @latest_invoice.status.capitalize %></li>
+</ul>
+
+<p>If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
+
+<p>Thank you for choosing us, and we look forward to serving you!</p>

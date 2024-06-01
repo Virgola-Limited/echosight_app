@@ -1,9 +1,10 @@
 module Shared
   class ButtonComponent <  ApplicationComponent
-    def initialize(text:, url:, classes: nil)
+    def initialize(text:, url:, classes: nil, method: :post)
       @text = text
       @url = url
       @classes = classes
+      @method = method
     end
 
     def classes

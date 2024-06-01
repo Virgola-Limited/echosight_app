@@ -4,37 +4,39 @@
 #
 # Table name: users
 #
-#  id                     :bigint           not null, primary key
-#  confirmation_sent_at   :datetime
-#  confirmation_token     :string
-#  confirmed_at           :datetime
-#  current_sign_in_at     :datetime
-#  current_sign_in_ip     :string
-#  email                  :string           default(""), not null
-#  encrypted_password     :string           default(""), not null
-#  failed_attempts        :integer          default(0), not null
-#  invitation_accepted_at :datetime
-#  invitation_created_at  :datetime
-#  invitation_limit       :integer
-#  invitation_sent_at     :datetime
-#  invitation_token       :string
-#  invitations_count      :integer          default(0)
-#  invited_by_type        :string
-#  last_name              :string
-#  last_sign_in_at        :datetime
-#  last_sign_in_ip        :string
-#  locked_at              :datetime
-#  name                   :string
-#  remember_created_at    :datetime
-#  reset_password_sent_at :datetime
-#  reset_password_token   :string
-#  sign_in_count          :integer          default(0), not null
-#  unconfirmed_email      :string
-#  unlock_token           :string
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  invited_by_id          :bigint
-#  stripe_customer_id     :string
+#  id                           :bigint           not null, primary key
+#  confirmation_sent_at         :datetime
+#  confirmation_token           :string
+#  confirmed_at                 :datetime
+#  current_sign_in_at           :datetime
+#  current_sign_in_ip           :string
+#  email                        :string           default(""), not null
+#  enabled_without_subscription :boolean          default(FALSE)
+#  encrypted_password           :string           default(""), not null
+#  failed_attempts              :integer          default(0), not null
+#  invitation_accepted_at       :datetime
+#  invitation_created_at        :datetime
+#  invitation_limit             :integer
+#  invitation_sent_at           :datetime
+#  invitation_token             :string
+#  invitations_count            :integer          default(0)
+#  invited_by_type              :string
+#  last_name                    :string
+#  last_sign_in_at              :datetime
+#  last_sign_in_ip              :string
+#  locked_at                    :datetime
+#  name                         :string
+#  remember_created_at          :datetime
+#  reset_password_sent_at       :datetime
+#  reset_password_token         :string
+#  sign_in_count                :integer          default(0), not null
+#  unconfirmed_email            :string
+#  unlock_token                 :string
+#  vip_since                    :date
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  invited_by_id                :bigint
+#  stripe_customer_id           :string
 #
 # Indexes
 #
@@ -48,88 +50,64 @@
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
 class User < ApplicationRecord
+  has_subscriptions
+
   devise :invitable, :database_authenticatable, :invitable, :registerable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
          omniauth_providers: [:twitter2]
 
   has_one :identity, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
   has_many :tweets, through: :identity
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
+  has_many :user_settings, dependent: :destroy
 
-  delegate :handle, to: :identity, allow_nil: true
-  delegate :banner_url, to: :identity, allow_nil: true
-  delegate :image_url, to: :identity, allow_nil: true
-  delegate :enough_data_for_public_page?, to: :identity, allow_nil: true
-
-  after_commit :enqueue_twitter_data_pull, on: %i[create update]
-
-  scope :syncable, -> { confirmed.joins(:identity).merge(Identity.valid_identity) }
-  scope :confirmed, -> { where.not(confirmed_at: nil) }
-  has_one :latest_hourly_tweet_count, -> { order(start_time: :desc) }, through: :identity, source: :hourly_tweet_counts
-
-  def self.ransackable_attributes(auth_object = nil)
-    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "failed_attempts", "id", "id_value", "last_name", "last_sign_in_at", "last_sign_in_ip", "locked_at", "name", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "unconfirmed_email", "unlock_token", "updated_at"]
+  %i[handle banner_url image_url enough_data_for_public_page? page_low_on_recent_data?].each do |method|
+    delegate method, to: :identity, allow_nil: true
   end
 
-  def self.from_omniauth(auth)
-    identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
+  after_create :subscribe_to_all_lists, :enqueue_create_stripe_customer
 
-    if identity
-      user = identity.user
-    else
-      user = User.find_or_initialize_by(email: auth.info.email)
-      user.password = Devise.friendly_token[0, 20] if user.encrypted_password.blank?
+  scope :confirmed, -> { where.not(confirmed_at: nil) }
+  scope :syncable, lambda {
+    confirmed
+      .joins(:identity)
+      .merge(Identity.valid_identity)
+      .where(
+        'users.enabled_without_subscription = ? OR EXISTS (
+          SELECT 1
+          FROM subscriptions
+          WHERE subscriptions.user_id = users.id
+          AND subscriptions.active = ?
+        )', true, true
+      )
+  }
+
+  validates :stripe_customer_id, uniqueness: true, allow_nil: true
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[confirmation_sent_at confirmation_token confirmed_at created_at current_sign_in_at
+       current_sign_in_ip email encrypted_password failed_attempts id id_value last_name last_sign_in_at last_sign_in_ip locked_at name remember_created_at reset_password_sent_at reset_password_token sign_in_count unconfirmed_email unlock_token updated_at]
+  end
+
+  def active_subscription?
+    if subscriptions.active.count > 1
+      ExceptionNotifier.notify_exception(StandardError.new('User has more than one active subscription'),
+                                         data: { user_id: id })
     end
+    subscriptions.active.count.positive?
+  end
 
-    # Update user's attributes
-    user.name = auth.info.name if user.name.blank?
-    user.email = auth.info.email if user.email.blank?
-    user.email = "fake_email_#{rand(252...4350)}@echosight.io" if user.email.blank?
-
-    # Extract and update description with original URLs
-    description = auth.info.description
-
-    urls = auth.extra.raw_info.data.entities.description.urls rescue []
-
-    urls.each do |url_object|
-      replaced = description.gsub!(url_object.url, url_object.expanded_url)
-    end
-
-    # Update or build identity
-    identity ||= user.build_identity
-    identity.assign_attributes(
-      provider: auth.provider,
-      uid: auth.uid,
-      description: description,
-      handle: auth.extra.raw_info.data.username,
-    )
-
-    # Update or build oauth_credential
-    oauth_credential = identity.oauth_credential || identity.build_oauth_credential
-    oauth_credential.assign_attributes(
-      provider: auth.provider,
-      token: auth.credentials.token,
-      refresh_token: auth.credentials.refresh_token,
-      expires_at: Time.at(auth.credentials.expires_at)
-    )
-
-    # Save user, identity, and oauth_credential
-    ActiveRecord::Base.transaction do
-      user.save! if user.new_record? || user.changed?
-      identity.save! if identity.new_record? || identity.changed?
-      oauth_credential.save! #if oauth_credential.new_record? || oauth_credential.changed?
-    end
-
-    user
+  def setting(key)
+    get_setting_value(key)
   end
 
   def syncable?
-    confirmed? && identity&.valid_identity?
+    confirmed? && identity&.valid_identity? && (active_subscription? || enabled_without_subscription?)
   end
 
-  # Not currently used
   def self.create_or_update_identity_from_omniauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     user = identity.try(:user)
@@ -166,7 +144,6 @@ class User < ApplicationRecord
     user
   end
 
-
   def assign_from_auth(auth)
     self.name = auth.info.name if name.blank?
     self.email = auth.info.email if email.blank?
@@ -184,7 +161,6 @@ class User < ApplicationRecord
     identity.save!
   end
 
-
   def guest?
     !persisted?
   end
@@ -193,11 +169,53 @@ class User < ApplicationRecord
     identity&.provider == 'twitter2'
   end
 
+  def method_missing(method_name, *arguments, &block)
+    if setting_method?(method_name)
+      key = extract_key_from_method(method_name)
+      get_setting_value(key)
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    setting_method?(method_name) || super
+  end
+
+  def update_setting(key, value)
+    setting = user_settings.find_or_initialize_by(key: key.to_s)
+    setting.value = value
+    setting.save!
+  end
+
   private
 
-  def enqueue_twitter_data_pull
-    return unless confirmed_at_changed? && confirmed_at_was.nil?
+  def convert_to_boolean(value)
+    return true if value == 'true'
+    return false if value == 'false'
+    value
+  end
 
-    # Twitter::UpdateTwitterDataJob.perform_async(user_id: id)
+  def get_setting_value(key)
+    value = user_settings.find_by(key: key.to_s)&.value || UserSetting.default_value(key.to_s)
+    convert_to_boolean(value)
+  end
+
+  def setting_method?(method_name)
+    method_name.to_s.end_with?('?') && UserSetting::VALID_KEYS.include?(extract_key_from_method(method_name).to_s)
+  end
+
+  def extract_key_from_method(method_name)
+    method_name.to_s.chomp('?')
+  end
+
+  def enqueue_create_stripe_customer
+    CreateStripeCustomerWorkerJob.perform_async(id)
+  end
+
+  def subscribe_to_all_lists
+    MAILKICK_SUBSCRIPTION_LISTS.each do |list|
+      Mailkick::Subscription.create!(subscriber: self, list:)
+    end
   end
 end

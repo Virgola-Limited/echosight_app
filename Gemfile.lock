@@ -116,7 +116,7 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bigdecimal (3.1.4)
+    bigdecimal (3.1.8)
     bindex (0.8.1)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
@@ -139,7 +139,7 @@ GEM
     childprocess (5.0.0)
     chronic (0.10.2)
     coderay (1.1.3)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     content_disposition (1.0.0)
     crack (1.0.0)
@@ -166,11 +166,10 @@ GEM
     dotenv (3.1.0)
     down (5.4.1)
       addressable (~> 2.8)
-    drb (2.2.0)
-      ruby2_keywords
+    drb (2.2.1)
     dry-cli (1.0.0)
     erubi (1.12.0)
-    et-orbi (1.2.7)
+    et-orbi (1.2.11)
       tzinfo
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
@@ -193,8 +192,8 @@ GEM
     formtastic (5.0.0)
       actionpack (>= 6.0.0)
     formtastic_i18n (0.7.0)
-    fugit (1.9.0)
-      et-orbi (~> 1, >= 1.2.7)
+    fugit (1.11.0)
+      et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -219,7 +218,7 @@ GEM
     hashie (5.0.0)
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
-    i18n (1.14.1)
+    i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     inherited_resources (1.14.0)
       actionpack (>= 6.0)
@@ -268,11 +267,13 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mailkick (1.3.0)
+      activesupport (>= 6.1)
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.5)
-    minitest (5.20.0)
+    minitest (5.23.1)
     msgpack (1.7.2)
     multi_xml (0.6.0)
     mutex_m (0.2.0)
@@ -323,6 +324,8 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
+    pghero (3.5.0)
+      activerecord (>= 6)
     premailer (1.21.0)
       addressable
       css_parser (>= 1.12.0)
@@ -341,7 +344,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.7.3)
-    rack (3.0.8)
+    rack (3.0.11)
     rack-mini-profiler (3.3.1)
       rack (>= 1.2.0)
     rack-protection (3.0.6)
@@ -395,9 +398,9 @@ GEM
       ffi (~> 1.0)
     rdoc (6.6.0)
       psych (>= 4.0.0)
-    redis (5.0.8)
-      redis-client (>= 0.17.0)
-    redis-client (0.18.0)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.22.2)
       connection_pool
     regexp_parser (2.8.3)
     reline (0.4.0)
@@ -456,11 +459,11 @@ GEM
     shrine (3.5.0)
       content_disposition (~> 1.0)
       down (~> 5.1)
-    sidekiq (7.2.0)
+    sidekiq (7.2.4)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
-      redis-client (>= 0.14.0)
+      redis-client (>= 0.19.0)
     sidekiq-cron (1.12.0)
       fugit (~> 1.8)
       globalid (>= 1.0.1)
@@ -484,7 +487,11 @@ GEM
       railties (>= 6.0.0)
     stringio (3.0.9)
     stripe (10.6.0)
-    thor (1.3.0)
+    stripe_event (2.9.0)
+      activesupport (>= 3.1)
+      stripe (>= 2.8, < 12)
+    terminal-notifier (2.0.0)
+    thor (1.3.1)
     timeout (0.4.1)
     turbo-rails (1.5.0)
       actionpack (>= 6.0.0)
@@ -561,15 +568,17 @@ DEPENDENCIES
   htmlbeautifier
   jbuilder
   launchy
+  mailkick
   omniauth-rails_csrf_protection
   omniauth-twitter2
   paper_trail
   pg (~> 1.1)
+  pghero
   premailer-rails
   puma (>= 5.0)
   rack-mini-profiler
   rails (~> 7.1.1)
-  redis (>= 4.0.1)
+  redis
   rspec-rails (~> 6.1.0)
   rubocop
   sassc
@@ -581,6 +590,8 @@ DEPENDENCIES
   sprockets-rails
   stimulus-rails
   stripe
+  stripe_event
+  terminal-notifier
   turbo-rails
   tzinfo-data
   vcr

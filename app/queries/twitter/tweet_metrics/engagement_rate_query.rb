@@ -10,18 +10,24 @@ module Twitter
       end
 
       def engagement_rate_percentage_per_day
-        end_date = Date.current
-        start_date = end_date - 6.days
+        end_time = 24.hours.ago.end_of_day
+        start_time = (end_time - 6.days).beginning_of_day
 
-        (start_date..end_date).map do |date|
-          tweets_from_date = Tweet.where(identity_id: user.identity.id,
-                                         twitter_created_at: date.beginning_of_day..date.end_of_day)
+        date_range = (start_time.to_date..end_time.to_date)
 
+        tweets_with_metrics = Tweet.includes(:tweet_metrics)
+                                   .where(identity_id: user.identity.id, twitter_created_at: start_time..end_time)
+                                   .order('tweet_metrics.pulled_at ASC')
+
+        grouped_tweets = tweets_with_metrics.group_by { |tweet| tweet.twitter_created_at.to_date }
+
+        date_range.map do |date|
+          daily_tweets = grouped_tweets[date] || []
           daily_interactions = 0
           daily_impressions = 0
 
-          tweets_from_date.each do |tweet|
-            first_metric = tweet.tweet_metrics.order(pulled_at: :asc).first
+          daily_tweets.each do |tweet|
+            first_metric = tweet.tweet_metrics.first
             next unless first_metric
 
             interactions = first_metric.retweet_count.to_i + first_metric.quote_count.to_i +
@@ -35,6 +41,7 @@ module Twitter
           { date: date, engagement_rate_percentage: engagement_rate }
         end
       end
+
     end
   end
 end
