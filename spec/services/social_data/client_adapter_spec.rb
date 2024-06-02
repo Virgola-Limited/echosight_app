@@ -31,41 +31,52 @@ RSpec.describe SocialData::ClientAdapter do
             expect(tweet_time).to be >= since_time
             expect(tweet_time).to be <= until_time
           end
+
+          first_tweet = adapted_data['data'].first
+          keys_to_test = first_tweet_expected_results.keys.excluding('created_at')
+          keys_to_test.each do |key|
+            if first_tweet[key].is_a?(Hash)
+              expect(first_tweet[key].keys).to match_array(first_tweet_expected_results[key].keys)
+            else
+              expect(first_tweet[key]).to eq(first_tweet_expected_results[key]), "Expected value for key '#{key}' in first_tweet to be '#{first_tweet_expected_results[key]}', but got '#{first_tweet[key]}'"
+            end
+          end
         end
       end
 
       let(:tweet_user_data) do
         {
           'data' => {
-            'id' => '1691930809756991488',
-            'name' => 'Topher',
-            'username' => 'TopherToy',
-            'description' => 'Twitter/X analytics with Echosight https://t.co/uZpeIYc5Nq',
+            'id' => '1192091185',
+            'name' => 'Loftwah',
+            'username' => 'loftwah',
+            'description' => 'Revolutionize Your Social Media Strategy with Echosight | https://t.co/wMI0Lub79k | https://t.co/HLB3aL1jca | https://t.co/IbbT2ncYyt | https://t.co/i9vT0NmOyw',
             'public_metrics' =>
             {
-              'followers_count' => 13,
-              'following_count' => 21,
-              'listed_count' => 0,
-              'tweet_count' => 40
+              'followers_count' => 7190,
+              'following_count' => 5176,
+              'listed_count' => 45,
+              'tweet_count' => 58724
             },
-            'image_url' => 'https://pbs.twimg.com/profile_images/1770204882819223552/vrBPzd16_normal.jpg',
-            'banner_url' => 'https://pbs.twimg.com/profile_banners/1691930809756991488/1710884709'
+            'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
+            'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1711023494'
           }
         }
       end
 
-      let(:first_tweet) do
+      let(:first_tweet_expected_results) do
         {
-          'id' => '1765212190418899365',
-          "in_reply_to_status_id" => nil,
-          'text' => 'to come to',
+          'id' => '1782583194291945673',
+          "in_reply_to_status_id" => 1782565821971066897,
+          'text' => '@Heather81031325 Gross but fascinating.',
+          'source' => '<a href="https://mobile.twitter.com" rel="nofollow">Twitter Web App</a>',
           'created_at' => '2024-03-06T03:05:56.000000Z',
           'public_metrics' => {
             'like_count' => 0,
             'quote_count' => 0,
             'reply_count' => 0,
             'retweet_count' => 0,
-            'impression_count' => 11,
+            'impression_count' => 24,
             'bookmark_count' => 0
           },
           'is_pinned' => 'false',

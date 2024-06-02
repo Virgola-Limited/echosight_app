@@ -9,8 +9,7 @@ module Twitter
     end
 
     def call
-      metrics_updated = update_followers_count
-      send_slack_notification(metrics_updated)
+      update_followers_count
     end
 
     private
@@ -24,24 +23,15 @@ module Twitter
         identity_id: identity.id,
         date: Date.current
       )
-
-      twitter_user_metric.followers_count = @user_data.dig('public_metrics', 'followers_count')
+      fields_to_update.each do |field|
+        twitter_user_metric.send("#{field}=", @user_data.dig('public_metrics', field))
+      end
       metrics_updated = twitter_user_metric.changed?
-      twitter_user_metric.save! if metrics_updated
-
-      metrics_updated
+      twitter_user_metric.save!
     end
 
-    def send_slack_notification(metrics_updated)
-      return
-      # Disable this for now - too spammy
-      # Could enable for VIP users
-
-      # if metrics_updated
-      #   message = "User: #{user_data['username']}: Twitter user metrics updated: #{metrics_updated}"
-      #   Notifications::SlackNotifier.call(message: message, channel: :general)
-      # end
-      # message
+    def fields_to_update
+      %w[followers_count following_count listed_count]
     end
   end
 end
