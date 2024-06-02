@@ -73,7 +73,6 @@ module SocialData
             'tweet_count' => response['statuses_count']
           },
           'description' => response['description'],
-          'source' => response['source'],
           'image_url' => response['profile_image_url_https'],
           'banner_url' => response['profile_banner_url']
         }
