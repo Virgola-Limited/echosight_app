@@ -18,6 +18,7 @@ RSpec.describe Twitter::UserMetricsUpdater do
       'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1707817030'
     }
   end
+  let(:fields_to_test) { %w[followers_count following_count listed_count] }
   let(:updater) { described_class.new(user_data) }
 
   describe '#call' do
@@ -28,14 +29,21 @@ RSpec.describe Twitter::UserMetricsUpdater do
 
       it 'updates the existing TwitterUserMetric' do
         expect { updater.call }.not_to change(TwitterUserMetric, :count)
-        expect(twitter_user_metric.reload.followers_count).to eq(user_data['public_metrics']['followers_count'])
+        fields_to_test.each do |field|
+          expect(twitter_user_metric.reload.send(field)).to eq(user_data['public_metrics'][field])
+        end
       end
     end
 
     context 'when the followers data has not been updated today for that user' do
+      let(:twitter_user_metric) { TwitterUserMetric.last }
+
       it 'creates a new TwitterUserMetric with the correct followers count' do
         expect { updater.call }.to change(TwitterUserMetric, :count).by(1)
-        expect(TwitterUserMetric.last.followers_count).to eq(user_data['public_metrics']['followers_count'])
+
+        fields_to_test.each do |field|
+          expect(twitter_user_metric.reload.send(field)).to eq(user_data['public_metrics'][field])
+        end
       end
     end
   end

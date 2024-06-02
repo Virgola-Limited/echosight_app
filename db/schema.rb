@@ -132,6 +132,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_235133) do
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "following_count"
+    t.integer "listed_count"
     t.index ["identity_id"], name: "index_twitter_user_metrics_on_identity_id"
   end
 
