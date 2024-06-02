@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_29_235133) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_02_230229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -120,6 +120,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_235133) do
     t.bigint "in_reply_to_status_id"
     t.bigint "api_batch_id"
     t.string "status"
+    t.string "source"
     t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"

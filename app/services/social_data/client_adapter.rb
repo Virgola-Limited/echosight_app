@@ -38,6 +38,7 @@ module SocialData
           'text' => tweet['full_text'] || tweet['text'],
           'created_at' => tweet['tweet_created_at'],
           'in_reply_to_status_id' => tweet['in_reply_to_status_id'],
+          'source' => tweet['source'],
           'public_metrics' => {
             'retweet_count' => tweet['retweet_count'],
             'reply_count' => tweet['reply_count'],
@@ -72,6 +73,7 @@ module SocialData
             'tweet_count' => response['statuses_count']
           },
           'description' => response['description'],
+          'source' => response['source'],
           'image_url' => response['profile_image_url_https'],
           'banner_url' => response['profile_banner_url']
         }
