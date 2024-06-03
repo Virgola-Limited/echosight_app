@@ -1817,7 +1817,7 @@ http_interactions:
   recorded_at: Tue, 23 Apr 2024 08:14:30 GMT
 - request:
     method: get
-    uri: https://api.socialdata.tools/twitter/user/1691930809756991488
+    uri: https://api.socialdata.tools/twitter/user/1192091185
     body:
       encoding: US-ASCII
       string: ''
@@ -1838,7 +1838,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 03 Jun 2024 20:55:29 GMT
+      - Mon, 03 Jun 2024 21:08:08 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -1850,24 +1850,25 @@ http_interactions:
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '117'
+      - '119'
       Vary:
       - Origin
       Cf-Cache-Status:
       - DYNAMIC
       Report-To:
-      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=8rhX76lJ%2FHbWQn9%2BssqQ1FFPc2yfO3jUZkdO3kRHVxOjrznjvG0XyY84kppz8istgf9zQgDZS7fxXPXxeMh35H3Eu0aTicAyo83QVmHjEnarK4q%2BltDMboHIUwW8xRWTuHh1LaWggw%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=6XZjq%2FzPBD149exNGWHb%2BdVEsk1syRQ05yYC9KQeCcOAptCpqde5BKhvcttoodNLlavsbwEf9TJNy7aJohXR%2BhOFiAsZZlI1iwblP5yOjJdgeLXj9zetRDI9C%2FO0HRhwgBrXiqaYlQ%3D%3D"}],"group":"cf-nel","max_age":604800}'
       Nel:
       - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
       Server:
       - cloudflare
       Cf-Ray:
-      - 88e295938e901c54-AKL
+      - 88e2a8166ecd5d2c-SYD
       Alt-Svc:
       - h3=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
-      string: '{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
-        Your Social Media Strategy with Echosight | https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":24,"friends_count":28,"listed_count":0,"favourites_count":17,"statuses_count":46,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1710884709","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1770204882819223552\/vrBPzd16_normal.jpg","can_dm":false}'
-  recorded_at: Mon, 03 Jun 2024 20:55:29 GMT
+      string: '{"id":1192091185,"id_str":"1192091185","name":"Loftwah","screen_name":"loftwah","location":"Earth","url":"https:\/\/app.echosight.io\/p\/loftwah","description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/wMI0LubEYS | https:\/\/t.co\/HLB3aL1R1I
+        | https:\/\/t.co\/IbbT2ndwo1 | https:\/\/t.co\/i9vT0Nnmo4","protected":false,"verified":true,"followers_count":7667,"friends_count":5478,"listed_count":48,"favourites_count":194270,"statuses_count":62895,"created_at":"2013-02-18T05:01:04.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1192091185\/1717327657","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1756873036220059648\/zc13kjbX_normal.jpg","can_dm":false}'
+  recorded_at: Mon, 03 Jun 2024 21:08:08 GMT
 recorded_with: VCR 6.2.0

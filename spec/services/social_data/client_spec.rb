@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SocialData::Client do
-  let(:identity) { create(:identity, :tophertoy) }
+  let(:identity) { create(:identity, :loftwah) }
   let(:user) { identity.user }
   let(:client) { described_class.new(user: user) }
 
@@ -20,8 +20,8 @@ RSpec.describe SocialData::Client do
 
         expect(response).to include(*expected_keys)
         expect(response['id']).to eq(user_id)
-        expect(response['name']).to eq('Topher')
-        expect(response['screen_name']).to eq('TopherToy')
+        expect(response['name']).to eq('Loftwah')
+        expect(response['screen_name']).to eq('loftwah')
       end
     end
   end
