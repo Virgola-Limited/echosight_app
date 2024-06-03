@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_02_230229) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_03_013403) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -81,6 +81,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_02_230229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
+  end
+
+  create_table "sent_emails", force: :cascade do |t|
+    t.string "recipient", null: false
+    t.string "subject", null: false
+    t.text "body", null: false
+    t.string "tracking_id", null: false
+    t.string "email_type", null: false
+    t.boolean "opened", default: false
+    t.datetime "opened_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tracking_id"], name: "index_sent_emails_on_tracking_id", unique: true
+    t.index ["user_id"], name: "index_sent_emails_on_user_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -216,6 +231,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_02_230229) do
 
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
