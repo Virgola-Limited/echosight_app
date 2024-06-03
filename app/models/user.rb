@@ -112,7 +112,6 @@ class User < ApplicationRecord
   def create_or_update_identity_from_omniauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
-    # Update or create identity and oauth_credential
     ActiveRecord::Base.transaction do
       assign_from_auth(auth)
 
@@ -140,17 +139,6 @@ class User < ApplicationRecord
     self.name = auth.info.name if name.blank?
     self.email = auth.info.email if email.blank?
   end
-
-  # def update_identity_from_auth(auth)
-  #   identity = self.identity || build_identity
-  #   identity.assign_attributes(
-  #     provider: auth.provider,
-  #     uid: auth.uid,
-  #     description: auth.info.description,
-  #     handle: auth.extra.raw_info.data.username
-  #   )
-  #   identity.save!
-  # end
 
   def guest?
     !persisted?

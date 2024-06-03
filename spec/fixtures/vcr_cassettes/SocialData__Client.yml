@@ -1815,4 +1815,59 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"tweets":[],"next_cursor":null}'
   recorded_at: Tue, 23 Apr 2024 08:14:30 GMT
+- request:
+    method: get
+    uri: https://api.socialdata.tools/twitter/user/1691930809756991488
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.socialdata.tools
+      Authorization:
+      - Bearer 120|gEVUlsk53tYfMrKJDM8ZISgPXinys4SdI2taW0FW6ba1d55a
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 03 Jun 2024 20:55:29 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '117'
+      Vary:
+      - Origin
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=8rhX76lJ%2FHbWQn9%2BssqQ1FFPc2yfO3jUZkdO3kRHVxOjrznjvG0XyY84kppz8istgf9zQgDZS7fxXPXxeMh35H3Eu0aTicAyo83QVmHjEnarK4q%2BltDMboHIUwW8xRWTuHh1LaWggw%3D%3D"}],"group":"cf-nel","max_age":604800}'
+      Nel:
+      - '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}'
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 88e295938e901c54-AKL
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":1691930809756991488,"id_str":"1691930809756991488","name":"Topher","screen_name":"TopherToy","location":"","url":null,"description":"Revolutionize
+        Your Social Media Strategy with Echosight | https:\/\/t.co\/uZpeIYc5Nq","protected":false,"verified":false,"followers_count":24,"friends_count":28,"listed_count":0,"favourites_count":17,"statuses_count":46,"created_at":"2023-08-16T21:52:25.000000Z","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1691930809756991488\/1710884709","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1770204882819223552\/vrBPzd16_normal.jpg","can_dm":false}'
+  recorded_at: Mon, 03 Jun 2024 20:55:29 GMT
 recorded_with: VCR 6.2.0
