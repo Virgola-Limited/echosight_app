@@ -108,8 +108,8 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
     end
 
 
-    context 'when the tweet metrics update count is 2 or more' do
-      let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 2) }
+    context 'when the tweet metrics update count is 3 or more' do
+      let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 3) }
 
       it 'updates the tweet and creates a new tweet metric' do
         expect(existing_tweet.tweet_metrics.count).to eq(1)

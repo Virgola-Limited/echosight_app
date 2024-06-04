@@ -17,7 +17,7 @@ module Twitter
 
     # fix this later
     def self.days_to_fetch
-      14
+      7
     end
 
     private

@@ -66,7 +66,7 @@ module Twitter
     def find_or_initialize_tweet_metric(tweet)
       last_metric = tweet.tweet_metrics.order(pulled_at: :desc).first
 
-      if last_metric.nil? || last_metric.updated_count >= 2
+      if last_metric.nil? || last_metric.updated_count >= 3
         tweet.tweet_metrics.build
       else
         last_metric
