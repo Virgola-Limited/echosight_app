@@ -10,4 +10,8 @@ module ApplicationHelper
       link_to(host_and_path, url, target: '_blank', rel: 'noopener noreferrer')
     end.html_safe
   end
+
+  def rounded_number(input)
+    NumberRoundingService.call(input)
+  end
 end
