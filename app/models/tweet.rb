@@ -41,7 +41,7 @@ class Tweet < ApplicationRecord
   scope :empty_status, -> { where(status: nil) }
 
   def self.max_age_for_refresh
-    2.days.ago
+    2.days.ago - 1.hour
   end
 
   def self.ransackable_attributes(auth_object = nil)
