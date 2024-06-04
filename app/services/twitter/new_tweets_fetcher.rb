@@ -33,8 +33,8 @@ module Twitter
       end
 
       if today_user_data
-        @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
         IdentityUpdater.new(today_user_data).call
+        @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
       end
     end
 
