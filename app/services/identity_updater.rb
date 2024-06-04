@@ -9,14 +9,13 @@ class IdentityUpdater
   end
 
   def call
-    identity = Identity.find_by_handle(user_data['username'])
+    identity = Identity.find_by_uid(user_data['id'])
+    raise "Identity not found for user: #{user_data['username']} #{user_data['id']}" unless identity
 
     if user_data['image_url']
       transformed_image_url = transform_image_url(user_data['image_url'])
       new_image_checksum = checksum(transformed_image_url)
       if identity.image_checksum != new_image_checksum
-        # message = "Updating image for #{identity.handle} from #{identity.image_checksum} to #{new_image_checksum}. transformed_image_url #{transformed_image_url} user_data['image_url'] #{user_data['image_url']} identity.image: #{identity.image}"
-        # Notifications::SlackNotifier.call(message: message, channel: :errors)
         identity.image = download_image(transformed_image_url)
         identity.image_checksum = new_image_checksum
         clear_public_page_cache
@@ -27,14 +26,13 @@ class IdentityUpdater
       transformed_banner_url = transform_banner_url(user_data['banner_url'])
       new_banner_checksum = checksum(transformed_banner_url)
       if identity.banner_checksum != new_banner_checksum
-        # message = "Updating image for #{identity.handle} from #{identity.image_checksum} to #{new_image_checksum}. transformed_image_url #{transformed_image_url} user_data['image_url'] #{user_data['image_url']} identity.image: #{identity.image}"
-        # Notifications::SlackNotifier.call(message: message, channel: :errors)
         identity.banner = download_image(transformed_banner_url)
         identity.banner_checksum = new_banner_checksum
         clear_public_page_cache
       end
     end
 
+    identity.handle = user_data['username']
     identity.description = UrlRewriter.new(user_data['description']).call if user_data['description']
     identity.save!
   end

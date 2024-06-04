@@ -49,6 +49,13 @@ module SocialData
       { 'tweets' => all_tweets }
     end
 
+    def fetch_user_details(user_id)
+      endpoint = "user/#{user_id}"
+      params = {}
+
+      make_api_call(endpoint, params, :oauth2)
+    end
+
 
     # TODO: Internalize the next_token handling to prevent
     # pullling too many tweets
