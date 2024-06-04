@@ -23,6 +23,10 @@ class DashboardComponent < ApplicationComponent
     current_user.connected_to_twitter? && current_user.enough_data_for_public_page? && current_user.active_subscription?
   end
 
+  def eligible_for_trial?
+    current_user.eligible_for_trial?
+  end
+
   private
 
   attr_reader :current_user

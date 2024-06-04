@@ -54,7 +54,7 @@ class SubscriptionsController < AuthenticatedController
     unless @subscription
       notice = 'Setup your subscription below to enable your public page'
       trial_period_days = ENV.fetch('TRIAL_PERIOD_DAYS', 0)
-      if trial_period_days.to_i.positive?
+      if current_user.eligible_for_trial?
         notice = "We are currently offering a #{trial_period_days} day free trial for our early adopters. Subscribe now and pay in 90 days."
       end
       redirect_to new_subscription_path, notice: notice

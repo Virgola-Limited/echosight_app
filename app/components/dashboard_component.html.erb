@@ -13,9 +13,9 @@ Yep 1. is perfect
 -->
 <div class="flex flex-col items-center">
 <% if show_steps_to_complete_message? %>
-  <% if ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive? %>
+  <% if eligible_for_trial? %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-green-300" role="alert">
-    We are currently offering a 90 day free trial for our early adopters. Subscribe now and pay in 90 days.
+    We are currently offering a <%= Subscription.trial_period %> day free trial for our early adopters. Subscribe now and pay in <%= Subscription.trial_period %> days.
   </div>
   <% end %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">

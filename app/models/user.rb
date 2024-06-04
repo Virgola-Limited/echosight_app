@@ -101,6 +101,10 @@ class User < ApplicationRecord
     subscriptions.active.count.positive?
   end
 
+  def accepted_invitation?
+    invitation_accepted_at.present?
+  end
+
   def setting(key)
     get_setting_value(key)
   end
@@ -138,6 +142,10 @@ class User < ApplicationRecord
   def assign_from_auth(auth)
     self.name = auth.info.name if name.blank?
     self.email = auth.info.email if email.blank?
+  end
+
+  def eligible_for_trial?
+    accepted_invitation? && ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive?
   end
 
   def guest?
