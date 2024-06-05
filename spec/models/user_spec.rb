@@ -55,7 +55,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  fcontext 'create user' do
+  context 'create user' do
     it 'creates a user with an otp_secret' do
       user = create(:user)
       expect(user.otp_secret).to be_present
