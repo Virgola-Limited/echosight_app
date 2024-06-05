@@ -8,6 +8,7 @@
 #  confirmation_sent_at         :datetime
 #  confirmation_token           :string
 #  confirmed_at                 :datetime
+#  consumed_timestep            :integer
 #  current_sign_in_at           :datetime
 #  current_sign_in_ip           :string
 #  email                        :string           default(""), not null
@@ -26,6 +27,8 @@
 #  last_sign_in_ip              :string
 #  locked_at                    :datetime
 #  name                         :string
+#  otp_required_for_login       :boolean
+#  otp_secret                   :string
 #  remember_created_at          :datetime
 #  reset_password_sent_at       :datetime
 #  reset_password_token         :string
@@ -49,13 +52,16 @@
 #  index_users_on_stripe_customer_id    (stripe_customer_id)
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
+
 class User < ApplicationRecord
   has_subscriptions
 
-  devise :invitable, :database_authenticatable, :invitable, :registerable,
+  devise :invitable, :invitable, :registerable, :two_factor_authenticatable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
          omniauth_providers: [:twitter2]
+
+  before_create :generate_otp_secret
 
   has_one :identity, dependent: :destroy
   has_many :sent_emails, dependent: :destroy
@@ -64,6 +70,8 @@ class User < ApplicationRecord
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
   has_many :user_settings, dependent: :destroy
+
+  attr_accessor :otp_code
 
   %i[handle banner_url image_url enough_data_for_public_page? page_low_on_recent_data?].each do |method|
     delegate method, to: :identity, allow_nil: true
@@ -165,6 +173,23 @@ class User < ApplicationRecord
     end
   end
 
+  # def otp_qr_code
+  #   # fetch echosight_company from en.yml
+  #   issuer = I18n.t('echosight_company')
+  #   label = "#{issuer}:#{email}"
+  #   uri = otp_provisioning_uri(label, issuer: issuer)
+
+  #   ::RQRCode::QRCode.new(uri)
+  # end
+
+  def otp_qr_code
+    issuer = 'YourAppName'
+    label = "#{issuer}:#{email}"
+    uri = "otpauth://totp/#{issuer}:#{email}?secret=#{otp_secret}&issuer=#{issuer}"
+
+    RQRCode::QRCode.new(uri)
+  end
+
   def respond_to_missing?(method_name, include_private = false)
     setting_method?(method_name) || super
   end
@@ -181,6 +206,10 @@ class User < ApplicationRecord
     return true if value == 'true'
     return false if value == 'false'
     value
+  end
+
+  def generate_otp_secret
+    self.otp_secret = User.generate_totp_secret
   end
 
   def get_setting_value(key)

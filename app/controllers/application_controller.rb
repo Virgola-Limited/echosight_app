@@ -4,6 +4,14 @@ class ApplicationController < ActionController::Base
   # Use Devise's authentication filter for staging environment
   before_action :authenticate_admin_user!, if: :staging_environment?
 
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:otp_attempt])
+  end
+
   private
 
   # Check if the current environment is staging
@@ -18,4 +26,5 @@ class ApplicationController < ActionController::Base
       NullUser.new
     end
   end
+
 end
