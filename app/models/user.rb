@@ -174,8 +174,8 @@ class User < ApplicationRecord
   end
 
   # def otp_qr_code
-  #   # fetch echosight_company from en.yml
-  #   issuer = I18n.t('echosight_company')
+  #   # fetch echosight_name from en.yml
+  #   issuer = I18n.t('echosight_name')
   #   label = "#{issuer}:#{email}"
   #   uri = otp_provisioning_uri(label, issuer: issuer)
 
@@ -183,21 +183,37 @@ class User < ApplicationRecord
   # end
 
   def otp_qr_code
-    issuer = I18n.t('echosight_company')
+    issuer = I18n.t('echosight_name')
     label = "#{issuer}:#{email}"
     uri = "otpauth://totp/#{issuer}:#{email}?secret=#{otp_secret}&issuer=#{issuer}"
 
-    RQRCode::QRCode.new(uri)
-  end
+    qrcode = RQRCode::QRCode.new(uri)
 
-  def respond_to_missing?(method_name, include_private = false)
-    setting_method?(method_name) || super
-  end
+    # Create the base QR code as a PNG image
+    png = qrcode.as_png(size: 300)
 
-  def update_setting(key, value)
-    setting = user_settings.find_or_initialize_by(key: key.to_s)
-    setting.value = value
-    setting.save!
+    # Save the QR code image to a temporary file
+    qr_tempfile = Tempfile.new(['qrcode', '.png'])
+    qr_tempfile.binmode
+    qr_tempfile.write(png.to_s)
+    qr_tempfile.rewind
+
+    # Load the QR code and logo images using MiniMagick
+    qr_image = MiniMagick::Image.open(qr_tempfile.path)
+    logo_path = Rails.root.join('app', 'javascript', 'images', 'logo.png')
+    logo_image = MiniMagick::Image.open(logo_path)
+
+    # Resize the logo if necessary
+    logo_image.resize '50x50'
+
+    # Composite the logo onto the QR code
+    result = qr_image.composite(logo_image) do |c|
+      c.gravity 'Center'
+    end
+
+    # Return the QR code as a base64-encoded image
+    result.format 'png'
+    Base64.encode64(result.to_blob).gsub("\n", '')
   end
 
   private

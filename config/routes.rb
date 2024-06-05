@@ -38,6 +38,10 @@ Rails.application.routes.draw do
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
     confirmations: 'users/confirmations',
-    # sessions: 'users/sessions'
+    sessions: 'users/sessions'
   }
+  devise_scope :user do
+    get 'users/otp', to: 'users/sessions#new_otp', as: :new_otp_user_session
+    post 'users/verify_otp', to: 'users/sessions#verify_otp', as: :verify_otp_user_session
+  end
 end

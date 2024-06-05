@@ -3,7 +3,7 @@ class TwoFactorAuthenticationsController < AuthenticatedController
   before_action :authenticate_user!
 
   def show
-    @qr_code = current_user.otp_qr_code.as_svg(module_size: 4)
+    @qr_code = current_user.otp_qr_code
   end
 
   def enable
@@ -12,7 +12,7 @@ class TwoFactorAuthenticationsController < AuthenticatedController
       redirect_to two_factor_authentication_path, notice: 'Two-Factor Authentication enabled successfully.'
     else
       flash.now[:alert] = 'Invalid OTP code. Please try again.'
-      @qr_code = current_user.otp_qr_code.as_svg(module_size: 4)
+      @qr_code = current_user.otp_qr_code
       render :show
     end
   end

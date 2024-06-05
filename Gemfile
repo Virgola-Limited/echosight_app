@@ -43,6 +43,7 @@ gem 'devise-two-factor'
 gem 'exception_notification'
 gem 'fastimage'
 gem 'mailkick'
+gem "mini_magick"
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'paper_trail'

@@ -9,7 +9,7 @@
     <% else %>
       <p class="text-gray-900 dark:text-white">Scan this QR code with your authentication app:</p>
       <div class="mb-4">
-        <%= raw @qr_code %>
+        <img src="data:image/png;base64,<%= current_user.otp_qr_code %>" alt="QR Code">
       </div>
 
       <%= form_with url: enable_two_factor_authentication_path, method: :post, local: true do |f| %>
