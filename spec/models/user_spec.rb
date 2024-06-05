@@ -55,6 +55,13 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  fcontext 'create user' do
+    it 'creates a user with an otp_secret' do
+      user = create(:user)
+      expect(user.otp_secret).to be_present
+    end
+  end
+
   describe '.syncable' do
     let!(:confirmed_user_with_valid_identity_and_active_subscription) do
       user = create(:user, confirmed_at: Time.current)

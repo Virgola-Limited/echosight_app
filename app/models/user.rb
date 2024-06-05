@@ -229,8 +229,7 @@ class User < ApplicationRecord
   end
 
   def generate_otp_secret
-    #fix t his
-    self.otp_secret = User.generate_totp_secret
+    self.otp_secret = ROTP::Base32.random_base32
   end
 
   def get_setting_value(key)
