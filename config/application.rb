@@ -76,5 +76,7 @@ module EchosightApp
     }
     # Raise delivery errors only in development
     config.action_mailer.raise_delivery_errors = Rails.env.development?
+
+    config.asset_host = Rails.application.credentials.dig(:asset_host)
   end
 end

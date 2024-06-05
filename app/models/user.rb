@@ -173,19 +173,13 @@ class User < ApplicationRecord
     end
   end
 
-  # def otp_qr_code
-  #   # fetch echosight_name from en.yml
-  #   issuer = I18n.t('echosight_name')
-  #   label = "#{issuer}:#{email}"
-  #   uri = otp_provisioning_uri(label, issuer: issuer)
-
-  #   ::RQRCode::QRCode.new(uri)
-  # end
-
   def otp_qr_code
-    issuer = I18n.t('echosight_name')
+    issuer = ERB::Util.url_encode("EchoSight")
     label = "#{issuer}:#{email}"
-    uri = "otpauth://totp/#{issuer}:#{email}?secret=#{otp_secret}&issuer=#{issuer}"
+
+    logo_url = Rails.application.config.asset_host + '/static_images/logo.png'
+    uri = "otpauth://totp/#{ERB::Util.url_encode(label)}?secret=#{otp_secret}&issuer=#{ERB::Util.url_encode(issuer)}&logo=#{ERB::Util.url_encode(logo_url)}"
+    Rails.logger.debug "OTP URI: #{uri}"
 
     qrcode = RQRCode::QRCode.new(uri)
 
@@ -201,19 +195,29 @@ class User < ApplicationRecord
     # Load the QR code and logo images using MiniMagick
     qr_image = MiniMagick::Image.open(qr_tempfile.path)
     logo_path = Rails.root.join('app', 'javascript', 'images', 'logo.png')
+    raise "Logo file not found at #{logo_path}" unless File.exist?(logo_path)
     logo_image = MiniMagick::Image.open(logo_path)
 
     # Resize the logo if necessary
     logo_image.resize '50x50'
+    Rails.logger.debug "Logo resized"
 
     # Composite the logo onto the QR code
     result = qr_image.composite(logo_image) do |c|
       c.gravity 'Center'
     end
 
+    Rails.logger.debug "**Logo composited onto QR code"
+
+    # Save the composited image for verification
+    result.write(Rails.root.join('tmp', 'composited_qr_code.png'))
+
     # Return the QR code as a base64-encoded image
     result.format 'png'
-    Base64.encode64(result.to_blob).gsub("\n", '')
+    encoded_image = Base64.encode64(result.to_blob).gsub("\n", '')
+    Rails.logger.debug "**Base64 encoded image generated"
+
+    encoded_image
   end
 
   private
@@ -225,6 +229,7 @@ class User < ApplicationRecord
   end
 
   def generate_otp_secret
+    #fix t his
     self.otp_secret = User.generate_totp_secret
   end
 
