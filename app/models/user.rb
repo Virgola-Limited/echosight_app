@@ -183,7 +183,7 @@ class User < ApplicationRecord
   # end
 
   def otp_qr_code
-    issuer = 'YourAppName'
+    issuer = I18n.t('echosight_company')
     label = "#{issuer}:#{email}"
     uri = "otpauth://totp/#{issuer}:#{email}?secret=#{otp_secret}&issuer=#{issuer}"
 
