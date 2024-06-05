@@ -46,7 +46,7 @@ module Twitter
 
           tweet.assign_attributes(tweet_attributes)
         else
-          Notifications::SlackNotifier.call(message: "Trying to update an existing tweet when updates are not allowed. https://app.echosight.io/admin/tweets/#{tweet.id} for batch https://app.echosight.io/admin/api_batches/#{api_batch_id}, tweet_data: #{tweet_data.inspect}", channel: :errors)
+          # Notifications::SlackNotifier.call(message: "Trying to update an existing tweet when updates are not allowed. https://app.echosight.io/admin/tweets/#{tweet.id} for batch https://app.echosight.io/admin/api_batches/#{api_batch_id}, tweet_data: #{tweet_data.inspect}", channel: :errors)
         end
       end
 
