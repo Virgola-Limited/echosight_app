@@ -11,7 +11,8 @@ class Users::SessionsController < Devise::SessionsController
         redirect_to after_sign_in_path_for(user)
       end
     else
-      flash[:alert] = 'Invalid email or password. Please try again.'
+      flash.now[:alert] = 'Invalid email or password. Please try again.'
+      self.resource = resource_class.new(sign_in_params)
       render :new
     end
   end
@@ -31,7 +32,7 @@ class Users::SessionsController < Devise::SessionsController
       session.delete(:otp_user_id)
       redirect_to after_sign_in_path_for(user)
     else
-      flash[:alert] = 'Invalid OTP code. Please try again.'
+      flash.now[:alert] = 'Invalid OTP code. Please try again.'
       render :new_otp
     end
   end
