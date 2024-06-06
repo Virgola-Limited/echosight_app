@@ -1,0 +1,50 @@
+// app/javascript/components/share_tool_component.js
+
+import html2canvas from 'html2canvas';
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-modal-toggle]').forEach(modalToggleButton => {
+    modalToggleButton.addEventListener('click', function () {
+      const modalId = modalToggleButton.getAttribute('data-modal-target');
+      const chartId = modalToggleButton.getAttribute('data-chart-id');
+      const modalContent = document.querySelector(`#${modalId} .p-4.md\\:p-5.space-y-4`);
+      const chartElement = document.getElementById(chartId);
+      console.log(chartElement)
+      console.log(chartId)
+      if (chartElement) {
+        html2canvas(chartElement).then(canvas => {
+          const context = canvas.getContext('2d');
+          const text = "https://app.echosight.io";
+          const fontSize = 20;  // Increased font size
+          const padding = 10;
+
+          context.font = `${fontSize}px Arial`;
+          context.fillStyle = 'black';
+          context.textAlign = 'right';
+          context.textBaseline = 'bottom';
+
+          const x = canvas.width - padding;
+          const y = canvas.height - padding;
+
+          const textWidth = context.measureText(text).width;
+          const textHeight = fontSize;
+          context.fillStyle = 'rgba(255, 255, 255, 0.7)';
+          context.fillRect(x - textWidth - 5, y - textHeight - 5, textWidth + 10, textHeight + 10);
+
+          context.fillStyle = 'black';
+          context.fillText(text, x, y);
+
+          modalContent.innerHTML = '';
+
+          const img = new Image();
+          img.src = canvas.toDataURL('image/png');
+          img.classList.add('w-full', 'rounded-lg');
+
+          modalContent.appendChild(img);
+        }).catch(err => {
+          console.error('Error capturing canvas:', err);
+        });
+      }
+    });
+  });
+});
