@@ -27,6 +27,10 @@ class DashboardComponent < ApplicationComponent
     current_user.eligible_for_trial?
   end
 
+  def show_2fa_reminder?
+    !current_user.otp_required_for_login
+  end
+
   private
 
   attr_reader :current_user
