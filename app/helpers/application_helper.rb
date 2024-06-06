@@ -14,4 +14,5 @@ module ApplicationHelper
   def rounded_number(input)
     NumberRoundingService.call(input)
   end
+
 end

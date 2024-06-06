@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
   resource :subscription, only: [:new, :create, :show]
+  resource :two_factor_authentication, only: [:show]
+  post 'enable_two_factor_authentication', to: 'two_factor_authentications#enable'
+  post 'disable_two_factor_authentication', to: 'two_factor_authentications#disable'
+
   resource :user_settings, only: [:edit, :update]
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -34,6 +38,10 @@ Rails.application.routes.draw do
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
     confirmations: 'users/confirmations',
-    # sessions: 'users/sessions'
+    sessions: 'users/sessions'
   }
+  devise_scope :user do
+    get 'users/otp', to: 'users/sessions#new_otp', as: :new_otp_user_session
+    post 'users/verify_otp', to: 'users/sessions#verify_otp', as: :verify_otp_user_session
+  end
 end

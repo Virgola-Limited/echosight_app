@@ -138,6 +138,7 @@ GEM
       xpath (~> 3.2)
     childprocess (5.0.0)
     chronic (0.10.2)
+    chunky_png (1.4.0)
     coderay (1.1.3)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
@@ -159,6 +160,11 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise-two-factor (5.0.0)
+      activesupport (~> 7.0)
+      devise (~> 4.0)
+      railties (~> 7.0)
+      rotp (~> 6.0)
     devise_invitable (2.0.9)
       actionmailer (>= 5.0)
       devise (>= 4.6)
@@ -272,6 +278,7 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
+    mini_magick (4.12.0)
     mini_mime (1.1.5)
     minitest (5.23.1)
     msgpack (1.7.2)
@@ -411,7 +418,12 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.2.6)
+    rotp (6.3.0)
     rouge (4.2.0)
+    rqrcode (2.2.0)
+      chunky_png (~> 1.0)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -558,6 +570,7 @@ DEPENDENCIES
   capybara
   debug
   devise (~> 4.9)
+  devise-two-factor
   devise_invitable
   dotenv
   exception_notification
@@ -569,6 +582,7 @@ DEPENDENCIES
   jbuilder
   launchy
   mailkick
+  mini_magick
   omniauth-rails_csrf_protection
   omniauth-twitter2
   paper_trail
@@ -579,6 +593,7 @@ DEPENDENCIES
   rack-mini-profiler
   rails (~> 7.1.1)
   redis
+  rqrcode (~> 2.0)
   rspec-rails (~> 6.1.0)
   rubocop
   sassc

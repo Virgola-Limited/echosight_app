@@ -8,6 +8,7 @@
 #  confirmation_sent_at         :datetime
 #  confirmation_token           :string
 #  confirmed_at                 :datetime
+#  consumed_timestep            :integer
 #  current_sign_in_at           :datetime
 #  current_sign_in_ip           :string
 #  email                        :string           default(""), not null
@@ -26,6 +27,8 @@
 #  last_sign_in_ip              :string
 #  locked_at                    :datetime
 #  name                         :string
+#  otp_required_for_login       :boolean
+#  otp_secret                   :string
 #  remember_created_at          :datetime
 #  reset_password_sent_at       :datetime
 #  reset_password_token         :string
@@ -49,13 +52,16 @@
 #  index_users_on_stripe_customer_id    (stripe_customer_id)
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
+
 class User < ApplicationRecord
   has_subscriptions
 
-  devise :invitable, :database_authenticatable, :invitable, :registerable,
+  devise :invitable, :invitable, :registerable, :two_factor_authenticatable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
          omniauth_providers: [:twitter2]
+
+  before_create :generate_otp_secret
 
   has_one :identity, dependent: :destroy
   has_many :sent_emails, dependent: :destroy
@@ -64,6 +70,8 @@ class User < ApplicationRecord
   has_many :tweet_metrics, through: :tweets
   has_many :twitter_user_metrics, through: :identity
   has_many :user_settings, dependent: :destroy
+
+  attr_accessor :otp_code
 
   %i[handle banner_url image_url enough_data_for_public_page? page_low_on_recent_data?].each do |method|
     delegate method, to: :identity, allow_nil: true
@@ -165,14 +173,51 @@ class User < ApplicationRecord
     end
   end
 
-  def respond_to_missing?(method_name, include_private = false)
-    setting_method?(method_name) || super
-  end
+  def otp_qr_code
+    issuer = ERB::Util.url_encode("EchoSight")
+    label = "#{issuer}:#{email}"
 
-  def update_setting(key, value)
-    setting = user_settings.find_or_initialize_by(key: key.to_s)
-    setting.value = value
-    setting.save!
+    logo_url = Rails.application.config.asset_host + '/static_images/logo.png'
+    uri = "otpauth://totp/#{ERB::Util.url_encode(label)}?secret=#{otp_secret}&issuer=#{ERB::Util.url_encode(issuer)}&logo=#{ERB::Util.url_encode(logo_url)}"
+    Rails.logger.debug "OTP URI: #{uri}"
+
+    qrcode = RQRCode::QRCode.new(uri)
+
+    # Create the base QR code as a PNG image
+    png = qrcode.as_png(size: 300)
+
+    # Save the QR code image to a temporary file
+    qr_tempfile = Tempfile.new(['qrcode', '.png'])
+    qr_tempfile.binmode
+    qr_tempfile.write(png.to_s)
+    qr_tempfile.rewind
+
+    # Load the QR code and logo images using MiniMagick
+    qr_image = MiniMagick::Image.open(qr_tempfile.path)
+    logo_path = Rails.root.join('app', 'javascript', 'images', 'logo.png')
+    raise "Logo file not found at #{logo_path}" unless File.exist?(logo_path)
+    logo_image = MiniMagick::Image.open(logo_path)
+
+    # Resize the logo if necessary
+    logo_image.resize '50x50'
+    Rails.logger.debug "Logo resized"
+
+    # Composite the logo onto the QR code
+    result = qr_image.composite(logo_image) do |c|
+      c.gravity 'Center'
+    end
+
+    Rails.logger.debug "**Logo composited onto QR code"
+
+    # Save the composited image for verification
+    result.write(Rails.root.join('tmp', 'composited_qr_code.png'))
+
+    # Return the QR code as a base64-encoded image
+    result.format 'png'
+    encoded_image = Base64.encode64(result.to_blob).gsub("\n", '')
+    Rails.logger.debug "**Base64 encoded image generated"
+
+    encoded_image
   end
 
   private
@@ -181,6 +226,10 @@ class User < ApplicationRecord
     return true if value == 'true'
     return false if value == 'false'
     value
+  end
+
+  def generate_otp_secret
+    self.otp_secret = ROTP::Base32.random_base32
   end
 
   def get_setting_value(key)
