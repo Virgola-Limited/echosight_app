@@ -1,16 +1,44 @@
-<footer class="md:flex md:items-center md:justify-between px-4 2xl:px-0 py-6 md:py-10">
-    <p class="text-sm text-center text-gray-500 mb-4 md:mb-0">
-        &copy; 2023<% if Time.now.year > 2023 %> - <%= Time.now.year %><% end %> <a href="<%= root_url %>" class="hover:underline" target="_blank">Echosight.io</a>. All rights reserved.
-
-    </p>
-    <%
-=begin%>
- <ul class="flex flex-wrap items-center justify-center">
-        <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Terms</a></li>
-        <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Licensing</a></li>
-        <li><a href="#" class="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400">Cookie Policy</a></li>
-        <li><a href="#" class="text-sm font-normal text-gray-500 hover:underline dark:text-gray-400">Contact</a></li>
+<footer class="bg-white dark:bg-gray-900">
+    <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+      <div class="sm:flex sm:items-center sm:justify-between">
+          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">&copy; 2023<% if Time.now.year > 2023 %> - <%= Time.now.year %><% end %> <a href="<%= root_url %>" class="hover:underline" target="_blank">Echosight.io</a>. All rights reserved.
+          </span>
+          <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+        <li>
+            <a href="#" class="hover:underline me-4 md:me-6">About</a>
+        </li>
+        <li>
+            <a href="https://www.echosight.io/privacypolicy" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+        </li>
+        <li>
+            <a href="#" id="contact-link" class="hover:underline">Contact</a>
+        </li>
+        <li>
+            <div class="flex sm:justify-center sm:mt-0">
+              <a href="https://x.com/EchosightApp" target="_blank" class="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
+                  <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 17">
+                    <path fill-rule="evenodd" d="M20 1.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.344 8.344 0 0 1-2.605.98A4.13 4.13 0 0 0 13.85 0a4.068 4.068 0 0 0-4.1 4.038 4 4 0 0 0 .105.919A11.705 11.705 0 0 1 1.4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 4.1 9.635a4.19 4.19 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 0 14.184 11.732 11.732 0 0 0 6.291 16 11.502 11.502 0 0 0 17.964 4.5c0-.177 0-.35-.012-.523A8.143 8.143 0 0 0 20 1.892Z" clip-rule="evenodd"/>
+                </svg>
+                  <span class="sr-only">Twitter page</span>
+              </a>
+          </div>
+        </li>
     </ul>
-<%
-=end%>
+
+      </div>
+    </div>
 </footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('contact-link').addEventListener('click', function(event) {
+      console.log('Contact link clicked');
+      event.preventDefault();
+      const elfsightWidget = document.getElementById('elfsight-widget');
+      console.log(elfsightWidget)
+      if (elfsightWidget) {
+        elfsightWidget.click();
+      }
+    });
+  });
+</script>
