@@ -19,7 +19,11 @@ ActiveAdmin.register User do
       user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
     end
     column :vip_since
-    actions
+    actions defaults: true do |user|
+      if user.otp_required_for_login
+        link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
+      end
+    end
   end
 
   show do
@@ -55,6 +59,12 @@ ActiveAdmin.register User do
         end
       end
     end
+  end
+
+  member_action :disable_2fa, method: :put do
+    user = User.find(params[:id])
+    user.update(otp_secret: nil, otp_required_for_login: false)
+    redirect_to admin_users_path, notice: '2FA has been disabled for the user.'
   end
 
   collection_action :invite_user, method: :get do
