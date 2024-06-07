@@ -62,14 +62,16 @@
   </div>
 
   <%= render partial:"public_pages/impressions_over_time", locals: {
-  impression_daily_data_points_for_graph: impression_daily_data_points_for_graph, impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
-  maximum_days_of_data: maximum_days_of_data,
+    page_user_name: page_user_name,
+    impression_daily_data_points_for_graph: impression_daily_data_points_for_graph,
+    impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
+    maximum_days_of_data: maximum_days_of_data,
   }
   %>
 
   <%= render partial:"public_pages/followers_graph", locals: {page_user_name: page_user_name, follower_daily_data_points_for_graph: follower_daily_data_points_for_graph, maximum_days_of_data: maximum_days_of_data} %>
 
-  <%= render partial:"public_pages/engagement_rate", locals: {engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
+  <%= render partial:"public_pages/engagement_rate", locals: {page_user_name: page_user_name, engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
 
   <%= render partial: "public_pages/top_posts", locals: {top_posts: top_posts, maximum_days_of_data: maximum_days_of_data} %>
 

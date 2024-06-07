@@ -3,11 +3,15 @@
 import html2canvas from 'html2canvas';
 
 function addExtraPadding() {
-  document.querySelector('.followers-text').classList.add('extra-padding');
+  document.querySelectorAll('.graph-title-text').forEach(element => {
+    element.classList.add('extra-padding');
+  });
 }
 
 function removeExtraPadding() {
-  document.querySelector('.followers-text').classList.remove('extra-padding');
+  document.querySelectorAll('.graph-title-text').forEach(element => {
+    element.classList.remove('extra-padding');
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
