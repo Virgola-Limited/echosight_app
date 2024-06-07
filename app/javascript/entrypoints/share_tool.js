@@ -9,8 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const chartId = modalToggleButton.getAttribute('data-chart-id');
       const modalContent = document.querySelector(`#${modalId} .p-4.md\\:p-5.space-y-4`);
       const chartElement = document.getElementById(chartId);
-      console.log(chartElement)
-      console.log(chartId)
+
+      console.log('Modal ID:', modalId);
+      console.log('Chart ID:', chartId);
+      console.log('Modal Content:', modalContent);
+      console.log('Chart Element:', chartElement);
+
       if (chartElement) {
         html2canvas(chartElement).then(canvas => {
           const context = canvas.getContext('2d');
@@ -41,6 +45,21 @@ document.addEventListener('DOMContentLoaded', function () {
           img.classList.add('w-full', 'rounded-lg');
 
           modalContent.appendChild(img);
+
+          // Add copy functionality
+          const copyButton = document.querySelector(`#${modalId} .copy-button`);
+          if (copyButton) {
+            copyButton.addEventListener('click', () => {
+              canvas.toBlob(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                  alert('Image copied to clipboard!');
+                }).catch(err => {
+                  console.error('Failed to copy image: ', err);
+                });
+              });
+            });
+          }
         }).catch(err => {
           console.error('Error capturing canvas:', err);
         });
