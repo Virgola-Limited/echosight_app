@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
             exportButton.addEventListener('click', () => {
               const link = document.createElement('a');
               link.href = canvas.toDataURL('image/png');
-              link.download = 'chart.png';
+              link.download = `${modalId}-chart.png`;
               link.click();
             });
           }
