@@ -35,26 +35,26 @@ document.addEventListener('DOMContentLoaded', function () {
         addExtraPadding();
 
         html2canvas(chartElement).then(canvas => {
-          const context = canvas.getContext('2d');
-          const text = "https://app.echosight.io";
-          const fontSize = 20;  // Increased font size
-          const padding = 10;
+          // const context = canvas.getContext('2d');
+          // const text = "https://app.echosight.io";
+          // const fontSize = 20;  // Increased font size
+          // const padding = 10;
 
-          context.font = `${fontSize}px Arial`;
-          context.fillStyle = 'black';
-          context.textAlign = 'right';
-          context.textBaseline = 'bottom';
+          // context.font = `${fontSize}px Arial`;
+          // context.fillStyle = 'black';
+          // context.textAlign = 'right';
+          // context.textBaseline = 'bottom';
 
-          const x = canvas.width - padding;
-          const y = canvas.height - padding;
+          // const x = canvas.width - padding;
+          // const y = canvas.height - padding;
 
-          const textWidth = context.measureText(text).width;
-          const textHeight = fontSize;
-          context.fillStyle = 'rgba(255, 255, 255, 0.7)';
-          context.fillRect(x - textWidth - 5, y - textHeight - 5, textWidth + 10, textHeight + 10);
+          // const textWidth = context.measureText(text).width;
+          // const textHeight = fontSize;
+          // context.fillStyle = 'rgba(255, 255, 255, 0.7)';
+          // context.fillRect(x - textWidth - 5, y - textHeight - 5, textWidth + 10, textHeight + 10);
 
-          context.fillStyle = 'black';
-          context.fillText(text, x, y);
+          // context.fillStyle = 'black';
+          // context.fillText(text, x, y);
 
           modalContent.innerHTML = '';
 
