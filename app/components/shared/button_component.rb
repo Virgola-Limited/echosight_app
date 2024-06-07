@@ -1,11 +1,12 @@
 module Shared
   class ButtonComponent < ApplicationComponent
-    def initialize(text:, url:, classes: nil, method: :post, in_form: false)
+    def initialize(text:, url: nil, classes: nil, method: :post, in_form: false, no_form: false)
       @text = text
       @url = url
       @classes = classes
       @method = method
       @in_form = in_form
+      @no_form = no_form
     end
 
     def call
@@ -19,7 +20,11 @@ module Shared
     end
 
     def render_button
-      if @in_form
+      if @no_form
+        tag.button type: 'button', class: classes, data: { controller: 'debounce', button_target: 'button', original_text: @text } do
+          @text
+        end
+      elsif @in_form
         tag.button type: 'submit', class: classes, data: { controller: 'debounce', button_target: 'button', original_text: @text, action: 'click->debounce#handleClick' } do
           @text
         end
