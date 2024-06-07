@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
       // console.log('Chart Element:', chartElement);
 
       if (chartElement) {
+        const elementsToHide = document.querySelectorAll('.hide-from-share');
+        elementsToHide.forEach(element => {
+          element.style.visibility = 'hidden';
+        });
+
         html2canvas(chartElement).then(canvas => {
           const context = canvas.getContext('2d');
           const text = "https://app.echosight.io";
@@ -45,6 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
           img.classList.add('w-full', 'rounded-lg');
 
           modalContent.appendChild(img);
+
+          elementsToHide.forEach(element => {
+            element.style.visibility = 'visible';
+          });
 
           // Add copy functionality
           const copyButton = document.querySelector(`#${modalId} .copy-button`);
