@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
       const modalContent = document.querySelector(`#${modalId} .p-4.md\\:p-5.space-y-4`);
       const chartElement = document.getElementById(chartId);
 
-      console.log('Modal ID:', modalId);
-      console.log('Chart ID:', chartId);
-      console.log('Modal Content:', modalContent);
-      console.log('Chart Element:', chartElement);
+      // console.log('Modal ID:', modalId);
+      // console.log('Chart ID:', chartId);
+      // console.log('Modal Content:', modalContent);
+      // console.log('Chart Element:', chartElement);
 
       if (chartElement) {
         html2canvas(chartElement).then(canvas => {
@@ -58,6 +58,17 @@ document.addEventListener('DOMContentLoaded', function () {
                   console.error('Failed to copy image: ', err);
                 });
               });
+            });
+          }
+
+          // Add export functionality
+          const exportButton = document.querySelector(`#${modalId} .export-button`);
+          if (exportButton) {
+            exportButton.addEventListener('click', () => {
+              const link = document.createElement('a');
+              link.href = canvas.toDataURL('image/png');
+              link.download = 'chart.png';
+              link.click();
             });
           }
         }).catch(err => {
