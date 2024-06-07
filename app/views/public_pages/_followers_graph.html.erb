@@ -5,7 +5,7 @@
 <div class="inline-block w-full dark:bg-gray-900" id="followers-chart-container">
   <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center justify-between">
     <div class="flex items-center">
-      <%=page_user_name %>'s Followers
+      <div class="followers-text"><%=page_user_name %>'s Followers</div>
       <span class="ml-1 hide-from-share">
         <div data-tooltip-target="followers-tooltip">
           <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -115,3 +115,10 @@
     <% end %>
   });
 </script>
+
+<style>
+  .extra-padding {
+    padding-left: 20px; /* Adjust as needed */
+  }
+</style>
+

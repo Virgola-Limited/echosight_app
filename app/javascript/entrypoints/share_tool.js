@@ -2,6 +2,14 @@
 
 import html2canvas from 'html2canvas';
 
+function addExtraPadding() {
+  document.querySelector('.followers-text').classList.add('extra-padding');
+}
+
+function removeExtraPadding() {
+  document.querySelector('.followers-text').classList.remove('extra-padding');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-modal-toggle]').forEach(modalToggleButton => {
     modalToggleButton.addEventListener('click', function () {
@@ -20,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         elementsToHide.forEach(element => {
           element.style.visibility = 'hidden';
         });
+        addExtraPadding();
 
         html2canvas(chartElement).then(canvas => {
           const context = canvas.getContext('2d');
@@ -54,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
           elementsToHide.forEach(element => {
             element.style.visibility = 'visible';
           });
+          removeExtraPadding();
 
           // Add copy functionality
           const copyButton = document.querySelector(`#${modalId} .copy-button`);
