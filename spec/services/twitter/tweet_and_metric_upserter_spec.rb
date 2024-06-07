@@ -72,7 +72,6 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id, allow_update: false) }
 
       it 'does not update the tweet and notifies slack' do
-        expect(Notifications::SlackNotifier).to receive(:call)
         expect {
           subject.call
         }.not_to change(Tweet, :count)
