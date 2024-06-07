@@ -1,4 +1,4 @@
-<%= render(Shared::ShareToolComponent.new(modal_id: 'share-followers-modal', chart_id: 'followers-chart', title: 'Share Followers Chart Image')) %>
+<%= render(Shared::ShareToolComponent.new(modal_id: 'share-followers-modal', chart_id: 'followers-chart-container', title: 'Share Followers Chart')) %>
 
 <!-- followers -->
 <div class="inline-block w-full">
@@ -13,7 +13,7 @@
         </div>
       </span>
     </div>
-    <button data-modal-target="share-followers-modal" data-chart-id="followers-chart" data-modal-toggle="share-followers-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    <button data-modal-target="share-followers-modal" data-chart-id="followers-chart-container" data-modal-toggle="share-followers-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
       Share
     </button>
   </h2>
@@ -23,11 +23,14 @@
 
 <%= render Shared::TooltipComponent.new(id: "followers-tooltip", text: tooltip_text) %>
 
-<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4" id="followers-chart-container">
   <% if follower_daily_data_points_for_graph.count < 2 %>
-   <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the followers graph.</p>
+    <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the followers graph.</p>
   <% else %>
-    <div id="followers-chart"></div>
+    <div id="followers-chart" class="w-full"></div>
+    <div class="flex justify-end mt-2">
+      <%= link_to 'echosight.io', root_url, class: 'text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:text-yellow-300' %>
+    </div>
   <% end %>
 </div>
 
