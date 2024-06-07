@@ -1,19 +1,27 @@
-<div class="inline-block">
-  <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-    Top Posts
-    <span class="ml-1">
-      <div data-tooltip-target="top-posts-tooltip">
-        <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-    </span>
-  </h2>
-</div>
-
 <% tooltip_text = "We show the top posts from the last 7 days." %>
-<%= render Shared::TooltipComponent.new(id: "top-posts-tooltip", text: tooltip_text) %>
 
+<div class="inline-block w-full dark:bg-gray-900" id="top-posts-container-eventually">
+  <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center justify-between">
+    <div class="flex items-center">
+      <div class="graph-title-text tracking-wide"><%=page_user_name %>'s&nbsp;Top Posts</div>
+      <span class="ml-1 hide-from-share">
+        <div data-tooltip-target="top-posts-tooltip">
+          <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+      </span>
+    </div>
+      <button data-modal-target="share-top-posts-modal" data-chart-id="top-posts-container" data-modal-toggle="share-top-posts-modal" class="hide-from-share block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+        Share
+      </button>
+  </h2>
+
+<%= render Shared::TooltipComponent.new(id: "top-posts-tooltip", text: tooltip_text) %>
+<%= render(Shared::ShareToolComponent.new(modal_id: 'share-top-posts-modal', chart_id: 'top-posts-container', title: 'Share Followers Chart')) %>
+<div id="top-posts-container" class="hidden">
+  test
+</div>
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
     <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
