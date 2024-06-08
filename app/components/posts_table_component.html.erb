@@ -4,6 +4,9 @@
                 <th scope="col" class="p-0 md:table-cell md:p-1">
                     Post
                 </th>
+                <th scope="col" class="md:table-cell p-1">
+                    Impressions
+                </th>
                 <th scope="col" class="hidden md:table-cell p-1">
                     Retweets
                 </th>
@@ -16,9 +19,7 @@
                 <th scope="col" class="hidden md:hidden lg:table-cell p-1">
                     Replies
                 </th>
-                <th scope="col" class="md:table-cell p-1">
-                    Impressions
-                </th>
+
                 <th scope="col" class="hidden md:table-cell p-1">
                     Engagement Rate
                 </th>
@@ -28,10 +29,14 @@
             </tr>
         </thead>
         <tbody>
-          <% posts.each do |tweet_metric| %>
-              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <% posts.each_with_index do |tweet_metric, index| %>
+          <% index < rows_to_show ? row_class = '' : row_class = ' hide-from-share' %>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 <%=row_class %>">
                   <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white">
                       <%= text_with_images(tweet_metric.tweet.text) %>
+                  </td>
+                  <td class="md:table-cell px-6 py-4">
+                      <%= rounded_number(tweet_metric.impression_count) %>
                   </td>
                   <td class="hidden md:table-cell p-1">
                       <%= rounded_number(tweet_metric.retweet_count) %>
@@ -44,9 +49,6 @@
                   </td>
                   <td class="hidden md:hidden lg:table-cell p-1">
                       <%= rounded_number(tweet_metric.reply_count) %>
-                  </td>
-                  <td class="md:table-cell px-6 py-4">
-                      <%= rounded_number(tweet_metric.impression_count) %>
                   </td>
                  <td class="hidden md:table-cell px-6 py-4 relative">
                  <div class="engagement-rate-cell">
@@ -67,7 +69,7 @@
                     </a>
                   </td>
               </tr>
-          <% end %>
+        <% end %>
       </tbody>
     </table>
     <% posts.each do |tweet_metric| %>

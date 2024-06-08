@@ -1,5 +1,3 @@
-// app/javascript/components/share_tool_component.js
-
 import html2canvas from 'html2canvas';
 
 function addExtraPadding() {
@@ -59,14 +57,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if(originalDisplay !== 'block'){
           chartElement.style.display = 'block';
         }
+
         const elementsToHide = document.querySelectorAll('.hide-from-share');
         elementsToHide.forEach(element => {
           element.style.visibility = 'hidden';
         });
+
+        // Temporarily remove hidden rows
+        const hiddenRows = document.querySelectorAll('tr.hide-from-share');
+        const removedRows = [];
+        hiddenRows.forEach(row => {
+          if (row.parentNode) {
+            removedRows.push({parent: row.parentNode, row: row});
+            row.parentNode.removeChild(row);
+          }
+        });
+
         addExtraPadding();
 
         html2canvas(chartElement).then(canvas => {
-          addText()
+          addText(canvas);
 
           modalContent.innerHTML = '';
 
@@ -75,6 +85,11 @@ document.addEventListener('DOMContentLoaded', function () {
           img.classList.add('w-full', 'rounded-lg');
 
           modalContent.appendChild(img);
+
+          // Reinsert hidden rows back to their original position
+          removedRows.forEach(({parent, row}) => {
+            parent.appendChild(row);
+          });
 
           elementsToHide.forEach(element => {
             element.style.visibility = 'visible';

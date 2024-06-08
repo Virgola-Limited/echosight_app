@@ -1,6 +1,6 @@
 <% tooltip_text = "We show the top posts from the last 7 days." %>
 
-<div class="inline-block w-full dark:bg-gray-900">
+<div class="inline-block w-full dark:bg-gray-900" id="top-posts-container">
   <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center justify-between">
     <div class="flex items-center">
       <div class="graph-title-text tracking-wide"><%=page_user_name %>'s&nbsp;Top Posts</div>
@@ -21,20 +21,6 @@
   <%= render(Shared::ShareToolComponent.new(modal_id: 'share-top-posts-modal', chart_id: 'top-posts-container', title: 'Share Posts Table')) %>
 
   <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-    <%= render PostsTableComponent.new(posts: top_posts) %>
-  </div>
-</div>
-
-<div id="top-posts-container" class="hidden">
-  <div class="inline-block w-full dark:bg-gray-900">
-    <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center justify-between">
-      <div class="flex items-center">
-        <div class="graph-title-text tracking-wide"><%=page_user_name %>'s&nbsp;Top Posts</div>
-      </div>
-    </h2>
-
-    <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-      <%= render PostsTableComponent.new(posts: top_posts, max_posts: 5) %>
-    </div>
+    <%= render PostsTableComponent.new(posts: top_posts, rows_to_show: 5) %>
   </div>
 </div>
