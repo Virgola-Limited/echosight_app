@@ -42,7 +42,7 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When the user is logged in signed up to Twitter with no subscription
     identity = simulate_twitter_connection(user)
-
+    identity.reload
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
     expect(page.title).to eq("Twitter User's Public Page")
