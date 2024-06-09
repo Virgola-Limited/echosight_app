@@ -6,6 +6,24 @@ module Users
 
     # before_action :prevent_sign_up, only: [:create]
 
+    def update
+      self.resource = resource_class.to_adapter.get!(send(:"current_#{resource_name}").to_key)
+      resource_updated = update_resource(resource, account_update_params)
+      yield resource if block_given?
+      if resource_updated
+        if is_flashing_format?
+          set_flash_message :notice, update_needs_confirmation?(resource, prev_unconfirmed_email) ?
+            :update_needs_confirmation : :updated
+        end
+        bypass_sign_in resource, scope: resource_name if sign_in_after_change_password?
+        respond_with resource, location: after_update_path_for(resource)
+      else
+        clean_up_passwords resource
+        set_minimum_password_length
+        respond_with resource
+      end
+    end
+
     # Redirect to a custom path after a user signs up but isn't confirmed
     def after_inactive_sign_up_path_for(_resource)
       # remove the flash and show a friendly custom message
@@ -29,7 +47,11 @@ module Users
       end
     end
 
-    # private
+    private
+
+    def account_update_params
+      params.require(:user).permit(:name, :last_name, :email, :password, :password_confirmation, :current_password, :following_on_twitter)
+    end
 
     # def prevent_sign_up
     #   flash.delete(:alert)

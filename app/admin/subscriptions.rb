@@ -10,6 +10,17 @@ ActiveAdmin.register Subscription do
     # column :stripe_price_id
     # column :stripe_subscription_id
     column :user_id
+    column 'email' do |subscription|
+      mail_to subscription.user.email
+    end
+
+    column 'Twitter' do |subscription|
+      if subscription.user.identity.present?
+        link_to 'Twitter Profile', "https://x.com/#{subscription.user.identity.handle}", target: '_blank'
+      else
+        'Missing identity'
+      end
+    end
 
     column 'Identity' do |subscription|
       if subscription.user.identity.present?
@@ -25,6 +36,7 @@ ActiveAdmin.register Subscription do
         'Not connected to X/Twitter'
       end
     end
+
   end
 
   # Additional configurations or customizations if needed

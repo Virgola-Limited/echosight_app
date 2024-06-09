@@ -17,8 +17,6 @@ Rails.application.routes.draw do
   resources :dashboard, only: :index
   root 'dashboard#index'
 
-
-
   resource :email_subscription, only: [:edit, :update]
   get 'p/:handle', to: 'public_pages#show', as: :public_page
   get 'track/open/:tracking_id', to: 'tracker#open'

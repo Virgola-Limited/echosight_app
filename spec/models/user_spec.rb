@@ -15,6 +15,7 @@
 #  enabled_without_subscription :boolean          default(FALSE)
 #  encrypted_password           :string           default(""), not null
 #  failed_attempts              :integer          default(0), not null
+#  following_on_twitter         :boolean          default(FALSE)
 #  invitation_accepted_at       :datetime
 #  invitation_created_at        :datetime
 #  invitation_limit             :integer

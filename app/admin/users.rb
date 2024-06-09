@@ -1,11 +1,17 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register User do
-  permit_params :name, :last_name, :email
+  permit_params :name, :last_name, :email, :following_on_twitter
 
   actions :index, :show, :edit, :update
 
   filter :email
+
+  # Custom sorting
+  scope :all, default: true do |users|
+    users.joins('LEFT JOIN identities ON users.id = identities.user_id')
+         .order('identities.id IS NULL, following_on_twitter ASC')
+  end
 
   index do
     column :name
@@ -19,6 +25,16 @@ ActiveAdmin.register User do
       user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
     end
     column :vip_since
+    column :following_on_twitter do |user|
+      check_box_tag 'following_on_twitter', '1', user.following_on_twitter, class: 'toggle-following-on-twitter', data: { user_id: user.id }
+    end
+    column 'Twitter' do |user|
+      if user.identity.present?
+        link_to 'Twitter Profile', "https://x.com/#{user.identity.handle}", target: '_blank'
+      else
+        'Missing identity'
+      end
+    end
     actions defaults: true do |user|
       if user.otp_required_for_login
         link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
@@ -52,11 +68,11 @@ ActiveAdmin.register User do
 
   controller do
     def update
-      super do |_format|
-        if resource.valid? && resource.unconfirmed_email.present?
-          resource.confirm # Manually confirm the new email
-          redirect_to admin_user_path(resource) and return if resource.errors.blank?
-        end
+      user = User.find(params[:id])
+      user.update(permitted_params[:user])
+      respond_to do |format|
+        format.html { redirect_to admin_user_path(user) }
+        format.js { head :ok }
       end
     end
   end
@@ -86,4 +102,26 @@ ActiveAdmin.register User do
   action_item :invite, only: :index do
     link_to 'Invite User', invite_user_admin_users_path
   end
+end
+
+# Add JavaScript to handle the checkbox toggle with Ajax
+js do
+  <<-JS
+    $(document).on('change', '.toggle-following-on-twitter', function() {
+      var userId = $(this).data('user_id');
+      var followingOnTwitter = $(this).is(':checked');
+
+      $.ajax({
+        type: 'PATCH',
+        url: '/users/' + userId,
+        data: { user: { following_on_twitter: followingOnTwitter } },
+        success: function(response) {
+          console.log('Updated successfully');
+        },
+        error: function(response) {
+          console.log('Update failed');
+        }
+      });
+    });
+  JS
 end
