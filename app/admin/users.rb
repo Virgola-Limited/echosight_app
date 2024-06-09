@@ -10,7 +10,7 @@ ActiveAdmin.register User do
   # Custom sorting
   scope :all, default: true do |users|
     users.joins('LEFT JOIN identities ON users.id = identities.user_id')
-         .order('identities.id IS NULL, following_on_twitter ASC')
+         .order(Arel.sql('identities.id IS NULL, following_on_twitter ASC'))
   end
 
   index do
@@ -102,26 +102,37 @@ ActiveAdmin.register User do
   action_item :invite, only: :index do
     link_to 'Invite User', invite_user_admin_users_path
   end
-end
 
-# Add JavaScript to handle the checkbox toggle with Ajax
-js do
-  <<-JS
-    $(document).on('change', '.toggle-following-on-twitter', function() {
-      var userId = $(this).data('user_id');
-      var followingOnTwitter = $(this).is(':checked');
+  footer = <<-HTML
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('here');
+        document.querySelectorAll('.toggle-following-on-twitter').forEach(function(checkbox) {
+          checkbox.addEventListener('change', function() {
+            var userId = this.dataset.userId;
+            var followingOnTwitter = this.checked;
 
-      $.ajax({
-        type: 'PATCH',
-        url: '/users/' + userId,
-        data: { user: { following_on_twitter: followingOnTwitter } },
-        success: function(response) {
-          console.log('Updated successfully');
-        },
-        error: function(response) {
-          console.log('Update failed');
-        }
+            fetch(`/users/${userId}`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              },
+              body: JSON.stringify({ user: { following_on_twitter: following_on_twitter } })
+            }).then(function(response) {
+              if (response.ok) {
+                console.log('Updated successfully');
+              } else {
+                console.log('Update failed');
+              }
+            });
+          });
+        });
       });
-    });
-  JS
+    </script>
+  HTML
+
+  after_build do |page|
+    page.instance_variable_set(:@footer, footer.html_safe)
+  end
 end
