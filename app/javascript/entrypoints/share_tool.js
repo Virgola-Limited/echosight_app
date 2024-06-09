@@ -12,8 +12,7 @@ function removeExtraPadding() {
   });
 }
 
-function addText(){
-  return
+function addText(canvas) {
   const context = canvas.getContext('2d');
   const text = "https://app.echosight.io";
   const fontSize = 20;  // Increased font size
@@ -36,96 +35,109 @@ function addText(){
   context.fillText(text, x, y);
 }
 
-function debugSharing(){
-  console.log('Modal ID:', modalId);
-  console.log('Chart ID:', chartId);
-  console.log('Modal Content:', modalContent);
-  console.log('Chart Element:', chartElement);
+function hideElements(selector) {
+  document.querySelectorAll(selector).forEach(element => {
+    element.style.visibility = 'hidden';
+  });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function showElements(selector) {
+  document.querySelectorAll(selector).forEach(element => {
+    element.style.visibility = 'visible';
+  });
+}
+
+function removeElements(selector) {
+  const elements = document.querySelectorAll(selector);
+  const removedElements = [];
+  elements.forEach(element => {
+    if (element.parentNode) {
+      removedElements.push({ parent: element.parentNode, element });
+      element.parentNode.removeChild(element);
+    }
+  });
+  return removedElements;
+}
+
+function reinsertElements(removedElements) {
+  removedElements.forEach(({ parent, element }) => {
+    parent.appendChild(element);
+  });
+}
+
+function handleCopyButton(canvas, modalId) {
+  const copyButton = document.querySelector(`#${modalId} .copy-button`);
+  if (copyButton) {
+    copyButton.addEventListener('click', () => {
+      canvas.toBlob(blob => {
+        const item = new ClipboardItem({ 'image/png': blob });
+        navigator.clipboard.write([item]).then(() => {
+          alert('Image copied to clipboard!');
+        }).catch(err => {
+          console.error('Failed to copy image: ', err);
+        });
+      });
+    });
+  }
+}
+
+function handleExportButton(canvas, modalId) {
+  const exportButton = document.querySelector(`#${modalId} .export-button`);
+  if (exportButton) {
+    exportButton.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = `${modalId}-chart.png`;
+      link.click();
+    });
+  }
+}
+
+function captureChart(chartElement, modalContent, modalId) {
+  addExtraPadding();
+
+  html2canvas(chartElement).then(canvas => {
+
+    modalContent.innerHTML = '';
+
+    const img = new Image();
+    img.src = canvas.toDataURL('image/png');
+    img.classList.add('w-full', 'rounded-lg');
+
+    modalContent.appendChild(img);
+
+    handleCopyButton(canvas, modalId);
+    handleExportButton(canvas, modalId);
+
+    removeExtraPadding();
+  }).catch(err => {
+    console.error('Error capturing canvas:', err);
+  });
+}
+
+function setupModalToggle() {
   document.querySelectorAll('[data-modal-toggle]').forEach(modalToggleButton => {
     modalToggleButton.addEventListener('click', function () {
       const modalId = modalToggleButton.getAttribute('data-modal-target');
       const chartId = modalToggleButton.getAttribute('data-chart-id');
       const modalContent = document.querySelector(`#${modalId} .p-4.md\\:p-5.space-y-4`);
       const chartElement = document.getElementById(chartId);
-      console.log(chartElement);
+
       if (chartElement) {
         const originalDisplay = chartElement.style.display;
-        console.log('originalDisplay', originalDisplay);
-        if(originalDisplay !== 'block'){
-          chartElement.style.display = 'block';
-        }
+        chartElement.style.display = 'block';
 
-        const elementsToHide = document.querySelectorAll('.hide-from-share');
-        elementsToHide.forEach(element => {
-          element.style.visibility = 'hidden';
-        });
+        hideElements('.hide-from-share');
+        const removedRows = removeElements('tr.hide-from-share');
 
-        // Temporarily remove hidden rows
-        const hiddenRows = document.querySelectorAll('tr.hide-from-share');
-        const removedRows = [];
-        hiddenRows.forEach(row => {
-          if (row.parentNode) {
-            removedRows.push({parent: row.parentNode, row: row});
-            row.parentNode.removeChild(row);
-          }
-        });
+        captureChart(chartElement, modalContent, modalId);
 
-        addExtraPadding();
-
-        html2canvas(chartElement).then(canvas => {
-          addText(canvas);
-
-          modalContent.innerHTML = '';
-
-          const img = new Image();
-          img.src = canvas.toDataURL('image/png');
-          img.classList.add('w-full', 'rounded-lg');
-
-          modalContent.appendChild(img);
-
-          // Reinsert hidden rows back to their original position
-          removedRows.forEach(({parent, row}) => {
-            parent.appendChild(row);
-          });
-
-          elementsToHide.forEach(element => {
-            element.style.visibility = 'visible';
-          });
-          removeExtraPadding();
-          chartElement.style.display = originalDisplay;
-
-          // Add copy functionality
-          const copyButton = document.querySelector(`#${modalId} .copy-button`);
-          if (copyButton) {
-            copyButton.addEventListener('click', () => {
-              canvas.toBlob(blob => {
-                const item = new ClipboardItem({ 'image/png': blob });
-                navigator.clipboard.write([item]).then(() => {
-                  alert('Image copied to clipboard!');
-                }).catch(err => {
-                  console.error('Failed to copy image: ', err);
-                });
-              });
-            });
-          }
-
-          // Add export functionality
-          const exportButton = document.querySelector(`#${modalId} .export-button`);
-          if (exportButton) {
-            exportButton.addEventListener('click', () => {
-              const link = document.createElement('a');
-              link.href = canvas.toDataURL('image/png');
-              link.download = `${modalId}-chart.png`;
-              link.click();
-            });
-          }
-        }).catch(err => {
-          console.error('Error capturing canvas:', err);
-        });
+        reinsertElements(removedRows);
+        showElements('.hide-from-share');
+        chartElement.style.display = originalDisplay;
       }
     });
   });
-});
+}
+
+document.addEventListener('DOMContentLoaded', setupModalToggle);
