@@ -19,7 +19,7 @@ module EmailLogger
     body = mail.body.encoded
 
     # Find the user by email
-    user = User.find_by(email: recipient)
+    user = User.find_by(email: recipient) || User.find_by(unconfirmed_email: recipient)
 
     # Create the SentEmail record
     SentEmail.create!(

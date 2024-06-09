@@ -95,10 +95,9 @@ RSpec.feature 'User Authentication' do
     expect(page).to have_content('signed in to Echosight')
 
     # Step 7: Log out
-    # TODO: Fix
-    # find('img[alt="User Avatar"]').click
-    # click_link 'Sign out'
-
+    # logout(user)
+    # save_and_open_screenshot
+    # byebug
     # expect(page).to have_content("You're now signed out of Echosight.")
 
     # Step 8: Lock account with too many failed attempts
