@@ -20,4 +20,8 @@
 class FeatureRequest < ApplicationRecord
   validates :title, presence: true, uniqueness: { case_sensitive: false }
   has_many :votes, as: :votable
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["title", "description"]
+  end
 end
