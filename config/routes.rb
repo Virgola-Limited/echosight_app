@@ -13,13 +13,13 @@ Rails.application.routes.draw do
   end
   #########################################
   mount StripeEvent::Engine, at: '/stripe/webhook'
-
-  resources :dashboard, only: :index
   root 'dashboard#index'
 
 
-
+  resources :bug_reports, only: [:index, :create]
+  resources :dashboard, only: :index
   resource :email_subscription, only: [:edit, :update]
+  resources :feature_requests, only: [:index, :create]
   get 'p/:handle', to: 'public_pages#show', as: :public_page
   get 'track/open/:tracking_id', to: 'tracker#open'
   resources :single_message, only: :index
@@ -30,10 +30,12 @@ Rails.application.routes.draw do
   post 'disable_two_factor_authentication', to: 'two_factor_authentications#disable'
 
   resource :user_settings, only: [:edit, :update]
+  resources :votes, only: [:create] # For upvoting
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get 'up' => 'rails/health#show', as: :rails_health_check
+
   devise_for :users, controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',

@@ -13,25 +13,25 @@
     <!-- Header Photo -->
     <% if hide_profile_banner? %>
       <div class="flex items-end justify-between px-4 py-4">
-  <!-- Profile Photo and Info Container -->
-  <div class="flex items-end justify-between px-4 py-4">
-  <!-- Profile Photo and Info Container -->
-  <div class="flex items-center space-x-4">
-    <!-- Profile Photo -->
-    <div class="min-h-24 min-w-24 h-28 w-28">
-      <%= render_twitter_image("rounded-full border-4 border-white shadow-lg object-cover aspect-ratio aspect-ratio-1") %>
-    </div>
+        <!-- Profile Photo and Info Container -->
+        <div class="flex items-end justify-between px-4 py-4">
+        <!-- Profile Photo and Info Container -->
+        <div class="flex items-center space-x-4">
+          <!-- Profile Photo -->
+          <div class="min-h-24 min-w-24 h-28 w-28">
+            <%= render_twitter_image("rounded-full border-4 border-white shadow-lg object-cover aspect-ratio aspect-ratio-1") %>
+          </div>
 
-    <!-- Profile Info -->
-    <div class="py-2 md:px-4 rounded-lg" data-test="user-profile">
-      <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= page_user_name %></h1>
-      <div class="text-xs dark:text-white lg:mb-3">@<%= page_user_handle %></div>
-      <div class="text-m dark:text-white"><%= page_user_twitter_bio %></div>
-    </div>
-  </div>
-</div>
+          <!-- Profile Info -->
+          <div class="py-2 md:px-4 rounded-lg" data-test="user-profile">
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= page_user_name %></h1>
+            <div class="text-xs dark:text-white lg:mb-3">@<%= page_user_handle %></div>
+            <div class="text-m dark:text-white"><%= page_user_twitter_bio %></div>
+          </div>
+        </div>
+      </div>
 
-</div>
+      </div>
     <% else %>
     <% if page_user_banner_url.present? %>
       <div style="width: 100%">

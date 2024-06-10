@@ -14,7 +14,8 @@ module Shared
       [
         { name: 'Dashboard', path: root_url },
         { name: 'My Public Page', path: demo_or_real_public_page_link },
-        { name: 'Subscription', path: subscription_path }
+        { name: 'Subscription', path: subscription_path },
+        { name: 'Feature Requests', path: feature_requests_path }
       ]
     end
   end

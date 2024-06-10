@@ -10,7 +10,7 @@ module Shared
     def classes
       case heading_type
       when :h1
-        "text-5xl font-extrabold dark:text-white"
+        "text-3xl font-extrabold dark:text-white mb-6"
       when :h2
         "text-2xl sm:text-lg font-bold text-gray-900 dark:text-white"
       when :h3
