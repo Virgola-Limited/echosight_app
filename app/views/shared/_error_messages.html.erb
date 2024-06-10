@@ -1,0 +1,12 @@
+<!-- app/views/shared/_error_messages.html.erb -->
+<% if object.errors.any? %>
+<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this feature request from being saved:</h2>
+    <ul>
+      <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
