@@ -77,3 +77,6 @@
 
       <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet_metric.tweet.id}", text: tooltip_text) %>
     <% end %>
+    <div class="flex justify-end mt-2">
+        <%= link_to 'echosight.io', root_url, class: 'text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:text-yellow-300' %>
+    </div>
