@@ -26,7 +26,7 @@ RSpec.feature 'Public Page Access' do
     # Context: When the user is logged in but not signed up to Twitter
     login_user(user)
 
-    visit public_page_path(:demo)
+    visit current_path
     expect(page).to have_text('Dashboard')
 
     expect(page.title).to eq("Sammy Circuit's Public Page")

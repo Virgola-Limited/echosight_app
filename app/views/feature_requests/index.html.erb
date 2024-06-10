@@ -20,7 +20,7 @@ Check out the feature requests below and upvote your favorites. If you have a fe
     </h2>
     <div id="accordion-collapse-body-<%= index %>" class="hidden" aria-labelledby="accordion-collapse-heading-<%= index %>">
       <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-        <p class="mb-2 text-gray-500 dark:text-gray-400"><%= feature_request.description.present? || "No description provided" %></p>
+        <p class="mb-2 text-gray-500 dark:text-gray-400"><%= feature_request.description.present? ? feature_request.description : "No description provided" %></p>
       </div>
     </div>
   <% end %>
