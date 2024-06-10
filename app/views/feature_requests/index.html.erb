@@ -1,5 +1,9 @@
 <%= render Shared::HeadingComponent.new(text: 'Feature Requests', heading_type: :h1) %>
 
+<p class="paragraph-base">
+Check out the feature requests below and upvote your favorites. If you have a feature request of your own, you can add it at the bottom of the page.
+</p>
+
 <div id="accordion-collapse" data-accordion="collapse" data-controller="vote">
   <% @feature_requests.each_with_index do |feature_request, index| %>
     <h2 id="accordion-collapse-heading-<%= index %>">
