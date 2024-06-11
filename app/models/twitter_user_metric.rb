@@ -7,6 +7,8 @@
 #  id              :bigint           not null, primary key
 #  date            :date
 #  followers_count :integer
+#  following_count :integer
+#  listed_count    :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  identity_id     :bigint           not null

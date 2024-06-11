@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveAdmin.register User do
   permit_params :name, :last_name, :email
 
@@ -13,10 +15,15 @@ ActiveAdmin.register User do
     column :sign_in_count
     column :current_sign_in_at
     column :last_sign_in_at
-    column "Identity Handle" do |user|
+    column 'Identity Handle' do |user|
       user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
     end
-    actions
+    column :vip_since
+    actions defaults: true do |user|
+      if user.otp_required_for_login
+        link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
+      end
+    end
   end
 
   show do
@@ -38,20 +45,26 @@ ActiveAdmin.register User do
       f.input :name
       f.input :last_name
       f.input :email
-      # Add other inputs here if needed
+      f.input :vip_since
     end
     f.actions
   end
 
   controller do
     def update
-      super do |format|
+      super do |_format|
         if resource.valid? && resource.unconfirmed_email.present?
-          resource.confirm  # Manually confirm the new email
+          resource.confirm # Manually confirm the new email
           redirect_to admin_user_path(resource) and return if resource.errors.blank?
         end
       end
     end
+  end
+
+  member_action :disable_2fa, method: :put do
+    user = User.find(params[:id])
+    user.update(otp_secret: nil, otp_required_for_login: false)
+    redirect_to admin_users_path, notice: '2FA has been disabled for the user.'
   end
 
   collection_action :invite_user, method: :get do
@@ -63,9 +76,9 @@ ActiveAdmin.register User do
   collection_action :send_invite, method: :post do
     user = User.invite!(email: params[:user][:email], name: params[:user][:name]) # Adjust as per your User model attributes
     if user.errors.empty?
-      redirect_to admin_users_path, notice: "User has been successfully invited."
+      redirect_to admin_users_path, notice: 'User has been successfully invited.'
     else
-      flash[:error] = user.errors.full_messages.join(", ")
+      flash[:error] = user.errors.full_messages.join(', ')
       redirect_to invite_user_admin_users_path
     end
   end

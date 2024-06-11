@@ -1,4 +1,6 @@
 <script>
+    let card
+
     document.addEventListener('DOMContentLoaded', function () {
       var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
       var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
@@ -6,6 +8,8 @@
 
       // Function to update Stripe Element styles based on the theme
       function updateStripeElementStyles(theme) {
+        if (card == null) return;
+
         var newStyles = {
           base: {
             fontSize: '16px',

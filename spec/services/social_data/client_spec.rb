@@ -7,6 +7,25 @@ RSpec.describe SocialData::Client do
   let(:user) { identity.user }
   let(:client) { described_class.new(user: user) }
 
+  describe '#fetch_user_details' do
+    let(:user_id) { user.identity.uid.to_i }
+    let(:expected_keys) do
+      %w[id id_str name screen_name location url description protected verified
+        followers_count friends_count listed_count favourites_count statuses_count created_at profile_banner_url profile_image_url_https]
+    end
+
+    it 'fetches user details by user_id' do
+      VCR.use_cassette('SocialData__Client') do
+        response = client.fetch_user_details(user_id)
+
+        expect(response).to include(*expected_keys)
+        expect(response['id']).to eq(user_id)
+        expect(response['name']).to eq('Loftwah')
+        expect(response['screen_name']).to eq('loftwah')
+      end
+    end
+  end
+
   describe '#search_tweets' do
     let(:user_keys) do
       %w[id id_str name screen_name location url description protected verified

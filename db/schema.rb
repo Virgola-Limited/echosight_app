@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_10_220045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bug_reports", force: :cascade do |t|
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title"
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_bug_reports_on_user_id"
+  end
+
+  create_table "feature_requests", force: :cascade do |t|
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title"
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_feature_requests_on_user_id"
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider"
     t.string "uid"
@@ -81,6 +99,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
+  end
+
+  create_table "sent_emails", force: :cascade do |t|
+    t.string "recipient", null: false
+    t.string "subject", null: false
+    t.text "body", null: false
+    t.string "tracking_id", null: false
+    t.string "email_type", null: false
+    t.boolean "opened", default: false
+    t.datetime "opened_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tracking_id"], name: "index_sent_emails_on_tracking_id", unique: true
+    t.index ["user_id"], name: "index_sent_emails_on_user_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -120,6 +153,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.bigint "in_reply_to_status_id"
     t.bigint "api_batch_id"
     t.string "status"
+    t.string "source"
     t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
@@ -132,7 +166,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "following_count"
+    t.integer "listed_count"
     t.index ["identity_id"], name: "index_twitter_user_metrics_on_identity_id"
+  end
+
+  create_table "user_settings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "key"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_settings_on_user_id"
   end
 
   create_table "user_twitter_data_updates", force: :cascade do |t|
@@ -181,6 +226,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.integer "invitations_count", default: 0
     t.string "stripe_customer_id"
     t.boolean "enabled_without_subscription", default: false
+    t.date "vip_since"
+    t.string "otp_secret"
+    t.integer "consumed_timestep"
+    t.boolean "otp_required_for_login"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -201,13 +250,28 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_042052) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "votable_type", null: false
+    t.bigint "votable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_votes_on_user_id"
+    t.index ["votable_type", "votable_id"], name: "index_votes_on_votable"
+  end
+
+  add_foreign_key "bug_reports", "users"
+  add_foreign_key "feature_requests", "users"
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
   add_foreign_key "twitter_user_metrics", "identities"
+  add_foreign_key "user_settings", "users"
   add_foreign_key "user_twitter_data_updates", "api_batches"
   add_foreign_key "user_twitter_data_updates", "identities"
+  add_foreign_key "votes", "users"
 end

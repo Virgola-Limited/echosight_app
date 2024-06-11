@@ -15,6 +15,8 @@ class SubscriptionsController < AuthenticatedController
       prices = Stripe::Price.list(product: product.id, active: true)
       OpenStruct.new(id: product.id, name: product.name, description: product.description, prices: prices.data)
     end
+
+    @auto_select_product = @products.size == 1 && @products.first.prices.size == 1 ? @products.first : nil
   end
 
   def show
@@ -29,13 +31,19 @@ class SubscriptionsController < AuthenticatedController
   end
 
   def create
+    if params[:plan_id].blank?
+      redirect_to new_subscription_path, alert: "Please select a subscription plan."
+      return
+    end
+
     result = CreateSubscriptionService.new(current_user, params[:plan_id], params[:stripeToken]).call
     if result[:success]
       notice = "Subscription created successfully."
       redirect_to dashboard_index_path, notice: notice
     else
+      error = result[:error] || StandardError.new("Unknown error: #{result.inspect}")
+      ExceptionNotifier.notify_exception(error, data: { user: current_user, plan_id: params[:plan_id] })
       redirect_to new_subscription_path, alert: "Failed to create subscription. Please contact x@echosight.io for support."
-      ExceptionNotifier.notify_exception(result[:error], data: { user: current_user, plan_id: params[:plan_id] })
     end
   end
 
@@ -44,7 +52,12 @@ class SubscriptionsController < AuthenticatedController
   def set_user_subscription
     @subscription = current_user.subscriptions.active.first
     unless @subscription
-      redirect_to new_subscription_path, notice: 'Setup your subscription below to enable your public page'
+      notice = 'Setup your subscription below to enable your public page'
+      trial_period_days = ENV.fetch('TRIAL_PERIOD_DAYS', 0)
+      if current_user.eligible_for_trial?
+        notice = "We are currently offering a #{trial_period_days} day free trial for our early adopters. Subscribe now and pay in 90 days."
+      end
+      redirect_to new_subscription_path, notice: notice
     end
   end
 end

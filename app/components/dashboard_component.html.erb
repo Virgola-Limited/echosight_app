@@ -13,6 +13,11 @@ Yep 1. is perfect
 -->
 <div class="flex flex-col items-center">
 <% if show_steps_to_complete_message? %>
+  <% if eligible_for_trial? %>
+  <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-green-300" role="alert">
+    We are currently offering a <%= Subscription.trial_period %> day free trial for our early adopters. Subscribe now and pay in <%= Subscription.trial_period %> days.
+  </div>
+  <% end %>
   <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
     To start leveraging the full capabilities of Echosight, please complete the steps below:
   </div>
@@ -22,7 +27,10 @@ Yep 1. is perfect
   <%= render ContentBoxComponent.new do %>
     <%= render Shared::HeadingComponent.new(text: 'Subscribe', heading_type: :h2) %>
     <p class="paragraph-base">
-      Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.
+      Subscribe to allow us to collect your Twitter data each day in order to show your aggregated Twitter metrics.
+      <% if ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive? %>
+        Subscribing requires a credit card, but we won't charge you until <%= ENV.fetch('TRIAL_PERIOD_DAYS') %> days have passed.<br>
+      <% end %>
     </p>
     <%= render Shared::ButtonComponent.new(text: "Subscribe", url: subscription_path, method: :get) %>
   <% end %>
@@ -34,12 +42,15 @@ Yep 1. is perfect
     <p class="paragraph-base">Your public page will start to show data after 1 day. It will look it's best after 14 days when we can compare this week to the previous one.</p>
     <p class="paragraph-base">Regardless of this you are welcome to take a look at your <%= link_to "public page", public_page_path(handle: current_user.handle) %> at any time.</p>
     </p>
+    <% if show_2fa_reminder? %>
+      <p class="paragraph-base">Remember to enable <%= link_to "two-factor authentication", two_factor_authentication_path %> on your Echosight account.</p>
+    <% end %>
   <% end %>
 <% end %>
 
 <% if show_connect_to_twitter_message? %>
 <%= render ContentBoxComponent.new do %>
-  <%= render Shared::HeadingComponent.new(text: 'Steps to complete', heading_type: :h2) %>
+  <%= render Shared::HeadingComponent.new(text: 'Connect to Twitter/X', heading_type: :h2) %>
     <p class="paragraph-base">To start collecting data from Twitter/X to generate your public page, please connect your Twitter/X account.</p>
     <p>
       <%= button_to helpers.omniauth_authorize_path(:user, :twitter2), data: { turbo: false } do %>
@@ -55,10 +66,10 @@ Yep 1. is perfect
   <%= render ContentBoxComponent.new do %>
     <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h2) %>
     <p class="paragraph-base">You are connected to Twitter/X and we are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
-    <% if false %>
-      <% render Shared::HeadingComponent.new(text: 'Next steps', heading_type: :h4) %>
-      <p class="paragraph-base">Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+    <% if show_2fa_reminder? %>
+      <p class="paragraph-base">Remember to enable <%= link_to "two-factor authentication", two_factor_authentication_path %> on your Echosight account.</p>
     <% end %>
   <% end %>
 <% end %>
+
 </div>

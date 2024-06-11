@@ -3,6 +3,29 @@ ActiveAdmin.register_page "Dashboard" do
   days_to_fetch = Twitter::NewTweetsFetcher.days_to_fetch
 
   content title: proc { I18n.t("active_admin.dashboard") } do
+    h2 "Tweets with More Than 1 Tweet Metric"
+    section do
+      tweets_with_multiple_metrics = Tweet.joins(:tweet_metrics)
+                                          .where("tweet_metrics.created_at >= ?", 3.days.ago)
+                                          .group("tweets.id")
+                                          .having("COUNT(tweet_metrics.id) > 1")
+
+      table_for tweets_with_multiple_metrics do
+        column :id
+        column "Created At", :created_at
+        column :text do |tweet|
+          truncate(tweet.text, omission: "...", length: 100)
+        end
+        column "Metrics Count" do |tweet|
+          tweet.tweet_metrics.count
+        end
+        column "User Email" do |tweet|
+          tweet.identity.user.email  # Adjust according to your user association
+        end
+      end
+    end
+
+
     h2 "Last 10 Incomplete User Twitter Data Updates in last #{days_to_fetch} days"
     section do
       table_for Twitter::TweetDataChecksQuery.incomplete_user_updates(Twitter::NewTweetsFetcher.days_to_fetch.days.ago) do
@@ -62,17 +85,6 @@ ActiveAdmin.register_page "Dashboard" do
         column :user do |tweet|
           tweet.identity.user.email  # Adjust according to your user association
         end
-      end
-    end
-
-    h2 "Users with No Recent Twitter User Metrics"
-    section do
-      users = Twitter::TweetDataChecksQuery.users_with_no_recent_twitter_user_metrics
-
-      table_for users do
-        column :id
-        column :email
-        column :recent_metric_date
       end
     end
 

@@ -39,13 +39,17 @@ gem 'apexcharts'
 gem "aws-sdk-s3", "~> 1.14"
 gem 'devise', '~> 4.9'
 gem 'devise_invitable'
+gem 'devise-two-factor'
 gem 'exception_notification'
 gem 'fastimage'
 gem 'mailkick'
+gem "mini_magick"
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
 gem 'paper_trail'
+gem 'pghero'
 gem 'premailer-rails'
+gem "rqrcode", "~> 2.0"
 # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sassc'
 gem 'shrine'

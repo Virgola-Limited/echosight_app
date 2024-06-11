@@ -1,6 +1,7 @@
 <div class="flex flex-col items-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
     <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
       <%= render Shared::HeadingComponent.new(text: 'Subscription', heading_type: :h2) %>
+
       <p class="paragraph-base">Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.</p>
     </div>
     <br>
@@ -14,7 +15,7 @@
                 <div class="p-4 border border-gray-200 rounded dark:border-gray-700">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white"><%= product.name %></h3>
                     <label class="flex items-center mt-3 space-x-3">
-                        <input type="radio" name="plan_id" value="<%= price.id %>" class="form-radio h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:check:border-white">
+                        <input type="radio" name="plan_id" value="<%= price.id %>" class="form-radio h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:check:border-white" <%='checked' if @auto_select_product && @auto_select_product.id == product.id %>>
                         <% if price.recurring.present? %>
                             <span class="text-gray-900 dark:text-white"><%= "#{price.unit_amount / 100.0} #{price.currency.upcase} / #{price.recurring.interval}" %></span>
                         <% else %>
@@ -42,7 +43,7 @@
                 <div id="card-errors" role="alert" class="mt-2 text-sm text-red-600 dark:text-red-400"></div>
             </div>
 
-         <%= render Shared::ButtonComponent.new(text: 'Subscribe', url: '', classes: 'w-full') %>
+         <%= render Shared::ButtonComponent.new(text: 'Subscribe', url: '', classes: 'w-full', in_form: true) %>
 <% end %>
     </div>
 </div>
@@ -52,7 +53,7 @@
   var elements = stripe.elements();
 
 
-var card = elements.create('card', {
+  card = elements.create('card', {
   style: {
     base: {
       fontSize: '14px', // Tailwind's text-sm

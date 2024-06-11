@@ -11,7 +11,28 @@
 
   <div class="relative">
     <!-- Header Photo -->
-    <!-- this is poor refactor later -->
+    <% if hide_profile_banner? %>
+      <div class="flex items-end justify-between px-4 py-4">
+        <!-- Profile Photo and Info Container -->
+        <div class="flex items-end justify-between px-4 py-4">
+        <!-- Profile Photo and Info Container -->
+        <div class="flex items-center space-x-4">
+          <!-- Profile Photo -->
+          <div class="min-h-24 min-w-24 h-28 w-28">
+            <%= render_twitter_image("rounded-full border-4 border-white shadow-lg object-cover aspect-ratio aspect-ratio-1") %>
+          </div>
+
+          <!-- Profile Info -->
+          <div class="py-2 md:px-4 rounded-lg" data-test="user-profile">
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white"><%= page_user_name %></h1>
+            <div class="text-xs dark:text-white lg:mb-3">@<%= page_user_handle %></div>
+            <div class="text-m dark:text-white"><%= page_user_twitter_bio %></div>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    <% else %>
     <% if page_user_banner_url.present? %>
       <div style="width: 100%">
         <img class="w-full h-full object-cover shadow-lg top-0 left-0" src="<%= page_user_banner_url %>" alt="Twitter/X Header Photo">
@@ -32,6 +53,7 @@
       <div class="text-xs dark:text-white lg:mb-3">@<%= page_user_handle %></div>
       <div class="text-m dark:text-white dark:text-white"><%= page_user_twitter_bio %></div>
     </div>
+    <% end %>
 
   </div>
 
@@ -40,16 +62,18 @@
   </div>
 
   <%= render partial:"public_pages/impressions_over_time", locals: {
-  impression_daily_data_points_for_graph: impression_daily_data_points_for_graph, impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
-  maximum_days_of_data: maximum_days_of_data,
+    page_user_name: page_user_name,
+    impression_daily_data_points_for_graph: impression_daily_data_points_for_graph,
+    impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
+    maximum_days_of_data: maximum_days_of_data,
   }
   %>
 
-  <%= render partial:"public_pages/followers_graph", locals: {follower_daily_data_points_for_graph: follower_daily_data_points_for_graph, maximum_days_of_data: maximum_days_of_data} %>
+  <%= render partial:"public_pages/followers_graph", locals: {page_user_name: page_user_name, follower_daily_data_points_for_graph: follower_daily_data_points_for_graph, maximum_days_of_data: maximum_days_of_data} %>
 
-  <%= render partial:"public_pages/engagement_rate", locals: {engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
+  <%= render partial:"public_pages/engagement_rate", locals: {page_user_name: page_user_name, engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
 
-  <%= render partial: "public_pages/top_posts", locals: {top_posts: top_posts, maximum_days_of_data: maximum_days_of_data} %>
+  <%= render partial: "public_pages/top_posts", locals: {page_user_name: page_user_name, top_posts: top_posts, maximum_days_of_data: maximum_days_of_data} %>
 
   <% unless current_user %>
   <section class="mt-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 py-8 px-4 sm:px-6 lg:px-8 rounded-xl w-full">

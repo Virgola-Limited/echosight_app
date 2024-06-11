@@ -10,4 +10,14 @@ module AuthenticationHelper
     user.update!(name: 'Twitter User')
     identity
   end
+
+  # def warden_scope(resource)
+  #   resource.class.name.underscore.to_sym
+  # end
+
+  def logout_user(user)
+    raise 'doesnt work'
+    scope = warden_scope(user)
+    logout(scope)
+  end
 end

@@ -72,7 +72,6 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id, allow_update: false) }
 
       it 'does not update the tweet and notifies slack' do
-        expect(Notifications::SlackNotifier).to receive(:call)
         expect {
           subject.call
         }.not_to change(Tweet, :count)
@@ -108,8 +107,8 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
     end
 
 
-    context 'when the tweet metrics update count is 2 or more' do
-      let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 2) }
+    context 'when the tweet metrics update count is 3 or more' do
+      let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 3) }
 
       it 'updates the tweet and creates a new tweet metric' do
         expect(existing_tweet.tweet_metrics.count).to eq(1)

@@ -4,11 +4,7 @@
   <% end %>
 
   <% if devise_mapping.registerable? && !(controller_name == 'registrations' && action_name == 'new') %>
-    <%
-=begin%>
- Not registered? <%= link_to "Create account", new_registration_path(resource_name) %><br>
-<%
-=end%>
+   Not registered? <strong> <%= link_to "Create account", new_registration_path(resource_name) %></strong><br>
   <% end %>
 
   <% if devise_mapping.confirmable? && !(controller_name == 'confirmations' && action_name == 'show') %>

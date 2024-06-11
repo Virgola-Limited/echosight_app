@@ -31,5 +31,7 @@ Rails.start();
 // import '~/index.css'
 import "flowbite/dist/flowbite.turbo.js";
 import 'flowbite/dist/flowbite.min.js';
+import './share_tool.js';
 import ApexCharts from 'apexcharts'
 window.ApexCharts = ApexCharts
+import '../controllers'; // Ensure this line is present

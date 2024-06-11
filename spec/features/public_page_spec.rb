@@ -26,7 +26,7 @@ RSpec.feature 'Public Page Access' do
     # Context: When the user is logged in but not signed up to Twitter
     login_user(user)
 
-    visit public_page_path(:demo)
+    visit current_path
     expect(page).to have_text('Dashboard')
 
     expect(page.title).to eq("Sammy Circuit's Public Page")
@@ -42,7 +42,7 @@ RSpec.feature 'Public Page Access' do
 
     # Context: When the user is logged in signed up to Twitter with no subscription
     identity = simulate_twitter_connection(user)
-
+    identity.reload
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
     expect(page.title).to eq("Twitter User's Public Page")
@@ -66,10 +66,27 @@ RSpec.feature 'Public Page Access' do
     expect(page.body).to include(user.name)
     expect(page.body).to include(user.identity.description)
     expect(page.body).to include(user.handle)
+    ##################################
 
+    # Context: when the user does not have a subscription but is enabled_without_subscription
+    user.update(enabled_without_subscription: true)
+    subscription.destroy
+    visit public_page_path(user.handle)
+    expect(page).to have_current_path(public_page_path(user.handle))
+    expect(page.title).to eq("Twitter User's Public Page")
+
+    expect(page).not_to have_text('This is a demo or inactive page showing')
+
+     # Context user is logged out and visiting a public page
+     logout(:user)
+     visit public_page_path(user.handle)
+     expect(page).not_to have_text('This is a demo or inactive page showing')
+    ##################################
 
     # Context: Subscription without Twitter connection
+    subscription = create(:subscription, user: user)
     identity.destroy
+    login_user(user)
     visit public_page_path(user.handle)
     expect(page).to have_current_path(public_page_path(user.handle))
     within('[role="alert"]') do

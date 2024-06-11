@@ -15,8 +15,20 @@ class NullUser
     nil
   end
 
-  def user_should_be_syncing?
-    true
+  def syncable?
+    false
+  end
+
+  def hide_profile_banner?
+    false
+  end
+
+  def image_url
+    nil
+  end
+
+  def handle
+    nil
   end
 
 end
