@@ -4,8 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Twitter::TweetMetricsQuery do
   let(:identity) { create(:identity, :random_credentials) }
-  let(:user) { create(:user, identity:) }
-  subject(:query) { described_class.new(user:) }
+  subject(:query) { described_class.new(identity:) }
 
   describe '#top_tweets_for_user' do
     let!(:tweets) do

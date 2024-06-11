@@ -3,10 +3,10 @@
 module Twitter
   module TweetMetrics
     class ImpressionsQuery
-      attr_reader :user, :start_time
+      attr_reader :identity, :start_time
 
-      def initialize(user:, start_time: nil)
-        @user = user
+      def initialize(identity:, start_time: nil)
+        @identity = identity
         @start_time = start_time || 1.week.ago.utc
       end
 
@@ -31,7 +31,7 @@ module Twitter
         start_time = (end_time - 6.days).beginning_of_day
 
         tweets_with_metrics = Tweet.includes(:tweet_metrics)
-                                   .where(identity_id: user.identity.id, twitter_created_at: start_time..end_time)
+                                   .where(identity_id: identity.id, twitter_created_at: start_time..end_time)
                                    .order('tweet_metrics.pulled_at ASC')
 
         grouped_tweets = tweets_with_metrics.group_by { |tweet| tweet.twitter_created_at.to_date }
@@ -55,7 +55,7 @@ module Twitter
       # same as total_likes_for_period dry up later
       def total_impressions_for_period(start_time, end_time)
         # Collect tweet IDs that match the given conditions
-        tweet_ids = Tweet.where(identity_id: user.identity.id,
+        tweet_ids = Tweet.where(identity_id: identity.id,
                                 twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
                          .pluck(:id)
 

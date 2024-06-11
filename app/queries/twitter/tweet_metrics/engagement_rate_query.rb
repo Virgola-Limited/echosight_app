@@ -3,10 +3,10 @@
 module Twitter
   module TweetMetrics
     class EngagementRateQuery
-      attr_reader :user
+      attr_reader :identity
 
-      def initialize(user:)
-        @user = user
+      def initialize(identity: nil)
+        @identity = identity
       end
 
       def engagement_rate_percentage_per_day
@@ -16,7 +16,7 @@ module Twitter
         date_range = (start_time.to_date..end_time.to_date)
 
         tweets_with_metrics = Tweet.includes(:tweet_metrics)
-                                   .where(identity_id: user.identity.id, twitter_created_at: start_time..end_time)
+                                   .where(identity_id: identity.id, twitter_created_at: start_time..end_time)
                                    .order('tweet_metrics.pulled_at ASC')
 
         grouped_tweets = tweets_with_metrics.group_by { |tweet| tweet.twitter_created_at.to_date }

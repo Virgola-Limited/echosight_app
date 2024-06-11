@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe Twitter::TweetMetrics::EngagementRateQuery do
   let(:identity) { create(:identity, :random_credentials) }
-  let(:user) { create(:user, identity:) }
-  subject(:query) { described_class.new(user:) }
+  # let(:user) { create(:user, identity:) }
+  subject(:query) { described_class.new(identity:) }
 
   describe '#engagement_rate_percentage_per_day' do
     context 'when there are no tweets' do

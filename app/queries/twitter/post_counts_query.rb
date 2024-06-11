@@ -1,9 +1,9 @@
 module Twitter
   class PostCountsQuery
-    attr_reader :user, :start_time
+    attr_reader :identity, :start_time
 
-    def initialize(user:, start_time: nil)
-      @user = user
+    def initialize(identity:, start_time: nil)
+      @identity = identity
       @start_time = start_time || 1.week.ago.utc
     end
 
@@ -63,7 +63,7 @@ module Twitter
 
     def tweets_within_period(start_time, end_time)
       @tweets_within_period ||= {}
-      @tweets_within_period[[start_time, end_time]] ||= Tweet.where(identity_id: user.identity.id)
+      @tweets_within_period[[start_time, end_time]] ||= Tweet.where(identity_id: identity.id)
                                                              .where(twitter_created_at: start_time...end_time)
                                                              .order(:twitter_created_at)
     end
@@ -80,7 +80,7 @@ module Twitter
     end
 
     def tweets_count_between(start_time, end_time)
-      Tweet.where(identity_id: user.identity.id)
+      Tweet.where(identity_id: identity.id)
            .where(twitter_created_at: start_time...end_time)
            .count
     end
