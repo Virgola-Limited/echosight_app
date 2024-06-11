@@ -1,7 +1,7 @@
 <div class="text-center py-8 bg-gray-100 dark:bg-gray-900">
   <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-300 mb-4">Revolutionize Your Social Media Strategy with Echosight</h1>
   <p class="text-xl text-gray-700 dark:text-gray-400 mb-8">Showcase your Twitter/X analytics with ease and compare yourself within the community.</p>
-  <button class="bg-blue-600 text-white px-8 py-4 rounded">Sign Up Now</button>
+  <%= render Shared::ButtonComponent.new(text: "Sign Up Now", url: new_user_registration_path, method: :get) %>
 </div>
 
 <div class="py-2">
@@ -64,24 +64,7 @@
     </div>
 
     <div class="text-center">
-      <button class="bg-blue-600 text-white px-8 py-4 rounded">Get Started</button>
+      <%= render Shared::ButtonComponent.new(text: "Get Started", url: new_user_registration_path, method: :get) %>
     </div>
   </div>
 </div>
-
-<footer class="bg-gray-900 text-white py-8">
-  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-    <div>
-      <h3 class="font-bold text-lg">Echosight</h3>
-      <p>&copy; 2024 Echosight. All rights reserved.</p>
-    </div>
-    <div class="flex items-center">
-      <a href="#about" class="hover:underline px-4">Sign Up</a>
-      <a href="#contact" class="hover:underline px-4">Leaderboard</a>
-      <a href="#privacy" class="hover:underline px-4">FAQ</a>
-    </div>
-    <div class="flex items-center">
-      <a href="https://twitter.com/loftwah" class="hover:underline px-4">Twitter/X</a>
-    </div>
-  </div>
-</footer>
