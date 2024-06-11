@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: identities
@@ -15,7 +13,7 @@
 #  uid             :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  user_id         :bigint           not null
+#  user_id         :bigint
 #
 # Indexes
 #
@@ -30,7 +28,7 @@ class Identity < ApplicationRecord
   include ImageUploader::Attachment(:image) # adds an 'image' virtual attribute
   include ImageUploader::Attachment(:banner) # adds a 'banner' virtual attribute
 
-  belongs_to :user
+  belongs_to :user, optional: true # Allow identity creation without a user
   has_many :tweets, dependent: :destroy
   has_many :twitter_user_metrics, dependent: :destroy
   has_many :user_twitter_data_updates, dependent: :destroy

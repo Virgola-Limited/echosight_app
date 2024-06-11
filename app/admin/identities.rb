@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Identity do
-  permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data, :uid
+  permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data, :uid, :provider
 
   actions :index, :show, :destroy, :new, :edit, :create, :update
 
@@ -43,11 +43,16 @@ ActiveAdmin.register Identity do
   filter :handle
 
   form do |f|
+    f.semantic_errors
+
     f.inputs do
+      f.input :user, as: :select, collection: User.all.collect { |user| [user.email, user.id] }, include_blank: true
       f.input :description
       f.input :uid
       f.input :handle
+      f.input :provider, input_html: { value: f.object.provider || 'twitter2' }
     end
+
     f.actions
   end
 end
