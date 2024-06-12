@@ -33,8 +33,4 @@ class UnclaimedUser
   def image_url
     nil
   end
-
-  def handle
-    nil
-  end
 end
