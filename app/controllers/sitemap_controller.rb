@@ -1,6 +1,7 @@
 class SitemapController < ApplicationController
   def index
-    @users = User.syncable
+    identities = Identity.syncable
+    @users = identities.map(&:user).compact
     respond_to do |format|
       format.xml
     end
