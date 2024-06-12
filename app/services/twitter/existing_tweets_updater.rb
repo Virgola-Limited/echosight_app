@@ -2,13 +2,13 @@
 
 module Twitter
   class ExistingTweetsUpdater < Services::Base
-    attr_reader :user, :client, :api_batch_id
+    attr_reader :identity, :client, :api_batch_id
     attr_accessor :updated_tweets, :unupdated_tweets
 
-    def initialize(user:, api_batch_id:, client: nil)
-      # This needs to check if the user account is still active
+    def initialize(identity:, api_batch_id:, client: nil)
+      # This needs to check if the identity account is still active
       @client = client || SocialData::ClientAdapter.new
-      @user = user
+      @identity = identity
       @api_batch_id = api_batch_id
       @updated_tweets = []
       @unupdated_tweets = []
@@ -21,14 +21,14 @@ module Twitter
     private
 
     def fetch_and_process_tweets
-      expected_tweets = Tweet.empty_status.where(api_batch_id: @api_batch_id, identity_id: user.identity.id).order(:id)
+      expected_tweets = Tweet.empty_status.where(api_batch_id: @api_batch_id, identity_id: identity.id).order(:id)
       min_tweet, max_tweet = expected_tweets.first, expected_tweets.last
 
       if min_tweet && max_tweet
         since_time = min_tweet ? id_to_time(min_tweet.id) - 1 : nil
         until_time = max_tweet ? id_to_time(max_tweet.id) + 1 : nil
 
-        query = "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}"
+        query = "from:#{identity.handle} since_time:#{since_time} until_time:#{until_time}"
         params = { query: query }
         tweets_data = client.search_tweets(params)
         received_tweet_ids = tweets_data['data'].map{ |tweet| tweet["id"] }.map(&:to_i)
@@ -57,7 +57,7 @@ module Twitter
       expected_tweet_ids = expected_tweets.map(&:id)
       missing_tweet_ids = expected_tweet_ids - received_tweet_ids
       extra_tweet_ids = received_tweet_ids - expected_tweet_ids
-      message = "Tweet count mismatch for user #{user.handle}. \n\nExpected: #{expected_tweet_ids},  \n\nActual: #{received_tweet_ids},  \n\nMissing: #{missing_tweet_ids},  \n\nExtra: #{extra_tweet_ids}"
+      message = "Tweet count mismatch for identity #{identity.handle}. \n\nExpected: #{expected_tweet_ids},  \n\nActual: #{received_tweet_ids},  \n\nMissing: #{missing_tweet_ids},  \n\nExtra: #{extra_tweet_ids}"
       Notifications::SlackNotifier.call(message: message, channel: :errors) if extra_tweet_ids.any?
 
       mark_tweets_as_potentially_deleted(missing_tweet_ids)
@@ -75,7 +75,7 @@ module Twitter
     end
 
     def process_tweet_data(tweet_data)
-      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, user: user, api_batch_id: api_batch_id)
+      Twitter::TweetAndMetricUpserter.call(tweet_data: tweet_data, identity: identity, api_batch_id: api_batch_id)
     end
   end
 end

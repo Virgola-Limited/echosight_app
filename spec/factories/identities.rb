@@ -57,5 +57,10 @@ FactoryBot.define do
       provider { 'twitter2' }
       handle { 'loftwah' }
     end
+
+    trait :syncable_without_user do
+      sync_without_user { true }
+      user { nil }
+    end
   end
 end

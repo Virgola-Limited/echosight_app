@@ -62,47 +62,63 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.syncable' do
-    let!(:confirmed_user_with_valid_identity_and_active_subscription) do
-      user = create(:user, confirmed_at: Time.current)
-      create(:identity, user:, provider: 'twitter2')
-      create(:subscription, user:, active: true)
-      user
+  describe '#syncable?' do
+    context 'when the user is not confirmed' do
+      let(:user) { create(:user, confirmed_at: nil) }
+
+      it 'returns false' do
+        expect(user.syncable?).to be_falsey
+      end
     end
 
-    let!(:confirmed_user_with_valid_identity_and_enabled_without_subscription) do
-      user = create(:user, confirmed_at: Time.current, enabled_without_subscription: true)
-      create(:identity, user:, provider: 'twitter2')
-      user
-    end
+    context 'when the user is confirmed' do
+      context 'when the user has no identity' do
+        let(:user) { create(:user, confirmed_at: Time.current) }
 
-    let!(:confirmed_user_without_identity) do
-      create(:user, confirmed_at: Time.current)
-    end
+        it 'returns false' do
+          expect(user.syncable?).to be_falsey
+        end
+      end
 
-    let!(:confirmed_user_with_invalid_identity) do
-      user = create(:user, confirmed_at: Time.current)
-      create(:identity, user:, provider: 'facepalm')
-      user
-    end
+      context 'when the user has an identity' do
+        context 'when the identity is not valid' do
+          let!(:identity) { create(:identity, user:, provider: 'facepalm') }
+          let(:user) { create(:user, confirmed_at: Time.current) }
 
-    let!(:confirmed_user_with_valid_identity_but_no_active_subscription) do
-      user = create(:user, confirmed_at: Time.current)
-      create(:identity, user:, provider: 'twitter2')
-      create(:subscription, user:, active: false)
-      user
-    end
+          it 'returns false' do
+            expect(user.syncable?).to be_falsey
+          end
+        end
 
-    let!(:unconfirmed_user) do
-      user = create(:user, confirmed_at: nil)
-      create(:identity, user:, provider: 'twitter2')
-      create(:subscription, user:, active: true)
-      user
-    end
+        context 'when the identity is valid' do
+          context 'when the user does not have an active subscription' do
+            let(:user) { create(:user, confirmed_at: Time.current) }
 
-    it 'returns only users who are confirmed, have a valid identity, and an active subscription' do
-      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription,
-                                            confirmed_user_with_valid_identity_and_enabled_without_subscription])
+            it 'returns false' do
+              expect(user.syncable?).to be_falsey
+            end
+          end
+
+          context 'when the user has an active subscription' do
+            let!(:identity) { create(:identity, user:) }
+            let(:user) { create(:user, confirmed_at: Time.current) }
+            let!(:subscription) { create(:subscription, user:, active: true) }
+
+            it 'returns true' do
+              expect(user.syncable?).to be_truthy
+            end
+          end
+
+          context 'when the user is enabled_without_subscription' do
+            let!(:identity) { create(:identity, user:) }
+            let(:user) { create(:user, confirmed_at: Time.current, enabled_without_subscription: true) }
+
+            it 'returns true' do
+              expect(user.syncable?).to be_truthy
+            end
+          end
+        end
+      end
     end
   end
 end

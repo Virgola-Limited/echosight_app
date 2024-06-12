@@ -36,7 +36,7 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
     end
   end
   let(:api_batch) { create(:api_batch) }
-  let(:service) { described_class.new(user: user, api_batch_id: api_batch.id, client: client) }
+  let(:service) { described_class.new(identity: identity, api_batch_id: api_batch.id, client: client) }
   let(:identity_updater) { instance_double(IdentityUpdater, call: []) }
   let(:user_metrics_updater) { instance_double(Twitter::UserMetricsUpdater, call: []) }
   let(:identity_parameters) { ['id', 'name', 'username', 'public_metrics', 'description', 'image_url', 'banner_url'] }
@@ -44,9 +44,10 @@ RSpec.describe Twitter::ExistingTweetsUpdater do
   describe '#call' do
     context 'when there are no tweets in the batch for the user' do
       let!(:user_2) { create(:user, :with_identity, confirmed_at: 1.day.ago) }
+      let(:identity_2) { user_2.identity }
 
       it 'does not update any tweets' do
-        service = described_class.new(user: user_2, api_batch_id: api_batch.id, client: client)
+        service = described_class.new(identity: identity_2, api_batch_id: api_batch.id, client: client)
         expect(Twitter::TweetAndMetricUpserter).not_to receive(:call)
         expect(client).not_to receive(:search_tweets)
         service.call

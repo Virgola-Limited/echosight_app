@@ -2,7 +2,7 @@ module Twitter
   class TweetDataChecksQuery
     def self.incomplete_user_updates(time_ago)
       UserTwitterDataUpdate.joins(identity: :user)
-                          .merge(User.syncable)
+                          .merge(Identity.syncable)
                           .where(completed_at: nil)
                           .where('user_twitter_data_updates.created_at > ?', time_ago)
                           .order('user_twitter_data_updates.started_at DESC')
@@ -13,7 +13,7 @@ module Twitter
       earliest_metrics_subquery = TweetMetric.joins(tweet: {identity: :user})
                                             .select('MIN(tweet_metrics.id) AS id')
                                             .where('tweet_metrics.created_at < ?', 26.hours.ago)
-                                            .merge(User.syncable)
+                                            .merge(Identity.syncable)
                                             .group(:tweet_id)
 
       Tweet.joins(:tweet_metrics)
@@ -25,11 +25,11 @@ module Twitter
     def self.tweets_needing_refresh
       recent_metric_tweet_ids = TweetMetric.joins(tweet: { identity: :user })
                                            .where('tweet_metrics.updated_at >= ?', 24.hours.ago)
-                                           .merge(User.syncable)
+                                           .merge(Identity.syncable)
                                            .select('tweet_metrics.tweet_id')
 
       tweets = Tweet.joins(identity: :user)
-                    .merge(User.syncable)
+                    .merge(Identity.syncable)
                     .where('tweets.twitter_created_at > ?', Tweet.max_age_for_refresh)
                     .where.not(id: recent_metric_tweet_ids)
 
@@ -49,7 +49,7 @@ module Twitter
 
     def self.users_with_no_recent_twitter_user_metrics
       # Select users with their most recent TwitterUserMetric date
-      User.syncable
+      Identity.syncable
           .joins('LEFT JOIN identities ON identities.user_id = users.id')
           .joins('LEFT JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
           .select('users.id, users.email, MAX(twitter_user_metrics.updated_at) AS recent_metric_date')
