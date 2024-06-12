@@ -9,7 +9,6 @@ class PublicPageComponent <  ApplicationComponent
 
   def page_user_handle
     return 'techsavvysammy' if public_page_data.demo?
-
     page_user&.handle
   end
 

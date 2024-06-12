@@ -21,7 +21,7 @@ RSpec.describe CustomStripe::EventHandler, type: :service do
 
     context 'when subscription is created' do
       it 'sends a subscription created notification' do
-        expect(Notifications::SlackNotifier).to receive(:call).with(message: "Subscription created: Product: Test Product, User: #{user.email}")
+        expect(Notifications::SlackNotifier).to receive(:call).with(message: "Subscription created: Product: Test Product, User: #{user.email}, Follow this user: https://x.com/")
         subject
       end
     end

@@ -23,8 +23,12 @@ module CustomStripe
       user = find_user(subscription)
       product_name = find_product_name(subscription)
 
+      message = "Subscription #{action}: Product: #{product_name}, User: #{user&.email}"
+      if action == 'created'
+        message += ", Follow this user: https://x.com/#{user&.handle}"
+      end
       Notifications::SlackNotifier.call(
-        message: "Subscription #{action}: Product: #{product_name}, User: #{user&.email}"
+        message: message
       )
 
       # update_user_subscription(user, subscription, action) if user && %w[updated deleted].include?(action)
