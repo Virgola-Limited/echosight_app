@@ -25,6 +25,7 @@ ActiveAdmin.register Identity do
     column :updated_at
     column :description
     column :handle
+    column :sync_without_user
 
     column :followers_count do |identity|
       recent_metric = identity.twitter_user_metrics.order(date: :desc).first
@@ -32,7 +33,11 @@ ActiveAdmin.register Identity do
     end
 
     column :vip_since do |identity|
-      identity.user.vip_since
+      unless identity.user
+        'No user'
+      else
+        identity.user.vip_since
+      end
     end
 
     actions defaults: true do |identity|
@@ -50,6 +55,7 @@ ActiveAdmin.register Identity do
       f.input :description
       f.input :uid
       f.input :handle
+      f.input :sync_without_user
       f.input :provider, input_html: { value: f.object.provider || 'twitter2' }
     end
 

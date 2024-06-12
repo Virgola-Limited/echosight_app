@@ -82,19 +82,6 @@ class User < ApplicationRecord
   after_create :subscribe_to_all_lists, :enqueue_create_stripe_customer
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  scope :syncable, lambda {
-    confirmed
-      .joins(:identity)
-      .merge(Identity.valid_identity)
-      .where(
-        'users.enabled_without_subscription = ? OR EXISTS (
-          SELECT 1
-          FROM subscriptions
-          WHERE subscriptions.user_id = users.id
-          AND subscriptions.active = ?
-        )', true, true
-      )
-  }
 
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
 
@@ -120,7 +107,7 @@ class User < ApplicationRecord
   end
 
   def syncable?
-    confirmed? && identity&.valid_identity? && (active_subscription? || enabled_without_subscription?)
+    identity&.syncable?
   end
 
   def create_or_update_identity_from_omniauth(auth)
