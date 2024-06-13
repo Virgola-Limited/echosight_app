@@ -13,8 +13,8 @@ module Users
       redirect_to dashboard_index_path
 
     rescue ActiveRecord::RecordInvalid => e
-      if e.record.errors[:uid].include?('has already been taken') || e.record.errors[:handle].include?('has already been taken')
-        redirect_to dashboard_index_path, alert: "This Twitter/X account is already connected to an existing Echosight account. Please log in with that account or contact support for assistance."
+      if e.message == 'Identity belongs to a different user'
+        redirect_to dashboard_index_path, alert: "aThis Twitter/X account is already connected to an existing Echosight account. Please log in with that account or contact support using our widget for assistance."
       else
         raise e # Re-raise the exception if it's not related to UID or Handle uniqueness
       end

@@ -111,15 +111,23 @@ class User < ApplicationRecord
   end
 
   def create_or_update_identity_from_omniauth(auth)
-    identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
-
     ActiveRecord::Base.transaction do
-      assign_from_auth(auth)
+      Rails.logger.debug('paul' + auth.inspect)
 
-      save!
+      identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
-      identity ||= self.build_identity
-      Rails.logger.debug('paul identity' + identity.inspect)
+      if identity.nil?
+        # 1. Identity doesn't exist: create identity and assign to user
+        identity = self.build_identity(provider: auth.provider, uid: auth.uid)
+      elsif identity.user.nil?
+        # 2. Identity exists without user: update identity and assign to user
+        identity.user = self
+      elsif identity.user == self
+        # 3. Identity exists with current user: update identity
+      else
+        # 4. Identity exists with different user: error
+        raise ActiveRecord::RecordInvalid.new(identity), 'Identity belongs to a different user'
+      end
       identity.assign_attributes_from_auth(auth)
 
       oauth_credential = identity.oauth_credential || identity.build_oauth_credential
@@ -131,14 +139,16 @@ class User < ApplicationRecord
 
       identity.save! if identity.new_record? || identity.changed?
       oauth_credential.save! if oauth_credential.new_record? || oauth_credential.changed?
+      update_user_from(auth)
     end
 
     self
   end
 
-  def assign_from_auth(auth)
-    self.name = auth.info.name if name.blank?
-    self.email = auth.info.email if email.blank?
+  def update_user_from(auth)
+    name = auth.info.name if name.blank?
+    email = auth.info.email if email.blank?
+    save
   end
 
   def eligible_for_trial?
