@@ -34,7 +34,6 @@ module Twitter
         else
           user_twitter_data_update.update!(completed_at: Time.current)
         end
-        # byebug
         if user_tweets_updatable?
           Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, identity.id, api_batch.id)
         end
@@ -50,7 +49,6 @@ module Twitter
     end
 
     def error_message(e)
-      # byebug
       backtrace = e.backtrace.join("\n")  # Join the full backtrace into a single string
       # Optionally, you could select just the first few lines to avoid overly verbose output:
       # backtrace = e.backtrace.take(5).join("\n")

@@ -112,7 +112,6 @@ class User < ApplicationRecord
 
   def create_or_update_identity_from_omniauth(auth)
     ActiveRecord::Base.transaction do
-      Rails.logger.debug('paul' + auth.inspect)
 
       identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
@@ -178,7 +177,6 @@ class User < ApplicationRecord
 
     logo_url = Rails.application.config.asset_host + '/static_images/logo.png'
     uri = "otpauth://totp/#{ERB::Util.url_encode(label)}?secret=#{otp_secret}&issuer=#{ERB::Util.url_encode(issuer)}&logo=#{ERB::Util.url_encode(logo_url)}"
-    Rails.logger.debug "OTP URI: #{uri}"
 
     qrcode = RQRCode::QRCode.new(uri)
 
@@ -199,14 +197,12 @@ class User < ApplicationRecord
 
     # Resize the logo if necessary
     logo_image.resize '50x50'
-    Rails.logger.debug "Logo resized"
 
     # Composite the logo onto the QR code
     result = qr_image.composite(logo_image) do |c|
       c.gravity 'Center'
     end
 
-    Rails.logger.debug "**Logo composited onto QR code"
 
     # Save the composited image for verification
     result.write(Rails.root.join('tmp', 'composited_qr_code.png'))
@@ -214,7 +210,6 @@ class User < ApplicationRecord
     # Return the QR code as a base64-encoded image
     result.format 'png'
     encoded_image = Base64.encode64(result.to_blob).gsub("\n", '')
-    Rails.logger.debug "**Base64 encoded image generated"
 
     encoded_image
   end

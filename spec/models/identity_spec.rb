@@ -1,3 +1,30 @@
+# == Schema Information
+#
+# Table name: identities
+#
+#  id                :bigint           not null, primary key
+#  banner_checksum   :string
+#  banner_data       :text
+#  description       :string
+#  handle            :string
+#  image_checksum    :string
+#  image_data        :text
+#  provider          :string
+#  sync_without_user :boolean
+#  uid               :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  user_id           :bigint
+#
+# Indexes
+#
+#  index_identities_on_handle   (handle) UNIQUE
+#  index_identities_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 require 'rails_helper'
 
 RSpec.describe Identity, type: :model do

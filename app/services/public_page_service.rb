@@ -47,7 +47,6 @@ class PublicPageService < Services::Base
       @page_user = current_user if (handle == 'demo' && !current_user.guest?)
     end
     @page_user ||= UnclaimedUser.new(identity: identity)
-    # Rails.logger.debug('paul @page_user' + @page_user.inspect)
     @page_user
   end
 
@@ -68,7 +67,6 @@ class PublicPageService < Services::Base
   end
 
   def generate_public_page_data
-    Rails.logger.debug('paul generate_public_page_data' + @page_user.identity.inspect)
     @generate_public_page_data ||= PublicPageData.new(
       engagement_rate_percentage_per_day:,
       follower_daily_data_points_for_graph:,
