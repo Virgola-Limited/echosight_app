@@ -93,6 +93,7 @@ RSpec.feature 'User Authentication' do
     click_button 'Log in'
 
     expect(page).to have_content('signed in to Echosight')
+    expect(page).to have_current_path(dashboard_index_path)
 
     # Step 7: Log out
     # logout(user)
