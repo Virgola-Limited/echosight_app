@@ -11,7 +11,7 @@ class UnclaimedUser
   end
 
   def name
-    identity.description
+
   end
 
   def handle

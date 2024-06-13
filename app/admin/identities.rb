@@ -55,8 +55,8 @@ ActiveAdmin.register Identity do
       f.input :description
       f.input :uid
       f.input :handle
-      f.input :sync_without_user
       f.input :provider, input_html: { value: f.object.provider || 'twitter2' }
+      f.input :sync_without_user
     end
 
     f.actions
