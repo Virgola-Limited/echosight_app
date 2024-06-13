@@ -1,0 +1,54 @@
+require 'rails_helper'
+
+RSpec.describe Identity, type: :model do
+  describe '.syncable' do
+    let!(:confirmed_user_with_valid_identity_and_active_subscription) do
+      user = create(:user, confirmed_at: Time.current)
+      create(:identity, user: user, provider: 'twitter2')
+      create(:subscription, user: user, active: true)
+      user.identity
+    end
+
+    let!(:confirmed_user_with_valid_identity_and_enabled_without_subscription) do
+      user = create(:user, confirmed_at: Time.current, enabled_without_subscription: true)
+      create(:identity, user: user, provider: 'twitter2')
+      user.identity
+    end
+
+    let!(:confirmed_user_without_identity) do
+      create(:user, confirmed_at: Time.current)
+    end
+
+    let!(:confirmed_user_with_invalid_identity) do
+      user = create(:user, confirmed_at: Time.current)
+      create(:identity, user: user, provider: 'facepalm')
+      user.identity
+    end
+
+    let!(:confirmed_user_with_valid_identity_but_no_active_subscription) do
+      user = create(:user, confirmed_at: Time.current)
+      create(:identity, user: user, provider: 'twitter2')
+      create(:subscription, user: user, active: false)
+      user.identity
+    end
+
+    let!(:unconfirmed_user) do
+      user = create(:user, confirmed_at: nil)
+      create(:identity, user: user, provider: 'twitter2')
+      create(:subscription, user: user, active: true)
+      user.identity
+    end
+
+    let!(:identity_without_user) do
+      create(:identity, provider: 'twitter2', sync_without_user: true)
+    end
+
+    it 'returns only identities that are syncable' do
+      expect(Identity.syncable).to match_array([
+        confirmed_user_with_valid_identity_and_active_subscription,
+        confirmed_user_with_valid_identity_and_enabled_without_subscription,
+        identity_without_user
+      ])
+    end
+  end
+end

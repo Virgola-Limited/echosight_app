@@ -4,19 +4,16 @@ class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
   include Cacheable
 
-  attr_reader :current_admin_user, :current_user, :page_user, :handle
-  alias_method :user, :page_user
+  attr_reader :current_admin_user, :current_user, :identity, :handle
 
   def initialize(handle:, current_user: nil, current_admin_user: nil)
     @handle = handle
     @current_user = current_user
-    identity = Identity.find_by_handle(handle)
-    @page_user = identity.user if identity.present?
+    @identity = Identity.find_by_handle(handle)
     @current_admin_user = current_admin_user
   end
 
   def call
-    @page_user = current_user if @page_user.nil? && (handle == 'demo' && !current_user.guest?)
     result = determine_public_page_status
     case result.status
     when :demo
@@ -30,7 +27,9 @@ class PublicPageService < Services::Base
   Result = Struct.new(:status, :message, :redirect_path, keyword_init: true)
 
   def show_public_page_demo?
-    page_user&.identity.nil?
+    return true if identity.nil?
+
+    identity.nil?
   end
 
   # Crap ChatGTP code fix later no need for result object
@@ -42,14 +41,25 @@ class PublicPageService < Services::Base
     end
   end
 
+  def user
+    @page_user = identity.user if identity.present?
+    if @page_user.nil?
+      @page_user = current_user if (handle == 'demo' && !current_user.guest?)
+    end
+    @page_user ||= UnclaimedUser.new(identity: identity)
+    # Rails.logger.debug('paul @page_user' + @page_user.inspect)
+    @page_user
+  end
+
   private
 
   def not_enough_data?
-    UserTwitterDataUpdate.recent_data(page_user.identity).count < 2
+    UserTwitterDataUpdate.recent_data(identity).count < 2
   end
 
+
   def public_page_data
-    cache_key = cache_key_for_user(page_user)
+    cache_key = cache_key_for_user(user)
 
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       # The block to generate data if cache miss occurs
@@ -58,6 +68,7 @@ class PublicPageService < Services::Base
   end
 
   def generate_public_page_data
+    Rails.logger.debug('paul generate_public_page_data' + @page_user.identity.inspect)
     @generate_public_page_data ||= PublicPageData.new(
       engagement_rate_percentage_per_day:,
       follower_daily_data_points_for_graph:,
@@ -79,7 +90,7 @@ class PublicPageService < Services::Base
       days_of_data_in_difference_count:,
       tweet_count_over_available_time_period:,
       tweets_change_over_available_time_period:,
-      user:,
+      user: user,
     )
   end
 
@@ -221,22 +232,22 @@ class PublicPageService < Services::Base
   end
 
   def engagement_rate_query
-    Twitter::TweetMetrics::EngagementRateQuery.new(user:)
+    Twitter::TweetMetrics::EngagementRateQuery.new(identity:)
   end
 
   def tweet_metrics_query
-    Twitter::TweetMetricsQuery.new(user:)
+    Twitter::TweetMetricsQuery.new(identity:)
   end
 
   def impressions_query
-    Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+    Twitter::TweetMetrics::ImpressionsQuery.new(identity:)
   end
 
   def twitter_user_metrics_query
-    Twitter::TwitterUserMetricsQuery.new(page_user)
+    Twitter::TwitterUserMetricsQuery.new(identity:)
   end
 
   def post_counts_query
-    Twitter::PostCountsQuery.new(user:)
+    Twitter::PostCountsQuery.new(identity:)
   end
 end

@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Twitter::TwitterUserMetricsQuery do
   describe '#followers_count' do
-    let(:user) { create(:user, :with_identity) }
+    let(:identity) { create(:identity) }
 
     it 'validates followers count over a range of days' do
       # Create metrics for each day, and test for each addition
 
 
-      query = Twitter::TwitterUserMetricsQuery.new(user)
+      query = Twitter::TwitterUserMetricsQuery.new(identity:)
 
       # Validate results based on the period definitions
       expected_results = {
@@ -17,10 +17,10 @@ RSpec.describe Twitter::TwitterUserMetricsQuery do
       }
 
       (0..15).each do |day|
-        create(:twitter_user_metric, identity: user.identity, created_at: Date.current - day.days, date: Date.current - day.days, followers_count: 100 - day * 5)
+        create(:twitter_user_metric, identity: identity, created_at: Date.current - day.days, date: Date.current - day.days, followers_count: 100 - day * 5)
         expected_change = expected_results[day]
 
-        query = Twitter::TwitterUserMetricsQuery.new(user)
+        query = Twitter::TwitterUserMetricsQuery.new(identity:)
         actual_change = query.followers_count
         if expected_change.is_a?(Numeric)
           expect(actual_change).to eq(expected_change), "Failed on day #{day} with expected change #{expected_change} but got #{actual_change}"

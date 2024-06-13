@@ -7,7 +7,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
   let(:user) { identity.user }
   let(:api_batch) { create(:api_batch) }
   let(:vcr_response_time) { Time.parse('Tue, 05 Mar 2024 18:54:26 GMT') }
-  let(:subject) { described_class.new(user:, within_time: '14d', api_batch_id: api_batch.id) }
+  let(:subject) { described_class.new(identity:, within_time: '14d', api_batch_id: api_batch.id) }
   let(:expected_tweets) { 443 }
   let(:oldest_expected_date) { vcr_response_time - 7.days }
 
@@ -17,7 +17,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
 
   it 'calls Twitter::TweetAndMetricUpserter with the correct arguments' do
     VCR.use_cassette('Twitter__TweetsFetcher_call') do
-      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, user: user, api_batch_id: api_batch.id, allow_update: false).exactly(expected_tweets).times
+      expect(Twitter::TweetAndMetricUpserter).to receive(:call).with(tweet_data: anything, identity: identity, api_batch_id: api_batch.id, allow_update: false).exactly(expected_tweets).times
       subject.call
     end
   end
@@ -32,7 +32,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
           "public_metrics" => include("retweet_count", "reply_count", "like_count", "quote_count"),
           "user" => include("data" => include("id", "name", "username"))
         )
-        expect(args[:user]).to eq(user)
+        expect(args[:identity]).to eq(identity)
         expect(args[:api_batch_id]).to eq(api_batch.id)
       end
 

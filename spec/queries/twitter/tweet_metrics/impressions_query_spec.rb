@@ -26,21 +26,21 @@ RSpec.describe Twitter::TweetMetrics::ImpressionsQuery, type: :query do
 
   describe '#impressions_count' do
     it 'returns the sum of the impressions for the last 7 days' do
-      query = Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+      query = described_class.new(identity:)
       expect(query.impressions_count).to eq(2800) # Sum of 100 * (1..7)
     end
   end
 
   xdescribe '#impressions_change_since_last_week' do
     it 'returns the percentage change in impressions since the previous week' do
-      query = Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+      query = described_class.new(identity:)
       expect(query.impressions_change_since_last_week).to eq(460.0) # ((2800 - 500) / 500.0) * 100
     end
   end
 
   describe '#impression_counts_per_day' do
     it 'returns an array of daily impression counts for the last 7 days' do
-      query = Twitter::TweetMetrics::ImpressionsQuery.new(user:)
+      query = described_class.new(identity:)
       expected_counts = [
         { date: 7.days.ago.to_date, impression_count: 700 },
         { date: 6.days.ago.to_date, impression_count: 600 },

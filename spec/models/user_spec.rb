@@ -62,50 +62,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.syncable' do
-    let!(:confirmed_user_with_valid_identity_and_active_subscription) do
-      user = create(:user, confirmed_at: Time.current)
-      create(:identity, user:, provider: 'twitter2')
-      create(:subscription, user:, active: true)
-      user
-    end
-
-    let!(:confirmed_user_with_valid_identity_and_enabled_without_subscription) do
-      user = create(:user, confirmed_at: Time.current, enabled_without_subscription: true)
-      create(:identity, user:, provider: 'twitter2')
-      user
-    end
-
-    let!(:confirmed_user_without_identity) do
-      create(:user, confirmed_at: Time.current)
-    end
-
-    let!(:confirmed_user_with_invalid_identity) do
-      user = create(:user, confirmed_at: Time.current)
-      create(:identity, user:, provider: 'facepalm')
-      user
-    end
-
-    let!(:confirmed_user_with_valid_identity_but_no_active_subscription) do
-      user = create(:user, confirmed_at: Time.current)
-      create(:identity, user:, provider: 'twitter2')
-      create(:subscription, user:, active: false)
-      user
-    end
-
-    let!(:unconfirmed_user) do
-      user = create(:user, confirmed_at: nil)
-      create(:identity, user:, provider: 'twitter2')
-      create(:subscription, user:, active: true)
-      user
-    end
-
-    it 'returns only users who are confirmed, have a valid identity, and an active subscription' do
-      expect(User.syncable).to match_array([confirmed_user_with_valid_identity_and_active_subscription,
-                                            confirmed_user_with_valid_identity_and_enabled_without_subscription])
-    end
-  end
-
   describe '#syncable?' do
     context 'when the user is not confirmed' do
       let(:user) { create(:user, confirmed_at: nil) }

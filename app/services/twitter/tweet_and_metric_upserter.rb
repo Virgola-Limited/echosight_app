@@ -1,10 +1,10 @@
 module Twitter
   class TweetAndMetricUpserter < Services::Base
-    attr_reader :tweet_data, :user, :api_batch_id, :allow_update
+    attr_reader :tweet_data, :identity, :api_batch_id, :allow_update
 
-    def initialize(tweet_data:, user:, api_batch_id:, allow_update: true)
+    def initialize(tweet_data:, identity:, api_batch_id:, allow_update: true)
       @tweet_data = tweet_data
-      @user = user
+      @identity = identity
       @api_batch_id = api_batch_id
       @allow_update = allow_update
     end
@@ -19,7 +19,7 @@ module Twitter
           tweet_id: tweet.id,
           success: result.saved_changes?,
           tweet_metric: result,
-          user: @user,
+          identity: @identity,
           tweet_data: tweet_data,
         }
       end
@@ -58,7 +58,7 @@ module Twitter
     def tweet_attributes
       {
         text: tweet_data['text'],
-        identity_id: user.identity.id,
+        identity_id: identity.id,
         twitter_created_at: DateTime.parse(tweet_data['created_at'])
       }
     end

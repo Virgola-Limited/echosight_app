@@ -2,10 +2,10 @@
 
 module Twitter
   class TwitterUserMetricsQuery
-    attr_reader :user
+    attr_reader :identity
 
-    def initialize(user)
-      @user = user
+    def initialize(identity:)
+      @identity = identity
     end
 
     def followers_count
@@ -46,7 +46,7 @@ module Twitter
     private
 
     def metrics
-      @metrics ||= TwitterUserMetric.where(identity_id: user.identity.id).order(date: :asc)
+      @metrics ||= TwitterUserMetric.where(identity_id: identity.id).order(date: :asc)
     end
 
     def format_for_graph(data)

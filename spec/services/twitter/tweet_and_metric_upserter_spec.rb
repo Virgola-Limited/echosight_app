@@ -2,10 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Twitter::TweetAndMetricUpserter do
   let!(:identity) { create(:identity, :with_oauth_credential, :loftwah) }
-  let(:user) { identity.user }
   let(:api_batch) { create(:api_batch) }
   let(:different_api_batch) { create(:api_batch) }
-  let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id) }
+  let(:subject) { described_class.new(identity: identity, tweet_data: tweet_data, api_batch_id: api_batch.id) }
   let(:tweet_data) {
   {
     "id" => "1765189290131399049",
@@ -43,7 +42,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
     allow(IdentityUpdater).to receive(:new).with(any_args).and_return(double(call: nil))
   end
 
-  let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id) }
+  let(:subject) { described_class.new(identity: identity, tweet_data: tweet_data, api_batch_id: api_batch.id) }
 
   context 'when the tweet does not exist' do
     it 'creates a new tweet and tweet metric' do
@@ -53,7 +52,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
 
       tweet = Tweet.last
       expect(tweet.text).to eq(tweet_data["text"])
-      expect(tweet.identity_id).to eq(user.identity.id)
+      expect(tweet.identity_id).to eq(identity.id)
 
       tweet_metric = TweetMetric.last
       expect(tweet_metric.retweet_count).to eq(1)
@@ -69,7 +68,7 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
     let!(:existing_tweet) { create(:tweet, id: tweet_data["id"], api_batch_id: api_batch.id) }
 
     context 'when allow_update is false' do
-      let(:subject) { described_class.new(user: user, tweet_data: tweet_data, api_batch_id: api_batch.id, allow_update: false) }
+      let(:subject) { described_class.new(identity: identity, tweet_data: tweet_data, api_batch_id: api_batch.id, allow_update: false) }
 
       it 'does not update the tweet and notifies slack' do
         expect {

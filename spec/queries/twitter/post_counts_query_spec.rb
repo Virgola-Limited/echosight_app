@@ -23,7 +23,7 @@ RSpec.describe Twitter::PostCountsQuery do
         end
 
         it "returns correct data for #{days} days of tweets" do
-          query = described_class.new(user: user)
+          query = described_class.new(identity: identity)
 
           result = query.staggered_tweets_count_difference
           recent_count = result[:recent_count]

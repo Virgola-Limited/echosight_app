@@ -1,21 +1,20 @@
-# frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: identities
 #
-#  id              :bigint           not null, primary key
-#  banner_checksum :string
-#  banner_data     :text
-#  description     :string
-#  handle          :string
-#  image_checksum  :string
-#  image_data      :text
-#  provider        :string
-#  uid             :string
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  user_id         :bigint           not null
+#  id                :bigint           not null, primary key
+#  banner_checksum   :string
+#  banner_data       :text
+#  description       :string
+#  handle            :string
+#  image_checksum    :string
+#  image_data        :text
+#  provider          :string
+#  sync_without_user :boolean
+#  uid               :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  user_id           :bigint
 #
 # Indexes
 #
@@ -30,7 +29,7 @@ class Identity < ApplicationRecord
   include ImageUploader::Attachment(:image) # adds an 'image' virtual attribute
   include ImageUploader::Attachment(:banner) # adds a 'banner' virtual attribute
 
-  belongs_to :user
+  belongs_to :user, optional: true # Allow identity creation without a user
   has_many :tweets, dependent: :destroy
   has_many :twitter_user_metrics, dependent: :destroy
   has_many :user_twitter_data_updates, dependent: :destroy
@@ -48,6 +47,16 @@ class Identity < ApplicationRecord
       .select('identities.*, COALESCE(MAX(twitter_user_metrics.followers_count), 0) AS max_followers_count')
       .group('identities.id')
       .order('max_followers_count DESC')
+  }
+  scope :syncable, lambda {
+    left_outer_joins(:user)
+      .where('identities.sync_without_user = ? OR (identities.user_id IS NOT NULL AND (users.enabled_without_subscription = ? OR EXISTS (
+        SELECT 1
+        FROM subscriptions
+        WHERE subscriptions.user_id = identities.user_id
+        AND subscriptions.active = ?
+      )))', true, true, true)
+      .where('users.confirmed_at IS NOT NULL OR identities.user_id IS NULL')
   }
 
   def self.find_by_handle(handle)
@@ -74,7 +83,15 @@ class Identity < ApplicationRecord
     !enough_data_for_public_page?
   end
 
+  def unclaimed?
+    user.nil?
+  end
+
   def valid_identity?
     provider == 'twitter2'
+  end
+
+  def syncable?
+    !!(sync_without_user || (user&.confirmed? && valid_identity? && (user.active_subscription? || user.enabled_without_subscription?)))
   end
 end

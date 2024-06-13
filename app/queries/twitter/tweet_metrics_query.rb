@@ -2,10 +2,10 @@
 
 module Twitter
   class TweetMetricsQuery
-    attr_reader :user, :start_time
+    attr_reader :identity, :start_time
 
-    def initialize(user:, start_time: nil)
-      @user = user
+    def initialize(identity:, start_time: nil)
+      @identity = identity
       @start_time = start_time || 1.week.ago.utc
     end
 
@@ -14,7 +14,7 @@ module Twitter
     end
 
     def top_tweets_for_user
-      last_seven_days_of_tweets = Tweet.where(identity_id: user.identity.id).where('twitter_created_at > ?',
+      last_seven_days_of_tweets = Tweet.where(identity_id: identity.id).where('twitter_created_at > ?',
                                                                                    start_time)
 
       tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
@@ -58,7 +58,7 @@ module Twitter
     # same as total_impressions_for_period dry up later
     def total_likes_for_period(start_time, end_time)
       # Collect tweet IDs that match the given conditions
-      tweet_ids = Tweet.where(identity_id: user.identity.id,
+      tweet_ids = Tweet.where(identity_id: identity.id,
                               twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
                        .pluck(:id)
 
