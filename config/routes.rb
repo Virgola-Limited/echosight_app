@@ -13,14 +13,17 @@ Rails.application.routes.draw do
   end
   #########################################
   mount StripeEvent::Engine, at: '/stripe/webhook'
-  root 'dashboard#index'
+  root 'pages#landing'
 
 
   resources :bug_reports, only: [:index, :create]
   resources :dashboard, only: :index
   resource :email_subscription, only: [:edit, :update]
   resources :feature_requests, only: [:index, :create]
+  get 'landing', to: 'pages#landing'
   get 'p/:handle', to: 'public_pages#show', as: :public_page
+
+
   get 'track/open/:tracking_id', to: 'tracker#open'
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
