@@ -20,11 +20,10 @@ ActiveAdmin.register_page "Dashboard" do
           tweet.tweet_metrics.count
         end
         column "User Email" do |tweet|
-          tweet.identity.user.email  # Adjust according to your user association
+          tweet.identity.user.email
         end
       end
     end
-
 
     h2 "Last 10 Incomplete User Twitter Data Updates in last #{days_to_fetch} days"
     section do
@@ -36,10 +35,10 @@ ActiveAdmin.register_page "Dashboard" do
         end
         column :sync_class
         column "Identity UID", :identity_id do |update|
-          update.identity.uid # Assuming `uid` is a column in your `identities` table
+          update.identity.uid
         end
         column "User Email", :identity_id do |update|
-          update.identity.user.email # Adjust according to your user association
+          update.identity.user.email
         end
         column :completed_at
         column "Actions" do |update|
@@ -60,11 +59,28 @@ ActiveAdmin.register_page "Dashboard" do
           truncate(tweet.text, omission: "...", length: 100)
         end
         column "User Email" do |tweet|
-          tweet.identity.user.email  # Adjust according to your user association
+          tweet.identity.user.email
         end
       end
       div do
         span "Total problematic tweets: #{problematic_tweets.count}"
+      end
+    end
+
+    h2 "Tweets Needing Refresh Summary"
+    tweets_data = Twitter::TweetDataChecksQuery.tweets_needing_refresh
+
+    section do
+      div do
+        span "Total Users with Tweets not updated in 24 hours: #{tweets_data.size}"
+      end
+      table_for tweets_data.take(10) do
+        column "User" do |data|
+          data[:user]
+        end
+        column "Count of Tweets Needing Refresh" do |data|
+          data[:count]
+        end
       end
     end
 
@@ -79,18 +95,17 @@ ActiveAdmin.register_page "Dashboard" do
         column :id
         column :created_at
         column :text do |tweet|
-          truncate(tweet.text, omision: "...", length: 100)
+          truncate(tweet.text, omission: "...", length: 100)
         end
         column :updated_at
         column :user do |tweet|
-          tweet.identity.user.email  # Adjust according to your user association
+          tweet.identity.user.email
         end
       end
     end
 
     h2 "Aggregated TweetMetrics by Day"
     section do
-      # Define a scope or method in your TweetMetric model that performs the aggregation
       aggregated_metrics = Twitter::TweetDataChecksQuery.aggregated_metrics
 
       table_for aggregated_metrics do
@@ -102,6 +117,5 @@ ActiveAdmin.register_page "Dashboard" do
         column :count
       end
     end
-
   end
 end
