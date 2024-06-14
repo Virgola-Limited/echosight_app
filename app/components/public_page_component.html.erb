@@ -57,6 +57,11 @@
 
   </div>
 
+  <div class="flex justify-center items-center">
+    <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle) %>
+  </div>
+
+
   <div class="flex flex-wrap">
     <%= count_cards %>
   </div>

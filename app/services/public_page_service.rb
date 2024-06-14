@@ -4,13 +4,14 @@ class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
   include Cacheable
 
-  attr_reader :current_admin_user, :current_user, :identity, :handle
+  attr_reader :current_admin_user, :current_user, :identity, :handle, :date_range
 
-  def initialize(handle:, current_user: nil, current_admin_user: nil)
+  def initialize(handle:, current_user: nil, current_admin_user: nil, date_range: nil)
     @handle = handle
     @current_user = current_user
     @identity = Identity.find_by_handle(handle)
     @current_admin_user = current_admin_user
+    @date_range = date_range
   end
 
   def call
@@ -230,7 +231,7 @@ class PublicPageService < Services::Base
   end
 
   def engagement_rate_query
-    Twitter::TweetMetrics::EngagementRateQuery.new(identity:)
+    Twitter::TweetMetrics::EngagementRateQuery.new(identity:, date_range:)
   end
 
   def tweet_metrics_query
@@ -238,14 +239,14 @@ class PublicPageService < Services::Base
   end
 
   def impressions_query
-    Twitter::TweetMetrics::ImpressionsQuery.new(identity:)
+    Twitter::TweetMetrics::ImpressionsQuery.new(identity:, date_range:)
   end
 
   def twitter_user_metrics_query
-    Twitter::TwitterUserMetricsQuery.new(identity:)
+    Twitter::TwitterUserMetricsQuery.new(identity:, date_range:)
   end
 
   def post_counts_query
-    Twitter::PostCountsQuery.new(identity:)
+    Twitter::PostCountsQuery.new(identity:, date_range:)
   end
 end

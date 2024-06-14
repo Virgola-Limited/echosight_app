@@ -7,7 +7,9 @@ class PublicPagesController < ApplicationController
     if params[:handle] == 'demo' && current_user&.identity.present?
       redirect_to public_page_path(current_user.identity.handle) and return
     end
-    @public_page_data = PublicPageService.call(handle: params[:handle], current_user: current_or_guest_user, current_admin_user: current_admin_user)
+
+    date_range = params[:date_range] || '7d'
+    @public_page_data = PublicPageService.call(handle: params[:handle], current_user: current_or_guest_user, current_admin_user: current_admin_user, date_range: date_range)
     set_flash_message
 
     render PublicPageComponent.new(public_page_data: @public_page_data, current_user: current_or_guest_user)
