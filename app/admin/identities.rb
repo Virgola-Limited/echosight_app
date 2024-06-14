@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Identity do
-  permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data, :uid, :provider
+  permit_params :user_id, :created_at, :updated_at, :description, :handle, :image_data, :banner_data, :uid, :provider, :sync_without_user
 
   actions :index, :show, :destroy, :new, :edit, :create, :update
 
