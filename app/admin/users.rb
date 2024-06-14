@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register User do
-  permit_params :name, :last_name, :email
+  permit_params :name, :last_name, :email, :vip_since, :enabled_without_subscription
 
   actions :index, :show, :edit, :update
 
@@ -19,6 +19,7 @@ ActiveAdmin.register User do
       user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
     end
     column :vip_since
+    column :enabled_without_subscription
     actions defaults: true do |user|
       if user.otp_required_for_login
         link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
@@ -36,7 +37,11 @@ ActiveAdmin.register User do
       row :sign_in_count
       row :current_sign_in_at
       row :last_sign_in_at
-      # Include other fields as needed
+      row 'Identity Handle' do |user|
+        user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
+      end
+      row :vip_since
+      row :enabled_without_subscription
     end
   end
 
@@ -46,6 +51,7 @@ ActiveAdmin.register User do
       f.input :last_name
       f.input :email
       f.input :vip_since
+      f.input :enabled_without_subscription
     end
     f.actions
   end
