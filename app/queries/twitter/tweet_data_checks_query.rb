@@ -33,8 +33,6 @@ module Twitter
                     .where('tweets.twitter_created_at > ?', Tweet.max_age_for_refresh)
                     .where.not(id: recent_metric_tweet_ids)
 
-      return Tweet.none if tweets.count <= 5
-
       tweets.group('users.id')
             .select('users.id, users.name, count(tweets.id) as tweet_count')
             .map { |tweet| { user: tweet.name, count: tweet.tweet_count } }
