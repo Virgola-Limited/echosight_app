@@ -68,7 +68,7 @@ ActiveAdmin.register_page "Dashboard" do
     end
 
     h2 "Tweets Needing Refresh Summary"
-    tweets_data = Twitter::TweetDataChecksQuery.tweets_needing_refresh
+    tweets_data = Twitter::TweetDataChecksQuery.tweets_needing_refreshing_summary
 
     section do
       div do
