@@ -67,7 +67,6 @@ gem 'x', '~> 0.14.1'
 
 group :development, :test do
   gem 'bullet'
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
   gem 'dotenv'
@@ -89,7 +88,6 @@ group :development do
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
-  # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'guard-rspec', require: false
   gem 'terminal-notifier'
   gem 'rack-mini-profiler'
