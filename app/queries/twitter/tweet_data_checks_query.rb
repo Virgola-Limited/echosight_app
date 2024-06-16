@@ -22,23 +22,6 @@ module Twitter
           .limit(10)
     end
 
-    def self.tweets_needing_refreshing_summary
-      recent_metric_tweet_ids = TweetMetric.joins(tweet: { identity: :user })
-                                           .where('tweet_metrics.updated_at >= ?', 24.hours.ago)
-                                           .merge(Identity.syncable)
-                                           .select('tweet_metrics.tweet_id')
-
-      tweets = Tweet.joins(identity: :user)
-                    .merge(Identity.syncable)
-                    .where('tweets.twitter_created_at > ?', Tweet.max_age_for_refresh)
-                    .where.not(id: recent_metric_tweet_ids)
-
-      tweets.group('users.id')
-            .select('users.id, users.name, count(tweets.id) as tweet_count')
-            .map { |tweet| { user: tweet.name, count: tweet.tweet_count } }
-    end
-
-
     def self.tweets_needing_refresh
       recent_metric_tweet_ids = TweetMetric.joins(tweet: { identity: :user })
                                            .where('tweet_metrics.updated_at >= ?', 24.hours.ago)
@@ -50,9 +33,13 @@ module Twitter
                     .where('tweets.twitter_created_at > ?', Tweet.max_age_for_refresh)
                     .where.not(id: recent_metric_tweet_ids)
 
-      return Tweet.none if tweets.count <= 5
+      return [] if tweets.count <= 5
 
-      tweets
+      tweets.group('users.id')
+            .select('users.id, users.email, count(tweets.id) as tweet_count')
+            .map do |tweet|
+              { user: tweet.email, count: tweet.tweet_count }
+            end
     end
 
     def self.aggregated_metrics

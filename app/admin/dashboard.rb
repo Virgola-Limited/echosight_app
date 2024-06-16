@@ -68,7 +68,7 @@ ActiveAdmin.register_page "Dashboard" do
     end
 
     h2 "Tweets Needing Refresh Summary"
-    tweets_data = Twitter::TweetDataChecksQuery.tweets_needing_refreshing_summary
+    tweets_data = Twitter::TweetDataChecksQuery.tweets_needing_refresh
 
     section do
       div do
@@ -80,26 +80,6 @@ ActiveAdmin.register_page "Dashboard" do
         end
         column "Count of Tweets Needing Refresh" do |data|
           data[:count]
-        end
-      end
-    end
-
-    h2 "Tweets Needing Refresh"
-    tweets = Twitter::TweetDataChecksQuery.tweets_needing_refresh
-
-    section do
-      div do
-        span "Total Tweets not updated in 24 hours: #{tweets.count}"
-      end
-      table_for tweets.limit(10) do
-        column :id
-        column :created_at
-        column :text do |tweet|
-          truncate(tweet.text, omission: "...", length: 100)
-        end
-        column :updated_at
-        column :user do |tweet|
-          tweet.identity.user.email
         end
       end
     end
