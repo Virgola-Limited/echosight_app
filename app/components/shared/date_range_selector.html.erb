@@ -1,22 +1,22 @@
-<div class="inline-flex rounded-md shadow-sm" role="group">
-  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-    <span class="block sm:hidden"><%= link_to "7d", public_page_path(handle: page_user_handle, date_range: '7d') %></span>
-    <span class="hidden sm:block"><%= link_to "7 Days", public_page_path(handle: page_user_handle, date_range: '7d') %></span>
+<div class="inline-flex rounded-md shadow-sm my-4" role="group">
+  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white <%= selected_class('7d') %>" onclick="window.location.href='<%= public_page_path(handle: page_user_handle, date_range: '7d') %>'">
+    <span class="block sm:hidden">7d</span>
+    <span class="hidden sm:block">7 Days</span>
   </button>
-  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-    <span class="block sm:hidden"><%= link_to "14d", public_page_path(handle: page_user_handle, date_range: '14d') %></span>
-    <span class="hidden sm:block"><%= link_to "14 Days", public_page_path(handle: page_user_handle, date_range: '14d') %></span>
+  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white <%= selected_class('14d') %>" onclick="window.location.href='<%= public_page_path(handle: page_user_handle, date_range: '14d') %>'">
+    <span class="block sm:hidden">14d</span>
+    <span class="hidden sm:block">14 Days</span>
   </button>
-  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-    <span class="block sm:hidden"><%= link_to "1m", public_page_path(handle: page_user_handle, date_range: '1m') %></span>
-    <span class="hidden sm:block"><%= link_to "1 Month", public_page_path(handle: page_user_handle, date_range: '1m') %></span>
+  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white <%= selected_class('1m') %>" onclick="window.location.href='<%= public_page_path(handle: page_user_handle, date_range: '1m') %>'">
+    <span class="block sm:hidden">1m</span>
+    <span class="hidden sm:block">1 Month</span>
   </button>
-  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-    <span class="block sm:hidden"><%= link_to "3m", public_page_path(handle: page_user_handle, date_range: '3m') %></span>
-    <span class="hidden sm:block"><%= link_to "3 Months", public_page_path(handle: page_user_handle, date_range: '3m') %></span>
+  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white <%= selected_class('3m') %>" onclick="window.location.href='<%= public_page_path(handle: page_user_handle, date_range: '3m') %>'">
+    <span class="block sm:hidden">3m</span>
+    <span class="hidden sm:block">3 Months</span>
   </button>
-  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
-    <span class="block sm:hidden"><%= link_to "1y", public_page_path(handle: page_user_handle, date_range: '1y') %></span>
-    <span class="hidden sm:block"><%= link_to "1 Year", public_page_path(handle: page_user_handle, date_range: '1y') %></span>
+  <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white <%= selected_class('1y') %>" onclick="window.location.href='<%= public_page_path(handle: page_user_handle, date_range: '1y') %>'">
+    <span class="block sm:hidden">1y</span>
+    <span class="hidden sm:block">1 Year</span>
   </button>
 </div>
