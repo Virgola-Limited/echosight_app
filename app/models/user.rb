@@ -214,6 +214,12 @@ class User < ApplicationRecord
     encoded_image
   end
 
+  def update_setting(key, value)
+    setting = user_settings.find_or_initialize_by(key: key.to_s)
+    setting.value = value
+    setting.save!
+  end
+
   private
 
   def convert_to_boolean(value)

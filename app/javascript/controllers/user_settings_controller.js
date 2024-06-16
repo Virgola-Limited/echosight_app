@@ -2,21 +2,31 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [ "toggle" ]
+
   updateSetting(event) {
     const key = event.target.name.split("[")[1].split("]")[0]
     const value = event.target.checked ? 'true' : 'false'
 
-    Rails.ajax({
-      url: "/user_settings",
-      type: "PUT",
-      data: `user_settings[${key}]=${value}`,
-      success: (data) => {
-        this.showFlashMessage('Setting updated successfully', 'notice')
+    fetch("/user_settings", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       },
-      error: (data) => {
-        this.showFlashMessage('Failed to update setting', 'alert')
-      }
+      body: `user_settings[${key}]=${value}`
     })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      this.showFlashMessage('Setting updated successfully', 'notice')
+    })
+    .catch(error => {
+      this.showFlashMessage('Failed to update setting', 'alert')
+    });
   }
 
   // TODO: Extract this to shared code
