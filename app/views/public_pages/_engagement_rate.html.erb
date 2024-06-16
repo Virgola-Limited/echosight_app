@@ -48,7 +48,7 @@
         data: <%= engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] }.to_json.html_safe %>
       }],
       xaxis: {
-        categories: <%= engagement_rate_percentage_per_day.map { |entry| entry[:date].strftime('%b %d') }.to_json.html_safe %>,
+        categories: <%= engagement_rate_percentage_per_day.map { |entry| entry[:formatted_label] }.to_json.html_safe %>,
         labels: {
           show: true,
           style: {
@@ -59,7 +59,6 @@
       },
       yaxis: {
         min: 0,
-        // Adjust max value according to your data or leave it auto-calculated
         labels: {
           formatter: function (val) {
             return val.toFixed(2) + '%'; // Display y-axis values as percentages
