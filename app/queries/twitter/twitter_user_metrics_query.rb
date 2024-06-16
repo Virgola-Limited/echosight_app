@@ -4,7 +4,7 @@ module Twitter
   class TwitterUserMetricsQuery
     attr_reader :identity
 
-    def initialize(identity:)
+    def initialize(identity:, date_range: '7d')
       @identity = identity
     end
 

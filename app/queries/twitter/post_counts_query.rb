@@ -2,7 +2,7 @@ module Twitter
   class PostCountsQuery
     attr_reader :identity, :start_time
 
-    def initialize(identity:, start_time: nil)
+    def initialize(identity:, date_range: '7d')
       @identity = identity
       @start_time = start_time || 1.week.ago.utc
     end
