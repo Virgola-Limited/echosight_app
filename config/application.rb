@@ -78,5 +78,11 @@ module EchosightApp
     config.action_mailer.raise_delivery_errors = Rails.env.development?
 
     config.asset_host = Rails.application.credentials.dig(:asset_host)
+
+    config.session_store :redis_session_store,
+                         servers: ENV['REDIS_URL'],
+                         expire_after: 4.weeks,
+                         key: '_echosight_session',
+                         secure: Rails.env.production?
   end
 end
