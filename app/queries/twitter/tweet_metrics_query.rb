@@ -2,22 +2,24 @@
 
 module Twitter
   class TweetMetricsQuery
-    attr_reader :identity, :start_time
+    include DateRangeHelper
 
-    def initialize(identity:, start_time: nil)
+    attr_reader :identity, :date_range
+
+    def initialize(identity:, date_range: '7d')
       @identity = identity
-      @start_time = start_time || 1.week.ago.utc
+      @date_range = parse_date_range(date_range)
     end
 
     def maximum_days_of_data
-      start_time.to_date.upto(Date.current).count
+      date_range[:start_time].to_date.upto(Date.current).count
     end
 
     def top_tweets_for_user
-      last_seven_days_of_tweets = Tweet.where(identity_id: identity.id).where('twitter_created_at > ?',
-                                                                                   start_time)
+      tweets_in_date_range = Tweet.where(identity_id: identity.id)
+                                  .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])
 
-      tweet_metrics = TweetMetric.where(tweet_id: last_seven_days_of_tweets)
+      tweet_metrics = TweetMetric.where(tweet_id: tweets_in_date_range)
                                  .group(:tweet_id, :pulled_at, :impression_count, :id)
                                  .where.not(impression_count: nil)
                                  .order(impression_count: :desc)

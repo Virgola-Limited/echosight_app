@@ -212,7 +212,7 @@ class PublicPageService < Services::Base
   end
 
   def tweet_metrics_query
-    Twitter::TweetMetricsQuery.new(identity:)
+    Twitter::TweetMetricsQuery.new(identity:, date_range:)
   end
 
   def impressions_query
