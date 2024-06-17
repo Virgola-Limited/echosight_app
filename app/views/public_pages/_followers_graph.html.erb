@@ -34,6 +34,15 @@
   </div>
 </div>
 
+<%= render(ChartComponent.new(
+  chart_id: "followers-chart",
+  chart_type: "area",
+  series_name: "Followers",
+  series_data: follower_daily_data_points_for_graph.map { |point| point[1] },
+  categories: @follower_formatted_labels_for_graph,
+  y_formatter: "function (val) { return val; }",
+)) %>
+
 <script>
   window.addEventListener("load", function() {
     <% unless follower_daily_data_points_for_graph.count < 2 %>

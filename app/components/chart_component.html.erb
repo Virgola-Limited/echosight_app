@@ -1,0 +1,81 @@
+<!-- app/components/chart_component.html.erb -->
+<div id="<%= @chart_id %>"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let options = {
+      chart: {
+        height: '400px',
+        maxWidth: "100%",
+        type: "<%= @chart_type %>",
+        fontFamily: "Inter, sans-serif",
+        dropShadow: {
+          enabled: false,
+        },
+        toolbar: {
+          show: false,
+        },
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          opacityFrom: 0.55,
+          opacityTo: 0,
+          shade: "#1C64F2",
+          gradientToColors: ["#1C64F2"],
+        },
+      },
+      series: [{
+        name: "<%= @series_name %>",
+        data: <%= @series_data.to_json.html_safe %>
+      }],
+      xaxis: {
+        categories: <%= @categories.to_json.html_safe %>,
+        labels: {
+          show: true,
+          offsetY: 10, // Add some space between the labels and the x-axis
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+          }
+        }
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return (<%= @y_formatter %>)(val) + '<%= @y_suffix %>';
+          },
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+          }
+        }
+      },
+      stroke: {
+        width: 3,
+        curve: 'smooth'
+      },
+      grid: {
+        show: true,
+        strokeDashArray: 4,
+      },
+      tooltip: {
+        enabled: true,
+        y: {
+          formatter: function (val) {
+            return (<%= @y_formatter %>)(val) + '<%= @y_suffix %>';
+          }
+        }
+      },
+      dataLabels: {
+        enabled: false,
+      },
+    };
+
+    if (document.getElementById("<%= @chart_id %>") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.getElementById("<%= @chart_id %>"), options);
+      chart.render();
+    }
+  });
+</script>

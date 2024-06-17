@@ -32,77 +32,13 @@
   </div>
 </div>
 
-<script>
-  window.addEventListener("load", function() {
-    let options = {
-      chart: {
-        height: '400px',
-        type: "bar",
-        fontFamily: "Inter, sans-serif",
-        toolbar: {
-          show: false,
-        },
-      },
-      series: [{
-        name: "Engagement Rate",
-        data: <%= engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] }.to_json.html_safe %>
-      }],
-      xaxis: {
-        categories: <%= engagement_rate_percentage_per_day.map { |entry| entry[:formatted_label] }.to_json.html_safe %>,
-        labels: {
-          show: true,
-          style: {
-            fontFamily: "Inter, sans-serif",
-            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-          }
-        }
-      },
-      yaxis: {
-        min: 0,
-        labels: {
-          formatter: function (val) {
-            return val.toFixed(2) + '%'; // Display y-axis values as percentages
-          },
-          show: true,
-          style: {
-            fontFamily: "Inter, sans-serif",
-            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-          }
-        }
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 5,
-          columnWidth: '55%',
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      fill: {
-        colors: ['#1A56DB', '#7E3AF2', '#FEB019'], // Colors for each bar
-      },
-      stroke: {
-        show: true,
-        width: 2,
-        colors: ['#ffffff'],
-      },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return val.toFixed(2) + '%'; // Format tooltip values as percentages
-          }
-        }
-      },
-      grid: {
-        show: true,
-        strokeDashArray: 4,
-      },
-    };
+<%= render(ChartComponent.new(
+  chart_id: "engagement-chart",
+  chart_type: "area",
+  series_name: "Engagement Rate",
+  series_data: engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] },
+  categories: engagement_rate_percentage_per_day.map { |entry| entry[:formatted_label] },
+  y_formatter: "function (val) { return val.toFixed(2); }",
+  y_suffix: "%"
+)) %>
 
-    if (document.getElementById("engagement-chart") && typeof ApexCharts !== 'undefined') {
-      const chart = new ApexCharts(document.getElementById("engagement-chart"), options);
-      chart.render();
-    }
-  });
-</script>
