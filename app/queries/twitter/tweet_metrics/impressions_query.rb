@@ -3,32 +3,33 @@
 module Twitter
   module TweetMetrics
     class ImpressionsQuery
-      attr_reader :identity, :start_time
+      attr_reader :identity, :date_range
 
       def initialize(identity:, date_range: '7d')
         @identity = identity
-        @start_time = start_time || 1.week.ago.utc
+        @date_range = parse_date_range(date_range)
       end
 
-      # same as likes_count dry up later
       def impressions_count
-        total_impressions_for_period(7.days.ago, Time.current)
+        total_impressions_for_period(date_range[:start_time], date_range[:end_time])
       end
 
-      # same as likes_change_since_last_week dry up later
       def impressions_change_since_last_week
-        current_week_impressions = impressions_count
+        current_period_impressions = impressions_count
 
-        previous_week_impressions = total_impressions_for_period(14.days.ago, 7.days.ago)
-        return false if previous_week_impressions.zero?
+        previous_period_start_time = (date_range[:start_time] - 7.days)
+        previous_period_end_time = (date_range[:end_time] - 7.days)
+        previous_period_impressions = total_impressions_for_period(previous_period_start_time, previous_period_end_time)
 
-        percentage_change = ((current_week_impressions - previous_week_impressions) / previous_week_impressions.to_f) * 100
+        return false if previous_period_impressions.zero?
+
+        percentage_change = ((current_period_impressions - previous_period_impressions) / previous_period_impressions.to_f) * 100
         percentage_change.round(2)
       end
 
       def impression_counts_per_day
-        end_time = 24.hours.ago.end_of_day
-        start_time = (end_time - 6.days).beginning_of_day
+        start_time = date_range[:start_time]
+        end_time = date_range[:end_time]
 
         tweets_with_metrics = Tweet.includes(:tweet_metrics)
                                    .where(identity_id: identity.id, twitter_created_at: start_time..end_time)
@@ -36,30 +37,59 @@ module Twitter
 
         grouped_tweets = tweets_with_metrics.group_by { |tweet| tweet.twitter_created_at.to_date }
 
-        (start_time.to_date..end_time.to_date).map do |date|
+        (start_time.to_date..end_time.to_date).map.with_index do |date, index|
           daily_tweets = grouped_tweets[date] || []
-          impressions_sum = daily_tweets.sum do |tweet|
-            tweet.tweet_metrics.first.try(:impression_count) || 0
-          end
+          impressions_sum = daily_tweets.sum { |tweet| tweet.tweet_metrics.first.try(:impression_count) || 0 }
 
-          { date: date, impression_count: impressions_sum }
+          formatted_label = format_label(date, index)
+
+          { date: date, impression_count: impressions_sum, formatted_label: formatted_label }
         end
       end
 
       def maximum_days_of_data
-        start_time.to_date.upto(Date.current).count
+        date_range[:start_time].to_date.upto(Date.current).count
       end
 
       private
 
-      # same as total_likes_for_period dry up later
+      def parse_date_range(range)
+        end_time = Time.current.end_of_day
+        start_time = case range
+                     when '7d'
+                       6.days.ago.beginning_of_day
+                     when '14d'
+                       13.days.ago.beginning_of_day
+                     when '1m'
+                       1.month.ago.beginning_of_day
+                     when '3m'
+                       3.months.ago.beginning_of_day
+                     when '1y'
+                       1.year.ago.beginning_of_day
+                     else
+                       6.days.ago.beginning_of_day
+                     end
+        { start_time: start_time, end_time: end_time, range: range }
+      end
+
+      def format_label(date, index)
+        case date_range[:range]
+        when '3m', '1y'
+          date.day == 1 ? date.strftime('%b') : ''
+        when '1m'
+          index.even? ? date.strftime('%m/%d') : ''
+        when '7d', '14d'
+          date.strftime('%m/%d')
+        else
+          date.day == 1 ? date.strftime('%b %d') : date.strftime('%d')
+        end
+      end
+
       def total_impressions_for_period(start_time, end_time)
-        # Collect tweet IDs that match the given conditions
         tweet_ids = Tweet.where(identity_id: identity.id,
                                 twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
                          .pluck(:id)
 
-        # If there are no matching tweet IDs, return 0 immediately to prevent SQL errors
         return 0 if tweet_ids.empty?
 
         query = <<-SQL

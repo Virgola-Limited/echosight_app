@@ -21,7 +21,7 @@
   <%= render(Shared::ShareToolComponent.new(modal_id: 'share-impressions-modal', chart_id: 'impressions-chart-container', title: 'Share Impressions Chart')) %>
 
   <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-    <% if impression_daily_data_points_for_graph.count < 2 || impression_daily_data_points_for_graph.all? { |data| data.zero? } %>
+    <% if impression_counts_per_day.count < 2 || impression_counts_per_day.all? { |data| data[:impression_count].zero? } %>
       <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the impressions graph.</p>
     <% else %>
       <div id="impressions-chart" class="w-full"></div>
@@ -32,87 +32,13 @@
   </div>
 </div>
 
-<script>
-  let impressionData = <%= impression_daily_data_points_for_graph.to_json.html_safe %>;
-  let maxYValue = Math.max(...impressionData);
-  let minYValue = 0; // Start y-axis from 0 to avoid negative values
 
-  let range = maxYValue - minYValue;
-  let stepSize = Math.pow(10, range.toString().length - 1);
-  let tickAmount = Math.ceil(range / stepSize);
-  tickAmount = Math.max(tickAmount, 5);
-  minYValue = Math.floor(minYValue / stepSize) * stepSize;
-  maxYValue = Math.ceil(maxYValue / stepSize) * stepSize;
+<%= render(ChartComponent.new(
+  chart_id: "impressions-chart",
+  chart_type: "area",
+  series_name: "Impressions",
+  series_data: impression_counts_per_day.map { |entry| entry[:impression_count] },
+  categories: impression_counts_per_day.map { |entry| entry[:formatted_label] },
+  y_formatter: "function (val) { return val }",)) %>
 
 
-  window.addEventListener("load", function() {
-    let options = {
-      chart: {
-        height: '400px',
-        type: 'area',
-        fontFamily: 'Inter, sans-serif',
-        toolbar: {
-          show: false
-        }
-      },
-      series: [{
-        name: 'Impressions',
-        data: impressionData
-      }],
-      xaxis: {
-        categories: <%= impression_formatted_labels_for_graph.to_json.html_safe %>,
-        labels: {
-          show: true,
-          style: {
-            fontFamily: "Inter, sans-serif",
-            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-          }
-        }
-      },
-      yaxis: {
-        min: minYValue,
-        max: maxYValue,
-        labels: {
-          show: true,
-          style: {
-            fontFamily: "Inter, sans-serif",
-            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-          }
-        }
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 5,
-          columnWidth: '55%'
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      fill: {
-        colors: ['#1A56DB', '#7E3AF2', '#FEB019']
-      },
-      stroke: {
-        show: true,
-        width: 2,
-        colors: ['#ffffff']
-      },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return val; // Display raw value without formatting
-          }
-        }
-      },
-      grid: {
-        show: true,
-        strokeDashArray: 4
-      }
-    };
-
-    if (document.getElementById("impressions-chart") && typeof ApexCharts !== 'undefined') {
-      const chart = new ApexCharts(document.getElementById("impressions-chart"), options);
-      chart.render();
-    }
-  });
-</script>

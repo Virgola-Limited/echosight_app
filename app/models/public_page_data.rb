@@ -1,8 +1,8 @@
 class PublicPageData
     attr_accessor :engagement_rate_percentage_per_day,
                 :follower_daily_data_points_for_graph, :follower_formatted_labels_for_graph, :followers_comparison_days,
-                :followers_count, :followers_count_change_percentage_text, :impression_daily_data_points_for_graph,
-                :impression_formatted_labels_for_graph, :impressions_change_since_last_week, :impressions_comparison_days,
+                :followers_count, :followers_count_change_percentage_text, :impression_counts_per_day,
+                :impressions_change_since_last_week, :impressions_comparison_days,
                 :impressions_count, :likes_change_since_last_week, :likes_comparison_days, :likes_count,
                 :maximum_days_of_data, :top_posts, :days_of_data_in_recent_count, :days_of_data_in_difference_count, :tweet_count_over_available_time_period,
                 :tweets_change_over_available_time_period, :user, :own_page

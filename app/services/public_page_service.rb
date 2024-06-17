@@ -59,6 +59,7 @@ class PublicPageService < Services::Base
 
 
   def public_page_data
+    return generate_public_page_data
     cache_key = cache_key_for_user_public_page(user, date_range: date_range)
 
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
@@ -75,8 +76,7 @@ class PublicPageService < Services::Base
       followers_comparison_days:,
       followers_count:,
       followers_count_change_percentage_text:,
-      impression_daily_data_points_for_graph:,
-      impression_formatted_labels_for_graph:,
+      impression_counts_per_day:,
       impressions_change_since_last_week:,
       impressions_comparison_days:,
       impressions_count:,
@@ -97,7 +97,7 @@ class PublicPageService < Services::Base
     [
       public_page_data.engagement_rate_percentage_per_day,
       public_page_data.follower_daily_data_points_for_graph,
-      public_page_data.impression_daily_data_points_for_graph,
+      public_page_data.impression_counts_per_day,
       public_page_data.followers_count,
       public_page_data.impressions_count,
       public_page_data.likes_count,
@@ -208,22 +208,8 @@ class PublicPageService < Services::Base
     @engagement_rate_percentage_per_day ||= engagement_rate_query.engagement_rate_percentage_per_day
   end
 
-  def impression_daily_data_points_for_graph
-    @impression_daily_data_points_for_graph ||= impressions_query.impression_counts_per_day.map do |data|
-      data[:impression_count] >= 0 ? data[:impression_count] : 0
-    end
-  end
-
-  def impression_formatted_labels_for_graph
-    @impression_formatted_labels_for_graph ||= impressions_query.impression_counts_per_day.map do |data|
-      format_label_with_impression_count(data)
-    end
-  end
-
-  def format_label_with_impression_count(data)
-    label = data[:date].strftime('%b %d')
-    label += " (#{data[:impression_count]})" if current_admin_user.present?
-    label
+  def impression_counts_per_day
+    @impression_counts_per_day ||= impressions_query.impression_counts_per_day
   end
 
   def top_posts
