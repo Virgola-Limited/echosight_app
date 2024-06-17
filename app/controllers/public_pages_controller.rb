@@ -9,7 +9,12 @@ class PublicPagesController < ApplicationController
     end
 
     date_range = params[:date_range] || '7d'
-    @public_page_data = PublicPageService.call(handle: params[:handle], current_user: current_or_guest_user, current_admin_user: current_admin_user, date_range: date_range)
+    @public_page_data = PublicPageService.call(
+      handle: params[:handle],
+      current_user: current_or_guest_user,
+      current_admin_user: current_admin_user,
+      date_range: date_range
+    )
     set_flash_message
 
     render PublicPageComponent.new(public_page_data: @public_page_data, current_user: current_or_guest_user)
