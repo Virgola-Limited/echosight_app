@@ -71,8 +71,7 @@ class PublicPageService < Services::Base
   def generate_public_page_data
     @generate_public_page_data ||= PublicPageData.new(
       engagement_rate_percentage_per_day:,
-      follower_daily_data_points_for_graph:,
-      follower_formatted_labels_for_graph:,
+      followers_data_per_day:,
       followers_comparison_days:,
       followers_count:,
       followers_count_change_percentage_text:,
@@ -96,7 +95,7 @@ class PublicPageService < Services::Base
   def public_page_data_attributes
     [
       public_page_data.engagement_rate_percentage_per_day,
-      public_page_data.follower_daily_data_points_for_graph,
+      public_page_data.followers_data_per_day,
       public_page_data.impression_counts_per_day,
       public_page_data.followers_count,
       public_page_data.impressions_count,
@@ -191,17 +190,9 @@ class PublicPageService < Services::Base
     @followers_comparison_days ||= twitter_user_metrics_query.followers_comparison_days
   end
 
-  def follower_formatted_labels_for_graph
-    @follower_formatted_labels_for_graph ||= followers_data_for_graph.first
-  end
-
-  def follower_daily_data_points_for_graph
-    @follower_daily_data_points_for_graph ||= followers_data_for_graph.last
-  end
-
   # Helper method to encapsulate fetching both formatted follower data and daily data points in one call to minimize database queries.
-  def followers_data_for_graph
-    @followers_data_for_graph ||= twitter_user_metrics_query.followers_data_for_graph
+  def followers_data_per_day
+    @followers_data_per_day ||= twitter_user_metrics_query.followers_data_per_day
   end
 
   def engagement_rate_percentage_per_day

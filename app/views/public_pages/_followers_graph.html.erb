@@ -23,7 +23,7 @@
   <%= render(Shared::ShareToolComponent.new(modal_id: 'share-followers-modal', chart_id: 'followers-chart-container', title: 'Share Followers Chart')) %>
 
   <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-    <% if follower_daily_data_points_for_graph.count < 2 %>
+    <% if followers_data_per_day.count < 2 %>
       <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the followers graph.</p>
     <% else %>
       <div id="followers-chart" class="w-full"></div>
@@ -38,87 +38,10 @@
   chart_id: "followers-chart",
   chart_type: "area",
   series_name: "Followers",
-  series_data: follower_daily_data_points_for_graph.map { |point| point[1] },
-  categories: @follower_formatted_labels_for_graph,
+  series_data: followers_data_per_day.map { |entry| entry[:followers_count] },
+  categories: followers_data_per_day.map { |entry| entry[:formatted_label] },
   y_formatter: "function (val) { return val; }",
 )) %>
-
-<script>
-  window.addEventListener("load", function() {
-    <% unless follower_daily_data_points_for_graph.count < 2 %>
-      let followerOptions = {
-        chart: {
-          height: '400px',
-          maxWidth: "100%",
-          type: "area",
-          fontFamily: "Inter, sans-serif",
-          dropShadow: {
-            enabled: false,
-          },
-          toolbar: {
-            show: false,
-          },
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            opacityFrom: 0.55,
-            opacityTo: 0,
-            shade: "#1C64F2",
-            gradientToColors: ["#1C64F2"],
-          },
-        },
-        series: [{
-          name: "Followers",
-          data: <%= (follower_daily_data_points_for_graph.map { |point| point[1] }).to_json.html_safe %>
-        }],
-        xaxis: {
-          categories: <%= @follower_formatted_labels_for_graph.to_json.html_safe %>,
-          labels: {
-            show: true,
-            style: {
-              fontFamily: "Inter, sans-serif",
-              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-            }
-          }
-        },
-        yaxis: {
-          labels: {
-            show: true,
-            style: {
-              fontFamily: "Inter, sans-serif",
-              cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-            }
-          }
-        },
-        stroke: {
-          width: 6,
-          curve: 'smooth'
-        },
-        grid: {
-          show: true,
-          strokeDashArray: 4,
-        },
-        tooltip: {
-          enabled: true,
-          y: {
-            formatter: function (val) {
-              return val + ' followers';
-            }
-          }
-        },
-        dataLabels: {
-          enabled: false,
-        },
-      };
-
-      if (document.getElementById("followers-chart") && typeof ApexCharts !== 'undefined') {
-        const chart = new ApexCharts(document.getElementById("followers-chart"), followerOptions);
-        chart.render();
-      }
-    <% end %>
-  });
-</script>
 
 <style>
   .extra-padding {
