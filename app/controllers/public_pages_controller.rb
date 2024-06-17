@@ -8,7 +8,7 @@ class PublicPagesController < ApplicationController
       redirect_to public_page_path(current_user.identity.handle) and return
     end
 
-    date_range = params[:date_range] || '7d'
+    date_range = params[:date_range]
     @public_page_data = PublicPageService.call(
       handle: params[:handle],
       current_user: current_or_guest_user,
@@ -16,6 +16,8 @@ class PublicPagesController < ApplicationController
       date_range: date_range
     )
     set_flash_message
+
+    @page_updated_at = @public_page_data.last_cache_update
 
     render PublicPageComponent.new(public_page_data: @public_page_data, current_user: current_or_guest_user)
   end

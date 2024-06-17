@@ -1,11 +1,12 @@
 <footer class="bg-white dark:bg-gray-900">
     <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
       <div class="sm:flex sm:items-center sm:justify-between">
-          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">&copy; 2023<% if Time.now.year > 2023 %> - <%= Time.now.year %><% end %> <a href="<%= root_url %>" class="hover:underline" target="_blank">Echosight.io</a>. All rights reserved.
+          <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">&copy; 2023<% if Time.now.year > 2023 %> - <%= Time.now.year %><% end %> <a href="<%= root_url %>" class="hover:underline" target="_blank">Echosight.io</a>. All rights reserved.<br>
+
           </span>
           <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
-            <li class="menu-item">
-                <a href="https://www.echosight.io/privacypolicy" class="hover:underline me-2">Privacy Policy</a>
+            <li class="mr-4">
+                <a href="https://www.echosight.io/privacypolicy" class="hover:underline me-4 md:me-6">Privacy Policy</a>
             </li>
             <li class="menu-item">
                 <%= link_to 'Echosight News', content_items_path, class: 'hover:underline me-2' %>
@@ -17,6 +18,9 @@
                         <span class="sr-only">Twitter page</span>
                     </a>
                 </div>
+            </li>
+            <li class="mr-4">
+                <%= @page_updated_at %>
             </li>
         </ul>
 

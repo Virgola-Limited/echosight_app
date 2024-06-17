@@ -6,7 +6,7 @@ class PublicPageService < Services::Base
 
   attr_reader :current_admin_user, :current_user, :identity, :handle, :date_range
 
-  def initialize(handle:, current_user: nil, current_admin_user: nil, date_range: nil)
+  def initialize(handle:, current_user: nil, current_admin_user: nil, date_range: '7d')
     @handle = handle
     @current_user = current_user
     @identity = Identity.find_by_handle(handle)
@@ -43,29 +43,15 @@ class PublicPageService < Services::Base
   end
 
   def user
+    # This code is a bit wierd as its used in public_page_data
+    # and the user.id is sometimes identity.id.
+    # worth changing to just use identity
     @page_user = identity.user if identity.present?
     if @page_user.nil?
       @page_user = current_user if (handle == 'demo' && !current_user.guest?)
     end
     @page_user ||= UnclaimedUser.new(identity: identity)
     @page_user
-  end
-
-  private
-
-  def not_enough_data?
-    UserTwitterDataUpdate.recent_data(identity).count < 2
-  end
-
-
-  def public_page_data
-    return generate_public_page_data
-    cache_key = cache_key_for_user_public_page(user, date_range: date_range)
-
-    Rails.cache.fetch(cache_key, expires_in: 24.hours) do
-      # The block to generate data if cache miss occurs
-      generate_public_page_data
-    end
   end
 
   def generate_public_page_data
@@ -89,20 +75,35 @@ class PublicPageService < Services::Base
       tweet_count_over_available_time_period:,
       tweets_change_over_available_time_period:,
       user: user,
+      last_cache_update: @last_cache_update
     )
   end
 
-  def public_page_data_attributes
-    [
-      public_page_data.engagement_rate_percentage_per_day,
-      public_page_data.followers_data_per_day,
-      public_page_data.impression_counts_per_day,
-      public_page_data.followers_count,
-      public_page_data.impressions_count,
-      public_page_data.likes_count,
-      public_page_data.top_posts,
-      public_page_data.tweet_count_over_available_time_period
-    ]
+  private
+
+  def not_enough_data?
+    UserTwitterDataUpdate.recent_data(identity).count < 2
+  end
+
+
+  def public_page_data
+    cache_key = cache_key_for_user_public_page(user, date_range: date_range)
+
+    data = Rails.cache.fetch(cache_key, expires_in: 24.hours) do
+      @last_cache_update = Time.current
+      generate_public_page_data
+    end
+
+    unless @last_cache_update
+      # If cache was hit, fetch the last update time from cache metadata
+      @last_cache_update = Rails.cache.read("#{cache_key}/updated_at")
+    end
+
+    Rails.cache.write("#{cache_key}/updated_at", @last_cache_update)
+
+    data.last_cache_update = @last_cache_update if data.respond_to?(:last_cache_update=)
+
+    data
   end
 
   def maximum_days_of_data
