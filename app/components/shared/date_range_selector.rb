@@ -10,5 +10,9 @@ module Shared
     def selected_class(range)
       'bg-blue-600 text-white dark:bg-blue-600 dark:text-white' if date_range == range
     end
+
+    def date_range_options
+      Twitter::DateRangeOptions.all
+    end
   end
 end
