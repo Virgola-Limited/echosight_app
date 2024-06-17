@@ -8,7 +8,12 @@ namespace :db do
     heroku = PlatformAPI.connect_oauth(ENV['HEROKU_API_KEY'])
 
     # Enable maintenance mode on staging
-    heroku.app.update(staging_app, {'maintenance' => true})
+    begin
+      heroku.app.update(staging_app, { 'maintenance' => true })
+    rescue Excon::Error::NotFound
+      puts "Failed to enable maintenance mode on staging"
+      exit
+    end
 
     # Capture latest backup from production
     heroku.postgres.backup.capture(production_app)
@@ -18,10 +23,20 @@ namespace :db do
     latest_backup_url = heroku.postgres.backup.url(production_app, latest_backup['name'])['url']
 
     # Reset and restore the staging database
-    heroku.postgres.reset(staging_app, 'DATABASE_URL')
-    heroku.postgres.backup.restore(latest_backup_url, 'DATABASE_URL', staging_app)
+    begin
+      heroku.postgres.reset(staging_app, 'DATABASE_URL')
+      heroku.postgres.backup.restore(latest_backup_url, 'DATABASE_URL', staging_app)
+    rescue Excon::Error::NotFound
+      puts "Failed to reset or restore the staging database"
+      exit
+    end
 
     # Disable maintenance mode on staging
-    heroku.app.update(staging_app, {'maintenance' => false})
+    begin
+      heroku.app.update(staging_app, { 'maintenance' => false })
+    rescue Excon::Error::NotFound
+      puts "Failed to disable maintenance mode on staging"
+      exit
+    end
   end
 end
