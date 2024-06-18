@@ -11,7 +11,8 @@ export default class extends Controller {
     fetch("/user_settings", {
       method: "PUT",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       },
       body: `user_settings[${key}]=${value}`
     })
