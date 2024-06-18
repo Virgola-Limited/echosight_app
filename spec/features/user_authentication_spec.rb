@@ -96,24 +96,21 @@ RSpec.feature 'User Authentication' do
     expect(page).to have_current_path(dashboard_index_path)
 
     # Step 7: Log out
-    # logout(user)
-    # save_and_open_screenshot
-    # byebug
-    # expect(page).to have_content("You're now signed out of Echosight.")
+    logout_user(user)
+    expect(page).to have_content("You're now signed out of Echosight.")
 
     # Step 8: Lock account with too many failed attempts
-    # visit new_user_session_path
-    # expect(ActionMailer::Base.deliveries.count).to eq(3)
+    visit new_user_session_path
+    expect(ActionMailer::Base.deliveries.count).to eq(3)
 
-    # 5.times do
-    #   fill_in 'Email', with: user.email
-    #   fill_in 'Password', with: 'wrongpassword'
-    #   click_button 'Log in'
-    # end
-    # expect(ActionMailer::Base.deliveries.count).to eq(4)
-    # email = ActionMailer::Base.deliveries.last
-    # expect(email.to).to include(user.email)
-    # expect(email.subject).to eq('Echosight Account Unlock Instructions')
-    # expect(email.body.encoded).to include('locked')
+    5.times do
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: 'wrongpassword'
+      click_button 'Log in'
+    end
+    email = ActionMailer::Base.deliveries.last
+    expect(email.to).to include(user.email)
+    expect(email.subject).to eq('Echosight Account Unlock Instructions')
+    expect(email.body.encoded).to include('locked')
   end
 end
