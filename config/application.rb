@@ -93,7 +93,6 @@ module EchosightApp
           methods: [:get, :post, :options, :head],
           credentials: true
       end
-      puts "CORS configuration applied"
     end
   end
 end
