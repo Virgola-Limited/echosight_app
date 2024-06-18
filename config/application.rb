@@ -83,5 +83,17 @@ module EchosightApp
                          key: '_echosight_session',
                          expire_after: 4.weeks,
                          secure: Rails.env.production?
+
+    # CORS configuration
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'http://127.0.0.1:3000', 'http://localhost:3000', /\Ahttp:\/\/127\.0\.0\.1:\d+\z/, /\Ahttp:\/\/localhost:\d+\z/
+        resource '*',
+          headers: :any,
+          methods: [:get, :post, :options, :head],
+          credentials: true
+      end
+      puts "CORS configuration applied"
+    end
   end
 end
