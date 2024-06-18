@@ -79,10 +79,9 @@ module EchosightApp
 
     config.asset_host = Rails.application.credentials.dig(:asset_host)
 
-    config.session_store :redis_session_store,
-                         servers: ENV['REDIS_URL'],
-                         expire_after: 4.weeks,
+    config.session_store :active_record_store,
                          key: '_echosight_session',
+                         expire_after: 4.weeks,
                          secure: Rails.env.production?
   end
 end
