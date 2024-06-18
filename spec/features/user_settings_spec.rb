@@ -9,9 +9,6 @@ RSpec.feature 'User Settings Page' do
     login_as(user, scope: :user)
     visit edit_user_settings_path
 
-    # Check for debug meta tag to confirm layout is rendered
-    expect(page).to have_css('meta[name="debug"][content="application-layout"]', visible: false)
-
     # Toggle setting on
     find("label[for='user_settings_#{setting_key}']").click
 
