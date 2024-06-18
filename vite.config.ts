@@ -9,4 +9,18 @@ export default defineConfig({
     FullReload(['config/routes.rb', 'app/views/**/*', 'app/javascript/controllers/**/*'], { delay: 200 }),
     StimulusHMR(),
   ],
+  server: {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
+      headers: ['Authorization', 'Content-Type'],
+      credentials: true,
+      maxAge: 600,
+    },
+    host: 'localhost',
+    port: 3000,
+    hmr: {
+      host: 'localhost',
+    },
+  },
 })

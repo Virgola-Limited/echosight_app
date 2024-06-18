@@ -1,4 +1,10 @@
 class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+
+  if Rails.env.test?
+    skip_before_action :verify_authenticity_token
+  end
+
   helper_method :current_or_guest_user
 
   # Use Devise's authentication filter for staging environment

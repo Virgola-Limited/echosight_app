@@ -38,12 +38,9 @@ RSpec.feature "EditUser", type: :feature do
     expect(page).to have_content("Your Echosight account is updated successfully")
 
     # Log out and log back in with new password
-    # logout(user)
-    # visit new_user_session_path
-    # save_and_open_screenshot
-    # byebug
-
-    # sign_in user.reload
+    logout_user(user)
+    visit new_user_session_path
+    sign_in user.reload
 
     # # Successful email change (requires confirmation)
     visit edit_user_registration_path

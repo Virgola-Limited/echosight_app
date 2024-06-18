@@ -32,14 +32,10 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('contact-link').addEventListener('click', function(event) {
-      console.log('Contact link clicked');
-      event.preventDefault();
-      const elfsightWidget = document.getElementById('elfsight-widget');
-      console.log(elfsightWidget)
-      if (elfsightWidget) {
-        elfsightWidget.click();
-      }
-    });
+    event.preventDefault();
+    const elfsightWidget = document.getElementById('elfsight-widget');
+    if (elfsightWidget) {
+      elfsightWidget.click();
+    }
   });
 </script>

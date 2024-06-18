@@ -3,18 +3,21 @@ class Users::SessionsController < Devise::SessionsController
   def create
     user = User.find_by(email: params[:user][:email])
     if user && user.valid_password?(params[:user][:password])
+      if user.access_locked?
+        flash.now[:alert] = I18n.t('devise.failure.locked')
+        self.resource = resource_class.new(sign_in_params)
+        render :new and return
+      end
+
       if user.otp_required_for_login
         session[:otp_user_id] = user.id
-        redirect_to new_otp_user_session_path
+        redirect_to new_otp_user_session_path and return
       else
-        flash[:notice] = I18n.t('devise.sessions.signed_in')
-        sign_in(user)
-        redirect_to after_sign_in_path_for(user)
+        set_flash_message!(:notice, :signed_in)
+        sign_in_and_redirect(user)
       end
     else
-      flash.now[:alert] = I18n.t('devise.failure.invalid')
-      self.resource = resource_class.new(sign_in_params)
-      render :new
+      handle_failed_attempt(user)
     end
   end
 
@@ -37,5 +40,24 @@ class Users::SessionsController < Devise::SessionsController
       flash.now[:alert] = 'Invalid OTP code. Please try again.'
       render :new_otp
     end
+  end
+
+  private
+
+  def handle_failed_attempt(user)
+    if user
+      user.increment!(:failed_attempts)
+      if user.failed_attempts >= Devise.maximum_attempts
+        user.lock_access!
+        flash.now[:alert] = I18n.t('devise.failure.locked')
+      else
+        flash.now[:alert] = I18n.t('devise.failure.invalid')
+      end
+    else
+      flash.now[:alert] = I18n.t('devise.failure.invalid')
+    end
+
+    self.resource = resource_class.new(sign_in_params)
+    render :new
   end
 end

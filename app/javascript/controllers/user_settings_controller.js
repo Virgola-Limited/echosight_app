@@ -7,11 +7,11 @@ export default class extends Controller {
     const key = event.target.name.split("[")[1].split("]")[0]
     const value = event.target.checked ? 'true' : 'false'
 
+
     fetch("/user_settings", {
       method: "PUT",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        "Content-Type": "application/x-www-form-urlencoded"
       },
       body: `user_settings[${key}]=${value}`
     })
