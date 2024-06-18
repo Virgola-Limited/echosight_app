@@ -13,8 +13,7 @@ class Users::SessionsController < Devise::SessionsController
         session[:otp_user_id] = user.id
         redirect_to new_otp_user_session_path and return
       else
-        set_flash_message!(:notice, :signed_in)
-        sign_in_and_redirect(user)
+        super
       end
     else
       handle_failed_attempt(user)
