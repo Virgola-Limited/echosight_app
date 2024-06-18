@@ -6,13 +6,14 @@ export default class extends Controller {
   updateSetting(event) {
     const key = event.target.name.split("[")[1].split("]")[0]
     const value = event.target.checked ? 'true' : 'false'
-
+    const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
 
     fetch("/user_settings", {
       method: "PUT",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        ...(csrfToken && { "X-CSRF-Token": csrfToken })
       },
       body: `user_settings[${key}]=${value}`
     })
