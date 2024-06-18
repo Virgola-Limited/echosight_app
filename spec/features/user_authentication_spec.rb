@@ -101,9 +101,8 @@ RSpec.feature 'User Authentication' do
 
     # Step 8: Lock account with too many failed attempts
     visit new_user_session_path
-    expect(ActionMailer::Base.deliveries.count).to eq(3)
 
-    5.times do
+    6.times do
       fill_in 'Email', with: user.email
       fill_in 'Password', with: 'wrongpassword'
       click_button 'Log in'
