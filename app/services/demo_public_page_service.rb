@@ -1,18 +1,13 @@
 class DemoPublicPageService < Services::Base
   def call
-    follower_info = generate_follower_info
-    impression_info = generate_impression_info
 
     PublicPageData.new(
-      engagement_rate_percentage_per_day: generate_engagement_data,
-      follower_daily_data_points_for_graph: follower_info[:data_points], # Use data points from the refactored method
-      follower_formatted_labels_for_graph: follower_info[:labels], # Use labels from the refactored method
-
+      engagement_rate_percentage_per_day: engagement_rate_percentage_per_day,
+      followers_data_per_day: followers_data_per_day, # Use data points from the refactored method
       followers_comparison_days: 7,
       followers_count: 43,
       followers_count_change_percentage_text: "0.5% increase",
-      impression_daily_data_points_for_graph: impression_info[:data_points], # Use data points from the refactored method
-      impression_formatted_labels_for_graph: impression_info[:labels], # Use labels from the refactored method
+      impression_counts_per_day: generate_impression_info,
       impressions_change_since_last_week: "74.52% increase",
       impressions_comparison_days: 7,
       impressions_count: 5817920,
@@ -31,11 +26,12 @@ class DemoPublicPageService < Services::Base
 
   private
 
-  def generate_engagement_data
+  def engagement_rate_percentage_per_day
     (0..6).map do |i|
       # Assuming you have a way to calculate or retrieve the engagement rate for each day
       engagement_rate = calculate_engagement_rate_for_day(Date.today - i)
-      { date: Date.today - i, engagement_rate_percentage: engagement_rate }
+      date_label = (Date.today - i).strftime('%m/%d')
+      { date: Date.today - i, data_points: engagement_rate, formatted_label: date_label}
     end.reverse
   end
 
@@ -43,38 +39,24 @@ class DemoPublicPageService < Services::Base
     4.51 - (date.wday * 0.3)
   end
 
-  def generate_follower_info
-    follower_counts = [6719, 6938, 7156, 7159, 7762]
+  def followers_data_per_day
+    follower_counts = [6719, 6938, 7156, 7159, 7762, 7762, 7762]
 
-    # Extend the array to accommodate 7 days, assuming the last known value for missing days
-    follower_counts.fill(follower_counts.last, follower_counts.length...7)
-
-    data_points = []
-    labels = []
-
-    follower_counts.each_with_index do |count, i|
-      date_label = (Date.today - (follower_counts.length - 1) + i).strftime("%d %b")
-      data_points << [date_label, count]
-      labels << date_label
+    follower_counts.map.with_index do |count, i|
+      date_label = (Date.today - i).strftime('%m/%d')
+      { date: Date.today - i, data_points: count, formatted_label: date_label }
     end
 
-    { data_points: data_points, labels: labels }
   end
 
   def generate_impression_info
     # Example impression counts for a predefined number of days
     impression_counts = [12149, 51817, 72352, 29071, 15000, 18000, 12345]
 
-    data_points = []
-    labels = []
-
-    impression_counts.each_with_index do |count, i|
-      date_label = (Date.today - (impression_counts.length - 1) + i).strftime("%b %d")
-      data_points << count
-      labels << "#{date_label} (#{count})"
+    impression_counts.map.with_index do |count, i|
+      date_label = (Date.today - i).strftime('%m/%d')
+      { date: Date.today - i, data_points: count, formatted_label: date_label }
     end
-
-    { data_points: data_points, labels: labels }
   end
 
 
