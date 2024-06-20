@@ -53,10 +53,6 @@ module Twitter
         end
       end
 
-      def maximum_days_of_data
-        date_range[:start_time].to_date.upto(Date.current).count
-      end
-
       private
 
       def insufficient_data?

@@ -1,6 +1,7 @@
 class PublicPageData
   attr_accessor :days_of_data_in_difference_count,
                 :days_of_data_in_recent_count,
+                :date_range,
                 :engagement_rate_percentage_per_day,
                 :followers_comparison_days,
                 :followers_count,

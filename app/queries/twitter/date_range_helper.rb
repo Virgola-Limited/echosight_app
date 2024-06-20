@@ -18,5 +18,9 @@ module Twitter
         date.day == 1 ? date.strftime('%b %d') : date.strftime('%d')
       end
     end
+
+    def maximum_days_of_data
+      date_range[:start_time].to_date.upto(Date.current).count
+    end
   end
 end

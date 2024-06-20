@@ -11,10 +11,6 @@ module Twitter
       @date_range = parse_date_range(date_range)
     end
 
-    def maximum_days_of_data
-      date_range[:start_time].to_date.upto(Date.current).count
-    end
-
     def top_tweets_for_user
       tweets_in_date_range = Tweet.where(identity_id: identity.id)
                                   .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])

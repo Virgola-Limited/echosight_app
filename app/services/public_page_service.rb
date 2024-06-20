@@ -75,16 +75,12 @@ class PublicPageService < Services::Base
       tweet_count_over_available_time_period:,
       tweets_change_over_available_time_period:,
       user: user,
-      last_cache_update: @last_cache_update
+      last_cache_update: @last_cache_update,
+      date_range: date_range
     )
   end
 
   private
-
-  def not_enough_data?
-    UserTwitterDataUpdate.recent_data(identity).count < 2
-  end
-
 
   def public_page_data
     cache_key = cache_key_for_user_public_page(user, date_range: date_range)

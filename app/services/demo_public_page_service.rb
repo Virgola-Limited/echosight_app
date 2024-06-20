@@ -143,7 +143,8 @@ class DemoPublicPageService < Services::Base
       tweet_count_over_available_time_period: 20,
       tweets_change_over_available_time_period: "231 decrease",
       user: NullUser.new,
-      demo: true
+      demo: true,
+      date_range: '7d'
     )
   end
 
