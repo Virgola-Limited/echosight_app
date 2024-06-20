@@ -6,12 +6,12 @@ class PublicPageService < Services::Base
 
   attr_reader :current_admin_user, :current_user, :identity, :handle, :date_range
 
-  def initialize(handle:, current_user: nil, current_admin_user: nil, date_range: '7d')
+  def initialize(handle:, current_user: nil, current_admin_user: nil, date_range: nil)
     @handle = handle
     @current_user = current_user
     @identity = Identity.find_by_handle(handle)
     @current_admin_user = current_admin_user
-    @date_range = date_range
+    @date_range = date_range || '7d'
   end
 
   def call
