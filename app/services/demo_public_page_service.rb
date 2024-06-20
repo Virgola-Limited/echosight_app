@@ -134,7 +134,7 @@ class DemoPublicPageService < Services::Base
       impressions_change_since_last_week: IMPRESSIONS_DATA[:change_since_last_week],
       impressions_comparison_days: IMPRESSIONS_DATA[:comparison_days],
       impressions_count: IMPRESSIONS_DATA[:count],
-      likes_change_since_last_week: LIKES_DATA[:change_since_last_week],
+      likes_change_since_last_period: LIKES_DATA[:change_since_last_week],
       likes_comparison_days: LIKES_DATA[:comparison_days],
       likes_count: LIKES_DATA[:count],
       maximum_days_of_data: 7,

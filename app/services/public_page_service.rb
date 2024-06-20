@@ -65,7 +65,7 @@ class PublicPageService < Services::Base
       impressions_change_since_last_week:,
       impressions_comparison_days:,
       impressions_count:,
-      likes_change_since_last_week:,
+      likes_change_since_last_period:,
       likes_comparison_days:,
       likes_count:,
       maximum_days_of_data:,
@@ -150,8 +150,8 @@ class PublicPageService < Services::Base
     @likes_count ||= tweet_metrics_query.likes_count
   end
 
-  def likes_change_since_last_week
-    @likes_change_since_last_week ||= format_percentage_change(tweet_metrics_query.likes_change_since_last_week)
+  def likes_change_since_last_period
+    @likes_change_since_last_period ||= format_percentage_change(tweet_metrics_query.likes_change_since_last_period)
   end
 
   def likes_comparison_days

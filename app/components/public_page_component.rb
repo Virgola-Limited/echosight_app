@@ -113,7 +113,7 @@ class PublicPageComponent < ApplicationComponent
       title: "Likes",
       count: likes_count,
       tooltip_target: "likes-count-tooltip",
-      change_text: likes_change_since_last_week,
+      change_text: likes_change_since_last_period,
       tooltip_text: likes_tooltip_text.html_safe
     )
   end

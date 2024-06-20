@@ -41,13 +41,15 @@ module Twitter
       total_likes_for_period(date_range[:start_time], date_range[:end_time])
     end
 
-    def likes_change_since_last_week
+    def likes_change_since_last_period
       return '' if insufficient_data? || insufficient_data_for_comparison?
 
       current_period_likes = likes_count
 
-      previous_period_start_time = (date_range[:start_time] - 7.days)
-      previous_period_end_time = (date_range[:end_time] - 7.days)
+      period_length = (date_range[:end_time] - date_range[:start_time]).to_i / 1.day
+      previous_period_start_time = date_range[:start_time] - period_length.days
+      previous_period_end_time = date_range[:start_time] - 1.second
+
       previous_period_likes = total_likes_for_period(previous_period_start_time, previous_period_end_time)
 
       return '' if previous_period_likes.zero?
@@ -59,11 +61,13 @@ module Twitter
     private
 
     def insufficient_data?
-      total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i
+      required_days = (date_range[:end_time] - date_range[:start_time]).to_i / 1.day
+      total_days_of_data < required_days
     end
 
     def insufficient_data_for_comparison?
-      total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i * 2
+      required_days_for_comparison = 2 * (date_range[:end_time] - date_range[:start_time]).to_i / 1.day
+      total_days_of_data < required_days_for_comparison
     end
 
     def total_days_of_data
@@ -78,7 +82,7 @@ module Twitter
                               twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
                        .pluck(:id)
 
-      return 0 if tweet_ids.empty?
+      return '' if tweet_ids.empty?
 
       query = <<-SQL
         WITH first_metrics AS (
@@ -91,7 +95,8 @@ module Twitter
         SELECT SUM(like_count) FROM first_metrics
       SQL
 
-      ActiveRecord::Base.connection.execute(query).first['sum'].to_i
+      result = ActiveRecord::Base.connection.execute(query).first
+      result ? result['sum'].to_i : 0
     end
   end
 end

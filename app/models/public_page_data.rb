@@ -12,7 +12,7 @@ class PublicPageData
                 :impressions_comparison_days,
                 :impressions_count,
                 :last_cache_update,
-                :likes_change_since_last_week,
+                :likes_change_since_last_period,
                 :likes_comparison_days,
                 :likes_count,
                 :maximum_days_of_data,
