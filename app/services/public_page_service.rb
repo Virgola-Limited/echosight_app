@@ -126,25 +126,8 @@ class PublicPageService < Services::Base
     @days_of_data_in_difference_count ||= post_counts_query.days_of_data_in_difference_count
   end
 
-  # dry up
-  def format_impressions_change(change)
-    return change unless change
-    return 'No change' if change.nil? || change.zero?
-
-    format = change.positive? ? '%d%% increase' : '%d%% decrease'
-    format % change.abs
-  end
-
-  def format_likes_change(change)
-    return change unless change
-    return 'No change' if change.nil? || change.zero?
-
-    format = change.positive? ? '%d%% increase' : '%d%% decrease'
-    format % change.abs
-  end
-
-  def format_change_percentage(change_percentage)
-    return change_percentage unless change_percentage
+  def format_percentage_change(change_percentage)
+    return change_percentage unless change_percentage && change_percentage.is_a?(Numeric)
 
     if change_percentage.positive?
       "#{change_percentage.round(1)}% increase"
@@ -160,7 +143,7 @@ class PublicPageService < Services::Base
   end
 
   def impressions_change_since_last_week
-    @impressions_change_since_last_week ||= format_impressions_change(impressions_query.impressions_change_since_last_week)
+    @impressions_change_since_last_week ||= format_percentage_change(impressions_query.impressions_change_since_last_week)
   end
 
   def impressions_comparison_days
@@ -172,7 +155,7 @@ class PublicPageService < Services::Base
   end
 
   def likes_change_since_last_week
-    @likes_change_since_last_week ||= format_likes_change(tweet_metrics_query.likes_change_since_last_week)
+    @likes_change_since_last_week ||= format_percentage_change(tweet_metrics_query.likes_change_since_last_week)
   end
 
   def likes_comparison_days
@@ -184,7 +167,7 @@ class PublicPageService < Services::Base
   end
 
   def followers_count_change_percentage_text
-    @followers_count_change_percentage_text ||= format_change_percentage(twitter_user_metrics_query.followers_count_change_percentage)
+    @followers_count_change_percentage_text ||= format_percentage_change(twitter_user_metrics_query.followers_count_change_percentage)
   end
 
   def followers_comparison_days

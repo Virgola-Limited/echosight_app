@@ -1,6 +1,6 @@
 class NumberRoundingService
   def self.call(input)
-    return input if input === false
+    return input unless input && input.is_a?(Numeric)
     number = extract_number(input)
     sign = number.negative? ? '-' : ''
     number = number.round.abs

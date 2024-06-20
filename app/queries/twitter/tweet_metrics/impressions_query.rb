@@ -13,10 +13,14 @@ module Twitter
       end
 
       def impressions_count
+        return '' if insufficient_data?
+
         total_impressions_for_period(date_range[:start_time], date_range[:end_time])
       end
 
       def impressions_change_since_last_week
+        return '' if insufficient_data? || insufficient_data_for_comparison?
+
         current_period_impressions = impressions_count
 
         previous_period_start_time = (date_range[:start_time] - 7.days)
@@ -54,6 +58,21 @@ module Twitter
       end
 
       private
+
+      def insufficient_data?
+        total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i
+      end
+
+      def insufficient_data_for_comparison?
+        total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i * 2
+      end
+
+      def total_days_of_data
+        first_tweet = Tweet.where(identity_id: identity.id).order(:twitter_created_at).first
+        return 0 unless first_tweet
+
+        (Time.current.to_date - first_tweet.twitter_created_at.to_date).to_i + 1
+      end
 
       def total_impressions_for_period(start_time, end_time)
         tweet_ids = Tweet.where(identity_id: identity.id,
