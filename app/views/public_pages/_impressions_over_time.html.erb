@@ -38,7 +38,6 @@
   chart_type: "area",
   series_name: "Impressions",
   series_data: impression_counts_per_day.map { |entry| entry[:data_points] },
-  categories: impression_counts_per_day.map { |entry| entry[:formatted_label] },
-  y_formatter: "function (val) { return val }",)) %>
+  categories: impression_counts_per_day.map { |entry| entry[:formatted_label] })) %>
 
 

@@ -38,7 +38,6 @@
   series_name: "Engagement Rate",
   series_data: engagement_rate_percentage_per_day.map { |entry| entry[:data_points] },
   categories: engagement_rate_percentage_per_day.map { |entry| entry[:formatted_label] },
-  y_formatter: "function (val) { return val.toFixed(2); }",
   y_suffix: "%"
 )) %>
 

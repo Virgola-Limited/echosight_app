@@ -33,7 +33,7 @@
         categories: <%= @categories.to_json.html_safe %>,
         labels: {
           show: true,
-          offsetY: 5, // Add some space between the labels and the x-axis
+          offsetY: 5,
           style: {
             fontFamily: "Inter, sans-serif",
             cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
@@ -42,9 +42,7 @@
       },
       yaxis: {
         labels: {
-          formatter: function (val) {
-            return (<%= @y_formatter %>)(val) + '<%= @y_suffix %>';
-          },
+          formatter: <%= y_formatter.html_safe %>,
           show: true,
           style: {
             fontFamily: "Inter, sans-serif",
@@ -63,9 +61,7 @@
       tooltip: {
         enabled: true,
         y: {
-          formatter: function (val) {
-            return (<%= @y_formatter %>)(val) + '<%= @y_suffix %>';
-          }
+          formatter: <%= y_formatter.html_safe %>
         }
       },
       dataLabels: {
