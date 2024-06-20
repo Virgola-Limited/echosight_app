@@ -1,17 +1,21 @@
 module Twitter
   class PostCountsQuery
-    attr_reader :identity, :start_time
+    attr_reader :identity, :date_range
 
     def initialize(identity:, date_range: '7d')
       @identity = identity
-      @start_time = start_time || 1.week.ago.utc
+      @date_range = date_range
     end
 
     def tweet_count_over_available_time_period
+      return '' if insufficient_data?
+
       staggered_tweets_count_difference[:recent_count]
     end
 
     def tweets_change_over_available_time_period
+      return '' if insufficient_data? || insufficient_data_for_comparison?
+
       format_tweet_change(staggered_tweets_count_difference[:difference_count])
     end
 
@@ -23,13 +27,15 @@ module Twitter
       staggered_tweets_count_difference[:days_of_data_in_difference_count]
     end
 
+    private
+
     def staggered_tweets_count_difference
       @staggered_tweets_count_difference ||= begin
-        end_time = Time.current
-        intended_days_of_data = 7
+        range_data = Twitter::DateRangeOptions.parse_date_range(date_range)
+        start_time = range_data[:start_time]
+        end_time = range_data[:end_time]
 
-        # Extend the start time further back if more than 14 days of data is being considered
-        extended_start_time = [end_time - 14.days, @start_time.to_time].min
+        extended_start_time = start_time - (end_time - start_time)
 
         recent_tweets = tweets_within_period(extended_start_time, end_time)
         if recent_tweets.any?
@@ -37,21 +43,17 @@ module Twitter
           latest_tweet_date = recent_tweets.last.twitter_created_at.to_date
           actual_days_of_data = (latest_tweet_date - earliest_tweet_date).to_i + 1 # Include the start date itself
 
-          days_of_data_in_recent_count = [actual_days_of_data, intended_days_of_data].min
-          days_of_data_in_difference_count = actual_days_of_data >= intended_days_of_data * 2 ? intended_days_of_data : 0
+          days_of_data_in_recent_count = [actual_days_of_data, (end_time - start_time).to_i / 1.day].min
+          days_of_data_in_difference_count = actual_days_of_data >= (end_time - start_time).to_i / 1.day * 2 ? (end_time - start_time).to_i / 1.day : 0
 
-          if actual_days_of_data >= intended_days_of_data * 2
-            difference_count = compare_tweets_count(days_of_data_in_recent_count)
-          else
-            difference_count = nil
-          end
+          difference_count = actual_days_of_data >= (end_time - start_time).to_i / 1.day * 2 ? compare_tweets_count(days_of_data_in_recent_count) : nil
         else
           difference_count = nil
           days_of_data_in_recent_count = 0
           days_of_data_in_difference_count = 0
         end
 
-        recent_count = tweets_count_between(@start_time.to_time, end_time)
+        recent_count = tweets_count_between(start_time, end_time)
         {
           recent_count: recent_count,
           difference_count: difference_count,
@@ -59,6 +61,22 @@ module Twitter
           days_of_data_in_difference_count: days_of_data_in_difference_count
         }
       end
+    end
+
+    def insufficient_data?
+      total_days_of_data < (Time.current.to_date - Twitter::DateRangeOptions.parse_date_range(date_range)[:start_time].to_date).to_i
+    end
+
+    def insufficient_data_for_comparison?
+      range_data = Twitter::DateRangeOptions.parse_date_range(date_range)
+      total_days_of_data < (Time.current.to_date - range_data[:start_time].to_date).to_i * 2
+    end
+
+    def total_days_of_data
+      first_tweet = Tweet.where(identity_id: identity.id).order(:twitter_created_at).first
+      return 0 unless first_tweet
+
+      (Time.current.to_date - first_tweet.twitter_created_at.to_date).to_i + 1
     end
 
     def tweets_within_period(start_time, end_time)
