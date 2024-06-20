@@ -54,7 +54,7 @@ module Twitter
       previous_period_end_time = (date_range[:end_time] - 7.days)
       previous_period_likes = total_likes_for_period(previous_period_start_time, previous_period_end_time)
 
-      return nil if previous_period_likes.zero?
+      return '' if previous_period_likes.zero?
 
       percentage_change = ((current_period_likes - previous_period_likes) / previous_period_likes.to_f) * 100
       percentage_change.round(2)

@@ -12,25 +12,23 @@ module Twitter
     end
 
     def followers_count
-      current_period, past_period = time_periods[:current_period], time_periods[:past_period]
-      return false unless current_period && past_period
+      return nil if insufficient_data?
 
       latest_follower_count = metrics.last&.followers_count
-      followers_count_period_ago = metrics.find { |m| m.date == current_period.days.ago.to_date }&.followers_count
+      followers_count_period_ago = metrics.find { |m| m.date == date_range[:start_time].to_date }&.followers_count
 
-      return false unless followers_count_period_ago && latest_follower_count
+      return nil unless followers_count_period_ago && latest_follower_count
 
       latest_follower_count - followers_count_period_ago
     end
 
     def followers_count_change_percentage
-      current_period, past_period = time_periods[:current_period], time_periods[:past_period]
-      return false unless current_period && past_period
+      return nil if insufficient_data? || insufficient_data_for_comparison?
 
-      followers_count_past = metrics.find { |m| m.date == past_period.days.ago.to_date }&.followers_count
-      followers_count_current = metrics.find { |m| m.date == current_period.days.ago.to_date }&.followers_count
+      followers_count_past = metrics.find { |m| m.date == (date_range[:start_time] - 7.days).to_date }&.followers_count
+      followers_count_current = metrics.find { |m| m.date == date_range[:start_time].to_date }&.followers_count
 
-      return false unless followers_count_past && followers_count_current
+      return nil unless followers_count_past && followers_count_current
 
       calculate_percentage_change(followers_count_past, followers_count_current)
     end
@@ -55,7 +53,7 @@ module Twitter
     end
 
     def followers_comparison_days
-      time_periods[:current_period] || 0
+      (date_range[:start_time].to_date..date_range[:end_time].to_date).count
     end
 
     private
@@ -70,34 +68,19 @@ module Twitter
       ((new_value - old_value) / old_value.to_f) * 100.0
     end
 
-    def time_periods
-      oldest_metric_date = metrics.first&.date
-      return { current_period: nil, past_period: nil } unless oldest_metric_date
-
-      days_since_oldest = (Date.current - oldest_metric_date.to_date).to_i
-      @current_period, @past_period = calculate_dynamic_periods(days_since_oldest)
-      { current_period: @current_period, past_period: @past_period }
+    def insufficient_data?
+      total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i
     end
 
-    def calculate_dynamic_periods(days)
-      case days
-      when 0..1
-        [false, false]
-      when 2..3
-        [1, 2]
-      when 4..5
-        [2, 4]
-      when 6..7
-        [3, 6]
-      when 8..9
-        [4, 8]
-      when 10..11
-        [5, 10]
-      when 12..13
-        [6, 12]
-      else
-        [7, 14]
-      end
+    def insufficient_data_for_comparison?
+      total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i * 2
+    end
+
+    def total_days_of_data
+      first_metric = metrics.first
+      return 0 unless first_metric
+
+      (Time.current.to_date - first_metric.date).to_i + 1
     end
   end
 end

@@ -12,7 +12,7 @@ module Shared
     private
 
     def change_text
-      return missing_data_message(' change') if @change_text == false || @change_text.nil?
+      return missing_data_message(' change') if @change_text && !@change_text.empty?
 
       @change_text.to_s
     end
