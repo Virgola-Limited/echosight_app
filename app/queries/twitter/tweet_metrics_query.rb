@@ -39,32 +39,49 @@ module Twitter
                  .order(impression_count: :desc)
     end
 
-    # same as impressions_count dry up later
     def likes_count
-      total_likes_for_period(7.days.ago, Time.current)
+      return '' if insufficient_data?
+
+      total_likes_for_period(date_range[:start_time], date_range[:end_time])
     end
 
-    # same as impressions_change_since_last_week dry up later
     def likes_change_since_last_week
-      current_week_likes = likes_count
+      return '' if insufficient_data? || insufficient_data_for_comparison?
 
-      previous_week_likes = total_likes_for_period(14.days.ago, 7.days.ago)
-      return false if previous_week_likes.zero?
+      current_period_likes = likes_count
 
-      percentage_change = ((current_week_likes - previous_week_likes) / previous_week_likes.to_f) * 100
+      previous_period_start_time = (date_range[:start_time] - 7.days)
+      previous_period_end_time = (date_range[:end_time] - 7.days)
+      previous_period_likes = total_likes_for_period(previous_period_start_time, previous_period_end_time)
+
+      return nil if previous_period_likes.zero?
+
+      percentage_change = ((current_period_likes - previous_period_likes) / previous_period_likes.to_f) * 100
       percentage_change.round(2)
     end
 
     private
 
-    # same as total_impressions_for_period dry up later
+    def insufficient_data?
+      total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i
+    end
+
+    def insufficient_data_for_comparison?
+      total_days_of_data < (Time.current.to_date - date_range[:start_time].to_date).to_i * 2
+    end
+
+    def total_days_of_data
+      first_tweet = Tweet.where(identity_id: identity.id).order(:twitter_created_at).first
+      return 0 unless first_tweet
+
+      (Time.current.to_date - first_tweet.twitter_created_at.to_date).to_i + 1
+    end
+
     def total_likes_for_period(start_time, end_time)
-      # Collect tweet IDs that match the given conditions
       tweet_ids = Tweet.where(identity_id: identity.id,
                               twitter_created_at: start_time.beginning_of_day..end_time.end_of_day)
                        .pluck(:id)
 
-      # If there are no matching tweet IDs, return 0 immediately to prevent SQL errors
       return 0 if tweet_ids.empty?
 
       query = <<-SQL
