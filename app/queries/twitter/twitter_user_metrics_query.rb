@@ -12,23 +12,23 @@ module Twitter
     end
 
     def followers_count
-      return nil if insufficient_data?
+      return 'nil' if insufficient_data?
 
       latest_follower_count = metrics.last&.followers_count
       followers_count_period_ago = metrics.find { |m| m.date == date_range[:start_time].to_date }&.followers_count
 
-      return nil unless followers_count_period_ago && latest_follower_count
+      return '' unless followers_count_period_ago && latest_follower_count
 
       latest_follower_count - followers_count_period_ago
     end
 
     def followers_count_change_percentage
-      return nil if insufficient_data? || insufficient_data_for_comparison?
+      return '' if insufficient_data? || insufficient_data_for_comparison?
 
       followers_count_past = metrics.find { |m| m.date == (date_range[:start_time] - 7.days).to_date }&.followers_count
       followers_count_current = metrics.find { |m| m.date == date_range[:start_time].to_date }&.followers_count
 
-      return nil unless followers_count_past && followers_count_current
+      return '' unless followers_count_past && followers_count_current
 
       calculate_percentage_change(followers_count_past, followers_count_current)
     end
