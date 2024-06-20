@@ -64,6 +64,10 @@ class PublicPageComponent <  ApplicationComponent
     page_user.hide_profile_banner?
   end
 
+  def show_date_range_selector?
+    !public_page_data.demo?
+  end
+
   private
 
   def twitter_link

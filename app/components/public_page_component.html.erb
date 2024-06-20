@@ -57,10 +57,11 @@
 
   </div>
 
+  <% if show_date_range_selector? %>
   <div class="flex justify-center items-center">
     <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle, date_range: params[:date_range]) %>
   </div>
-
+  <% end %>
 
   <div class="flex flex-wrap">
     <%= count_cards %>
