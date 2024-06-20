@@ -38,7 +38,7 @@
   chart_id: "followers-chart",
   chart_type: "area",
   series_name: "Followers",
-  series_data: followers_data_per_day.map { |entry| entry[:followers_count] },
+  series_data: followers_data_per_day.map { |entry| entry[:data_points] },
   categories: followers_data_per_day.map { |entry| entry[:formatted_label] },
   y_formatter: "function (val) { return val; }",
 )) %>

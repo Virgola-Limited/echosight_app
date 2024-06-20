@@ -48,7 +48,7 @@ module Twitter
 
         formatted_label = format_label(date, index)
 
-        { date: date, followers_count: followers_count, formatted_label: formatted_label }
+        { date: date, data_points: followers_count, formatted_label: formatted_label }
       end
     end
 

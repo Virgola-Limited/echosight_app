@@ -21,7 +21,7 @@
   <%= render(Shared::ShareToolComponent.new(modal_id: 'share-engagement-modal', chart_id: 'engagement-chart-container', title: 'Share Engagement Chart')) %>
 
   <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-    <% if engagement_rate_percentage_per_day.count < 2 || engagement_rate_percentage_per_day.all? { |data| data[:engagement_rate_percentage].zero? } %>
+    <% if engagement_rate_percentage_per_day.count < 2 || engagement_rate_percentage_per_day.all? { |data| data[:data_points].zero? } %>
     <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the engagement rate graph.</p>
   <% else %>
       <div id="engagement-chart"></div>
@@ -36,7 +36,7 @@
   chart_id: "engagement-chart",
   chart_type: "area",
   series_name: "Engagement Rate",
-  series_data: engagement_rate_percentage_per_day.map { |entry| entry[:engagement_rate_percentage] },
+  series_data: engagement_rate_percentage_per_day.map { |entry| entry[:data_points] },
   categories: engagement_rate_percentage_per_day.map { |entry| entry[:formatted_label] },
   y_formatter: "function (val) { return val.toFixed(2); }",
   y_suffix: "%"

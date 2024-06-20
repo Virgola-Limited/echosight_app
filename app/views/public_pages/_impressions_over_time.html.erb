@@ -21,7 +21,7 @@
   <%= render(Shared::ShareToolComponent.new(modal_id: 'share-impressions-modal', chart_id: 'impressions-chart-container', title: 'Share Impressions Chart')) %>
 
   <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-    <% if impression_counts_per_day.count < 2 || impression_counts_per_day.all? { |data| data[:impression_count].zero? } %>
+    <% if impression_counts_per_day.count < 2 || impression_counts_per_day.all? { |data| data[:data_points].zero? } %>
       <p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the impressions graph.</p>
     <% else %>
       <div id="impressions-chart" class="w-full"></div>
@@ -37,7 +37,7 @@
   chart_id: "impressions-chart",
   chart_type: "area",
   series_name: "Impressions",
-  series_data: impression_counts_per_day.map { |entry| entry[:impression_count] },
+  series_data: impression_counts_per_day.map { |entry| entry[:data_points] },
   categories: impression_counts_per_day.map { |entry| entry[:formatted_label] },
   y_formatter: "function (val) { return val }",)) %>
 

@@ -43,7 +43,7 @@ module Twitter
           engagement_rate = daily_impressions.positive? ? (daily_interactions.to_f / daily_impressions * 100).round(2) : 0
           formatted_label = format_label(date, index)
 
-          { date: date, engagement_rate_percentage: engagement_rate, formatted_label: formatted_label }
+          { date: date, data_points: engagement_rate, formatted_label: formatted_label }
         end
       end
 

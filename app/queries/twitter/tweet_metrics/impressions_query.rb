@@ -49,7 +49,7 @@ module Twitter
 
           formatted_label = format_label(date, index)
 
-          { date: date, impression_count: impressions_sum, formatted_label: formatted_label }
+          { date: date, data_points: impressions_sum, formatted_label: formatted_label }
         end
       end
 
