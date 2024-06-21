@@ -31,5 +31,5 @@ Shrine.plugin :store_dimensions
 
 # :restore_cached_data Plugin: This plugin complements the :cached_attachment_data plugin by extracting and retaining the metadata for the cached files when a form is re-displayed. This means that all the file metadata (like size, type, filename, etc.) is preserved and available in your application even before the file is permanently stored. This can be useful for validation or displaying file information back to the user in the case of form errors.
 
-# Shrine.plugin :cached_attachment_data # enables retaining cached file across form redisplays
-# Shrine.plugin :restore_cached_data    # extracts metadata for assigned cached files
+Shrine.plugin :cached_attachment_data # enables retaining cached file across form redisplays
+Shrine.plugin :restore_cached_data    # extracts metadata for assigned cached files
