@@ -62,7 +62,7 @@ class PublicPageService < Services::Base
       followers_count:,
       followers_count_change_percentage_text:,
       impression_counts_per_day:,
-      impressions_change_since_last_week:,
+      impressions_change_since_last_period:,
       impressions_comparison_days:,
       impressions_count:,
       likes_change_since_last_period:,
@@ -138,8 +138,8 @@ class PublicPageService < Services::Base
     @impressions_count ||= impressions_query.impressions_count
   end
 
-  def impressions_change_since_last_week
-    @impressions_change_since_last_week ||= format_percentage_change(impressions_query.impressions_change_since_last_week)
+  def impressions_change_since_last_period
+    @impressions_change_since_last_period ||= format_percentage_change(impressions_query.impressions_change_since_last_period)
   end
 
   def impressions_comparison_days

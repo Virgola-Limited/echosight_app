@@ -131,7 +131,7 @@ class DemoPublicPageService < Services::Base
       followers_count: FOLLOWERS_DATA[:count],
       followers_count_change_percentage_text: FOLLOWERS_DATA[:count_change_percentage_text],
       impression_counts_per_day: generate_impression_info,
-      impressions_change_since_last_week: IMPRESSIONS_DATA[:change_since_last_week],
+      impressions_change_since_last_period: IMPRESSIONS_DATA[:change_since_last_week],
       impressions_comparison_days: IMPRESSIONS_DATA[:comparison_days],
       impressions_count: IMPRESSIONS_DATA[:count],
       likes_change_since_last_period: LIKES_DATA[:change_since_last_week],

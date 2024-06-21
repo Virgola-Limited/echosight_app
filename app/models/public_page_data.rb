@@ -8,7 +8,7 @@ class PublicPageData
                 :followers_count_change_percentage_text,
                 :followers_data_per_day,
                 :impression_counts_per_day,
-                :impressions_change_since_last_week,
+                :impressions_change_since_last_period,
                 :impressions_comparison_days,
                 :impressions_count,
                 :last_cache_update,
@@ -26,7 +26,7 @@ class PublicPageData
 
   ROUNDABLE_METRICS = %i[
     impressions_count
-    impressions_change_since_last_week
+    impressions_change_since_last_period
     likes_count
     followers_count
   ].freeze

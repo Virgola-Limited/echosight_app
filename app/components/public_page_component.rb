@@ -101,7 +101,7 @@ class PublicPageComponent < ApplicationComponent
       title: "Impressions",
       count: impressions_count,
       tooltip_target: "impressions-count-tooltip",
-      change_text: impressions_change_since_last_week,
+      change_text: impressions_change_since_last_period,
       tooltip_text: impressions_tooltip_text.html_safe
     )
   end
