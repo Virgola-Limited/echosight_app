@@ -12,7 +12,7 @@ module Twitter
     end
 
     def followers_count
-      return 'nil' if insufficient_data?
+      return '' if insufficient_data?
 
       latest_follower_count = metrics.last&.followers_count
       followers_count_period_ago = metrics.find { |m| m.date == date_range[:start_time].to_date }&.followers_count

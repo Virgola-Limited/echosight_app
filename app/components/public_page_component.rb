@@ -65,7 +65,7 @@ class PublicPageComponent < ApplicationComponent
   end
 
   def show_date_range_selector?
-    !public_page_data.demo?
+    !public_page_data.demo? || Rails.env.development?
   end
 
   private
