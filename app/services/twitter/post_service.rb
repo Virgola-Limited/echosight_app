@@ -8,8 +8,17 @@ module Twitter
     end
 
     def call
+      if @user.oauth_credential.expired_or_expiring_soon?
+        puts "OAuth token has expired or is expiring soon. Please reconnect your Twitter account."
+        return nil
+      end
+
       response = @client.post_tweet(@text)
-      puts "Tweet posted successfully: #{response['data']['text']}"
+      if response['data']
+        puts "Tweet posted successfully: #{response['data']['text']}"
+      else
+        puts "Failed to post tweet: #{response['errors']}"
+      end
       response
     rescue StandardError => e
       puts "Failed to post tweet: #{e.message}"

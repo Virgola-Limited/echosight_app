@@ -64,6 +64,7 @@ module Twitter
     private
 
     def refresh_token_if_needed(oauth_credential)
+      Rails.logger.debug('paul' + 'refreshing token'.inspect)
       return unless oauth_credential.expired_or_expiring_soon?
 
       refreshed_credentials = refresh_oauth_token(oauth_credential)
@@ -174,15 +175,21 @@ module Twitter
     def make_api_call(endpoint, params, auth_type, version = :v2)
       refresh_token_if_needed(user.identity.oauth_credential) if user
 
-      response = client(auth: auth_type, version:).get("#{endpoint}?#{URI.encode_www_form(params)}")
+      uri = URI.join(base_url(version), endpoint)
+      request = Net::HTTP::Post.new(uri)
+      bearer_token = credentials(version, auth_type)[:bearer_token]
+      puts "Bearer token: #{bearer_token}" # Debugging
+      request['Authorization'] = "Bearer #{bearer_token}"
+      request['Content-Type'] = 'application/json'
+      request.body = params.to_json
 
-      # Check for "errors" key in the response
-      if response.is_a?(Hash) && response.key?('errors')
-        error_messages = response['errors'].map { |error| error['detail'] }.join(', ')
-        handle_api_error(StandardError.new("Twitter API Error: #{error_messages}"), endpoint, params, auth_type)
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+        http.request(request)
       end
 
-      response
+      puts "Response: #{response.body}" # Debugging
+
+      JSON.parse(response.body)
     rescue X::Error => e
       handle_api_error(e, endpoint, params, auth_type)
     end
