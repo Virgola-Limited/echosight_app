@@ -17,7 +17,7 @@ ActiveAdmin.register ContentItem do
     f.inputs do
       f.input :title
       f.input :content
-      f.input :category
+      f.input :category, input_html: { value: f.object.category || 'app_update' }
       f.input :image, as: :file
     end
     f.actions
