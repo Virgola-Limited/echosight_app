@@ -78,6 +78,11 @@ RSpec.configure do |config|
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
+    options.add_argument('--window-size=1400,1400')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--no-sandbox')
+    options.add_preference(:loggingPrefs, browser: 'ALL')
+
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end
   if ENV['HEADLESS']
@@ -108,19 +113,19 @@ RSpec.configure do |config|
   end
 
   config.after(:each, type: :feature) do |example|
-    # if page.driver.browser.respond_to?(:logs)
-      # check_for_errors(example)
-    # end
+    if page.driver.browser.respond_to?(:manage) && page.driver.browser.manage.respond_to?(:logs)
+      logs = page.driver.browser.manage.logs.get(:browser)
+      unless logs.empty?
+        puts "JavaScript errors found:"
+        logs.each { |log| puts log.message }
+      end
+    end
     WebMock.disable_net_connect!(allow_localhost: true)
   end
 
   config.around(:each, type: :feature) do |example|
     VCR.turned_off { example.run }
   end
-
-
-  #######################
-
 end
 
 def check_for_errors(example)
