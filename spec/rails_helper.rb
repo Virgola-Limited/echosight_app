@@ -92,6 +92,12 @@ RSpec.configure do |config|
   config.include Capybara::DSL, type: :feature
   config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include AuthenticationHelper, type: :feature
+
+  config.before(:suite, type: :feature) do
+    Rails.application.load_tasks
+    Rake::Task['test:prepare'].invoke
+  end
+
   config.before(:each, type: :feature) do
     ActionMailer::Base.deliveries.clear
     WebMock.allow_net_connect!
