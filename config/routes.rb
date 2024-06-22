@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
 
   resources :bug_reports, only: [:index, :create]
+  resources :content_items, only: [:index]
   resources :dashboard, only: :index
   resource :email_subscription, only: [:edit, :update]
   resources :feature_requests, only: [:index, :create]
