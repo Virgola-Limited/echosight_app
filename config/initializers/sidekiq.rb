@@ -62,7 +62,12 @@ if !Rails.env.development? && !Rails.env.test?
           'name' => 'Sync Subscriptions - every 1 hour',
           'cron' => '0 * * * *',
           'class' => 'SubscriptionSyncJob'
-      }
+        },
+        {
+          'name' => 'Regenerate User Public Page Cache - every 3 hours',
+          'cron' => '0 */3 * * *',
+          'class' => 'RegenerateUserPublicPageCacheJob'
+        }
       ]
     )
   end

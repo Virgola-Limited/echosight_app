@@ -1,4 +1,4 @@
-class PublicPageComponent <  ApplicationComponent
+class PublicPageComponent < ApplicationComponent
   attr_reader :public_page_data, :page_user, :current_user
 
   def initialize(public_page_data:, current_user:)
@@ -64,6 +64,10 @@ class PublicPageComponent <  ApplicationComponent
     page_user.hide_profile_banner?
   end
 
+  def show_date_range_selector?
+    !public_page_data.demo? || Rails.env.development?
+  end
+
   private
 
   def twitter_link
@@ -87,50 +91,35 @@ class PublicPageComponent <  ApplicationComponent
   end
 
   def posts_tooltip_text
-    # if days_of_data_in_recent_count < 7
-      posts_tooltip_text = "This sections shows tweet / post counts for the last 7 days compared to the previous 7 days. #{low_data_message}"
-      # posts_tooltip_text += " We will continue to collect data to provide more comprehensive insights."
-    # elsif days_of_data_in_difference_count < 7
-      # For less than 7 days of data in the difference count
-      # posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous period."
-      # posts_tooltip_text += " We are still collecting data to show a full week comparison."
-    # else
-      # After having 14 days of data
-      # posts_tooltip_text = "This is the total number of tweets you have made in the last 7 days compared to the previous 7 days."
-    # end
-
-    posts_tooltip_text
+    "This section shows tweet / post counts for the last #{date_range_label} compared to the previous #{date_range_label}. #{low_data_message}"
   end
 
   def impressions_card
-    impressions_tooltip_text = "This is the total number of impressions your posts have made in the last 7 days compared to the previous 7 days. #{low_data_message}"
-    # impressions_tooltip_text += "<br><br>We will continue to collect data so we can show you a whole week compared to the week before" if impressions_comparison_days < 7
+    impressions_tooltip_text = "This is the total number of impressions your posts have made in the last #{date_range_label} compared to the previous #{date_range_label}. #{low_data_message}"
 
     render Shared::MetricsCardComponent.new(
       title: "Impressions",
       count: impressions_count,
       tooltip_target: "impressions-count-tooltip",
-      change_text: impressions_change_since_last_week,
+      change_text: impressions_change_since_last_period,
       tooltip_text: impressions_tooltip_text.html_safe
     )
   end
 
   def likes_card
-    likes_tooltip_text = "This is the total number of likes you've received in the last 7 days compared to the previous 7 days. #{low_data_message}"
-    # likes_tooltip_text += "<br><br>We will continue to collect data so we can show you a whole week compared to the week before" if likes_comparison_days < 7
+    likes_tooltip_text = "This is the total number of likes you've received in the last #{date_range_label} compared to the previous #{date_range_label}. #{low_data_message}"
 
     render Shared::MetricsCardComponent.new(
       title: "Likes",
       count: likes_count,
       tooltip_target: "likes-count-tooltip",
-      change_text: likes_change_since_last_week,
+      change_text: likes_change_since_last_period,
       tooltip_text: likes_tooltip_text.html_safe
     )
   end
 
   def followers_card
-    followers_tooltip_text = "This is the total number of followers you have acquired in the last 7 days compared to the previous 7 days. #{low_data_message}"
-    # followers_tooltip_text += "<br><br>We will continue to collect data so we can show you a whole week compared to the week before" if followers_comparison_days < 7
+    followers_tooltip_text = "This is the total number of followers you have acquired in the last #{date_range_label} compared to the previous #{date_range_label}. #{low_data_message}"
 
     render Shared::MetricsCardComponent.new(
       title: "Followers",
@@ -139,6 +128,10 @@ class PublicPageComponent <  ApplicationComponent
       change_text: followers_count_change_percentage_text,
       tooltip_text: followers_tooltip_text.html_safe
     )
+  end
+
+  def date_range_label
+    Twitter::DateRangeOptions.all.find { |range| range[:value] == public_page_data.date_range }[:label]
   end
 
   def low_data_message

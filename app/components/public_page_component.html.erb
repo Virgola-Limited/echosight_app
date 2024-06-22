@@ -57,19 +57,24 @@
 
   </div>
 
+  <% if show_date_range_selector? %>
+  <div class="flex justify-center items-center">
+    <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle, date_range: params[:date_range]) %>
+  </div>
+  <% end %>
+
   <div class="flex flex-wrap">
     <%= count_cards %>
   </div>
 
   <%= render partial:"public_pages/impressions_over_time", locals: {
     page_user_name: page_user_name,
-    impression_daily_data_points_for_graph: impression_daily_data_points_for_graph,
-    impression_formatted_labels_for_graph: impression_formatted_labels_for_graph,
+    impression_counts_per_day: impression_counts_per_day,
     maximum_days_of_data: maximum_days_of_data,
   }
   %>
 
-  <%= render partial:"public_pages/followers_graph", locals: {page_user_name: page_user_name, follower_daily_data_points_for_graph: follower_daily_data_points_for_graph, maximum_days_of_data: maximum_days_of_data} %>
+  <%= render partial:"public_pages/followers_graph", locals: {page_user_name: page_user_name, followers_data_per_day: followers_data_per_day, maximum_days_of_data: maximum_days_of_data} %>
 
   <%= render partial:"public_pages/engagement_rate", locals: {page_user_name: page_user_name, engagement_rate_percentage_per_day: engagement_rate_percentage_per_day, maximum_days_of_data: maximum_days_of_data} %>
 

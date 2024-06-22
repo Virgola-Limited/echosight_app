@@ -47,7 +47,7 @@ gem 'mailkick'
 gem "mini_magick"
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter2'
-gem 'paper_trail'
+gem 'platform-api'
 gem 'pghero'
 gem 'premailer-rails'
 gem 'rack-cors', require: 'rack/cors'

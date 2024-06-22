@@ -7,22 +7,19 @@ module.exports = {
     './node_modules/flowbite/**/*.js'
   ],
   safelist: [
-    // 'w-full',
-    // 'px-5',
-    // 'py-3',
-    // 'text-base',
-    // 'font-medium',
-    // 'text-center',
-    // 'text-blue-100',
     'transition',
     'duration-150',
     'ease-in-out',
     'bg-blue-500',
+    'bg-blue-600',
+    'text-white',
     'rounded-lg',
     'hover:bg-blue-600',
     'focus:outline-none',
     'focus:ring-4',
-    'focus:ring-blue-300'
+    'focus:ring-blue-300',
+    'dark:bg-blue-600',
+    'dark:text-white'
   ],
   darkMode: "class", // or 'media' or false
   theme: {

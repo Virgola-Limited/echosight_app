@@ -27,7 +27,6 @@
 #  fk_rails_...  (tweet_id => tweets.id)
 #
 class TweetMetric < ApplicationRecord
-  has_paper_trail
 
   validates :impression_count, numericality: { greater_than_or_equal_to: 0 }
   validates :like_count, numericality: { greater_than_or_equal_to: 0 }

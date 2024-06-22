@@ -1,0 +1,8 @@
+<div class="inline-flex rounded-md shadow-sm my-4" role="group">
+  <% date_range_options.each do |option| %>
+    <button type="button" class="inline-flex items-center px-4 py-2 text-sm font-medium border border-gray-200 <%= option == date_range_options.first ? 'rounded-s-lg' : '' %> <%= option == date_range_options.last ? 'rounded-e-lg' : '' %> hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white <%= selected_class(option[:value]) %>" onclick="window.location.href='<%= public_page_path(handle: page_user_handle, date_range: option[:value]) %>'">
+      <span class="block sm:hidden"><%= option[:value] %></span>
+      <span class="hidden sm:block"><%= option[:label] %></span>
+    </button>
+  <% end %>
+</div>
