@@ -3,7 +3,6 @@ if defined?(ExceptionNotification)
   require 'exception_notification/rails'
   require 'exception_notification/sidekiq'
 
-
   ExceptionNotification.configure do |config|
     # Ignore additional exception types.
     # ActiveRecord::RecordNotFound, Mongoid::Errors::DocumentNotFound, AbstractController::ActionNotFound and ActionController::RoutingError are already added.
@@ -22,7 +21,7 @@ if defined?(ExceptionNotification)
     unless Rails.env.development? || Rails.env.test?
       # Email notifier sends notifications by email.
       config.add_notifier :email, {
-        email_prefix: '[ERROR] ',
+        email_prefix: "[#{Rails.env.upcase}] [ERROR] ",
         sender_address: %{"Chris Toynbee" <chris@echosight.io>},
         exception_recipients: %w{ctoynbee@gmail.com},
       }
@@ -48,6 +47,5 @@ if defined?(ExceptionNotification)
         TerminalNotifier.notify(message, title: 'Exception Notification')
       }
     end
-
   end
 end
