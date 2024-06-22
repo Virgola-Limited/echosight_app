@@ -259,6 +259,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_21_230118) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+  end
+
   create_table "votes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "votable_type", null: false
