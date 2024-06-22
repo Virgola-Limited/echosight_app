@@ -55,9 +55,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y chromium-browser chromium-chromedriver
-          if [ ! -f /usr/bin/chromedriver ]; then
-            sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
-          fi
+          sudo ln -sf /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
 
       - name: Precompile assets and build Vite
         env:
@@ -75,11 +73,11 @@ jobs:
         run: |
           bin/rails db:create db:schema:load --trace
 
-      - name: Run tests
+      - name: Run tests with Debugging
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           DISABLE_SLACK_NOTIFY: true
           HEADLESS: true
         run: |
-          bundle exec rspec
+          bundle exec rspec --format documentation
