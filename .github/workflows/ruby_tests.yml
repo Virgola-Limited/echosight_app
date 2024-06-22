@@ -22,62 +22,64 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.9.1
-      with:
-        access_token: ${{ github.token }}
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
 
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.2.2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
 
-    # Cache gems
-    - name: Cache gems
-      uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
+      # Cache gems
+      - name: Cache gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-    - name: Set up Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install Ruby and JavaScript dependencies
-      run: |
-        bundle config set path 'vendor/bundle'
-        bundle install --jobs 4 --retry 3
-        npm install
+      - name: Install Ruby and JavaScript dependencies
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
+          npm install
 
-    - name: Setup Chrome and ChromeDriver for Selenium
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
-        if [ ! -f /usr/bin/chromedriver ]; then
-          sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
-        fi
+      - name: Setup Chrome and ChromeDriver for Selenium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          if [ ! -f /usr/bin/chromedriver ]; then
+            sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+          fi
 
-    - name: Precompile assets and build Vite
-      run: |
-        bin/rails assets:precompile
-        bin/vite build
+      - name: Precompile assets and build Vite
+        env:
+          RAILS_ENV: test
+        run: |
+          bin/rails assets:precompile
+          bin/vite build
 
-    - name: Set up test database
-      env:
-        RAILS_ENV: test
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/echosight_app_test
-        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-        DISABLE_SPRING: 1
-      run: |
-        bin/rails db:create db:schema:load --trace
+      - name: Set up test database
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/echosight_app_test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DISABLE_SPRING: 1
+        run: |
+          bin/rails db:create db:schema:load --trace
 
-    - name: Run tests
-      env:
-        RAILS_ENV: test
-        RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-        DISABLE_SLACK_NOTIFY: true
-        HEADLESS: true
-      run: |
-        bundle exec rspec
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DISABLE_SLACK_NOTIFY: true
+          HEADLESS: true
+        run: |
+          bundle exec rspec
