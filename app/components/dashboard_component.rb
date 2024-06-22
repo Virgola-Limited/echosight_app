@@ -8,7 +8,7 @@ class DashboardComponent < ApplicationComponent
   end
 
   def show_connect_to_twitter_message?
-    !current_user.connected_to_twitter?
+    !current_user.twitter_connection_valid?
   end
 
   def show_subscription_message?
@@ -16,11 +16,11 @@ class DashboardComponent < ApplicationComponent
   end
 
   def show_waiting_message?
-    current_user.connected_to_twitter? && !current_user.enough_data_for_public_page? && current_user.active_subscription?
+    current_user.twitter_connection_valid? && !current_user.enough_data_for_public_page? && current_user.active_subscription?
   end
 
   def show_happy_message?
-    current_user.connected_to_twitter? && current_user.enough_data_for_public_page? && current_user.active_subscription?
+    current_user.twitter_connection_valid? && current_user.enough_data_for_public_page? && current_user.active_subscription?
   end
 
   def eligible_for_trial?

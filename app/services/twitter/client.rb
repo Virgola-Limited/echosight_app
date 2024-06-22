@@ -9,6 +9,12 @@ module Twitter
       @user = user
     end
 
+    def post_tweet(text)
+      endpoint = 'tweets'
+      params = { 'text' => text }
+      make_api_call(endpoint, params, :oauth2)
+    end
+
     # https://developer.twitter.com/en/portal/products/basic
 
     # | Endpoint            | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |

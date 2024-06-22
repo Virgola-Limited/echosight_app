@@ -158,8 +158,12 @@ class User < ApplicationRecord
     !persisted?
   end
 
-  def connected_to_twitter?
-    identity&.provider == 'twitter2'
+  def twitter_connection_valid?
+    identity&.provider == 'twitter2' && oauth_credential.present? && !oauth_credential.expired_or_expiring_soon?
+  end
+
+  def oauth_credential
+    identity&.oauth_credential
   end
 
   def method_missing(method_name, *arguments, &block)
