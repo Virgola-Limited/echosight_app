@@ -3,7 +3,7 @@
 <div class="space-y-4">
   <% @content_items.each do |item| %>
     <%= render ContentBoxComponent.new do %>
-      <%= render Shared::HeadingComponent.new(text: item.title || "Update on #{item.created_at.strftime("%B %d, %Y")}", heading_type: :h2) %>
+      <%= render Shared::HeadingComponent.new(text: item.title.blank? ? "Update on #{item.created_at.strftime("%B %d, %Y")}" : item.title, heading_type: :h2) %>
       <p class="paragraph-base"><%= item.content %></p>
 
       <% if item.image_url %>
