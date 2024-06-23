@@ -31,3 +31,8 @@ on_worker_boot do
   # Ensure ActiveRecord connections are reestablished
   ActiveRecord::Base.establish_connection
 end
+
+before_fork do
+  # Additional garbage collection settings
+  GC.start
+end
