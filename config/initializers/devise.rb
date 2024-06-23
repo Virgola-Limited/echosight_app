@@ -327,7 +327,7 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :twitter2, Rails.application.credentials.dig(:twitter, :oauth2_client_id), Rails.application.credentials.dig(:twitter, :oauth2_client_secret),
                 callback_path: '/users/auth/twitter2/callback',
-                scope: 'tweet.read users.read offline.access'
+                scope: 'tweet.read tweet.write users.read offline.access'
 
 
 

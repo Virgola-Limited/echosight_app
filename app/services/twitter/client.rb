@@ -1,6 +1,3 @@
-# frozen_string_literal: true
-
-# rubocop :disable Metrics/ClassLength
 module Twitter
   class Client
     attr_reader :user
@@ -15,12 +12,7 @@ module Twitter
       make_api_call(endpoint, params, :oauth2)
     end
 
-    # https://developer.twitter.com/en/portal/products/basic
-
-    # | Endpoint            | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
-    # |---------------------|-----------|----------------|----------|-----------------------------|------------------------|
-    # | GET_2_users_param   | 500       | 24 hours       | per user | no                          | 15,000                 |
-    # | GET_2_users_param   | 100       | 24 hours       | per app  | no                          | 3,000                  |
+    # Example API call methods
     def fetch_user_with_metrics
       raise "Not needed as we get this via tweets"
       endpoint = "users/#{user.identity.uid}"
@@ -28,10 +20,6 @@ module Twitter
       make_api_call(endpoint, params, :oauth1)
     end
 
-    # | Endpoint                  | #Requests | Window of time | Per      | Part of the Tweet pull cap? | Effective 30-day limit |
-    # |---------------------------|-----------|----------------|----------|-----------------------------|------------------------|
-    # | GET_2_users_param_tweets  | 10        | 15 minutes     | per app  | yes                         | 10,000                 |
-    # | GET_2_users_param_tweets  | 5         | 15 minutes     | per user | yes                         | 10,000                 |
     def fetch_user_tweets(next_token = nil)
       endpoint = "users/#{user.identity.uid}/tweets"
       params = {
@@ -64,7 +52,6 @@ module Twitter
     private
 
     def refresh_token_if_needed(oauth_credential)
-      Rails.logger.debug('paul' + 'refreshing token'.inspect)
       return unless oauth_credential.expired_or_expiring_soon?
 
       refreshed_credentials = refresh_oauth_token(oauth_credential)
@@ -76,43 +63,35 @@ module Twitter
     end
 
     def refresh_oauth_token(oauth_credential)
+      Rails.logger.debug('paul' + 'refreshing token'.inspect)
       uri = URI('https://api.twitter.com/2/oauth2/token')
       request = Net::HTTP::Post.new(uri)
       request.content_type = 'application/x-www-form-urlencoded'
 
-      # Combine client ID and secret, then Base64-encode for Basic Auth
       client_id = Rails.application.credentials.dig(:twitter, :oauth2_client_id)
       client_secret = Rails.application.credentials.dig(:twitter, :oauth2_client_secret)
       credentials = "#{client_id}:#{client_secret}"
       encoded_credentials = Base64.strict_encode64(credentials)
 
-      # Include the encoded credentials in the Authorization header
       request['Authorization'] = "Basic #{encoded_credentials}"
-
-      # Set the request body with the refresh token and grant type
       request.body = URI.encode_www_form({
-                                           'refresh_token' => oauth_credential.refresh_token,
-                                           'grant_type' => 'refresh_token'
-                                         })
+        'refresh_token' => oauth_credential.refresh_token,
+        'grant_type' => 'refresh_token'
+      })
 
-      # Perform the request
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.request(request)
       end
 
-      # Parse the response
       raise "Failed to refresh token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
       new_creds = JSON.parse(response.body)
 
-      # Return the new token details
       {
         token: new_creds['access_token'],
         refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
         expires_at: Time.now + new_creds['expires_in'].to_i
       }
-
-      # Raise an error with the response body
     end
 
     def handle_api_error(e, endpoint, params, auth_type)
@@ -126,7 +105,6 @@ module Twitter
 
         # Send rate limit info and request details to Slack
         Notifications::SlackNotifier.call(message: "#{message}, Request Info: #{request_info}", channel: :xratelimit)
-
 
         # Re-raise the error to maintain the original flow
         raise e
@@ -168,20 +146,20 @@ module Twitter
       end
     end
 
-    def client(version:, auth: :oauth2)
-      X::Client.new(**credentials(version, auth))
-    end
-
     def make_api_call(endpoint, params, auth_type, version = :v2)
       refresh_token_if_needed(user.identity.oauth_credential) if user
 
       uri = URI.join(base_url(version), endpoint)
       request = Net::HTTP::Post.new(uri)
-      bearer_token = credentials(version, auth_type)[:bearer_token]
+      bearer_token = user_token_or_app_token(version, auth_type)
       puts "Bearer token: #{bearer_token}" # Debugging
       request['Authorization'] = "Bearer #{bearer_token}"
       request['Content-Type'] = 'application/json'
       request.body = params.to_json
+
+      puts "Request URI: #{uri}"
+      puts "Request Headers: #{request.to_hash}"
+      puts "Request Body: #{request.body}"
 
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.request(request)
@@ -189,9 +167,33 @@ module Twitter
 
       puts "Response: #{response.body}" # Debugging
 
-      JSON.parse(response.body)
-    rescue X::Error => e
+      handle_response(response, endpoint, params, auth_type)
+    rescue StandardError => e
       handle_api_error(e, endpoint, params, auth_type)
+    end
+
+    def user_token_or_app_token(version, auth)
+      if user && user.identity.oauth_credential.token.present?
+        user.identity.oauth_credential.token
+      else
+        application_context_credentials(version, auth)[:bearer_token]
+      end
+    end
+
+    def handle_response(response, endpoint, params, auth_type)
+      if response.code.to_i == 403
+        puts "Forbidden error encountered. Please check your app permissions."
+        handle_forbidden_error
+      end
+
+      JSON.parse(response.body)
+    end
+
+    def handle_forbidden_error
+      ExceptionNotifier.notify_exception(
+        StandardError.new('Forbidden error encountered. Please check your app permissions.'),
+        data: { user_info: user_info_for_error }
+      )
     end
 
     def retry_api_call(endpoint, params, auth_type)
