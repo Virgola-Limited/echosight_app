@@ -152,20 +152,14 @@ module Twitter
       uri = URI.join(base_url(version), endpoint)
       request = Net::HTTP::Post.new(uri)
       bearer_token = user_token_or_app_token(version, auth_type)
-      puts "Bearer token: #{bearer_token}" # Debugging
       request['Authorization'] = "Bearer #{bearer_token}"
       request['Content-Type'] = 'application/json'
       request.body = params.to_json
 
-      puts "Request URI: #{uri}"
-      puts "Request Headers: #{request.to_hash}"
-      puts "Request Body: #{request.body}"
 
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.request(request)
       end
-
-      puts "Response: #{response.body}" # Debugging
 
       handle_response(response, endpoint, params, auth_type)
     rescue StandardError => e
@@ -182,7 +176,6 @@ module Twitter
 
     def handle_response(response, endpoint, params, auth_type)
       if response.code.to_i == 403
-        puts "Forbidden error encountered. Please check your app permissions."
         handle_forbidden_error
       end
 
