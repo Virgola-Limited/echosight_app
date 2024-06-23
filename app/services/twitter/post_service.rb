@@ -25,12 +25,7 @@ end
 
 def test_service
   user = User.first
-  text = "Hello world! This is a tweet from a service."
+  text = "Who's going to use the new cd command in ruby?"
   service = Twitter::PostService.new(user, text)
   response = service.call
 end
-
-# curl -X POST "https://api.twitter.com/2/tweets" \
-#      -H "Authorization: Bearer RGFLSzI0NVlVYVpsOU9iNzNGZUNienhWLWx0RjZyeldfaDlDZGtfZGtlT1hQOjE3MTkxMjE0ODgwNzM6MToxOmF0OjE" \
-#      -H "Content-Type: application/json" \
-#      -d '{"text":"Hello world! This is a test tweet."}'

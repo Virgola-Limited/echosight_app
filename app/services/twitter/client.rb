@@ -1,23 +1,16 @@
 module Twitter
   class Client
-    attr_reader :user
+    attr_reader :user, :api
 
     def initialize(user = nil)
       @user = user
+      @api = Twitter::Api.new(user)
     end
 
     def post_tweet(text)
       endpoint = 'tweets'
       params = { 'text' => text }
-      make_api_call(endpoint, params, :oauth2)
-    end
-
-    # Example API call methods
-    def fetch_user_with_metrics
-      raise "Not needed as we get this via tweets"
-      endpoint = "users/#{user.identity.uid}"
-      params = { 'user.fields' => 'public_metrics' }
-      make_api_call(endpoint, params, :oauth1)
+      api.make_api_call(endpoint, params, :oauth2)
     end
 
     def fetch_user_tweets(next_token = nil)
@@ -28,7 +21,7 @@ module Twitter
         'max_results' => 100
       }.compact
 
-      make_api_call(endpoint, params, :oauth1)
+      api.make_api_call(endpoint, params, :oauth1)
     end
 
     def fetch_tweets_by_ids(tweet_ids)
@@ -40,203 +33,13 @@ module Twitter
         'tweet.fields' => fields
       }
 
-      make_api_call(endpoint, params, :oauth1)
+      api.make_api_call(endpoint, params, :oauth1)
     end
 
     def fetch_rate_limit_data
       endpoint = 'application/rate_limit_status.json'
       params = {} # Add necessary parameters if needed
-      make_api_call(endpoint, params, :oauth2, :v1_1) # Using OAuth1 for Twitter API v1.1
-    end
-
-    private
-
-    def refresh_token_if_needed(oauth_credential)
-      return unless oauth_credential.expired_or_expiring_soon?
-
-      refreshed_credentials = refresh_oauth_token(oauth_credential)
-      oauth_credential.update!(
-        token: refreshed_credentials[:token],
-        refresh_token: refreshed_credentials[:refresh_token],
-        expires_at: Time.at(refreshed_credentials[:expires_at])
-      )
-    end
-
-    def refresh_oauth_token(oauth_credential)
-      Rails.logger.debug('paul' + 'refreshing token'.inspect)
-      uri = URI('https://api.twitter.com/2/oauth2/token')
-      request = Net::HTTP::Post.new(uri)
-      request.content_type = 'application/x-www-form-urlencoded'
-
-      client_id = Rails.application.credentials.dig(:twitter, :oauth2_client_id)
-      client_secret = Rails.application.credentials.dig(:twitter, :oauth2_client_secret)
-      credentials = "#{client_id}:#{client_secret}"
-      encoded_credentials = Base64.strict_encode64(credentials)
-
-      request['Authorization'] = "Basic #{encoded_credentials}"
-      request.body = URI.encode_www_form({
-        'refresh_token' => oauth_credential.refresh_token,
-        'grant_type' => 'refresh_token'
-      })
-
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
-        http.request(request)
-      end
-
-      raise "Failed to refresh token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
-
-      new_creds = JSON.parse(response.body)
-
-      {
-        token: new_creds['access_token'],
-        refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
-        expires_at: Time.now + new_creds['expires_in'].to_i
-      }
-    end
-
-    def handle_api_error(e, endpoint, params, auth_type)
-      if e.message == 'Unauthorized' && user
-        refresh_token_if_needed(user.identity.oauth_credential)
-        retry_api_call(endpoint, params, auth_type)
-      elsif e.is_a?(X::TooManyRequests) && e.rate_limit
-        rate_limit = e.rate_limit # Assuming the error object has a `rate_limit` attribute with X::RateLimit instance
-        message = "Rate Limit Exceeded: Type #{rate_limit.type}, Limit #{rate_limit.limit}, Remaining #{rate_limit.remaining}, Reset in #{rate_limit.reset_in} seconds"
-        request_info = "Endpoint: #{endpoint}, Params: #{params.to_json}"
-
-        # Send rate limit info and request details to Slack
-        Notifications::SlackNotifier.call(message: "#{message}, Request Info: #{request_info}", channel: :xratelimit)
-
-        # Re-raise the error to maintain the original flow
-        raise e
-      elsif e.message.start_with?('Twitter API Error:')
-        request_info = if auth_type == :oauth1
-                         "Full URL: #{base_url(determine_api_version(endpoint))}#{endpoint}?#{URI.encode_www_form(params)}"
-                       else
-                         # For POST requests or when detailed post data is needed
-                         "Endpoint: #{endpoint}, Data: #{params.to_json}"
-                       end
-        error_details = {
-          error: e.message,
-          auth_type: auth_type.to_s,
-          api_version: determine_api_version(endpoint),
-          endpoint:,
-          request_info:, # Added full request details
-          user_info: user_info_for_error
-        }
-
-        ExceptionNotifier.notify_exception(e, data: error_details)
-        e.instance_variable_set(:@error_details, error_details)
-        raise e
-      else
-        request_info = "Endpoint: #{endpoint}, Params: #{params.to_json}"
-        error_details = {
-          error: e.message,
-          auth_type: auth_type.to_s,
-          api_version: determine_api_version(endpoint),
-          request_info:, # Added request details
-          user_info: user_info_for_error
-        }
-
-        ExceptionNotifier.notify_exception(
-          StandardError.new("Twitter API Error: #{e.message}"),
-          data: error_details
-        )
-
-        e.instance_variable_set(:@error_details, error_details)
-      end
-    end
-
-    def make_api_call(endpoint, params, auth_type, version = :v2)
-      refresh_token_if_needed(user.identity.oauth_credential) if user
-
-      uri = URI.join(base_url(version), endpoint)
-      request = Net::HTTP::Post.new(uri)
-      bearer_token = user_token_or_app_token(version, auth_type)
-      request['Authorization'] = "Bearer #{bearer_token}"
-      request['Content-Type'] = 'application/json'
-      request.body = params.to_json
-
-
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
-        http.request(request)
-      end
-
-      handle_response(response, endpoint, params, auth_type)
-    rescue StandardError => e
-      handle_api_error(e, endpoint, params, auth_type)
-    end
-
-    def user_token_or_app_token(version, auth)
-      if user && user.identity.oauth_credential.token.present?
-        user.identity.oauth_credential.token
-      else
-        application_context_credentials(version, auth)[:bearer_token]
-      end
-    end
-
-    def handle_response(response, endpoint, params, auth_type)
-      if response.code.to_i == 403
-        handle_forbidden_error
-      end
-
-      JSON.parse(response.body)
-    end
-
-    def handle_forbidden_error
-      ExceptionNotifier.notify_exception(
-        StandardError.new('Forbidden error encountered. Please check your app permissions.'),
-        data: { user_info: user_info_for_error }
-      )
-    end
-
-    def retry_api_call(endpoint, params, auth_type)
-      # Dont check refresh token this time
-      client(auth: auth_type).get("#{endpoint}?#{URI.encode_www_form(params)}")
-    rescue X::Error => e
-      handle_api_error(e, endpoint, params, auth_type)
-    end
-
-    def determine_api_version(endpoint)
-      endpoint.include?('/1.1/') ? 'v1.1' : 'v2'
-    end
-
-    def user_info_for_error
-      return "User ID: #{user.identity.uid}, Email: #{user.email}" if user
-
-      'Application Context'
-    end
-
-    def credentials(version, auth)
-      if user
-        user_context_credentials(version)
-      else
-        application_context_credentials(version, auth)
-      end
-    end
-
-    def user_context_credentials(version)
-      {
-        bearer_token: user.identity.oauth_credential.token,
-        base_url: base_url(version)
-      }
-    end
-
-    def application_context_credentials(version, auth)
-      credentials = { base_url: base_url(version) }
-
-      case auth
-      when :oauth2
-        credentials[:bearer_token] = Rails.application.credentials.dig(:twitter, :bearer_token)
-      when :oauth1
-        credentials[:api_key] = Rails.application.credentials.dig(:twitter, :consumer_api_key)
-        credentials[:api_key_secret] = Rails.application.credentials.dig(:twitter, :consumer_api_secret)
-      end
-
-      credentials
-    end
-
-    def base_url(version = :v2)
-      version == :v1_1 ? 'https://api.twitter.com/1.1/' : 'https://api.twitter.com/2/'
+      api.make_api_call(endpoint, params, :oauth2, :v1_1) # Using OAuth1 for Twitter API v1.1
     end
   end
 end
