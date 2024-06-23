@@ -2,19 +2,25 @@ module Twitter
   class Oauth
     attr_reader :user
 
-    def initialize(user)
+    def initialize(user = nil)
       @user = user
     end
 
     def refresh_token_if_needed
-      return unless user.identity.oauth_credential.expired_or_expiring_soon?
+      return unless user&.identity&.oauth_credential&.expired_or_expiring_soon?
 
-      refreshed_credentials = refresh_oauth_token(user.identity.oauth_credential)
-      user.identity.oauth_credential.update!(
+      refresh_token(user.identity.oauth_credential)
+    end
+
+    def refresh_token(oauth_credential)
+      refreshed_credentials = refresh_oauth_token(oauth_credential)
+      oauth_credential.update!(
         token: refreshed_credentials[:token],
         refresh_token: refreshed_credentials[:refresh_token],
         expires_at: Time.at(refreshed_credentials[:expires_at])
       )
+    rescue StandardError => e
+      ExceptionNotifier.notify_exception(e, data: { credential_id: oauth_credential.id, refresh_token: oauth_credential.refresh_token })
     end
 
     def user_token_or_app_token(version, auth)
