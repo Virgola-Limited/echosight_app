@@ -1,8 +1,9 @@
-require 'platform-api'
+# require 'platform-api'
 
 namespace :db do
   desc "Import production database to staging"
   task import_production_to_staging: :environment do
+    raise 'wont work without platform-api which is removed for possible memory reasons' unless defined?(PlatformAPI)
     production_app = 'your-production-app'
     staging_app = 'your-staging-app'
     heroku = PlatformAPI.connect_oauth(ENV['HEROKU_API_KEY'])
