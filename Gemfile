@@ -43,6 +43,7 @@ gem 'devise_invitable'
 gem 'devise-two-factor'
 gem 'exception_notification'
 gem 'fastimage'
+gem 'jemalloc'
 gem 'mailkick'
 gem "mini_magick"
 gem 'omniauth-rails_csrf_protection'
@@ -69,10 +70,12 @@ group :development, :test do
   gem 'bullet'
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
+  gem 'derailed_benchmarks'
   gem 'dotenv'
   gem 'factory_bot_rails', require: false
   gem 'faker'
   gem 'htmlbeautifier'
+  gem 'stackprof'
   gem 'rspec-rails', '~> 6.1.0'
 end
 
