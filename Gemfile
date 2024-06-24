@@ -69,10 +69,12 @@ group :development, :test do
   gem 'bullet'
   gem 'byebug', '~> 11.1'
   gem 'debug', platforms: %i[mri windows]
+  gem 'derailed_benchmarks'
   gem 'dotenv'
   gem 'factory_bot_rails', require: false
   gem 'faker'
   gem 'htmlbeautifier'
+  gem 'stackprof'
   gem 'rspec-rails', '~> 6.1.0'
 end
 
