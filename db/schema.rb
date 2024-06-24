@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_21_230118) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_24_030230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +63,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_21_230118) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "title"
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_content_items_on_user_id"
   end
 
   create_table "feature_requests", force: :cascade do |t|
@@ -270,6 +272,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_21_230118) do
   end
 
   add_foreign_key "bug_reports", "users"
+  add_foreign_key "content_items", "users"
   add_foreign_key "feature_requests", "users"
   add_foreign_key "identities", "users"
   add_foreign_key "oauth_credentials", "identities"
