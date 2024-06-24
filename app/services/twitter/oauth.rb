@@ -53,7 +53,10 @@ module Twitter
         http.request(request)
       end
 
-      raise "Failed to refresh token: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+      unless response.is_a?(Net::HTTPSuccess)
+        Rails.logger.error("Failed to refresh token for credential ID #{oauth_credential.id}: #{response.body}")
+        return nil # Or you could return an empty hash or some default value
+      end
 
       new_creds = JSON.parse(response.body)
 
@@ -62,6 +65,9 @@ module Twitter
         refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
         expires_at: Time.now + new_creds['expires_in'].to_i
       }
+    rescue StandardError => e
+      Rails.logger.error("Exception when trying to refresh token for credential ID #{oauth_credential.id}: #{e.message}")
+      nil # Or you could return an empty hash or some default value
     end
 
     def application_context_credentials(version, auth)
