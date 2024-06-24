@@ -4,10 +4,8 @@ min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
 threads min_threads_count, max_threads_count
 
 # Set the worker count based on the environment
-if ENV["RAILS_ENV"] == "production"
-  worker_count = Integer(ENV.fetch("WEB_CONCURRENCY") { 2 })  # Default to 2 workers
-  workers worker_count
-end
+worker_count = Integer(ENV.fetch("WEB_CONCURRENCY") { 2 })  # Default to 2 workers
+workers worker_count if worker_count > 1
 
 # Preload the application before forking workers
 preload_app!
