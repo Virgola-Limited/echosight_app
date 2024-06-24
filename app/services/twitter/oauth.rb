@@ -14,11 +14,15 @@ module Twitter
 
     def refresh_token(oauth_credential)
       refreshed_credentials = refresh_oauth_token(oauth_credential)
-      oauth_credential.update!(
-        token: refreshed_credentials[:token],
-        refresh_token: refreshed_credentials[:refresh_token],
-        expires_at: Time.at(refreshed_credentials[:expires_at])
-      )
+      if refreshed_credentials
+        oauth_credential.update!(
+          token: refreshed_credentials[:token],
+          refresh_token: refreshed_credentials[:refresh_token],
+          expires_at: Time.at(refreshed_credentials[:expires_at])
+        )
+      else
+        Rails.logger.error("Failed to refresh token for credential ID #{oauth_credential.id}: No credentials returned")
+      end
     rescue StandardError => e
       ExceptionNotifier.notify_exception(e, data: { credential_id: oauth_credential.id, refresh_token: oauth_credential.refresh_token })
     end
@@ -59,7 +63,6 @@ module Twitter
       end
 
       new_creds = JSON.parse(response.body)
-
       {
         token: new_creds['access_token'],
         refresh_token: new_creds['refresh_token'], # Twitter may or may not return a new refresh token
