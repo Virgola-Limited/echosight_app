@@ -1,8 +1,8 @@
 module Twitter
   class PostService
-    def initialize(user, text)
+    def initialize(user, text, image_url = nil)
       @user = user
-      @text = text
+      @text = image_url.present? ? "#{text} #{image_url}" : text
       @client = Twitter::Client.new(user)
     end
 
@@ -10,8 +10,7 @@ module Twitter
       response = @client.post_tweet(@text)
       unless response && response['data']
         ExceptionNotifier.notify_exception(
-          StandardError.new("Failed to post tweet: #{response
-            &.dig('errors') || 'Unknown error'}"),
+          StandardError.new("Failed to post tweet: #{response&.dig('errors') || 'Unknown error'}"),
           data: { user_id: @user.id }
         )
       end
@@ -21,11 +20,4 @@ module Twitter
       nil
     end
   end
-end
-
-def test_service
-  user = User.first
-  text = "Who's going to use the new cd command in ruby?"
-  service = Twitter::PostService.new(user, text)
-  response = service.call
 end

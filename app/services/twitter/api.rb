@@ -26,6 +26,24 @@ module Twitter
       ErrorHandling.handle_api_error(e, endpoint, params, auth_type, user)
     end
 
+    def make_upload_api_call(endpoint, params)
+      oauth.refresh_token_if_needed if user
+
+      uri = URI.join('https://upload.twitter.com/1.1/', endpoint)
+      request = Net::HTTP::Post.new(uri)
+      bearer_token = oauth.user_token_or_app_token(:v1_1, :oauth1)
+      request['Authorization'] = "Bearer #{bearer_token}"
+      request.set_form({ 'media' => params['media'] }, 'multipart/form-data')
+
+      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+        http.request(request)
+      end
+
+      handle_response(response, endpoint, params, :oauth1)
+    rescue StandardError => e
+      ErrorHandling.handle_api_error(e, endpoint, params, :oauth1, user)
+    end
+
     private
 
     def base_url(version = :v2)
