@@ -21,12 +21,13 @@ module Users
 
     # Override update_resource method
     def update_resource(resource, params)
-      # check this doesnt break with twitter 2
-      if resource.identity.nil? || resource.identity.provider != 'twitter'
+      # # check this doesnt break with twitter 2
+      # for sign up with twitter which we dont use
+      # if resource.identity.nil? || resource.identity.provider != 'twitter'
         resource.update_with_password(params)
-      else
-        resource.update_without_password(params)
-      end
+      # else
+        # resource.update_without_password(params)
+      # end
     end
 
     # private
