@@ -8,6 +8,7 @@
 #  expires_at    :datetime
 #  provider      :string
 #  refresh_token :string
+#  secret        :string
 #  token         :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

@@ -59,7 +59,8 @@ class User < ApplicationRecord
   devise :invitable, :invitable, :registerable, :two_factor_authenticatable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
-         omniauth_providers: [:twitter2]
+        #  omniauth_providers: [:twitter2] #oAuth 2
+         omniauth_providers: [:twitter]
 
   before_create :generate_otp_secret
 
@@ -112,7 +113,6 @@ class User < ApplicationRecord
 
   def create_or_update_identity_from_omniauth(auth)
     ActiveRecord::Base.transaction do
-
       identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
 
       if identity.nil?
@@ -127,13 +127,19 @@ class User < ApplicationRecord
         # 4. Identity exists with different user: error
         raise ActiveRecord::RecordInvalid.new(identity), 'Identity belongs to a different user'
       end
+
       identity.assign_attributes_from_auth(auth)
 
       oauth_credential = identity.oauth_credential || identity.build_oauth_credential
       oauth_credential.assign_attributes(
         token: auth.credentials.token,
-        refresh_token: auth.credentials.refresh_token,
-        expires_at: Time.at(auth.credentials.expires_at)
+        ############################
+        # OAuth2
+        # refresh_token: auth.credentials.refresh_token,
+        # expires_at: Time.at(auth.credentials.expires_at
+        ############################
+        # OAuth1
+        secret: auth.credentials.secret # OAuth1 requires secret
       )
 
       identity.save! if identity.new_record? || identity.changed?
@@ -159,7 +165,9 @@ class User < ApplicationRecord
   end
 
   def twitter_connection_valid?
-    identity&.provider == 'twitter2' && oauth_credential.present? && !oauth_credential.expired_or_expiring_soon?
+    #oAuth 2
+    # identity&.provider == 'twitter2 ' && oauth_credential.present? && !oauth_credential.expired_or_expiring_soon?
+    identity&.provider == 'twitter' && oauth_credential&.token.present? && oauth_credential&.secret.present?
   end
 
   def oauth_credential

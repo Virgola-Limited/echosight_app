@@ -72,7 +72,10 @@ class Identity < ApplicationRecord
     self.provider = auth.provider
     self.uid = auth.uid
     self.description = auth.info.description
-    self.handle = auth.extra.raw_info.data.username
+    # oauth 1
+    self.handle = auth.info.nickname
+    # oauth 2
+    # self.handle = auth.extra.raw_info.data.username
   end
 
   def enough_data_for_public_page?
