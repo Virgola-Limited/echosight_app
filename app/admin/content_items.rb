@@ -21,7 +21,7 @@ ActiveAdmin.register ContentItem do
       f.input :content
       f.input :category, input_html: { value: f.object.category || 'app_update' }
       f.input :image, as: :file
-      f.input :user, as: :select, collection: User.all.map { |u| [u.email, u.id] }
+      f.input :user, as: :select, collection: User.all.order(:email).map { |u| [u.email, u.id] }
     end
     f.actions
   end

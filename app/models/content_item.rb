@@ -28,11 +28,20 @@ class ContentItem < ApplicationRecord
   validates :content, presence: true  # Ensures that content is not empty
   validates :user, presence: true
 
+  # hack to schedule for our user id remove the 81 later
+  after_create :schedule_tweet, if: -> { category == 'app_update' && user_id == 1 }
+
   def self.ransackable_attributes(auth_object = nil)
     super - ['image_data']
   end
 
   def self.ransackable_associations(auth_object = nil)
     []
+  end
+
+  private
+
+  def schedule_tweet
+    Twitter::PostTweetJob.perform_in(5.days, id)
   end
 end
