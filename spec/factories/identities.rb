@@ -31,7 +31,7 @@ FactoryBot.define do
   factory :identity do
     uid { Faker::Alphanumeric.alpha(number: 19) }
     association :user
-    provider { 'twitter2' }
+    provider { 'twitter' }
     handle { Faker::Internet.username }
     description { 'Twitter user bio' }
 
@@ -54,7 +54,7 @@ FactoryBot.define do
     trait :loftwah do
       uid { '1192091185' }
       association :user
-      provider { 'twitter2' }
+      provider { 'twitter' }
       handle { 'loftwah' }
     end
 
