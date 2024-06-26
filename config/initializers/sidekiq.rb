@@ -68,11 +68,12 @@ if !Rails.env.development? && !Rails.env.test?
           'cron' => '0 */3 * * *',
           'class' => 'RegenerateUserPublicPageCacheJob'
         },
-        {
-          'name' => 'Refresh OAuth Credentials - every 30 minutes',
-          'cron' => '*/30 * * * *',
-          'class' => 'Twitter::RefreshOauthCredentialsJob'
-        }
+        # Not needed in OAuth1
+        # {
+        #   'name' => 'Refresh OAuth Credentials - every 30 minutes',
+        #   'cron' => '*/30 * * * *',
+        #   'class' => 'Twitter::RefreshOauthCredentialsJob'
+        # }
       ]
     )
   end
