@@ -5,15 +5,15 @@ class RegenerateUserPublicPageCacheJob
 
   def perform
     Identity.syncable.find_each do |identity|
-      regenerate_cache_for_user(identity.user)
+      regenerate_cache_for_identity(identity)
     end
   end
 
   private
 
-  def regenerate_cache_for_user(user)
-    service = PublicPageService.new(handle: user.identity.handle, current_user: user, date_range: Date.current)
-    cache_key = service.cache_key_for_user_public_page(user, date_range: Date.current, hours: 24)
+  def regenerate_cache_for_identity(identity)
+    service = PublicPageService.new(handle: identity.handle, current_user: identity.user, date_range: Date.current)
+    cache_key = service.cache_key_for_user_public_page(service.user, date_range: Date.current, hours: 24)
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       service.generate_public_page_data
     end
