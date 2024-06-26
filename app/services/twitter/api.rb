@@ -1,3 +1,5 @@
+ # Not used with x gem
+
 module Twitter
   class Api
     attr_reader :user, :oauth

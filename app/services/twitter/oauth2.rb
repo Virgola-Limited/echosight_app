@@ -1,3 +1,5 @@
+  # Not used with x gem
+
 module Twitter
   class Oauth2
     # Currently not used but this worked fine if we need it

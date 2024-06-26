@@ -1,3 +1,5 @@
+# Not used with x gem
+
 module Twitter
   class Oauth
     attr_reader :user
