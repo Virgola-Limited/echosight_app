@@ -40,7 +40,7 @@ class Identity < ApplicationRecord
   validates :handle, uniqueness: true, presence: true
 
   scope :valid_identity, lambda {
-    where(provider: 'twitter2')
+    where(provider: 'twitter')
   }
   scope :sorted_by_followers_count, lambda {
     joins('LEFT OUTER JOIN twitter_user_metrics ON twitter_user_metrics.identity_id = identities.id')
@@ -72,7 +72,10 @@ class Identity < ApplicationRecord
     self.provider = auth.provider
     self.uid = auth.uid
     self.description = auth.info.description
-    self.handle = auth.extra.raw_info.data.username
+    # oauth 1
+    self.handle = auth.info.nickname
+    # oauth 2
+    # self.handle = auth.extra.raw_info.data.username
   end
 
   def enough_data_for_public_page?
@@ -88,7 +91,7 @@ class Identity < ApplicationRecord
   end
 
   def valid_identity?
-    provider == 'twitter2'
+    provider == 'twitter'
   end
 
   def syncable?

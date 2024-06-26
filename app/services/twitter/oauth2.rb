@@ -1,7 +1,8 @@
-# Not used with x gem
+  # Not used with x gem
 
 module Twitter
-  class Oauth
+  class Oauth2
+    # Currently not used but this worked fine if we need it
     attr_reader :user
 
     def initialize(user = nil)

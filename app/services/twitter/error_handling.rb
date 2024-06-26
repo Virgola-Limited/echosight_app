@@ -1,3 +1,6 @@
+    # Not used with x gem
+
+
 module Twitter
   class ErrorHandling
     def self.handle_api_error(e, endpoint, params, auth_type, user)

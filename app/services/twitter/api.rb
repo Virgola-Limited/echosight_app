@@ -1,3 +1,5 @@
+ # Not used with x gem
+
 module Twitter
   class Api
     attr_reader :user, :oauth
@@ -7,13 +9,11 @@ module Twitter
       @oauth = Twitter::Oauth.new(user)
     end
 
-    def make_api_call(endpoint, params, auth_type, version = :v2)
-      oauth.refresh_token_if_needed if user
-
+    def make_api_call(endpoint, params, auth_type, version)
       uri = URI.join(base_url(version), endpoint)
       request = Net::HTTP::Post.new(uri)
-      bearer_token = oauth.user_token_or_app_token(version, auth_type)
-      request['Authorization'] = "Bearer #{bearer_token}"
+      auth_token = oauth.user_token_or_app_token(version, auth_type)
+      request['Authorization'] = "OAuth #{auth_token}"
       request['Content-Type'] = 'application/json'
       request.body = params.to_json
 
@@ -27,12 +27,10 @@ module Twitter
     end
 
     def make_upload_api_call(endpoint, params)
-      oauth.refresh_token_if_needed if user
-
       uri = URI.join('https://upload.twitter.com/1.1/', endpoint)
       request = Net::HTTP::Post.new(uri)
-      bearer_token = oauth.user_token_or_app_token(:v1_1, :oauth1)
-      request['Authorization'] = "Bearer #{bearer_token}"
+      auth_token = oauth.user_token_or_app_token(:v1_1, :oauth1)
+      request['Authorization'] = "OAuth #{auth_token}"
       request.set_form({ 'media' => params['media'] }, 'multipart/form-data')
 
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
@@ -47,7 +45,7 @@ module Twitter
     private
 
     def base_url(version = :v2)
-      version == :v1_1 ? 'https://api.twitter.com/1.1/' : 'https://api.twitter.com/2/'
+      "https://api.twitter.com/#{version == :v1_1 ? '1.1' : '2'}/"
     end
 
     def handle_response(response, endpoint, params, auth_type)
@@ -56,6 +54,11 @@ module Twitter
       end
 
       JSON.parse(response.body)
+    rescue JSON::ParserError => e
+      ErrorHandling.handle_api_error(e, endpoint, params, auth_type, user)
+    rescue StandardError => e
+      ExceptionNotifier.notify_exception(e, data: { endpoint: endpoint, response_body: response.body })
+      raise e
     end
   end
 end
