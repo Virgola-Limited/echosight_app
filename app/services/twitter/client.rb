@@ -1,4 +1,6 @@
 require 'x'
+require 'x/media_uploader'
+require 'open-uri'
 
 module Twitter
   class Client
@@ -19,10 +21,8 @@ module Twitter
     end
 
     def post_tweet(text, media_ids = [])
-      # Simplify the tweet text to a basic example
-      simple_text = "Hello, World! (from @gem)"
-      params = { text: simple_text }
-      params[:media_ids] = media_ids if media_ids.present?
+      params = { text: text }
+      params[:media] = { media_ids: media_ids } if media_ids.present?
 
       puts "Sending tweet with params: #{params.to_json}"  # Log the params
 
@@ -32,6 +32,20 @@ module Twitter
 
       response
     rescue X::Error => e
+      handle_x_error(e)
+    end
+
+    def upload_media(image_url)
+      file = URI.open(image_url).path
+      media_category = "tweet_image" # Adjust as needed
+      response = X::MediaUploader.upload(client: @x_client, file_path: file, media_category: media_category)
+
+      if response["media_id_string"]
+        response["media_id_string"]
+      else
+        raise StandardError.new("Failed to upload media: #{response.inspect}")
+      end
+    rescue StandardError => e
       handle_x_error(e)
     end
 
