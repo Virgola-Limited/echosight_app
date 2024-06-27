@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class PublicPageService < Services::Base
   include Rails.application.routes.url_helpers
   include Cacheable
@@ -24,7 +22,6 @@ class PublicPageService < Services::Base
     end
   end
 
-  # Move struct
   Result = Struct.new(:status, :message, :redirect_path, keyword_init: true)
 
   def show_public_page_demo?
@@ -33,7 +30,6 @@ class PublicPageService < Services::Base
     identity.nil?
   end
 
-  # Crap ChatGTP code fix later no need for result object
   def determine_public_page_status
     if show_public_page_demo?
       Result.new(status: :demo)
@@ -80,18 +76,19 @@ class PublicPageService < Services::Base
     )
   end
 
+  def cache_key
+    cache_key_for_user_public_page(user, date_range: date_range)
+  end
+
   private
 
   def public_page_data
-    cache_key = cache_key_for_user_public_page(user, date_range: date_range)
-
     data = Rails.cache.fetch(cache_key, expires_in: 24.hours) do
       @last_cache_update = Time.current
       generate_public_page_data
     end
 
     unless @last_cache_update
-      # If cache was hit, fetch the last update time from cache metadata
       @last_cache_update = Rails.cache.read("#{cache_key}/updated_at")
     end
 
