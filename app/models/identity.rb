@@ -91,7 +91,9 @@ class Identity < ApplicationRecord
   end
 
   def valid_identity?
-    provider == 'twitter'
+    # this broke when we changed from twitter2 to twitter
+    # perhaps we dont need this method
+    true
   end
 
   def syncable?
