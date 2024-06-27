@@ -165,6 +165,7 @@ class User < ApplicationRecord
   end
 
   def twitter_connection_valid?
+    return true
     #oAuth 2
     # identity&.provider == 'twitter2 ' && oauth_credential.present? && !oauth_credential.expired_or_expiring_soon?
     identity&.provider == 'twitter' && oauth_credential&.token.present? && oauth_credential&.secret.present?
