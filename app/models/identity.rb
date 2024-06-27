@@ -30,8 +30,8 @@ class Identity < ApplicationRecord
   include ImageUploader::Attachment(:banner) # adds a 'banner' virtual attribute
 
   belongs_to :user, optional: true # Allow identity creation without a user
-  has_many :tweets, dependent: :destroy
-  has_many :twitter_user_metrics, dependent: :destroy
+  has_many :tweets
+  has_many :twitter_user_metrics
   has_many :user_twitter_data_updates, dependent: :destroy
   has_one :oauth_credential, dependent: :destroy
 

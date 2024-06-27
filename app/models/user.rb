@@ -64,7 +64,7 @@ class User < ApplicationRecord
 
   before_create :generate_otp_secret
 
-  has_one :identity, dependent: :destroy
+  has_one :identity
   has_many :feature_requests
   has_many :bug_reports
   has_many :sent_emails, dependent: :destroy
