@@ -1,6 +1,7 @@
 <%= render Shared::HeadingComponent.new(text: 'User Leaderboard', heading_type: :h1) %>
-
-<%= render 'leaderboard_navigation', url_helper: ->(period) { leaderboard_users_path(period: period) } %>
+<div class="flex justify-center items-center">
+  <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle, date_range: params[:date_range], url_helper: ->(period) { leaderboard_users_path(period: period) }) %>
+</div>
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
