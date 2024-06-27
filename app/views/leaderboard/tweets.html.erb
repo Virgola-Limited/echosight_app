@@ -53,12 +53,12 @@
               <%= tweet.handle %>
             </td>
             <td class="px-4 py-2"><%= tweet.text %></td>
-            <td class="px-4 py-2"><%= tweet.impression_count %></td>
-            <td class="px-4 py-2"><%= tweet.retweet_count %></td>
-            <td class="px-4 py-2"><%= tweet.like_count %></td>
-            <td class="px-4 py-2"><%= tweet.quote_count %></td>
-            <td class="px-4 py-2"><%= tweet.reply_count %></td>
-            <td class="px-4 py-2"><%= tweet.bookmark_count %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.impression_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.retweet_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.like_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.quote_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.reply_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.bookmark_count) %></td>
           </tr>
         <% end %>
       </tbody>

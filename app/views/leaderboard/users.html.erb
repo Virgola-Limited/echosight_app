@@ -51,13 +51,13 @@
             <img src="<%= user.image_data %>" alt="Avatar" class="inline-block h-8 w-8 rounded-full mr-2">
             <%= user.handle %>
           </td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_impressions) %></td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_retweets) %></td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_likes) %></td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_quotes) %></td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_replies) %></td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_bookmarks) %></td>
-          <td class="px-2 py-4"><%= number_to_human_readable(user.total_followers) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_impressions) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_retweets) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_likes) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_quotes) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_replies) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_bookmarks) %></td>
+          <td class="px-2 py-4"><%= rounded_number(user.total_followers) %></td>
         </tr>
       <% end %>
     </tbody>
