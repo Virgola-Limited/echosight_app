@@ -28,16 +28,19 @@
       <div class="flex justify-end mt-2">
         <%= link_to 'echosight.io', root_url, class: 'text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:text-yellow-300' %>
       </div>
+
+      <%= render(ChartComponent.new(
+  chart_id: "impressions-chart",
+  chart_type: "area",
+  series_name: "Impressions",
+  series_data: impression_counts_per_day.map { |entry| entry[:data_points] },
+  categories: impression_counts_per_day.map { |entry| entry[:formatted_label] }))
+%>
     <% end %>
   </div>
 </div>
 
 
-<%= render(ChartComponent.new(
-  chart_id: "impressions-chart",
-  chart_type: "area",
-  series_name: "Impressions",
-  series_data: impression_counts_per_day.map { |entry| entry[:data_points] },
-  categories: impression_counts_per_day.map { |entry| entry[:formatted_label] })) %>
+
 
 
