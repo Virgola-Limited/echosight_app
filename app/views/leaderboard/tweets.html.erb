@@ -1,22 +1,5 @@
 <%= render Shared::HeadingComponent.new(text: 'Tweet Leaderboard', heading_type: :h1) %>
-
-<ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-  <li class="mr-2">
-    <%= link_to 'Today', leaderboard_tweets_path(period: 'today'), class: "inline-block p-4 #{params[:period] == 'today' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
-  </li>
-  <li class="mr-2">
-    <%= link_to 'Last 7 Days', leaderboard_tweets_path(period: '7_days'), class: "inline-block p-4 #{params[:period].nil? || params[:period] == '7_days' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
-  </li>
-  <li class="mr-2">
-    <%= link_to 'Last 28 Days', leaderboard_tweets_path(period: '28_days'), class: "inline-block p-4 #{params[:period] == '28_days' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
-  </li>
-  <li class="mr-2">
-    <%= link_to 'Last 3 Months', leaderboard_tweets_path(period: '3_months'), class: "inline-block p-4 #{params[:period] == '3_months' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
-  </li>
-  <li class="mr-2">
-    <%= link_to 'Last 1 Year', leaderboard_tweets_path(period: '1_year'), class: "inline-block p-4 #{params[:period] == '1_year' ? 'text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500' : 'rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300'}" %>
-  </li>
-</ul>
+<%= render 'leaderboard_navigation', url_helper: ->(period) { leaderboard_tweets_path(period: period) } %>
 
 <div class="flex flex-col space-y-4 p-4">
   <div class="overflow-x-auto">
