@@ -78,6 +78,26 @@ class Identity < ApplicationRecord
     # self.handle = auth.extra.raw_info.data.username
   end
 
+  def destroy_image_and_banner!
+    # Destroy the image
+    if image_attacher.present?
+      image_attacher.destroy
+      self.image = nil
+      self.image_data = nil
+      self.image_checksum = nil
+    end
+
+    # Destroy the banner
+    if banner_attacher.present?
+      banner_attacher.destroy
+      self.banner = nil
+      self.banner_data = nil
+      self.banner_checksum = nil
+    end
+
+    save!
+  end
+
   def enough_data_for_public_page?
     user_twitter_data_updates.recent_data(id).count > 40
   end
