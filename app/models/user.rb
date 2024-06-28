@@ -64,6 +64,7 @@ class User < ApplicationRecord
 
   before_create :generate_otp_secret
 
+  # change this to has_many # add soft delete to identity
   has_one :identity
   has_many :feature_requests
   has_many :bug_reports
@@ -165,10 +166,11 @@ class User < ApplicationRecord
   end
 
   def twitter_connection_valid?
-    return false unless identity.present?
+    return identity.present?
     #oAuth 2
     # identity&.provider == 'twitter2 ' && oauth_credential.present? && !oauth_credential.expired_or_expiring_soon?
-    identity&.provider == 'twitter' && oauth_credential&.token.present? && oauth_credential&.secret.present?
+    # Oauth 1 if we want people to be able to post tweets
+    # identity&.provider == 'twitter' && oauth_credential&.token.present? && oauth_credential&.secret.present?
   end
 
   def oauth_credential
