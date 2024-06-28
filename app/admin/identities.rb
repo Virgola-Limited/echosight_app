@@ -26,6 +26,8 @@ ActiveAdmin.register Identity do
     column :description
     column :handle
     column :sync_without_user
+    column :image_url
+    column :banner_url
 
     column :followers_count do |identity|
       recent_metric = identity.twitter_user_metrics.order(date: :desc).first
