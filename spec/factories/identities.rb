@@ -42,7 +42,7 @@ FactoryBot.define do
 
     trait :with_oauth_credential do
       after(:create) do |identity|
-        create(:oauth_credential, identity:)
+        create(:oauth_credential, identity: identity)
       end
     end
 
@@ -61,6 +61,11 @@ FactoryBot.define do
     trait :syncable_without_user do
       sync_without_user { true }
       user { nil }
+    end
+
+    trait :threads do
+      provider { 'threads' }
+      description { 'Threads user bio' }
     end
   end
 end

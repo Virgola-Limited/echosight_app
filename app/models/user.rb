@@ -65,7 +65,7 @@ class User < ApplicationRecord
   before_create :generate_otp_secret
 
   # change this to has_many # add soft delete to identity
-  has_one :identity
+  has_many :identities
   has_many :feature_requests
   has_many :bug_reports
   has_many :sent_emails, dependent: :destroy
@@ -103,6 +103,11 @@ class User < ApplicationRecord
   def accepted_invitation?
     invitation_accepted_at.present?
   end
+
+  def primary_identity
+    identities.find_by(provider: 'twitter')
+  end
+  alias_method :identity, :primary_identity
 
   def setting(key)
     get_setting_value(key)
@@ -182,7 +187,7 @@ class User < ApplicationRecord
       key = extract_key_from_method(method_name)
       get_setting_value(key)
     else
-      super
+       super
     end
   end
 
