@@ -2,7 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Twitter::ExistingTweetsUpdater do
   let(:identity) { create(:identity, :loftwah) }
-  let!(:user) { create(:user, identity: identity, confirmed_at: 1.day.ago) }
+  let!(:user) do
+    create(:user, confirmed_at: 1.day.ago).tap do |user|
+      user.identities << identity
+    end
+  end
   let(:client) { SocialData::ClientAdapter.new }
   let(:tweet_ids_to_create) {
     [
