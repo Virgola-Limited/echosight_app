@@ -58,10 +58,8 @@ class Identity < ApplicationRecord
       )))', true, true, true)
       .where('users.confirmed_at IS NOT NULL OR identities.user_id IS NULL')
   }
-
-  def self.find_by_handle(handle)
-    Identity.where('lower(handle) = ?', handle.downcase)&.first
-  end
+  scope :twitter, -> { where(provider: 'twitter') }
+  scope :by_handle, ->(handle) { where('lower(handle) = ?', handle.downcase) }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[banner_url created_at description handle id id_value image_url provider uid

@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
+# Might need to be namespaces to Twitter when we have Threads
 class IdentityUpdater
   require 'digest'
   attr_reader :user_data
+
 
   def initialize(user_data)
     @user_data = user_data
   end
 
   def call
-    identity = Identity.find_by_uid(user_data['id'])
+    identity = Identity.twitter.where(uid: user_data['id']).first
     raise "Identity not found for user: #{user_data['username']} #{user_data['id']}" unless identity
 
     if user_data['image_url']

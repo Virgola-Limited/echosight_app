@@ -7,7 +7,7 @@ class PublicPageService < Services::Base
   def initialize(handle:, current_user: nil, current_admin_user: nil, date_range: nil)
     @handle = handle
     @current_user = current_user
-    @identity = Identity.find_by_handle(handle)
+    @identity = Identity.twitter.by_handle(handle).first
     @current_admin_user = current_admin_user
     @date_range = date_range || '7d'
   end
