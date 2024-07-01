@@ -77,7 +77,7 @@ class PublicPageService < Services::Base
   end
 
   def cache_key
-    cache_key_for_user_public_page(identity, date_range: date_range)
+    cache_key_for_public_page(identity, date_range: date_range)
   end
 
   private
