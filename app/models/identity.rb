@@ -57,6 +57,7 @@ class Identity < ApplicationRecord
         AND subscriptions.active = ?
       )))', true, true, true)
       .where('users.confirmed_at IS NOT NULL OR identities.user_id IS NULL')
+      .distinct
   }
   scope :twitter, -> { where(provider: 'twitter') }
   scope :by_handle, ->(handle) { where('lower(handle) = ?', handle.downcase) }
