@@ -97,3 +97,7 @@ group :development do
   gem 'rubocop'
   gem 'web-console'
 end
+
+group :staging do
+  gem 'mail_interceptor'
+end
