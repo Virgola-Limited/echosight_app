@@ -102,9 +102,9 @@ RSpec.configure do |config|
   end
 
   config.after(:each, type: :feature) do |example|
-    # if page.driver.browser.respond_to?(:logs)
-      # check_for_errors(example)
-    # end
+    if page.driver.browser.respond_to?(:logs)
+      check_for_errors(example)
+    end
     WebMock.disable_net_connect!(allow_localhost: true)
   end
 
