@@ -1,11 +1,10 @@
-# frozen_string_literal: true
-
 ActiveAdmin.register User do
-  permit_params :name, :last_name, :email, :vip_since, :enabled_without_subscription
+  permit_params :name, :last_name, :email, :vip_since, :enabled_without_subscription, :campaign_id
 
   actions :index, :show, :edit, :update
 
   filter :email
+  filter :campaign_id_present, as: :boolean, label: 'Has Campaign ID'
 
   index do
     column :name
@@ -20,6 +19,7 @@ ActiveAdmin.register User do
     end
     column :vip_since
     column :enabled_without_subscription
+    column :campaign_id
     actions defaults: true do |user|
       if user.otp_required_for_login
         link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
@@ -57,6 +57,18 @@ ActiveAdmin.register User do
   end
 
   controller do
+    def scoped_collection
+      if params[:q] && params[:q][:campaign_id_present]
+        if params[:q][:campaign_id_present] == "true"
+          super.where.not(campaign_id: nil)
+        else
+          super.where(campaign_id: nil)
+        end
+      else
+        super
+      end
+    end
+
     def update
       super do |_format|
         if resource.valid? && resource.unconfirmed_email.present?

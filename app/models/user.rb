@@ -38,6 +38,7 @@
 #  vip_since                    :date
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
+#  campaign_id                  :string
 #  invited_by_id                :bigint
 #  stripe_customer_id           :string
 #
@@ -89,8 +90,12 @@ class User < ApplicationRecord
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[confirmation_sent_at confirmation_token confirmed_at created_at current_sign_in_at
-       current_sign_in_ip email encrypted_password failed_attempts id id_value last_name last_sign_in_at last_sign_in_ip locked_at name remember_created_at reset_password_sent_at reset_password_token sign_in_count unconfirmed_email unlock_token updated_at]
+       current_sign_in_ip email encrypted_password failed_attempts id id_value last_name last_sign_in_at last_sign_in_ip locked_at name remember_created_at reset_password_sent_at reset_password_token sign_in_count unconfirmed_email unlock_token updated_at, campaign_id]
   end
+
+  # def self.ransackable_associations(auth_object = nil)
+  #   ["identity"]
+  # end
 
   def active_subscription?
     if subscriptions.active.count > 1

@@ -38,6 +38,7 @@
 #  vip_since                    :date
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
+#  campaign_id                  :string
 #  invited_by_id                :bigint
 #  stripe_customer_id           :string
 #

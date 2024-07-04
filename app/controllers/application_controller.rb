@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
 
   # Use Devise's authentication filter for staging environment
   before_action :authenticate_admin_user!, if: :staging_environment?
-
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :track_twitter_ad_click
 
   protected
 
@@ -23,6 +23,18 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def track_twitter_ad_click
+    if params[:utm_source] == 'twitter' && params[:utm_campaign] == 'ad_campaign'
+      ahoy.track "Twitter Ad Click", { campaign: params[:utm_campaign], campaign_id: params[:twclid] }
+      cookies[:ad_campaign] = {
+        value: params[:utm_campaign],
+      }
+      cookies[:campaign_id] = {
+        value: params[:twclid],
+      }
+    end
+  end
 
   # Check if the current environment is staging
   def staging_environment?

@@ -4,6 +4,19 @@ module Users
   class RegistrationsController < Devise::RegistrationsController
     layout 'authenticated', only: %i[edit update]
 
+    def create
+      super do |resource|
+        if resource.persisted?
+          campaign_data = { user_id: resource.id }
+          campaign_data[:campaign] = cookies[:ad_campaign] if cookies[:ad_campaign]
+          campaign_data[:campaign_id] = cookies[:campaign_id] if cookies[:campaign_id]
+          ahoy.track "Sign Up", campaign_data
+
+          resource.update(ad_campaign: cookies[:ad_campaign], campaign_id: cookies[:campaign_id])
+        end
+      end
+    end
+
     # before_action :prevent_sign_up, only: [:create]
 
     # Redirect to a custom path after a user signs up but isn't confirmed
