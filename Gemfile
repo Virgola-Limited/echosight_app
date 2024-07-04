@@ -35,6 +35,7 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
+gem 'ahoy_matey'
 gem 'activeadmin'
 gem 'apexcharts'
 gem "aws-sdk-s3", "~> 1.14"
