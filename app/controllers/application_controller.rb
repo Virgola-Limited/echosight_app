@@ -24,8 +24,12 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # Example urls
+  # https://store.steampowered.com/app/667610?utm_source=TwitterVideo&utm_campaign=Webvisits&utm_medium=web&twclid=26ug6ehci41998kpvm1r96gb11
+  # https://www.therundown.ai/subscribe?utm_source=twitterads&utm_medium=3&utm_campaign=newsletter&twclid=26f4swieyflfmnypah36jzw6h3
+  # https://navy.quest/?r=twinq1wwa&twclid=26qm4bevt77wd02lle4rlyrgpr
   def track_twitter_ad_click
-    if params[:utm_source] == 'twitter' && params[:utm_campaign] == 'ad_campaign'
+    if params[:twclid].present?
       ahoy.track "Twitter Ad Click", { campaign: params[:utm_campaign], campaign_id: params[:twclid] }
       cookies[:ad_campaign] = {
         value: params[:utm_campaign],
