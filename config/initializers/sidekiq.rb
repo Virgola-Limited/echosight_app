@@ -53,11 +53,6 @@ if !Rails.env.development? && !Rails.env.test?
           'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
           'class' => 'Twitter::TweetsFetcherJob'
         },
-        # {
-        #   'name' => 'Remove old empty ApiBatches',
-        #   'cron' => '0 0 * * *',
-        #   'class' => 'RemoveOldEmptyApiBatchJob'
-        # }
         {
           'name' => 'Sync Subscriptions - every 1 hour',
           'cron' => '0 * * * *',
@@ -68,11 +63,21 @@ if !Rails.env.development? && !Rails.env.test?
           'cron' => '0 */3 * * *',
           'class' => 'RegenerateUserPublicPageCacheJob'
         },
+        # {
+        #   'name' => 'Users Without Subscription Email - every 1 day',
+        #   'cron' => '0 0 * * *',
+        #   'class' => 'UsersWithoutSubscriptionEmailJob'
+        # },
         # Not needed in OAuth1
         # {
         #   'name' => 'Refresh OAuth Credentials - every 30 minutes',
         #   'cron' => '*/30 * * * *',
         #   'class' => 'Twitter::RefreshOauthCredentialsJob'
+        # },
+        # {
+        #   'name' => 'Remove old empty ApiBatches',
+        #   'cron' => '0 0 * * *',
+        #   'class' => 'RemoveOldEmptyApiBatchJob'
         # }
       ]
     )
