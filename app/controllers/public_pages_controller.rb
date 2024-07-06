@@ -16,7 +16,6 @@ class PublicPagesController < ApplicationController
       date_range: date_range
     )
     set_flash_message
-
     @page_updated_at = @public_page_data.last_cache_update
 
     render PublicPageComponent.new(public_page_data: @public_page_data, current_user: current_or_guest_user)
@@ -60,28 +59,5 @@ class PublicPagesController < ApplicationController
         flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
       end
     end
-
-
-    # if @public_page_data.demo?
-    #   if current_or_guest_user.guest?
-    #     link = view_context.link_to('Sign up', new_user_registration_path).html_safe
-    #     flash.now[:notice] = "This is a demo or inactive page showing how your public page could look. #{link} to get your own!".html_safe if link
-    #   else
-    #     unless current_or_guest_user.syncable?
-    #       link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
-    #       flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
-    #     end
-    #   end
-    # else
-    #   if current_or_guest_user.guest?
-    #     link = view_context.link_to('Sign up', new_user_registration_path).html_safe
-    #     flash.now[:notice] = "This is a demo or inactive page showing how your public page could look. #{link} to get your own!".html_safe if link
-    #   else
-    #     unless current_or_guest_user.syncable?
-    #       link = view_context.link_to('Dashboard', dashboard_index_path).html_safe
-    #       flash.now[:notice] = "Check your #{link} for the steps to enable your public page.".html_safe
-    #     end
-    #   end
-    # end
   end
 end
