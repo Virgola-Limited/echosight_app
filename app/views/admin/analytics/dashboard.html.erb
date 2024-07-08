@@ -1,0 +1,8 @@
+<!-- app/views/admin/analytics/dashboard.html.erb -->
+<%= render ChartComponent.new(
+  chart_id: "campaign_sign_ups_chart",
+  chart_type: "line",
+  series_name: "Campaign Sign Ups",
+  series_data: @series_data,
+  categories: @categories
+) %>
