@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   authenticate :admin_user do
     mount Sidekiq::Web => '/sidekiq'
     mount PgHero::Engine, at: "/pghero"
+    get 'admin/analytics_dashboard', to: 'admin/analytics#dashboard'
   end
   #########################################
   mount StripeEvent::Engine, at: '/stripe/webhook'

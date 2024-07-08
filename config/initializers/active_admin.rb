@@ -62,6 +62,11 @@ ActiveAdmin.setup do |config|
   #     admin.site_title = "Custom Admin Title"
   #   end
   #
+  config.namespace :admin do |admin|
+    admin.build_menu do |menu|
+      menu.add label: 'Analytics Dashboard', url: '/admin/analytics_dashboard', priority: 1
+    end
+  end
   # This will ONLY change the title for the admin section. Other
   # namespaces will continue to use the main "site_title" configuration.
 
