@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_10_035010) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_10_043846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -304,7 +304,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_035010) do
     t.string "otp_secret"
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
-    t.string "campaign_id"
+    t.bigint "ad_campaign_id"
     t.string "ad_campaign"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -340,5 +340,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_10_035010) do
   add_foreign_key "user_settings", "users"
   add_foreign_key "user_twitter_data_updates", "api_batches"
   add_foreign_key "user_twitter_data_updates", "identities"
+  add_foreign_key "users", "ad_campaigns"
   add_foreign_key "votes", "users"
 end

@@ -16,6 +16,8 @@
 class AdCampaign < ApplicationRecord
   before_create :generate_unique_campaign_id
 
+  has_many :users
+
   validates :name, presence: true
   validates :utm_source, presence: true, inclusion: { in: %w[twitter threads instagram] }
 

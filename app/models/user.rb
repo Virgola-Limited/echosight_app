@@ -39,7 +39,7 @@
 #  vip_since                    :date
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
-#  campaign_id                  :string
+#  ad_campaign_id               :bigint
 #  invited_by_id                :bigint
 #  stripe_customer_id           :string
 #
@@ -54,6 +54,10 @@
 #  index_users_on_stripe_customer_id    (stripe_customer_id)
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
+# Foreign Keys
+#
+#  fk_rails_...  (ad_campaign_id => ad_campaigns.id)
+#
 
 class User < ApplicationRecord
   has_subscriptions
@@ -65,6 +69,8 @@ class User < ApplicationRecord
          omniauth_providers: [:twitter]
 
   before_create :generate_otp_secret
+
+  belongs_to :ad_campaign, optional: true
 
   # change this to has_many # add soft delete to identity
   has_one :identity
@@ -94,9 +100,9 @@ class User < ApplicationRecord
        current_sign_in_ip email encrypted_password failed_attempts id id_value last_name last_sign_in_at last_sign_in_ip locked_at name remember_created_at reset_password_sent_at reset_password_token sign_in_count unconfirmed_email unlock_token updated_at, campaign_id]
   end
 
-  # def self.ransackable_associations(auth_object = nil)
-  #   ["identity"]
-  # end
+  def self.ransackable_associations(auth_object = nil)
+     %w[ad_campaign]
+  end
 
   def active_subscription?
     if subscriptions.active.count > 1
