@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   # Use Devise's authentication filter for staging environment
   before_action :authenticate_admin_user!, if: :staging_environment?
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :track_twitter_ad_click
+  before_action :track_ad_campaign_click
 
   protected
 
@@ -24,19 +24,29 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Example urls
-  # https://store.steampowered.com/app/667610?utm_source=TwitterVideo&utm_campaign=Webvisits&utm_medium=web&twclid=26ug6ehci41998kpvm1r96gb11
-  # https://www.therundown.ai/subscribe?utm_source=twitterads&utm_medium=3&utm_campaign=newsletter&twclid=26f4swieyflfmnypah36jzw6h3
-  # https://navy.quest/?r=twinq1wwa&twclid=26qm4bevt77wd02lle4rlyrgpr
-  def track_twitter_ad_click
-    if params[:twclid].present?
-      ahoy.track "Twitter Ad Click", { campaign: params[:utm_campaign], campaign_id: params[:twclid] }
-      cookies[:ad_campaign] = {
-        value: params[:utm_campaign],
-      }
-      cookies[:campaign_id] = {
-        value: params[:twclid],
-      }
+  def track_ad_campaign_click
+    if params[:campaign_id].present?
+      ad_campaign = AdCampaign.find_by(campaign_id: params[:campaign_id])
+      if ad_campaign
+        ahoy.track "Ad Campaign Click", { campaign_id: ad_campaign.campaign_id, utm_source: ad_campaign.utm_source }
+        cookies[:ad_campaign] = {
+          value: ad_campaign.campaign_id,
+          expires: 1.hour.from_now
+        }
+        cookies[:utm_source] = {
+          value: ad_campaign.utm_source,
+          expires: 1.hour.from_now
+        }
+      else
+        error_details = {
+          campaign_id: params[:campaign_id],
+          params: params.to_unsafe_h
+        }
+        ExceptionNotifier.notify_exception(
+          StandardError.new("AdCampaign not found"),
+          data: error_details
+        )
+      end
     end
   end
 
