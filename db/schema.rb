@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_05_195158) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_10_035010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_05_195158) do
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
     t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
+  end
+
+  create_table "ad_campaigns", force: :cascade do |t|
+    t.string "name"
+    t.string "campaign_id"
+    t.string "utm_source"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_ad_campaigns_on_campaign_id", unique: true
   end
 
   create_table "admin_users", force: :cascade do |t|

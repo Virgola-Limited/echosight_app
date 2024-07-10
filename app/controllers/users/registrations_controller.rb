@@ -7,12 +7,12 @@ module Users
     def create
       super do |resource|
         if resource.persisted?
-          campaign_data = { user_id: resource.id }
-          campaign_data[:campaign] = cookies[:ad_campaign] if cookies[:ad_campaign]
-          campaign_data[:campaign_id] = cookies[:campaign_id] if cookies[:campaign_id]
-          ahoy.track "Sign Up", campaign_data
-
-          resource.update(ad_campaign: cookies[:ad_campaign], campaign_id: cookies[:campaign_id])
+          campaign_id = cookies[:ad_campaign]
+          utm_source = cookies[:utm_source]
+          if campaign_id.present?
+            ahoy.track "Sign Up", user_id: resource.id, campaign_id: campaign_id, utm_source: utm_source
+            resource.update(campaign_id: campaign_id, utm_source: utm_source)
+          end
         end
       end
     end
