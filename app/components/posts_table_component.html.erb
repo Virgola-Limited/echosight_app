@@ -5,7 +5,7 @@
                 <th scope="col" class="p-0 md:table-cell md:p-1">
                     Post
                 </th>
-                <th scope="col" class="md:table-cell p-1">
+                <th scope="col" class="hidden md:table-cell p-1">
                     Impressions
                 </th>
                 <th scope="col" class="hidden md:table-cell p-1">
@@ -24,7 +24,7 @@
                 <th scope="col" class="hidden md:table-cell p-1">
                     Engagement Rate
                 </th>
-                <th scope="col" class="hidden md:table-cell p-1">
+                <th scope="col" class="md:table-cell p-1">
                     Actions
                 </th>
             </tr>
@@ -36,7 +36,7 @@
                   <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white">
                       <%= text_with_images(tweet_metric.tweet.text) %>
                   </td>
-                  <td class="md:table-cell px-6 py-4">
+                  <td class="hidden md:table-cell px-6 py-4">
                       <%= rounded_number(tweet_metric.impression_count) %>
                   </td>
                   <td class="hidden md:table-cell p-1">
@@ -61,7 +61,7 @@
                   </div>
                   </div>
                 </td>
-                  <td class="hidden md:table-cell px-6 py-4">
+                  <td class=" md:table-cell px-6 py-4">
                     <a href="https://twitter.com/user/status/<%= tweet_metric.tweet.id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
                       <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
                           <path d="M17 0h-5.768a1 1 0 1 0 0 2h3.354L8.4 8.182A1.003 1.003 0 1 0 9.818 9.6L16 3.414v3.354a1 1 0 0 0 2 0V1a1 1 0 0 0-1-1Z"></path>
