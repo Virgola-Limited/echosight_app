@@ -1,4 +1,10 @@
 <script>
+    (function() {
+      const storedTheme = localStorage.getItem('color-theme') || 'dark'; // Default to dark if no theme is stored
+      if (storedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
     let card
 
     document.addEventListener('DOMContentLoaded', function () {
