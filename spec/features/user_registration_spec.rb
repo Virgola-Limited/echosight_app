@@ -54,4 +54,14 @@ RSpec.feature 'User Registration' do
 
     expect(page).to have_content('Thank you for signing up with Echosight')
   end
+
+  scenario 'User tries to sign from an ad campaign link' do
+    ad_campaign = create(:ad_campaign)
+    visit new_user_registration_path(campaign_id: ad_campaign.campaign_id)
+    fill_in 'Email', with: 'newuser3@example.com'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password confirmation', with: 'password'
+    click_button 'Sign up'
+    expect(User.last.ad_campaign_id).to eq(ad_campaign.id)
+  end
 end
