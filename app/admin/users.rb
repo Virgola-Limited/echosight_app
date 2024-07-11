@@ -19,6 +19,7 @@ ActiveAdmin.register User do
     end
     column :vip_since
     column :enabled_without_subscription
+    column :can_dm
     column :ad_campaign_id
     actions defaults: true do |user|
       if user.otp_required_for_login
@@ -42,6 +43,7 @@ ActiveAdmin.register User do
       end
       row :vip_since
       row :enabled_without_subscription
+      row :can_dm
     end
   end
 

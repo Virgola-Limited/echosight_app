@@ -22,6 +22,17 @@ RSpec.describe SocialData::ClientAdapter do
 
       let(:params) { { query: "from:#{user.handle} since_time:#{since_time} until_time:#{until_time}" } }
 
+      def check_keys_and_values(actual, expected)
+        actual.each do |key, value|
+          if value.is_a?(Hash)
+            expect(value.keys).to match_array(expected[key].keys)
+            check_keys_and_values(value, expected[key])
+          else
+            expect(value).to eq(expected[key]), "Expected value for key '#{key}' to be '#{expected[key]}', but got '#{value}'"
+          end
+        end
+      end
+
       it 'returns adapted social data in the expected format' do
         VCR.use_cassette('SocialData__Client') do
           adapted_data = client_adapter.search_tweets(params)
@@ -36,13 +47,14 @@ RSpec.describe SocialData::ClientAdapter do
           keys_to_test = first_tweet_expected_results.keys.excluding('created_at')
           keys_to_test.each do |key|
             if first_tweet[key].is_a?(Hash)
-              expect(first_tweet[key].keys).to match_array(first_tweet_expected_results[key].keys)
+              check_keys_and_values(first_tweet[key], first_tweet_expected_results[key])
             else
               expect(first_tweet[key]).to eq(first_tweet_expected_results[key]), "Expected value for key '#{key}' in first_tweet to be '#{first_tweet_expected_results[key]}', but got '#{first_tweet[key]}'"
             end
           end
         end
       end
+
 
       let(:tweet_user_data) do
         {
@@ -58,6 +70,7 @@ RSpec.describe SocialData::ClientAdapter do
               'listed_count' => 45,
               'tweet_count' => 58724
             },
+            'can_dm' => false,
             'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
             'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1711023494'
           }

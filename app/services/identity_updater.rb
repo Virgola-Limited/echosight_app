@@ -32,6 +32,7 @@ class IdentityUpdater
 
     identity.handle = user_data['username']
     identity.description = UrlRewriter.new(user_data['description']).call if user_data['description']
+    identity.can_dm = user_data['can_dm']
     identity.save!
   end
 

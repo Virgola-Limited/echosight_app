@@ -53,6 +53,7 @@ RSpec.describe Twitter::NewTweetsFetcher do
       },
       'description' => "Revolutionize Your Social Media Strategy with Echosight | https://t.co/wMI0Lub79k | https://t.co/HLB3aL1jca | https://t.co/IbbT2ncYyt | https://t.co/i9vT0NmOyw",
       'image_url' => 'https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_normal.jpg',
+      'can_dm' => false,
       'banner_url' => 'https://pbs.twimg.com/profile_banners/1192091185/1711023494'
     }
   end

@@ -74,6 +74,7 @@ module SocialData
           },
           'description' => response['description'],
           'image_url' => response['profile_image_url_https'],
+          'can_dm' => response['can_dm'],
           'banner_url' => response['profile_banner_url']
         }
       }
