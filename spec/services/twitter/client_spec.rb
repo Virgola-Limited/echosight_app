@@ -61,3 +61,4 @@ RSpec.describe Twitter::Client, :vcr do
     }
   end
 end
+

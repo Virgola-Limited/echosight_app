@@ -33,7 +33,7 @@ RSpec.describe SocialData::Client do
     end
     let(:non_null_user_keys) do
       %w[id id_str name screen_name followers_count friends_count listed_count
-        favourites_count statuses_count created_at profile_banner_url profile_image_url_https]
+        favourites_count statuses_count created_at profile_banner_url profile_image_url_https can_dm]
     end
 
     let(:null_tweet_keys) do
@@ -62,7 +62,7 @@ RSpec.describe SocialData::Client do
               expect(tweet).to include('user')
               expect(tweet['user'].keys).to match_array(user_keys)
               non_null_user_keys.each do |key|
-                expect(tweet['user'][key]).to_not be_nil
+                expect(tweet['user'][key]).to_not be_nil, "key: #{key}"
               end
             end
           end

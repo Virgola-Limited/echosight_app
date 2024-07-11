@@ -5,6 +5,7 @@
 #  id                :bigint           not null, primary key
 #  banner_checksum   :string
 #  banner_data       :text
+#  can_dm            :boolean
 #  description       :string
 #  handle            :string
 #  image_checksum    :string
