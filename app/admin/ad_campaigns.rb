@@ -8,6 +8,9 @@ ActiveAdmin.register AdCampaign do
     column :name
     column :campaign_id
     column :utm_source
+    column "Campaign URL" do |ad_campaign|
+      link_to "View Campaign", "https://app.echosight.io/?campaign_id=#{ad_campaign.campaign_id}", target: "_blank"
+    end
     actions
   end
 
