@@ -1,7 +1,7 @@
 ActiveAdmin.register User do
   permit_params :name, :last_name, :email, :vip_since, :enabled_without_subscription, :ad_campaign_id
 
-  actions :index, :show, :edit, :update
+  actions :index, :show, :edit, :update, :destroy
 
   filter :email
   filter :ad_campaign_id_present, as: :boolean, label: 'Has Campaign ID'
