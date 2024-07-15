@@ -37,6 +37,7 @@ gem 'bootsnap', require: false
 
 gem 'ahoy_matey'
 gem 'activeadmin'
+gem "active_admin_import"
 gem 'apexcharts'
 gem "aws-sdk-s3", "~> 1.14"
 gem 'devise', '~> 4.9'
