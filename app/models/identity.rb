@@ -19,8 +19,9 @@
 #
 # Indexes
 #
-#  index_identities_on_handle   (handle) UNIQUE
-#  index_identities_on_user_id  (user_id)
+#  index_identities_on_handle            (handle) UNIQUE
+#  index_identities_on_uid_and_provider  (uid,provider) UNIQUE
+#  index_identities_on_user_id           (user_id)
 #
 # Foreign Keys
 #
@@ -39,6 +40,8 @@ class Identity < ApplicationRecord
   validates :provider, presence: true
   validates :uid, presence: true, uniqueness: { scope: :provider }
   validates :handle, uniqueness: true, presence: true
+
+  attribute :provider, :string, default: 'twitter'
 
   scope :valid_identity, lambda {
     where(provider: 'twitter')
