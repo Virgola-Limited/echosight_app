@@ -69,19 +69,38 @@ ActiveAdmin.register Identity do
                       csv_options: { col_sep: "\t" },
                       before_batch_import: lambda { |importer|
                         puts "Debug: CSV headers: #{importer.headers.inspect}"
+                        processed_lines = []
                         importer.csv_lines.each_with_index do |row, index|
                           puts "Debug: Row #{index} before: #{row.inspect}"
                           if row.is_a?(Hash)
                             row[:provider] = 'twitter'
+                            unless Identity.exists?(uid: row[:uid], provider: row[:provider])
+                              processed_lines << row
+                            else
+                              puts "Skipping duplicate identity with UID: #{row[:uid]}"
+                            end
                           elsif row.is_a?(Array)
-                            row << 'twitter'
-                            importer.headers['provider'] = 'provider' if index == 0
+                            headers = importer.headers.keys
+                            uid_index = headers.index('uid')
+                            handle_index = headers.index('handle')
+                            if uid_index.nil? || handle_index.nil?
+                              puts "Error: Required column not found in headers."
+                            else
+                              row_hash = Hash[headers.zip(row)]
+                              row_hash[:provider] = 'twitter'
+                              unless Identity.exists?(uid: row[uid_index], provider: 'twitter')
+                                processed_lines << row_hash
+                              else
+                                puts "Skipping duplicate identity with UID: #{row[uid_index]}"
+                              end
+                            end
                           else
                             puts "Warning: Unexpected row format at index #{index}: #{row.inspect}"
                           end
                           puts "Debug: Row #{index} after: #{row.inspect}"
                         end
-                        puts "Debug: Updated CSV headers: #{importer.headers.inspect}"
+                        importer.instance_variable_set(:@csv_lines, processed_lines)
+                        puts "Debug: Updated CSV lines: #{processed_lines.size}"
                       },
                       after_batch_import: lambda { |importer|
                         puts "Batch import completed"
@@ -110,7 +129,7 @@ ActiveAdmin.register Identity do
                         Rails.logger.info "Failed to import: #{total_failed}"
 
                         if importer.respond_to?(:result) && importer.result && importer.result.respond_to?(:failed_instances)
-                          duplicates = importer.result.failed_instances.select { |instance| instance.errors[:uid].include?('has already been taken') }
+                          duplicates = importer.result.failed_instances.select { |instance| instance.errors[:uid].include?('has already been taken') || instance.errors[:handle].include?('has already been taken') }
                           Rails.logger.info "Duplicate identities: #{duplicates.map(&:uid).join(', ')}"
                         end
 
