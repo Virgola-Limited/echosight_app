@@ -20,7 +20,13 @@ ActiveAdmin.register User do
     column :vip_since
     column :enabled_without_subscription
     column :can_dm
-    column :ad_campaign_id
+    column 'Campaign' do |user|
+      if user.ad_campaign
+        link_to user.ad_campaign.name, admin_campaign_path(user.ad_campaign)
+      else
+        'No Campaign'
+      end
+    end
     actions defaults: true do |user|
       if user.otp_required_for_login
         link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
@@ -54,6 +60,7 @@ ActiveAdmin.register User do
       f.input :email
       f.input :vip_since
       f.input :enabled_without_subscription
+      f.input :ad_campaign_id
     end
     f.actions
   end
