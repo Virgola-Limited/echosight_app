@@ -137,4 +137,14 @@ ActiveAdmin.register Identity do
                         puts "  Total successful imports: #{total_imported}"
                         puts "  Total failed imports: #{total_failed}"
                       }
+
+  batch_action :set_sync_without_user_true, confirm: "Are you sure you want to set sync_without_user to true for selected identities?" do |ids|
+    Identity.where(id: ids).update_all(sync_without_user: true)
+    redirect_to collection_path, notice: "The sync_without_user attribute has been set to true for the selected identities."
+  end
+
+  batch_action :set_sync_without_user_false, confirm: "Are you sure you want to set sync_without_user to false for selected identities?" do |ids|
+    Identity.where(id: ids).update_all(sync_without_user: false)
+    redirect_to collection_path, notice: "The sync_without_user attribute has been set to false for the selected identities."
+  end
 end
