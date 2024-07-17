@@ -48,6 +48,7 @@ ActiveAdmin.register Identity do
   end
 
   filter :handle
+  filter :sync_without_user
 
   form do |f|
     f.semantic_errors

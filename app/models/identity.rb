@@ -69,7 +69,7 @@ class Identity < ApplicationRecord
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[banner_url created_at description handle id id_value image_url provider uid
-       updated_at user_id]
+       updated_at user_id, sync_without_user]
   end
 
   def assign_attributes_from_auth(auth)
