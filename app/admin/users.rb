@@ -22,7 +22,7 @@ ActiveAdmin.register User do
     column :can_dm
     column 'Campaign' do |user|
       if user.ad_campaign
-        link_to user.ad_campaign.name, admin_campaign_path(user.ad_campaign)
+        link_to user.ad_campaign.name, admin_ad_campaign_path(user.ad_campaign)
       else
         'No Campaign'
       end

@@ -72,6 +72,10 @@ class Identity < ApplicationRecord
        updated_at user_id, sync_without_user]
   end
 
+  def self.ransackable_associations(auth_object = nil)
+    ['user']
+  end
+
   def assign_attributes_from_auth(auth)
     self.provider = auth.provider
     self.uid = auth.uid
