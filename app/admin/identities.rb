@@ -26,8 +26,18 @@ ActiveAdmin.register Identity do
     column :description
     column :handle
     column :sync_without_user
-    column :image_url
-    column :banner_url
+    column :image_url do |identity|
+      if identity.image_url.present?
+        unique_id = identity.image_url.split('/').last.split('?').first
+        link_to unique_id, identity.image_url, target: '_blank'
+      end
+    end
+    column :banner_url do |identity|
+      if identity.banner_url.present?
+        unique_id = identity.banner_url.split('/').last.split('?').first
+        link_to unique_id, identity.banner_url, target: '_blank'
+      end
+    end
 
     column :followers_count do |identity|
       recent_metric = identity.twitter_user_metrics.order(date: :desc).first
@@ -42,13 +52,20 @@ ActiveAdmin.register Identity do
       end
     end
 
-    actions defaults: true do |identity|
+    column :twitter_url do |identity|
+      link_to 'Twitter', "https://twitter.com/#{identity.handle}", target: '_blank'
+    end
+
+    column :public_page do |identity|
       link_to 'Public Page', public_page_path(handle: identity.handle), target: '_blank'
     end
+
+    actions defaults: true
   end
 
   filter :handle
   filter :sync_without_user
+  filter :uid
 
   form do |f|
     f.semantic_errors
