@@ -1,0 +1,22 @@
+<section class="bg-white dark:bg-gray-900">
+  <div class="px-4 mx-auto max-w-screen-xl text-center lg:px-6">
+    <div class="mx-auto max-w-screen-sm">
+      <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-300 mb-8">Testimonials</h2>
+    </div>
+    <div class="grid mb-8 lg:mb-12 lg:grid-cols-2">
+      <% @testimonials.each do |testimonial| %>
+        <figure class="flex flex-col justify-center items-center p-8 text-center bg-gray-50 border-b border-gray-200 md:p-12 lg:border-r dark:bg-gray-800 dark:border-gray-700">
+          <blockquote class="mx-auto mb-8 max-w-2xl text-gray-500 dark:text-gray-400">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white"><%= testimonial[:title] %></h3>
+            <p class="my-4"><%= testimonial[:quote].html_safe %></p>
+          </blockquote>
+          <figcaption class="flex justify-center items-center space-x-3">
+            <div class="space-y-0.5 font-medium dark:text-white text-left">
+              <div><%= link_to testimonial[:author], testimonial[:author_link], target: :_blank %></div>
+            </div>
+          </figcaption>
+        </figure>
+      <% end %>
+    </div>
+  </div>
+</section>

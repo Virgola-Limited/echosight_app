@@ -70,21 +70,19 @@
     <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-300 mb-8">Analytics at a Glance</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       <div class="relative h-64 flex items-center justify-center">
-        <%= vite_image_tag 'images/sample_graph_1.png', alt: 'Sample Graph 1', class: 'absolute inset-0 h-full w-full object-contain' %>
+        <%= vite_image_tag 'images/sample_graph_1.png', alt: 'Impressions Graph', class: 'absolute inset-0 h-full w-full object-contain' %>
       </div>
       <div class="relative h-64 flex items-center justify-center">
-        <%= vite_image_tag 'images/sample_graph_2.png', alt: 'Sample Graph 2', class: 'absolute inset-0 h-full w-full object-contain' %>
+        <%= vite_image_tag 'images/sample_graph_2.png', alt: 'Followers Graph', class: 'absolute inset-0 h-full w-full object-contain' %>
       </div>
-    </div>
-    <div class="text-center mb-8">
-      <p class="text-xl italic text-gray-900 dark:text-gray-300">"Thanks, <%= link_to('@loftwah', "https://x.com/loftwah", target: :_blank) %>, for giving me the early access. Really love this service..."</p>
-      <p class="text-lg font-bold mt-2 text-gray-900 dark:text-gray-300">- <%= link_to('@TimoCodes', "https://x.com/TimoCodes/status/1795403171399119042", target: :_blank) %></p>
     </div>
 
     <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-300 mb-8">Leaderboard</h2>
     <div class="relative h-64 flex items-center justify-center mb-8">
       <%= vite_image_tag 'images/leaderboard_image.png', alt: 'Leaderboard Image', class: 'absolute inset-0 h-full w-full object-contain' %>
     </div>
+
+    <%= render TestimonialsComponent.new %>
 
     <div class="text-center">
       <%= render Shared::ButtonComponent.new(text: "Get Started", url: new_user_registration_path, method: :get) %>
