@@ -47,5 +47,26 @@ RSpec.describe Twitter::NewTweetsFetcherJob do
         end
       end
     end
+
+    context 'when an error occurs during Twitter::NewTweetsFetcher#call' do
+      let(:error_message) { "Test error message" }
+      let(:backtrace) { ["line1", "line2"] }
+      let(:error) { StandardError.new(error_message) }
+
+      before do
+        allow(error).to receive(:backtrace).and_return(backtrace)
+        allow_any_instance_of(Twitter::NewTweetsFetcher).to receive(:call).and_raise(error)
+      end
+
+      it 'calls handle_error and updates UserTwitterDataUpdate with error message' do
+        expect_any_instance_of(described_class).to receive(:handle_error).and_call_original
+        expect { subject.perform(identity.id, api_batch.id) }.to raise_error(StandardError)
+
+        user_twitter_data_update = UserTwitterDataUpdate.last
+        expected_error_message = "NewTweetsFetcherJob: Failed to complete update for identity #{identity.id}: #{error_message} ApiBatch: #{api_batch.id}\nBacktrace:\nline1\nline2"
+        expect(user_twitter_data_update.error_message).to eq(expected_error_message)
+      end
+    end
+
   end
 end

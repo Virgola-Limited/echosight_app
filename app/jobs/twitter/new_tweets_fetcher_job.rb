@@ -41,7 +41,7 @@ module Twitter
 
     def handle_error(identity, api_batch, e, user_twitter_data_update)
       backtrace = e.backtrace.join("\n")
-      message = "NewTweetsFetcherJob: Failed to complete update for identity #{identity.id} #{identity.email}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
+      message = "NewTweetsFetcherJob: Failed to complete update for identity #{identity.id}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
       user_twitter_data_update.update!(error_message: message)
       raise e
     end
