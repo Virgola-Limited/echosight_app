@@ -19,10 +19,15 @@ ActiveAdmin.register Identity do
   index do
     selectable_column
     id_column
-    column :user_id
+    column :user_id do |identity|
+      if identity.user
+        link_to identity.user.email, admin_user_path(identity.user)
+      else
+        'No user'
+      end
+    end
     column :uid
     column :created_at
-    column :updated_at
     column :description
     column :handle
     column :sync_without_user
