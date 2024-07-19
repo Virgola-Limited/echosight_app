@@ -61,6 +61,7 @@ gem 'sidekiq-unique-jobs'
 gem 'slack-notifier'
 gem 'stripe'
 gem 'stripe_event'
+gem 'threads-api', '~> 0.2.0'
 gem 'view_component'
 gem 'vite_rails'
 gem 'whenever', require: false
