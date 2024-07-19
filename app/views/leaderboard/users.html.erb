@@ -34,7 +34,7 @@
           </td>
           <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
             <img src="<%= user.image_data %>" alt="Avatar" class="inline-block h-8 w-8 rounded-full mr-2">
-            <%= user.handle %>
+            <%= link_to user.handle, public_page_path(handle: user.handle), target: '_blank' %>
           </td>
           <td class="px-2 py-4"><%= rounded_number(user.total_impressions) %></td>
           <td class="px-2 py-4"><%= rounded_number(user.total_retweets) %></td>
