@@ -26,7 +26,8 @@ Rails.application.routes.draw do
   get 'p/:handle', to: 'public_pages#show', as: :public_page
   get 'track/open/:tracking_id', to: 'tracker#open'
   get 'leaderboard/tweets', to: 'leaderboard#tweets'
-  get 'leaderboard/users', to: 'leaderboard#users'
+  get 'leaderboard', to: 'leaderboard#users'
+
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
   resource :subscription, only: [:new, :create, :show]
