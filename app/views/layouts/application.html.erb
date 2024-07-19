@@ -16,27 +16,23 @@
 
   <body class="dark:bg-gray-900">
     <%= render 'layouts/flash_messages' %>
-
-
-    <div class="profile-container">
-  <% if current_or_guest_user.guest? %>
-    <div class="flex items-center justify-between">
-      <a href="<%= root_url %>" class="flex items-center text-2xl font-semibold dark:text-white">
-        <%= vite_image_tag("images/logo.png", height: '50', width: '50', alt: "Echosight") %>
-        <span class="align-middle">&nbsp;Echosight</span>
-      </a>
-      <div class="flex items-center space-x-3">
-        <%= render PrimaryActionButtonComponent.new(user: current_or_guest_user) %>
-        <%= render 'shared/dark_mode_toggle_button' %>
+    <header class="sticky top-0 z-10 bg-white dark:bg-gray-900">
+      <div class="flex justify-between pt-3 pb-3 inset-x-0">
+        <% if current_or_guest_user.guest? %>
+          <a href="<%= root_url %>" class="flex items-center text-2xl font-semibold dark:text-white">
+            <%= vite_image_tag("images/logo.png", height: '50', width: '50', alt: "Echosight") %>
+            <span class="align-middle">&nbsp;Echosight</span>
+          </a>
+          <div class="flex items-center space-x-3">
+            <%= render PrimaryActionButtonComponent.new(user: current_or_guest_user) %>
+            <%= render 'shared/dark_mode_toggle_button' %>
+          </div>
+        <% else %>
+          <%= render Shared::NavBarComponent.new(user: current_or_guest_user) %>
+        <% end %>
       </div>
-    </div>
-  <% else %>
-    <%= render Shared::NavBarComponent.new(user: current_or_guest_user) %>
-  <% end %>
-</div>
-
-
-    <div class="flex pt-8 overflow-hidden bg-gray-50 dark:bg-gray-900">
+    </header>
+      <div class="flex overflow-hidden bg-gray-50 dark:bg-gray-900">
 
     <div id="main-content" class="relative w-full max-w-screen-2xl mx-auto h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <main>
