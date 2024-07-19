@@ -1,14 +1,5 @@
   <% content_for :title, "#{page_user_name || page_user_handle}'s Public Page" %>
 
-  <%= content_for :profile_container do %>
-  <div class="profile-container">
-    <div class="flex items-center space-x-3">
-        <%= render PrimaryActionButtonComponent.new(user: current_user) %>
-        <%= render 'shared/dark_mode_toggle_button' %>
-    </div>
-  </div>
-  <% end %>
-
   <div class="relative">
     <!-- Header Photo -->
     <% if hide_profile_banner? %>

@@ -2,8 +2,6 @@
 
 module Users
   class RegistrationsController < Devise::RegistrationsController
-    layout 'authenticated', only: %i[edit update]
-
     def create
       super do |resource|
         if resource.persisted?

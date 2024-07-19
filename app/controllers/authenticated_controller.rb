@@ -1,6 +1,5 @@
 class AuthenticatedController < ApplicationController
   before_action :authenticate_user!
-  layout 'authenticated'
 
   def authenticate_user!
     unless user_signed_in?

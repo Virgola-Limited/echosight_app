@@ -7,8 +7,6 @@ class LeaderboardController < ApplicationController
     '1_year' => -> { 1.year.ago }
   }.freeze
 
-  before_action :set_flash_message
-
   def tweets
     period = params[:period] || '7_days'
     start_date = start_date_for_period(period)
@@ -54,15 +52,6 @@ class LeaderboardController < ApplicationController
                      .limit(50)
 
     render :users
-  end
-
-  private
-
-  def set_flash_message
-    if current_or_guest_user.guest?
-      link = view_context.link_to('Sign up', new_user_registration_path).html_safe
-      flash.now[:notice] = " #{link} to get your own Echosight public page.".html_safe
-    end
   end
 
   def start_date_for_period(period)
