@@ -62,7 +62,6 @@ class LeaderboardController < ApplicationController
       start_date = 1.day.ago.beginning_of_day if tweets_today.empty?
     end
 
-    Rails.logger.info "Start date: #{start_date}"
     start_date
   end
 end
