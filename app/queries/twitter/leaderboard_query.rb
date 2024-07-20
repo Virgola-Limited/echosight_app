@@ -14,7 +14,7 @@ module Twitter
 
     def initialize(date_range: '7_days')
       @date_range = date_range
-      @start_date = start_date_for_period(date_range)
+      @start_date = self.class.start_date_for_period(date_range)
     end
 
     def identity_leaderboard
@@ -41,12 +41,11 @@ module Twitter
                        tweet_data.total_replies,
                        tweet_data.total_bookmarks,
                        MAX(twitter_user_metrics.followers_count) AS total_followers,
-                       (COALESCE(tweet_data.total_retweets, 0) + COALESCE(tweet_data.total_likes, 0) + COALESCE(tweet_data.total_quotes, 0) + COALESCE(tweet_data.total_replies, 0) + COALESCE(tweet_data.total_bookmarks, 0)) / NULLIF(COALESCE(tweet_data.total_impressions, 0), 0) * 100 AS engagement_rate')
+                       (COALESCE(tweet_data.total_retweets, 0) + COALESCE(tweet_data.total_likes, 0) + COALESCE(tweet_data.total_quotes, 0) + COALESCE(tweet_data.total_replies, 0) + COALESCE(tweet_data.total_bookmarks, 0)) / NULLIF(COALESCE(tweet_data.total_impressions, 0)::FLOAT, 0) * 100 AS engagement_rate')
               .where('tweet_data.total_impressions > 0')
               .group('identities.id, identities.handle, tweet_data.total_impressions, tweet_data.total_retweets, tweet_data.total_likes, tweet_data.total_quotes, tweet_data.total_replies, tweet_data.total_bookmarks')
               .order('tweet_data.total_impressions DESC')
               .limit(25)
-
     end
 
     def snapshot
@@ -88,7 +87,7 @@ module Twitter
 
     private
 
-    def start_date_for_period(date_range)
+    def self.start_date_for_period(date_range)
       start_date = PERIODS.fetch(date_range, PERIODS['7_days']).call
 
       if date_range == 'today'
