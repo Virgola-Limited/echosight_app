@@ -70,16 +70,16 @@
     <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-300 mb-8">Analytics at a Glance</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       <div class="relative h-64 flex items-center justify-center">
-        <%= vite_image_tag 'images/sample_graph_1.png', alt: 'Impressions Graph', class: 'absolute inset-0 h-full w-full object-contain' %>
+        <a href="/p/demo"><%= vite_image_tag 'images/sample_graph_1.png', alt: 'Impressions Graph', class: 'absolute inset-0 h-full w-full object-contain' %></a>
       </div>
       <div class="relative h-64 flex items-center justify-center">
-        <%= vite_image_tag 'images/sample_graph_2.png', alt: 'Followers Graph', class: 'absolute inset-0 h-full w-full object-contain' %>
+        <a href="/p/demo"><%= vite_image_tag 'images/sample_graph_2.png', alt: 'Followers Graph', class: 'absolute inset-0 h-full w-full object-contain' %></a>
       </div>
     </div>
 
     <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-gray-300 mb-8">Leaderboard</h2>
     <div class="relative h-64 flex items-center justify-center mb-8">
-      <%= vite_image_tag 'images/leaderboard_image.png', alt: 'Leaderboard Image', class: 'absolute inset-0 h-full w-full object-contain' %>
+      <%= link_to(vite_image_tag('images/leaderboard_image.png', alt: 'Leaderboard Image', class: 'absolute inset-0 h-full w-full object-contain'), leaderboard_path) %>
     </div>
 
     <%= render TestimonialsComponent.new %>
