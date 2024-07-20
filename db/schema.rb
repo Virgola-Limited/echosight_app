@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_15_041501) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_20_051504) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -145,6 +145,29 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_041501) do
     t.index ["handle"], name: "index_identities_on_handle", unique: true
     t.index ["uid", "provider"], name: "index_identities_on_uid_and_provider", unique: true
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "leaderboard_entries", force: :cascade do |t|
+    t.bigint "leaderboard_snapshot_id", null: false
+    t.bigint "identity_id", null: false
+    t.integer "rank", null: false
+    t.integer "impressions", null: false
+    t.integer "retweets"
+    t.integer "likes"
+    t.integer "quotes"
+    t.integer "replies"
+    t.integer "bookmarks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_leaderboard_entries_on_identity_id"
+    t.index ["leaderboard_snapshot_id"], name: "index_leaderboard_entries_on_leaderboard_snapshot_id"
+  end
+
+  create_table "leaderboard_snapshots", force: :cascade do |t|
+    t.string "date_range", null: false
+    t.datetime "captured_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mailkick_subscriptions", force: :cascade do |t|
@@ -332,6 +355,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_15_041501) do
   add_foreign_key "content_items", "users"
   add_foreign_key "feature_requests", "users"
   add_foreign_key "identities", "users"
+  add_foreign_key "leaderboard_entries", "identities"
+  add_foreign_key "leaderboard_entries", "leaderboard_snapshots"
   add_foreign_key "oauth_credentials", "identities"
   add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "users"
