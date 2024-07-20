@@ -1,4 +1,4 @@
-<%= render Shared::HeadingComponent.new(text: 'User Leaderboard', heading_type: :h1) %>
+<%= render Shared::HeadingComponent.new(text: 'Leaderboard', heading_type: :h1) %>
 <div class="flex justify-center items-center">
   <%= render Shared::DateRangeSelector.new(date_range: params[:date_range], url_helper: ->(date_range) { leaderboard_path(date_range: date_range) }) %>
 </div>
