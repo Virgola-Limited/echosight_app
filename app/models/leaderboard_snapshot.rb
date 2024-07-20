@@ -14,4 +14,13 @@ class LeaderboardSnapshot < ApplicationRecord
 
   validates :date_range, presence: true
   validates :captured_at, presence: true
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[leaderboard_entries]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[date_range captured_at]
+  end
+
 end

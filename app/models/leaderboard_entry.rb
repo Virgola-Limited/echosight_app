@@ -26,10 +26,20 @@
 #  fk_rails_...  (leaderboard_snapshot_id => leaderboard_snapshots.id)
 #
 # app/models/leaderboard_entry.rb
+# app/models/leaderboard_entry.rb
 class LeaderboardEntry < ApplicationRecord
   belongs_to :leaderboard_snapshot
   belongs_to :identity
 
   validates :rank, presence: true
   validates :impressions, presence: true
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[identity leaderboard_snapshot]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[rank impressions likes retweets quotes replies bookmarks leaderboard_snapshot_id identity_id]
+  end
 end
+
