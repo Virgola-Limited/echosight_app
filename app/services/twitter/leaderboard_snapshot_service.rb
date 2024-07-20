@@ -2,7 +2,7 @@
 module Twitter
   class LeaderboardSnapshotService
     def self.capture_snapshots
-      LeaderboardController::PERIODS.keys.each do |date_range|
+      Twitter::LeaderboardQuery::PERIODS.keys.each do |date_range|
         snapshot = LeaderboardSnapshot.create!(date_range: date_range, captured_at: Time.current)
         Twitter::LeaderboardQuery.new(date_range: date_range).call.each_with_index do |entry, index|
           snapshot.leaderboard_entries.create!(

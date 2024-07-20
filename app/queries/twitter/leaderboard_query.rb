@@ -2,7 +2,13 @@
 
 module Twitter
   class LeaderboardQuery
-    include DateRangeHelper
+    PERIODS = {
+      'today' => -> { Time.current.beginning_of_day },
+      '7_days' => -> { 7.days.ago },
+      '28_days' => -> { 28.days.ago },
+      '3_months' => -> { 3.months.ago },
+      '1_year' => -> { 1.year.ago }
+    }.freeze
 
     attr_reader :date_range, :start_date
 
@@ -45,7 +51,7 @@ module Twitter
     private
 
     def start_date_for_period(date_range)
-      start_date = LeaderboardController::PERIODS.fetch(date_range, LeaderboardController::PERIODS['7_days']).call
+      start_date = PERIODS.fetch(date_range, PERIODS['7_days']).call
 
       if date_range == 'today'
         tweets_today = Tweet.where('created_at >= ?', Time.current.beginning_of_day)

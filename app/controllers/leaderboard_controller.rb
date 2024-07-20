@@ -1,12 +1,4 @@
 class LeaderboardController < ApplicationController
-  PERIODS = {
-    'today' => -> { Time.current.beginning_of_day },
-    '7_days' => -> { 7.days.ago },
-    '28_days' => -> { 28.days.ago },
-    '3_months' => -> { 3.months.ago },
-    '1_year' => -> { 1.year.ago }
-  }.freeze
-
   def tweets
     date_range = params[:date_range] || '7_days'
     start_date = start_date_for_period(date_range)
@@ -25,7 +17,7 @@ class LeaderboardController < ApplicationController
   end
 
   def start_date_for_period(date_range)
-    start_date = PERIODS.fetch(date_range, PERIODS['7_days']).call
+    start_date = Twitter::LeaderboardQuery::PERIODS.fetch(date_range, Twitter::LeaderboardQuery::PERIODS['7_days']).call
 
     if date_range == 'today'
       tweets_today = Tweet.where('created_at >= ?', Time.current.beginning_of_day)
