@@ -1,0 +1,52 @@
+<%= render Shared::HeadingComponent.new(text: 'Tweet Leaderboard', heading_type: :h1) %>
+<div class="flex justify-center items-center">
+  <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle, date_range: params[:date_range], url_helper: ->(date_range) { leaderboard_tweets_path(date_range: date_range) }) %>
+</div>
+
+<div class="flex flex-col space-y-4 p-4">
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-gray-800 text-gray-300 text-sm">
+      <thead class="bg-gray-700 text-gray-400">
+        <tr>
+          <th class="px-4 py-2 text-left">Rank</th>
+          <th class="px-4 py-2 text-left">Owner</th>
+          <th class="px-4 py-2 text-left">Text</th>
+          <th class="px-4 py-2 text-left">Impressions</th>
+          <th class="px-4 py-2 text-left">Retweets</th>
+          <th class="px-4 py-2 text-left">Likes</th>
+          <th class="px-4 py-2 text-left">Quotes</th>
+          <th class="px-4 py-2 text-left">Replies</th>
+          <th class="px-4 py-2 text-left">Bookmarks</th>
+        </tr>
+      </thead>
+      <tbody class="bg-gray-900">
+        <% @tweets.each_with_index do |tweet, index| %>
+          <tr class="border-b border-gray-700">
+            <td class="px-4 py-2">
+              <% if index == 0 %>
+                <span class="text-yellow-500">🥇 <%= index + 1 %></span>
+              <% elsif index == 1 %>
+                <span class="text-gray-500">🥈 <%= index + 1 %></span>
+              <% elsif index == 2 %>
+                <span class="text-orange-500">🥉 <%= index + 1 %></span>
+              <% else %>
+                <%= index + 1 %>
+              <% end %>
+            </td>
+            <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <img src="<%= tweet.image_data %>" alt="Avatar" class="inline-block h-8 w-8 rounded-full mr-2">
+              <%= tweet.handle %>
+            </td>
+            <td class="px-4 py-2"><%= tweet.text %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.impression_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.retweet_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.like_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.quote_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.reply_count) %></td>
+            <td class="px-4 py-2"><%= rounded_number(tweet.bookmark_count) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

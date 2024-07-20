@@ -33,10 +33,8 @@ class PublicPagesController < ApplicationController
         flash.now[:notice] = "This is a demo page showing how your public page could look. #{link} to get your own!".html_safe
         return
       end
-      if @public_page_data.user.syncable?
+      if @public_page_data.user.syncable? # Is this correct?
         # 2 Users public page active subscription
-        link = view_context.link_to('Sign up', new_user_registration_path).html_safe
-        flash.now[:notice] = " #{link} to get your own Echosight public page.".html_safe
         return
       else
       # 3 Users public page without active subscription

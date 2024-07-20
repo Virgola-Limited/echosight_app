@@ -41,10 +41,6 @@ body {
   }
 }
 
-.profile-container img {
-  align-self: start; /* Align the top of the image with the container */
-}
-
 /****************************************************
  * Shared styles for forms
  ****************************************************/

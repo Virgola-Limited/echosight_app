@@ -2,8 +2,6 @@
 
 module Users
   class RegistrationsController < Devise::RegistrationsController
-    layout 'authenticated', only: %i[edit update]
-
     def create
       super do |resource|
         if resource.persisted?
@@ -13,6 +11,10 @@ module Users
             if ad_campaign
               ahoy.track "Sign Up", user_id: resource.id, campaign_id: ad_campaign.campaign_id, utm_source: ad_campaign.utm_source
               resource.update(ad_campaign: ad_campaign)
+
+              # Send Slack notification
+              message = "New registration: Email: #{resource.email}, Campaign ID: #{ad_campaign.campaign_id}"
+              Notifications::SlackNotifier.call(message: message, channel: :general)
             end
           end
         end

@@ -11,40 +11,36 @@
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'application' %>
     <%= vite_stylesheet_tag 'application' %>
-    <!--
-      If using a TypeScript entrypoint file:
-        vite_typescript_tag 'application'
-
-      If using a .jsx or .tsx entrypoint, add the extension:
-        vite_javascript_tag 'application.jsx'
-
-      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
-    -->
-    <%= render 'layouts/dark_mode_toggle' %>
   </head>
+  <%= render 'layouts/dark_mode_toggle' %>
 
   <body class="dark:bg-gray-900">
-  <%= render 'layouts/flash_messages' %>
-
-  <div class="flex justify-between bg-white dark:bg-gray-900 sticky pt-3 pb-3 inset-x-0 top-0 left-0 z-10">
-    <div>
-      <a href="<%= root_url %>" class="flex items-center text-2xl font-semibold dark:text-white">
-        <%= vite_image_tag("images/logo.png", height: '50', width: '50', alt: "Echosight") %>
-        <span class="align-middle">&nbsp;Echosight</span>
-      </a>
-    </div>
-    <% if content_for?(:profile_container) %>
-      <%= yield :profile_container %>
-    <% else %>
-      <div class="profile-container">
-        <div class="flex items-center space-x-3">
+    <%= render 'layouts/flash_messages' %>
+    <header class="sticky top-0 z-10 bg-white dark:bg-gray-900">
+      <div class="flex justify-between pt-3 pb-3 inset-x-0">
+        <% if current_or_guest_user.guest? %>
+          <a href="<%= root_url %>" class="flex items-center text-2xl font-semibold dark:text-white">
+            <%= vite_image_tag("images/logo.png", height: '50', width: '50', alt: "Echosight") %>
+            <span class="align-middle">&nbsp;Echosight</span>
+          </a>
+          <div class="flex items-center space-x-3">
+            <%= render PrimaryActionButtonComponent.new(user: current_or_guest_user) %>
             <%= render 'shared/dark_mode_toggle_button' %>
-        </div>
+          </div>
+        <% else %>
+          <%= render Shared::NavBarComponent.new(user: current_or_guest_user) %>
+        <% end %>
       </div>
-    <% end %>
-  </div>
-    <%= yield %>
-    <%= render 'layouts/footer' %>
+    </header>
+      <div class="flex overflow-hidden bg-gray-50 dark:bg-gray-900">
+
+    <div id="main-content" class="relative w-full max-w-screen-2xl mx-auto h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+      <main>
+        <%= yield %>
+      </main>
+      <%= render 'layouts/footer' %>
+    </div>
+      </div>
     <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
     <div class="elfsight-app-cb7f3594-7426-4b38-9c68-78f4425abad9" data-elfsight-app-lazy></div>
   </body>

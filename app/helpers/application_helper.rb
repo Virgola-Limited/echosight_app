@@ -2,7 +2,7 @@ module ApplicationHelper
   include ActionView::Helpers::UrlHelper
 
   def html_description_with_links(description)
-    description.to_s.gsub(/(https?:\/\/[^\s]+)/) do |url|
+    description.to_s.gsub(%r{(https?://[^\s]+)}) do |url|
       uri = URI.parse(url)
       host_and_path = uri.host + uri.path.chomp('/')
 

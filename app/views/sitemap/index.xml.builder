@@ -4,7 +4,9 @@ xml.urlset xmlns: 'http://www.sitemaps.org/schemas/sitemap/0.9' do
   static_urls = [
     root_url,                      # Home page
     new_user_registration_url,     # Sign-up page (Devise)
-    new_user_session_url           # Sign-in page (Devise)
+    new_user_session_url ,          # Sign-in page (Devise)
+    leaderboard_url,               # Leaderboard page
+    content_items_url
   ]
 
   static_urls.each do |url|
