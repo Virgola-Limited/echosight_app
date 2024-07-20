@@ -15,9 +15,9 @@ module ApplicationHelper
     NumberRoundingService.call(input)
   end
 
-  def render_twitter_image(image_class)
-    image_tag_html = if current_or_guest_user&.image_url.present?
-                       image_tag(current_or_guest_user&.image_url, alt: "#{current_or_guest_user&.handle} Profile image", class: image_class)
+  def render_twitter_image(image_class, user)
+    image_tag_html = if user&.image_url.present?
+                       image_tag(user&.image_url, alt: "#{user&.handle} Profile image", class: image_class)
                      else
                        vite_image_tag("images/twitter-default-avatar.png", class: image_class)
                      end
