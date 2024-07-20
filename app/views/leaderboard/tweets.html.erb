@@ -1,6 +1,6 @@
 <%= render Shared::HeadingComponent.new(text: 'Tweet Leaderboard', heading_type: :h1) %>
 <div class="flex justify-center items-center">
-  <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle, date_range: params[:date_range], url_helper: ->(period) { leaderboard_tweets_path(period: period) }) %>
+  <%= render Shared::DateRangeSelector.new(page_user_handle: page_user_handle, date_range: params[:date_range], url_helper: ->(date_range) { leaderboard_tweets_path(date_range: date_range) }) %>
 </div>
 
 <div class="flex flex-col space-y-4 p-4">
