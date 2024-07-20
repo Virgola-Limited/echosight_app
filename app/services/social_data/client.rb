@@ -115,7 +115,7 @@ module SocialData
 
       # Handle the response
       unless response.is_a?(Net::HTTPSuccess)
-        raise StandardError, "HTTP request failed: #{response.code} - #{response.message}"
+        raise StandardError, "HTTP request failed: #{response.code} - #{response.message}, uri: #{uri.inspect}, params: #{params.inspect}"
       end
 
       JSON.parse(response.body)
