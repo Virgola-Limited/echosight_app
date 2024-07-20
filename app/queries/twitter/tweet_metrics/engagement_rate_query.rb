@@ -13,7 +13,7 @@ module Twitter
       end
 
       def engagement_rate_percentage_per_day
-        end_time = date_range[:end_time]
+        end_time = date_range[:end_time].yesterday  # Use yesterday as the end date
         start_time = date_range[:start_time]
 
         tweets_with_metrics = Tweet.includes(:tweet_metrics)
