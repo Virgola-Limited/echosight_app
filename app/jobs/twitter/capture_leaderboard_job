@@ -1,9 +1,0 @@
-# app/jobs/capture_leaderboard_job.rb
-class CaptureLeaderboardJob < ApplicationJob
-  include Sidekiq::Job
-  sidekiq_options queue: :low_priority
-
-  def perform
-    Twitter::LeaderboardSnapshotService.capture_snapshots
-  end
-end
