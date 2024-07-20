@@ -12,7 +12,7 @@ class LeaderboardController < ApplicationController
 
   def users
     date_range = params[:date_range] || '7_days'
-    @users = Twitter::LeaderboardQuery.new(date_range: date_range).call
+    @users = Twitter::LeaderboardQuery.new(date_range: date_range).identity_leaderboard
     render :users
   end
 

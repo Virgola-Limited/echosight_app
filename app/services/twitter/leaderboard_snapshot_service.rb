@@ -4,9 +4,11 @@ module Twitter
     def self.capture_snapshots
       Twitter::LeaderboardQuery::PERIODS.keys.each do |date_range|
         snapshot = LeaderboardSnapshot.create!(date_range: date_range, captured_at: Time.current)
-        Twitter::LeaderboardQuery.new(date_range: date_range).call.each_with_index do |entry, index|
+        query_results = Twitter::LeaderboardQuery.new(date_range: date_range).snapshot
+
+        query_results.each_with_index do |entry, index|
           snapshot.leaderboard_entries.create!(
-            identity: entry.identity,
+            identity_id: entry.identity_id,
             rank: index + 1,
             impressions: entry.total_impressions,
             retweets: entry.total_retweets,
