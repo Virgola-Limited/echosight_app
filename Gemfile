@@ -43,6 +43,7 @@ gem "aws-sdk-s3", "~> 1.14"
 gem 'devise', '~> 4.9'
 gem 'devise_invitable'
 gem 'devise-two-factor'
+gem 'email_validator'
 gem 'exception_notification'
 gem 'fastimage'
 gem 'mailkick'

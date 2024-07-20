@@ -94,6 +94,7 @@ class User < ApplicationRecord
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
+  validates :email, email: {mode: :strict, require_fqdn: true}
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[confirmation_sent_at confirmation_token confirmed_at created_at current_sign_in_at

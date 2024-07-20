@@ -208,6 +208,8 @@ GEM
       addressable (~> 2.8)
     drb (2.2.1)
     dry-cli (1.0.0)
+    email_validator (2.2.4)
+      activemodel
     erubi (1.12.0)
     et-orbi (1.2.11)
       tzinfo
@@ -611,6 +613,7 @@ DEPENDENCIES
   devise-two-factor
   devise_invitable
   dotenv
+  email_validator
   exception_notification
   factory_bot_rails
   faker

@@ -2,6 +2,14 @@ require 'rails_helper'
 
 RSpec.feature 'User Registration' do
   scenario 'User tries various registration flows' do
+    # Step 1: Attempt to sign up with an invalid email
+    visit new_user_registration_path
+    fill_in 'Email', with: 'invalidemail@gmail'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password confirmation', with: 'password'
+    click_button 'Sign up'
+    expect(page).to have_content('Email is invalid')
+
     # Step 2: Attempt to sign up with an already taken email
     user = create(:user)
     visit new_user_registration_path
