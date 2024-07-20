@@ -6,7 +6,7 @@ class SubscriptionSyncJob
 
   def perform
     Subscription.where(active: true).find_each do |subscription|
-      StripeSubscriptionChecker.check_subscription(subscription)
+      CustomStripe::SubscriptionChecker.check_subscription(subscription)
     end
   end
 end
