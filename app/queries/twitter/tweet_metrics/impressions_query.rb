@@ -17,11 +17,11 @@ module Twitter
 
       def impression_counts_per_day
         start_time = date_range[:start_time]
-        end_time = date_range[:end_time]
+        end_time = date_range[:end_time].yesterday  # Use yesterday as the end date
 
         tweets_with_metrics = Tweet.includes(:tweet_metrics)
-                                   .where(identity_id: identity.id, twitter_created_at: start_time..end_time)
-                                   .order('tweet_metrics.pulled_at ASC')
+                                  .where(identity_id: identity.id, twitter_created_at: start_time..end_time)
+                                  .order('tweet_metrics.pulled_at ASC')
 
         grouped_tweets = tweets_with_metrics.group_by { |tweet| tweet.twitter_created_at.to_date }
 
