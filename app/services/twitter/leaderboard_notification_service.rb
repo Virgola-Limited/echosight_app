@@ -1,4 +1,4 @@
-# app/services/twitter/leaderboard/notification_service.rb
+# app/services/twitter/leaderboard_notification_service.rb
 module Twitter
   class LeaderboardNotificationService
     def initialize
@@ -14,6 +14,7 @@ module Twitter
         next unless result
 
         message = send(query_config[:message_method], result)
+        puts "Debug: Generated message - #{message}" # Debugging line
         send_notification(message)
       end
     end
@@ -22,7 +23,7 @@ module Twitter
 
     def leader_change_message(result)
       new_leader_handle = result[:new_leader][:twitter_handle]
-      leaders_list = result[:leaders_list]
+      leaders_list = result[:leaders_list] || ""
       "Congratulations @#{new_leader_handle} on topping the leaderboard on Echosight!\n\nCurrent Leaderboard:\n#{leaders_list}"
     end
 

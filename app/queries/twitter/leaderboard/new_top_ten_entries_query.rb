@@ -17,6 +17,8 @@ module Twitter
           yesterday_top_ten_ids.include?(entry.identity_id)
         end
 
+        return nil if new_top_ten.empty?
+
         format_new_top_ten(new_top_ten)
       end
 
