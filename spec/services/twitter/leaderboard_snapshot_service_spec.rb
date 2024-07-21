@@ -1,5 +1,3 @@
-# spec/services/twitter/leaderboard_snapshot_service_spec.rb
-
 require 'rails_helper'
 
 RSpec.describe Twitter::LeaderboardSnapshotService do
@@ -15,16 +13,16 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
       allow(Twitter::LeaderboardQuery).to receive(:new).and_call_original
     end
 
-    it 'creates snapshots for each date range' do
+    it 'creates a snapshot if one does not already exist for today' do
       expect {
         described_class.capture_snapshots
-      }.to change(LeaderboardSnapshot, :count).by(Twitter::LeaderboardQuery::PERIODS.keys.size)
+      }.to change(LeaderboardSnapshot, :count).by(1)
     end
 
-    it 'creates leaderboard entries for each snapshot' do
+    it 'creates leaderboard entries for the snapshot' do
       expect {
         described_class.capture_snapshots
-      }.to change(LeaderboardEntry, :count).by(Twitter::LeaderboardQuery::PERIODS.keys.size * 2)
+      }.to change(LeaderboardEntry, :count).by(2) # Adjust this number based on the actual expected count
     end
 
     it 'creates leaderboard entries with correct rank' do
@@ -33,16 +31,23 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
       snapshot = LeaderboardSnapshot.first
       entries = snapshot.leaderboard_entries.order(:rank)
 
-      if entries.empty?
-        puts "No entries found. Snapshot details: #{snapshot.inspect}"
-        LeaderboardEntry.all.each { |entry| puts entry.inspect }
-      end
-
       expect(entries.first.rank).to eq(1)
       expect(entries.first.identity).to eq(identity2)
 
       expect(entries.second.rank).to eq(2)
       expect(entries.second.identity).to eq(identity1)
+    end
+
+    context 'when a snapshot already exists for today' do
+      before do
+        described_class.capture_snapshots
+      end
+
+      it 'does not create duplicate snapshots' do
+        expect {
+          described_class.capture_snapshots
+        }.not_to change(LeaderboardSnapshot, :count)
+      end
     end
   end
 end
