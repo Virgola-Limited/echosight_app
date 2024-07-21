@@ -32,7 +32,6 @@ RSpec.describe Twitter::LeaderboardQuery, type: :query do
       expect(first_result.total_replies).to eq(5)
       expect(first_result.total_bookmarks).to eq(7)
       expect(first_result.total_followers).to eq(2000)
-      puts "Debug engagement_rate: #{first_result.engagement_rate}"
       expect(first_result.engagement_rate).to be_within(0.01).of(36.0)
 
       expect(second_result.identity_id).to eq(identity1.id)
@@ -44,7 +43,6 @@ RSpec.describe Twitter::LeaderboardQuery, type: :query do
       expect(second_result.total_replies).to eq(2)
       expect(second_result.total_bookmarks).to eq(3)
       expect(second_result.total_followers).to eq(1000)
-      puts "Debug engagement_rate: #{second_result.engagement_rate}"
       expect(second_result.engagement_rate).to be_within(0.01).of(40.0)
     end
 
