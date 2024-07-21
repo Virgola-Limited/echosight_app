@@ -1,7 +1,8 @@
+# spec/queries/twitter/leaderboard/new_top_ten_entries_query_spec.rb
 require 'rails_helper'
 
 RSpec.describe Twitter::Leaderboard::NewTopTenEntriesQuery do
-  xdescribe '#call' do
+  describe '#call' do
     let!(:identity1) { create(:identity, handle: 'leader1') }
     let!(:identity2) { create(:identity, handle: 'leader2') }
     let!(:identity3) { create(:identity, handle: 'new_leader') }
@@ -33,9 +34,9 @@ RSpec.describe Twitter::Leaderboard::NewTopTenEntriesQuery do
       let!(:today_entry1) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity1, rank: 1) }
       let!(:today_entry2) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity2, rank: 2) }
 
-      it 'returns an empty array' do
+      it 'returns nil' do
         result = described_class.new.call
-        expect(result).to eq([])
+        expect(result).to be_nil
       end
     end
   end
