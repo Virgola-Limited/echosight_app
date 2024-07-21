@@ -23,6 +23,8 @@ module Twitter
             )
           end
         end
+
+        NotifyLeaderboardChangeJob.perform_async
       end
     end
   end
