@@ -71,7 +71,7 @@ if !Rails.env.development? && !Rails.env.test?
         {
           'name' => 'capture_leaderboard_job',
           'cron' => '0 1 * * *',
-          'class' => 'CaptureLeaderboardJob'
+          'class' => 'Twitter::CaptureLeaderboardJob'
         }
         # Not needed in OAuth1
         # {
