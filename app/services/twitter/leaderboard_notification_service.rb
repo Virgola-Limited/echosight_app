@@ -14,7 +14,6 @@ module Twitter
         next unless result
 
         message = send(query_config[:message_method], result)
-        puts "Debug: Generated message - #{message}" # Debugging line
         send_notification(message)
       end
     end

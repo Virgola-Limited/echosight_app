@@ -1,3 +1,4 @@
+# spec/services/twitter/leaderboard_snapshot_service_spec.rb
 require 'rails_helper'
 
 RSpec.describe Twitter::LeaderboardSnapshotService do
@@ -38,6 +39,33 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
       expect(entries.second.identity).to eq(identity1)
     end
 
+    it 'creates leaderboard entries with correct attributes' do
+      described_class.capture_snapshots
+
+      snapshot = LeaderboardSnapshot.first
+      entries = snapshot.leaderboard_entries.order(:rank)
+
+      expect(entries.first.impressions).to eq(200)
+      expect(entries.first.retweets).to eq(tweet_metric2.retweet_count)
+      expect(entries.first.likes).to eq(tweet_metric2.like_count)
+      expect(entries.first.quotes).to eq(tweet_metric2.quote_count)
+      expect(entries.first.replies).to eq(tweet_metric2.reply_count)
+      expect(entries.first.bookmarks).to eq(tweet_metric2.bookmark_count)
+
+      expect(entries.second.impressions).to eq(100)
+      expect(entries.second.retweets).to eq(tweet_metric1.retweet_count)
+      expect(entries.second.likes).to eq(tweet_metric1.like_count)
+      expect(entries.second.quotes).to eq(tweet_metric1.quote_count)
+      expect(entries.second.replies).to eq(tweet_metric1.reply_count)
+      expect(entries.second.bookmarks).to eq(tweet_metric1.bookmark_count)
+    end
+
+    it 'enqueues NotifyLeaderboardChangeJob' do
+      allow(Twitter::NotifyLeaderboardChangeJob).to receive(:perform_async)
+      described_class.capture_snapshots
+      expect(Twitter::NotifyLeaderboardChangeJob).to have_received(:perform_async)
+    end
+
     context 'when a snapshot already exists for today' do
       before do
         described_class.capture_snapshots
@@ -47,6 +75,18 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
         expect {
           described_class.capture_snapshots
         }.not_to change(LeaderboardSnapshot, :count)
+      end
+
+      it 'does not create duplicate leaderboard entries' do
+        expect {
+          described_class.capture_snapshots
+        }.not_to change(LeaderboardEntry, :count)
+      end
+
+      it 'does not enqueue NotifyLeaderboardChangeJob again' do
+        allow(Twitter::NotifyLeaderboardChangeJob).to receive(:perform_async)
+        described_class.capture_snapshots
+        expect(Twitter::NotifyLeaderboardChangeJob).not_to have_received(:perform_async)
       end
     end
   end

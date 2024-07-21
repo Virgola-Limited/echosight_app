@@ -20,9 +20,10 @@ module Twitter
             bookmarks: entry.total_bookmarks
           )
         end
+
+        NotifyLeaderboardChangeJob.perform_async
       end
 
-      NotifyLeaderboardChangeJob.perform_async
     end
   end
 end
