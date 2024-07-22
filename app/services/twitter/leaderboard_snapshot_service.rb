@@ -1,6 +1,6 @@
 module Twitter
   class LeaderboardSnapshotService
-    def self.capture_snapshots
+    def self.call
       today = Date.current
       ActiveRecord::Base.transaction do
         next if LeaderboardSnapshot.exists?(captured_at: today)

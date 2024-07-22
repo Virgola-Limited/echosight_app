@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Twitter::LeaderboardSnapshotService do
-  describe '.capture_snapshots' do
+  describe '.call' do
     let!(:identity1) { create(:identity) }
     let!(:identity2) { create(:identity) }
     let!(:tweet1) { create(:tweet, identity: identity1) }
@@ -16,18 +16,18 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
 
     it 'creates a snapshot if one does not already exist for today' do
       expect {
-        described_class.capture_snapshots
+        described_class.call
       }.to change(LeaderboardSnapshot, :count).by(1)
     end
 
     it 'creates leaderboard entries for the snapshot' do
       expect {
-        described_class.capture_snapshots
+        described_class.call
       }.to change(LeaderboardEntry, :count).by(2) # Adjust this number based on the actual expected count
     end
 
     it 'creates leaderboard entries with correct rank' do
-      described_class.capture_snapshots
+      described_class.call
 
       snapshot = LeaderboardSnapshot.first
       entries = snapshot.leaderboard_entries.order(:rank)
@@ -40,7 +40,7 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
     end
 
     it 'creates leaderboard entries with correct attributes' do
-      described_class.capture_snapshots
+      described_class.call
 
       snapshot = LeaderboardSnapshot.first
       entries = snapshot.leaderboard_entries.order(:rank)
@@ -62,30 +62,30 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
 
     it 'enqueues NotifyLeaderboardChangeJob' do
       allow(Twitter::NotifyLeaderboardChangeJob).to receive(:perform_async)
-      described_class.capture_snapshots
+      described_class.call
       expect(Twitter::NotifyLeaderboardChangeJob).to have_received(:perform_async)
     end
 
     context 'when a snapshot already exists for today' do
       before do
-        described_class.capture_snapshots
+        described_class.call
       end
 
       it 'does not create duplicate snapshots' do
         expect {
-          described_class.capture_snapshots
+          described_class.call
         }.not_to change(LeaderboardSnapshot, :count)
       end
 
       it 'does not create duplicate leaderboard entries' do
         expect {
-          described_class.capture_snapshots
+          described_class.call
         }.not_to change(LeaderboardEntry, :count)
       end
 
       it 'does not enqueue NotifyLeaderboardChangeJob again' do
         allow(Twitter::NotifyLeaderboardChangeJob).to receive(:perform_async)
-        described_class.capture_snapshots
+        described_class.call
         expect(Twitter::NotifyLeaderboardChangeJob).not_to have_received(:perform_async)
       end
     end
