@@ -107,7 +107,7 @@ class Identity < ApplicationRecord
   end
 
   def enough_data_for_public_page?
-    user_twitter_data_updates.recent_data(id).count > 40
+    user_twitter_data_updates.count > 7
   end
 
   def page_low_on_recent_data?
