@@ -19,8 +19,14 @@
       </tr>
     </thead>
     <tbody>
+      <% current_user_in_leaderboard = false %>
       <% @users.each_with_index do |user, index| %>
-        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+        <% if user.id == current_or_guest_user.id %>
+          <% current_user_in_leaderboard = true %>
+          <tr class="bg-yellow-100 dark:bg-yellow-700 border-b dark:border-gray-700">
+        <% else %>
+          <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+        <% end %>
           <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
             <% if index == 0 %>
               <span class="text-yellow-500">🥇 <%= index + 1 %></span>
@@ -44,6 +50,25 @@
           <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_bookmarks) %></td>
           <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_followers) %></td>
         </tr>
+      <% end %>
+
+      <% unless current_user_in_leaderboard || current_or_guest_user.is_a?(NullUser) %>
+        <% if @current_user_rank %>
+          <tr class="bg-yellow-100 dark:bg-yellow-700 border-b dark:border-gray-700">
+            <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"><%= @current_user_rank %></td>
+            <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <%= render_twitter_image("inline-block h-8 w-8 rounded-full mr-2", current_or_guest_user) %>
+              <%= link_to current_or_guest_user.handle, public_page_path(handle: current_or_guest_user.handle), target: '_blank' %>
+            </td>
+            <td class="px-2 py-4"><%= rounded_number(current_or_guest_user.total_impressions) %></td>
+            <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(current_or_guest_user.total_retweets) %></td>
+            <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(current_or_guest_user.total_likes) %></td>
+            <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(current_or_guest_user.total_quotes) %></td>
+            <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(current_or_guest_user.total_replies) %></td>
+            <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(current_or_guest_user.total_bookmarks) %></td>
+            <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(current_or_guest_user.total_followers) %></td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
