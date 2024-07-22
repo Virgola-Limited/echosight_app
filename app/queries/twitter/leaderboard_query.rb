@@ -76,11 +76,6 @@ module Twitter
                         .where('tweet_data.total_impressions > 0')
                         .group('identities.id, identities.handle, identities.image_data, tweet_data.total_impressions, tweet_data.total_retweets, tweet_data.total_likes, tweet_data.total_quotes, tweet_data.total_replies, tweet_data.total_bookmarks')
                         .order('tweet_data.total_impressions DESC')
-                        .limit(25)
-
-      results.each do |result|
-        Rails.logger.debug "Result: #{result.inspect}"
-      end
 
       results
     end

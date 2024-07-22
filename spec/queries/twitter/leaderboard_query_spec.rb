@@ -4,7 +4,8 @@ require 'rails_helper'
 
 RSpec.describe Twitter::LeaderboardQuery, type: :query do
   describe '#snapshot' do
-    let!(:identity1) { create(:identity, handle: 'user1') }
+    let(:user) { create(:user) }
+    let!(:identity1) { create(:identity, handle: 'user1', user: user) }
     let!(:identity2) { create(:identity, handle: 'user2') }
     let!(:tweet1) { create(:tweet, identity: identity1) }
     let!(:tweet2) { create(:tweet, identity: identity2) }
@@ -13,10 +14,8 @@ RSpec.describe Twitter::LeaderboardQuery, type: :query do
     let!(:twitter_user_metric1) { create(:twitter_user_metric, identity: identity1, followers_count: 1000) }
     let!(:twitter_user_metric2) { create(:twitter_user_metric, identity: identity2, followers_count: 2000) }
 
-    subject { described_class.new(date_range: '7_days') }
-
     it 'returns the correct snapshot data with identity attributes and aggregated metrics' do
-      results = subject.snapshot.to_a
+      results = described_class.snapshot.to_a
 
       expect(results.size).to eq(2)
 
