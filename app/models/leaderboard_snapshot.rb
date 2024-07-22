@@ -19,4 +19,15 @@ class LeaderboardSnapshot < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     %w[captured_at]
   end
+
+  def self.most_recent_snapshot
+    order(captured_at: :desc).first
+  end
+
+  def rank_for_user(identity)
+    return nil unless identity
+
+    entry = leaderboard_entries.where(identity: identity).first
+    entry&.rank
+  end
 end

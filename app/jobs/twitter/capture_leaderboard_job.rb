@@ -5,7 +5,7 @@ module Twitter
     sidekiq_options queue: :low_priority
 
     def perform
-      Twitter::LeaderboardSnapshotService.capture_snapshots
+      Twitter::LeaderboardSnapshotService.call
     end
   end
 end
