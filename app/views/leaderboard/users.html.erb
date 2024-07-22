@@ -10,12 +10,12 @@
         <th scope="col" class="px-2 py-3 text-center">Rank</th>
         <th scope="col" class="px-2 py-3">Handle</th>
         <th scope="col" class="px-2 py-3">Impressions</th>
-        <th scope="col" class="px-2 py-3">Reposts</th>
-        <th scope="col" class="px-2 py-3">Likes</th>
-        <th scope="col" class="px-2 py-3">Quotes</th>
-        <th scope="col" class="px-2 py-3">Replies</th>
-        <th scope="col" class="px-2 py-3">Bookmarks</th>
-        <th scope="col" class="px-2 py-3">Followers</th>
+        <th scope="col" class="hidden md:table-cell px-2 py-3">Reposts</th>
+        <th scope="col" class="hidden md:table-cell px-2 py-3">Likes</th>
+        <th scope="col" class="hidden md:table-cell px-2 py-3">Quotes</th>
+        <th scope="col" class="hidden md:table-cell px-2 py-3">Replies</th>
+        <th scope="col" class="hidden md:table-cell px-2 py-3">Bookmarks</th>
+        <th scope="col" class="hidden md:table-cell px-2 py-3">Followers</th>
       </tr>
     </thead>
     <tbody>
@@ -37,12 +37,12 @@
             <%= link_to user.handle, public_page_path(handle: user.handle), target: '_blank' %>
           </td>
           <td class="px-2 py-4"><%= rounded_number(user.total_impressions) %></td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_retweets) %></td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_likes) %></td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_quotes) %></td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_replies) %></td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_bookmarks) %></td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_followers) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_retweets) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_likes) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_quotes) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_replies) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_bookmarks) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_followers) %></td>
         </tr>
       <% end %>
     </tbody>
