@@ -15,7 +15,7 @@ RSpec.describe Twitter::LeaderboardQuery, type: :query do
     let!(:twitter_user_metric2) { create(:twitter_user_metric, identity: identity2, followers_count: 2000) }
 
     it 'returns the correct snapshot data with identity attributes and aggregated metrics' do
-      results = described_class.snapshot.to_a
+      results = described_class.new.snapshot.to_a
 
       expect(results.size).to eq(2)
 
@@ -49,7 +49,7 @@ RSpec.describe Twitter::LeaderboardQuery, type: :query do
       tweet_metric1.update(created_at: 8.days.ago)
       tweet_metric2.update(created_at: 8.days.ago)
 
-      results = described_class.new(date_range: '7_days').snapshot.to_a
+      results = described_class.new.snapshot.to_a
       expect(results.size).to eq(0)
     end
   end
