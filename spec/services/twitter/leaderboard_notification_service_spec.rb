@@ -21,7 +21,7 @@ RSpec.describe Twitter::LeaderboardNotificationService do
       it 'sends a notification to Slack for leaderboard change' do
         described_class.new.run
         expect(slack_notifier).to have_received(:call).with(
-          message: "Congratulations @leader2 on topping the leaderboard on Echosight!\n\nCurrent Leaderboard:\n*leader2* (rank: 1, impressions: 1000)\nleader1 (rank: 2, impressions: 900)",
+          message: "Congratulations @leader2 on topping the leaderboard on Echosight!",
           channel: :general
         )
       end
@@ -41,7 +41,7 @@ RSpec.describe Twitter::LeaderboardNotificationService do
       it 'sends a notification to Slack for new top 10 entries' do
         described_class.new.run
         expect(slack_notifier).to have_received(:call).with(
-          message: "Congratulations to the new entries in the top 10 on Echosight:\n\nnew_leader (rank: 1)",
+          message: "Congratulations to the new entries in the top 10 on Echosight: new_leader",
           channel: :general
         )
       end

@@ -23,7 +23,6 @@ module Twitter
               twitter_handle: today_leader.identity.handle,
               uid: today_leader.identity.id
             },
-            leaders_list: format_leaders_list(@today_snapshot.leaderboard_entries)
           }
         end
       end
@@ -32,16 +31,6 @@ module Twitter
 
       def find_leader(snapshot)
         snapshot.leaderboard_entries.find_by(rank: 1)
-      end
-
-      def format_leaders_list(entries)
-        entries.order(:rank).map do |entry|
-          if entry.rank == 1
-            "*#{entry.identity.handle}* (rank: #{entry.rank}, impressions: #{entry.impressions})"
-          else
-            "#{entry.identity.handle} (rank: #{entry.rank}, impressions: #{entry.impressions})"
-          end
-        end.join("\n")
       end
     end
   end
