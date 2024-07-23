@@ -20,7 +20,9 @@ ActiveAdmin.register_page "Dashboard" do
           tweet.tweet_metrics.count
         end
         column "User Email" do |tweet|
-          tweet.identity.user.email
+          if tweet.identity&.user
+            tweet.identity.user.email
+          end
         end
       end
     end
