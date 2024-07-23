@@ -11,7 +11,7 @@ class LeaderboardController < ApplicationController
   end
 
   def users
-    date_range = params[:date_range] || '7_days'
+    date_range = params[:date_range] || '7d'
     @users = Twitter::LeaderboardQuery.new(date_range: date_range).identity_leaderboard
     @current_user_rank = LeaderboardSnapshot.most_recent_snapshot&.rank_for_user(current_or_guest_user.identity)
     render :users
