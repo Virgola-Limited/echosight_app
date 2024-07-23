@@ -88,7 +88,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Aggregated TweetMetrics by Day"
     section do
-      aggregated_metrics = Twitter::TweetDataChecksQuery.aggregated_metrics_for_all_identities
+      aggregated_metrics = Twitter::LeaderboardQuery.new.aggregated_metrics_for_all_identities
 
       table_for aggregated_metrics do
         column :day
