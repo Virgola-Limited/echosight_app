@@ -70,3 +70,5 @@ class FetchImages
     end
   end
 end
+
+FetchImages.call
