@@ -2,11 +2,10 @@ class PostSender
   MAX_TWITTER_LENGTH = 280
   MAX_THREAD_LENGTH = 500  # Example length, adjust based on platform requirements
 
-  def initialize(message:, post_type:, channel_type:, mentioned_users: [])
+  def initialize(message:, post_type:, channel_type:)
     @message = message
     @post_type = post_type
     @channel_type = channel_type
-    @mentioned_users = mentioned_users
     @failure_reasons = []
   end
 
@@ -28,7 +27,6 @@ class PostSender
       message: @message,
       post_type: @post_type,
       channel_type: @channel_type,
-      mentioned_users: @mentioned_users,
       tracking_id: SecureRandom.uuid
     )
 
@@ -57,10 +55,14 @@ class PostSender
     when 'once_a_week'
       SentPost.where('created_at >= ?', 1.week.ago).exists?(message: @message, post_type: 'once_a_week', channel_type: @channel_type)
     when 'mention'
-      SentPost.where('created_at >= ?', 1.week.ago).where("mentioned_users @> ?", @mentioned_users.to_json).exists?
+      SentPost.where('created_at >= ?', 1.week.ago).where("mentioned_users @> ?", extract_mentioned_users.to_json).exists?
     else
       false
     end
+  end
+
+  def extract_mentioned_users
+    @message.scan(/@\w+/).map { |mention| mention.delete('@') }
   end
 
   def notify_failure
