@@ -88,13 +88,14 @@ ActiveAdmin.register_page "Dashboard" do
 
     h2 "Aggregated TweetMetrics by Day"
     section do
-      aggregated_metrics = Twitter::TweetDataChecksQuery.aggregated_metrics
+      aggregated_metrics = Twitter::LeaderboardQuery.new.aggregated_metrics_for_all_identities
 
       table_for aggregated_metrics do
         column :day
         column "User" do |metric|
-          user = User.find(metric.user_id)
-          link_to user.email, admin_user_path(user)
+          if metric.user
+            link_to metric.user.email, admin_user_path(metric.user)
+          end
         end
         column :count
       end

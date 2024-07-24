@@ -20,8 +20,9 @@
     </thead>
     <tbody>
       <% current_user_in_leaderboard = false %>
-      <% @users.each_with_index do |user, index| %>
-        <% if user.id == current_or_guest_user.id %>
+      <% @leaderboard_data.each_with_index do |data, index| %>
+      <% Rails.logger.debug('paul' + data[:identity_id].inspect) %>
+        <% if data[:identity_id] == current_or_guest_user.id %>
           <% current_user_in_leaderboard = true %>
           <tr class="bg-yellow-100 dark:bg-yellow-700 border-b dark:border-gray-700">
         <% else %>
@@ -39,16 +40,16 @@
             <% end %>
           </td>
           <td class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            <%= render_twitter_image("inline-block h-8 w-8 rounded-full mr-2", user) %>
-            <%= link_to user.handle, public_page_path(handle: user.handle), target: '_blank' %>
+            <%= render_twitter_image("inline-block h-8 w-8 rounded-full mr-2", data) %>
+            <%= link_to data[:handle], public_page_path(handle: data[:handle]), target: '_blank' %>
           </td>
-          <td class="px-2 py-4"><%= rounded_number(user.total_impressions) %></td>
-          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_retweets) %></td>
-          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_likes) %></td>
-          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_quotes) %></td>
-          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_replies) %></td>
-          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_bookmarks) %></td>
-          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(user.total_followers) %></td>
+          <td class="px-2 py-4"><%= rounded_number(data[:total_impressions]) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(data[:total_retweets]) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(data[:total_likes]) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(data[:total_quotes]) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(data[:total_replies]) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(data[:total_bookmarks]) %></td>
+          <td class="hidden md:table-cell px-2 py-4"><%= rounded_number(data[:total_followers]) %></td>
         </tr>
       <% end %>
       <% unless current_user_in_leaderboard || !current_or_guest_user.guest? %>

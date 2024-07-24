@@ -1,18 +1,13 @@
-# spec/services/twitter/leaderboard_snapshot_service_spec.rb
 require 'rails_helper'
 
 RSpec.describe Twitter::LeaderboardSnapshotService do
   describe '.call' do
     let!(:identity1) { create(:identity) }
     let!(:identity2) { create(:identity) }
-    let!(:tweet1) { create(:tweet, identity: identity1) }
-    let!(:tweet2) { create(:tweet, identity: identity2) }
-    let!(:tweet_metric1) { create(:tweet_metric, tweet: tweet1, impression_count: 100) }
-    let!(:tweet_metric2) { create(:tweet_metric, tweet: tweet2, impression_count: 200) }
-
-    before do
-      allow(Twitter::LeaderboardQuery).to receive(:new).and_call_original
-    end
+    let!(:tweet1) { create(:tweet, identity: identity1, twitter_created_at: 1.hour.ago) }
+    let!(:tweet2) { create(:tweet, identity: identity2, twitter_created_at: 2.hours.ago) }
+    let!(:tweet_metric1) { create(:tweet_metric, tweet: tweet1, impression_count: 100, retweet_count: 5, like_count: 10, quote_count: 1, reply_count: 2, bookmark_count: 3, created_at: 1.hour.ago) }
+    let!(:tweet_metric2) { create(:tweet_metric, tweet: tweet2, impression_count: 200, retweet_count: 10, like_count: 20, quote_count: 2, reply_count: 4, bookmark_count: 6, created_at: 2.hours.ago) }
 
     it 'creates a snapshot if one does not already exist for today' do
       expect {
@@ -23,7 +18,7 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
     it 'creates leaderboard entries for the snapshot' do
       expect {
         described_class.call
-      }.to change(LeaderboardEntry, :count).by(2) # Adjust this number based on the actual expected count
+      }.to change(LeaderboardEntry, :count).by(2)
     end
 
     it 'creates leaderboard entries with correct rank' do
@@ -33,10 +28,10 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
       entries = snapshot.leaderboard_entries.order(:rank)
 
       expect(entries.first.rank).to eq(1)
-      expect(entries.first.identity).to eq(identity2)
+      expect(entries.first.identity_id).to eq(identity2.id)
 
       expect(entries.second.rank).to eq(2)
-      expect(entries.second.identity).to eq(identity1)
+      expect(entries.second.identity_id).to eq(identity1.id)
     end
 
     it 'creates leaderboard entries with correct attributes' do
@@ -46,18 +41,18 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
       entries = snapshot.leaderboard_entries.order(:rank)
 
       expect(entries.first.impressions).to eq(200)
-      expect(entries.first.retweets).to eq(tweet_metric2.retweet_count)
-      expect(entries.first.likes).to eq(tweet_metric2.like_count)
-      expect(entries.first.quotes).to eq(tweet_metric2.quote_count)
-      expect(entries.first.replies).to eq(tweet_metric2.reply_count)
-      expect(entries.first.bookmarks).to eq(tweet_metric2.bookmark_count)
+      expect(entries.first.retweets).to eq(10)
+      expect(entries.first.likes).to eq(20)
+      expect(entries.first.quotes).to eq(2)
+      expect(entries.first.replies).to eq(4)
+      expect(entries.first.bookmarks).to eq(6)
 
       expect(entries.second.impressions).to eq(100)
-      expect(entries.second.retweets).to eq(tweet_metric1.retweet_count)
-      expect(entries.second.likes).to eq(tweet_metric1.like_count)
-      expect(entries.second.quotes).to eq(tweet_metric1.quote_count)
-      expect(entries.second.replies).to eq(tweet_metric1.reply_count)
-      expect(entries.second.bookmarks).to eq(tweet_metric1.bookmark_count)
+      expect(entries.second.retweets).to eq(5)
+      expect(entries.second.likes).to eq(10)
+      expect(entries.second.quotes).to eq(1)
+      expect(entries.second.replies).to eq(2)
+      expect(entries.second.bookmarks).to eq(3)
     end
 
     it 'enqueues NotifyLeaderboardChangeJob' do

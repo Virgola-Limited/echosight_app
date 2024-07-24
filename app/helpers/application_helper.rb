@@ -16,13 +16,20 @@ module ApplicationHelper
   end
 
   def render_twitter_image(image_class, user)
-    image_tag_html = if user&.image_url.present?
-                       image_tag(user&.image_url, alt: "#{user&.handle} Profile image", class: image_class)
+    # hacky. Fix later
+    if user.is_a?(Hash)
+      image_data = JSON.parse(user[:image_data])
+      image_url = "https://your-image-service-url/#{image_data['id']}"
+    else
+      image_url = user&.image_url
+    end
+
+    image_tag_html = if image_url.present?
+                       image_tag(image_url, alt: "#{user[:handle]} Profile image", class: image_class)
                      else
                        vite_image_tag("images/twitter-default-avatar.png", class: image_class)
                      end
 
     image_tag_html
   end
-
 end
