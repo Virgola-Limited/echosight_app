@@ -21,7 +21,8 @@
     <tbody>
       <% current_user_in_leaderboard = false %>
       <% @leaderboard_data.each_with_index do |data, index| %>
-        <% if data[:id] == current_or_guest_user.id %>
+      <% Rails.logger.debug('paul' + data[:identity_id].inspect) %>
+        <% if data[:identity_id] == current_or_guest_user.id %>
           <% current_user_in_leaderboard = true %>
           <tr class="bg-yellow-100 dark:bg-yellow-700 border-b dark:border-gray-700">
         <% else %>
