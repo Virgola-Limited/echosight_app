@@ -93,8 +93,9 @@ ActiveAdmin.register_page "Dashboard" do
       table_for aggregated_metrics do
         column :day
         column "User" do |metric|
-          user = User.find(metric.user_id)
-          link_to user.email, admin_user_path(user)
+          if metric.user
+            link_to metric.user.email, admin_user_path(metric.user)
+          end
         end
         column :count
       end
