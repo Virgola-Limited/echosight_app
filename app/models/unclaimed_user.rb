@@ -31,6 +31,20 @@ class UnclaimedUser
   end
 
   def image_url
-    nil
+    if identity.image_data.present?
+      image_data = identity.image_data.is_a?(String) ? JSON.parse(identity.image_data) : identity.image_data
+      generate_shrine_image_url(image_data)
+    else
+      nil
+    end
+  end
+
+  private
+
+  def generate_shrine_image_url(image_data)
+    storage_key = image_data['storage']
+    file_id = image_data['id']
+
+    Shrine.storages[storage_key.to_sym].url(file_id)
   end
 end

@@ -47,21 +47,11 @@ class PublicPageComponent < ApplicationComponent
   end
 
   def render_twitter_image(image_class)
-    image_tag_html = if page_user&.image_url.present?
-                       helpers.image_tag(page_user&.image_url, alt: "#{page_user&.handle} Profile image", class: image_class)
-                     else
-                       helpers.vite_image_tag("images/twitter-default-avatar.png", class: image_class)
-                     end
-
-    if twitter_link
-      helpers.link_to(twitter_link, target: "_blank") { image_tag_html }.html_safe
-    else
-      image_tag_html
-    end
+    helpers.render_twitter_image(image_class, page_user || public_page_data)
   end
 
   def hide_profile_banner?
-    page_user.hide_profile_banner?
+    page_user&.hide_profile_banner?
   end
 
   def show_date_range_selector?
