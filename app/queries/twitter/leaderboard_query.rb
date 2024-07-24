@@ -69,17 +69,16 @@ module Twitter
                                     .sort_by { |data| -data[:total_impressions] }
 
       if limit
-        sorted_data.first(limit).each_with_index do |entry, index|
-          entry[:rank] = index + 1
-        end
-      else
-        sorted_data.each_with_index do |entry, index|
-          entry[:rank] = index + 1
-        end
+        sorted_data = sorted_data.first(limit)
+      end
+
+      sorted_data.each_with_index do |entry, index|
+        entry[:rank] = index + 1
       end
 
       sorted_data
     end
+
 
     def calculate_engagement_rate(metrics)
       total_interactions = metrics.total_retweets + metrics.total_likes + metrics.total_quotes + metrics.total_replies + metrics.total_bookmarks
