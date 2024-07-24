@@ -55,7 +55,7 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
       expect(entries.second.bookmarks).to eq(3)
     end
 
-    it 'enqueues NotifyLeaderboardChangeJob' do
+    it 'enqueues NotifyLeaderboardChangeJob if changes are made' do
       allow(Twitter::NotifyLeaderboardChangeJob).to receive(:perform_async)
       described_class.call
       expect(Twitter::NotifyLeaderboardChangeJob).to have_received(:perform_async)
@@ -72,16 +72,40 @@ RSpec.describe Twitter::LeaderboardSnapshotService do
         }.not_to change(LeaderboardSnapshot, :count)
       end
 
-      it 'does not create duplicate leaderboard entries' do
-        expect {
-          described_class.call
-        }.not_to change(LeaderboardEntry, :count)
+      it 'updates the existing leaderboard entries instead of creating new ones' do
+        leaderboard_entry = LeaderboardEntry.find_by(identity_id: identity1.id)
+        leaderboard_entry.update!(impressions: 50)
+
+        described_class.call
+        leaderboard_entry.reload
+
+        expect(leaderboard_entry.impressions).to eq(100)
       end
 
-      it 'does not enqueue NotifyLeaderboardChangeJob again' do
+      it 'does not enqueue NotifyLeaderboardChangeJob again if no changes are made' do
         allow(Twitter::NotifyLeaderboardChangeJob).to receive(:perform_async)
         described_class.call
         expect(Twitter::NotifyLeaderboardChangeJob).not_to have_received(:perform_async)
+      end
+    end
+
+    context 'when a snapshot exists for the previous day' do
+      before do
+        travel_to 1.day.ago do
+          described_class.call
+        end
+      end
+
+      it 'creates a new snapshot for today' do
+        expect {
+          described_class.call
+        }.to change(LeaderboardSnapshot, :count).by(1)
+      end
+
+      it 'creates new leaderboard entries for today' do
+        expect {
+          described_class.call
+        }.to change(LeaderboardEntry, :count).by(2)
       end
     end
   end

@@ -79,7 +79,6 @@ module Twitter
       sorted_data
     end
 
-
     def calculate_engagement_rate(metrics)
       total_interactions = metrics.total_retweets + metrics.total_likes + metrics.total_quotes + metrics.total_replies + metrics.total_bookmarks
       (total_interactions.to_f / metrics.total_impressions) * 100
@@ -92,7 +91,7 @@ module Twitter
     def self.start_date_for_period(date_range)
       case date_range
       when '24h'
-        1.day.ago
+        { start_time: 24.hours.ago, end_time: Time.current }
       else
         # Handle other date ranges
       end
