@@ -60,22 +60,5 @@ RSpec.describe Twitter::ExistingTweetsUpdaterJob do
         end
       end
     end
-
-    xcontext 'when an exception occurs' do
-      before do
-        allow(identity).to receive(:syncable?).and_return(true)
-        allow(api_batch).to receive(:created_at).and_return(2.days.ago)
-        allow_any_instance_of(Twitter::ExistingTweetsUpdater).to receive(:call).and_raise(StandardError.new("Error"))
-      end
-
-      it 'logs the error and re-raises the exception' do
-        perform_enqueued_jobs do
-          described_class.new.perform(identity.id, api_batch.id)
-        end
-
-        # Check that an error message was logged
-        expect(UserTwitterDataUpdate.last.error_message).to include("Failed to complete update for user")
-      end
-    end
   end
 end

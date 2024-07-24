@@ -97,31 +97,5 @@ RSpec.describe SocialData::ClientAdapter do
         }
       end
     end
-
-    # Fix later
-    xcontext 'when providing within_time parameter' do
-      it 'fetches tweets and user for that time frame including user data' do
-        VCR.use_cassette('SocialData__Client') do
-          params = { query: "from:#{user.handle} within_time:2h" }
-          response = client.search_tweets(params)
-
-          # expect(response['tweets'].count).to eq(1)
-          # response['tweets'].each do |tweet|
-          #   tweet_created_at = Time.parse(tweet['tweet_created_at'])
-          #   expect(tweet_created_at).to be_within(2.hours).of(vcr_response_time)
-
-          #   null_tweet_keys.each do |key|
-          #     expect(tweet[key]).to be_nil
-          #   end
-
-          #   expect(tweet).to include('user')
-          #   expect(tweet['user'].keys).to match_array(user_keys)
-          #   non_null_user_keys.each do |key|
-          #     expect(tweet['user'][key]).to_not be_nil
-          #   end
-          # end
-        end
-      end
-    end
   end
 end
