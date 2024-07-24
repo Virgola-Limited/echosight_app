@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_21_012512) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_24_042524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -203,6 +203,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_21_012512) do
     t.bigint "user_id", null: false
     t.index ["tracking_id"], name: "index_sent_emails_on_tracking_id", unique: true
     t.index ["user_id"], name: "index_sent_emails_on_user_id"
+  end
+
+  create_table "sent_posts", force: :cascade do |t|
+    t.text "message", null: false
+    t.string "post_type", null: false
+    t.boolean "sent", default: false
+    t.datetime "sent_at"
+    t.jsonb "mentioned_users", default: []
+    t.string "tracking_id", null: false
+    t.integer "channel_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tracking_id"], name: "index_sent_posts_on_tracking_id", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
