@@ -32,12 +32,12 @@ FactoryBot.define do
     uid { Faker::Alphanumeric.alpha(number: 19) }
     association :user
     provider { 'twitter' }
-    handle { Faker::Internet.username }
+    handle { Faker::Internet.unique.username }
     description { 'Twitter user bio' }
 
     trait :random_credentials do
       uid { SecureRandom.uuid }
-      handle { Faker::Internet.username }
+      handle { Faker::Internet.unique.username }
     end
 
     trait :with_oauth_credential do
