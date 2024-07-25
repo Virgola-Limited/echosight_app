@@ -29,7 +29,7 @@ RSpec.describe Twitter::LeaderboardNotificationService do
         allow(new_top_ten_entries_query).to receive(:call).and_return(nil)
       end
 
-      it 'sends a notification for leaderboard change' do
+      it 'sends a notification to Slack for leaderboard change' do
         described_class.new.run
         expect(post_sender).to have_received(:new).with(
           message: "Congratulations @leader2 on topping the leaderboard on Echosight!",
@@ -56,7 +56,7 @@ RSpec.describe Twitter::LeaderboardNotificationService do
         allow(new_top_ten_entries_query).to receive(:call).and_return([{ twitter_handle: 'new_leader' }])
       end
 
-      it 'sends a notification for new top 10 entries' do
+      it 'sends a notification to Slack for new top 10 entries' do
         described_class.new.run
         expect(post_sender).to have_received(:new).with(
           message: "Congratulations to the new entries in the top 10 on Echosight: new_leader",
@@ -82,9 +82,30 @@ RSpec.describe Twitter::LeaderboardNotificationService do
         allow(new_top_ten_entries_query).to receive(:call).and_return(nil)
       end
 
-      it 'does not send a notification' do
+      it 'does not send a notification to Slack' do
         described_class.new.run
         expect(post_sender_instance).not_to have_received(:call)
+      end
+    end
+
+    context 'when trying to send the same message twice in one day' do
+      let!(:identity1) { create(:identity, handle: 'leader1') }
+      let!(:identity2) { create(:identity, handle: 'leader2') }
+      let!(:today_snapshot) { create(:leaderboard_snapshot, captured_at: Date.current) }
+      let!(:today_entry1) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity1, rank: 1, impressions: 1000) }
+      let!(:today_entry2) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity2, rank: 2, impressions: 900) }
+
+      before do
+        create(:sent_post, message: "Congratulations @leader1 on topping the leaderboard on Echosight!", post_type: 'once_a_day', channel_type: 'slack', sent_at: 1.hour.ago)
+        allow(leader_change_query).to receive(:call).and_return({ new_leader: { twitter_handle: 'leader1' } })
+        allow(new_top_ten_entries_query).to receive(:call).and_return(nil)
+
+        described_class.new.run
+      end
+
+      it 'does not send the same message twice in one day' do
+        expect(post_sender).to have_received(:new).once
+        expect(post_sender_instance).to have_received(:call).once
       end
     end
   end

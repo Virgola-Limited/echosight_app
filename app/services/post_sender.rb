@@ -21,7 +21,7 @@ class PostSender
     end
 
     unless can_send_post?
-      @failure_reasons << "Post cannot be sent more than once a week."
+      @failure_reasons << "Post cannot be sent more than once a #{@post_type.gsub('_', ' ')}."
     end
 
     if @failure_reasons.any?
@@ -59,21 +59,27 @@ class PostSender
   def duplicate_message?
     case @post_type
     when 'one_time'
-      SentPost.exists?(message: @message)
+      SentPost.exists?(message: @message, post_type: 'one_time', channel_type: @channel_type)
     when 'once_a_day'
-      SentPost.where('sent_at >= ?', 1.day.ago).exists?(message: @message, post_type: @post_type, channel_type: @channel_type)
+      SentPost.where('sent_at >= ?', 1.day.ago).exists?(message: @message, post_type: 'once_a_day', channel_type: @channel_type)
     when 'once_a_week'
-      SentPost.where('sent_at >= ?', 1.week.ago).exists?(message: @message, post_type: @post_type, channel_type: @channel_type)
+      SentPost.where('sent_at >= ?', 1.week.ago).exists?(message: @message, post_type: 'once_a_week', channel_type: @channel_type)
     else
       false
     end
   end
 
   def can_send_post?
-    return true unless @post_type == 'once_a_week'
-
-    last_sent_at = SentPost.where(post_type: 'once_a_week', channel_type: @channel_type).order(sent_at: :desc).limit(1).pluck(:sent_at).first
-    last_sent_at.nil? || last_sent_at < 1.week.ago
+    case @post_type
+    when 'once_a_day'
+      last_sent_at = SentPost.where(message: @message, post_type: 'once_a_day', channel_type: @channel_type).order(sent_at: :desc).limit(1).pluck(:sent_at).first
+      last_sent_at.nil? || last_sent_at < 1.day.ago
+    when 'once_a_week'
+      last_sent_at = SentPost.where(message: @message, post_type: 'once_a_week', channel_type: @channel_type).order(sent_at: :desc).limit(1).pluck(:sent_at).first
+      last_sent_at.nil? || last_sent_at < 1.week.ago
+    else
+      true
+    end
   end
 
   def extract_mentioned_users
