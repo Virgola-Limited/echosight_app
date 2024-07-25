@@ -10,7 +10,7 @@ module Twitter
     attr_reader :api_batch, :identity
 
     def perform(identity_id, api_batch_id)
-      @identity = Identity.find(identity_id)
+      @identity = Identity.twitter.where(id: identity_id).first
       @api_batch = ApiBatch.find(api_batch_id)
       fetch_and_log_twitter_data
     end
