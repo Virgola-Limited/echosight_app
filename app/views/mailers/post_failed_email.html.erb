@@ -1,0 +1,14 @@
+<p>Hello,</p>
+
+<p>A post failed to send due to the following reasons:</p>
+
+<ul>
+  <% @reasons.each do |reason| %>
+    <li><%= reason %></li>
+  <% end %>
+</ul>
+
+<p>Message: <%= @message %></p>
+
+<p>Regards,<br>
+Echosight Team</p>

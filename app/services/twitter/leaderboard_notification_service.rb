@@ -28,12 +28,12 @@ module Twitter
     def new_top_ten_entries_message(result)
       new_entries = result.map do |entry|
         "#{entry[:twitter_handle]}"
-      end.join(",")
+      end.join(", ")
       "Congratulations to the new entries in the top 10 on Echosight: #{new_entries}"
     end
 
     def send_notification(message)
-      Notifications::SlackNotifier.call(message: message, channel: :general)
+      PostSender.new(message: message, post_type: 'once_a_week', channel_type: 'slack').call
     end
   end
 end
