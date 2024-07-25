@@ -19,7 +19,7 @@ class AdCampaign < ApplicationRecord
   has_many :users
 
   validates :name, presence: true
-  validates :utm_source, presence: true, inclusion: { in: %w[twitter threads instagram] }
+  validates :utm_source, presence: true, inclusion: { in: %w[twitter threads instagram google] }
 
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "id", "name", "utm_source"]
