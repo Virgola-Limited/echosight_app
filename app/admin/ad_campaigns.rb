@@ -20,7 +20,7 @@ ActiveAdmin.register AdCampaign do
   form do |f|
     f.inputs do
       f.input :name
-      f.input :utm_source, as: :select, collection: %w[twitter threads instagram]
+      f.input :utm_source, as: :select, collection: AdCampaign.validators_on(:utm_source).find { |v| v.is_a?(ActiveModel::Validations::InclusionValidator) }.options[:in]
     end
     f.actions
   end
