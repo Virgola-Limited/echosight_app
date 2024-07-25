@@ -59,13 +59,11 @@ class PostSender
   def duplicate_message?
     case @post_type
     when 'one_time'
-      SentPost.exists?(message: @message, post_type: 'one_time', channel_type: @channel_type)
+      SentPost.exists?(message: @message)
     when 'once_a_day'
-      SentPost.where('sent_at >= ?', 1.day.ago).exists?(message: @message, post_type: 'once_a_day', channel_type: @channel_type)
+      SentPost.where('sent_at >= ?', 1.day.ago).exists?(message: @message, post_type: @post_type, channel_type: @channel_type)
     when 'once_a_week'
-      SentPost.where('sent_at >= ?', 1.week.ago).exists?(message: @message, post_type: 'once_a_week', channel_type: @channel_type)
-    when 'mention'
-      SentPost.where('sent_at >= ?', 1.week.ago).where("mentioned_users @> ?", extract_mentioned_users.to_json).exists?
+      SentPost.where('sent_at >= ?', 1.week.ago).exists?(message: @message, post_type: @post_type, channel_type: @channel_type)
     else
       false
     end

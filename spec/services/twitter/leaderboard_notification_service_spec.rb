@@ -1,12 +1,18 @@
-# spec/services/twitter/leaderboard_notification_service_spec.rb
 require 'rails_helper'
 
 RSpec.describe Twitter::LeaderboardNotificationService do
-  let(:slack_notifier) { class_double("Notifications::SlackNotifier").as_stubbed_const }
+  let(:post_sender) { class_double("PostSender").as_stubbed_const }
+  let(:leader_change_query) { instance_double("Twitter::Leaderboard::LeaderChangeQuery") }
+  let(:new_top_ten_entries_query) { instance_double("Twitter::Leaderboard::NewTopTenEntriesQuery") }
 
   before do
-    allow(slack_notifier).to receive(:call)
+    allow(post_sender).to receive(:new).and_return(post_sender_instance)
+    allow(post_sender_instance).to receive(:call)
+    allow(Twitter::Leaderboard::LeaderChangeQuery).to receive(:new).and_return(leader_change_query)
+    allow(Twitter::Leaderboard::NewTopTenEntriesQuery).to receive(:new).and_return(new_top_ten_entries_query)
   end
+
+  let(:post_sender_instance) { instance_double("PostSender") }
 
   describe '#run' do
     context 'when there is a leaderboard change' do
@@ -18,12 +24,19 @@ RSpec.describe Twitter::LeaderboardNotificationService do
       let!(:today_entry1) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity2, rank: 1, impressions: 1000) }
       let!(:today_entry2) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity1, rank: 2, impressions: 900) }
 
-      it 'sends a notification to Slack for leaderboard change' do
+      before do
+        allow(leader_change_query).to receive(:call).and_return({ new_leader: { twitter_handle: 'leader2' } })
+        allow(new_top_ten_entries_query).to receive(:call).and_return(nil)
+      end
+
+      it 'sends a notification for leaderboard change' do
         described_class.new.run
-        expect(slack_notifier).to have_received(:call).with(
+        expect(post_sender).to have_received(:new).with(
           message: "Congratulations @leader2 on topping the leaderboard on Echosight!",
-          channel: :general
+          post_type: 'once_a_week',
+          channel_type: 'slack'
         )
+        expect(post_sender_instance).to have_received(:call)
       end
     end
 
@@ -38,12 +51,19 @@ RSpec.describe Twitter::LeaderboardNotificationService do
       let!(:today_entry1) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity1, rank: 2, impressions: 900) }
       let!(:today_entry2) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity3, rank: 1, impressions: 1100) }
 
-      it 'sends a notification to Slack for new top 10 entries' do
+      before do
+        allow(leader_change_query).to receive(:call).and_return(nil)
+        allow(new_top_ten_entries_query).to receive(:call).and_return([{ twitter_handle: 'new_leader' }])
+      end
+
+      it 'sends a notification for new top 10 entries' do
         described_class.new.run
-        expect(slack_notifier).to have_received(:call).with(
+        expect(post_sender).to have_received(:new).with(
           message: "Congratulations to the new entries in the top 10 on Echosight: new_leader",
-          channel: :general
+          post_type: 'once_a_week',
+          channel_type: 'slack'
         )
+        expect(post_sender_instance).to have_received(:call)
       end
     end
 
@@ -57,9 +77,14 @@ RSpec.describe Twitter::LeaderboardNotificationService do
       let!(:today_entry1) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity1, rank: 1, impressions: 1000) }
       let!(:today_entry2) { create(:leaderboard_entry, leaderboard_snapshot: today_snapshot, identity: identity2, rank: 2, impressions: 900) }
 
-      it 'does not send a notification to Slack' do
+      before do
+        allow(leader_change_query).to receive(:call).and_return(nil)
+        allow(new_top_ten_entries_query).to receive(:call).and_return(nil)
+      end
+
+      it 'does not send a notification' do
         described_class.new.run
-        expect(slack_notifier).not_to have_received(:call)
+        expect(post_sender_instance).not_to have_received(:call)
       end
     end
   end
