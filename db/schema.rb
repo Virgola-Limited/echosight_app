@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_24_042524) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_26_004617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -271,6 +271,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_042524) do
     t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
   end
 
+  create_table "twitter_update_attempts", force: :cascade do |t|
+    t.bigint "user_twitter_data_update_id"
+    t.string "status"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_twitter_data_update_id"], name: "index_twitter_update_attempts_on_user_twitter_data_update_id"
+  end
+
   create_table "twitter_user_metrics", force: :cascade do |t|
     t.integer "followers_count"
     t.bigint "identity_id", null: false
@@ -300,6 +309,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_042524) do
     t.datetime "updated_at", null: false
     t.string "sync_class"
     t.bigint "api_batch_id"
+    t.integer "retry_count", default: 0
     t.index ["api_batch_id"], name: "index_user_twitter_data_updates_on_api_batch_id"
     t.index ["identity_id"], name: "index_user_twitter_data_updates_on_identity_id"
     t.index ["started_at"], name: "index_user_twitter_data_updates_on_started_at"
@@ -375,6 +385,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_24_042524) do
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
+  add_foreign_key "twitter_update_attempts", "user_twitter_data_updates"
   add_foreign_key "twitter_user_metrics", "identities"
   add_foreign_key "user_settings", "users"
   add_foreign_key "user_twitter_data_updates", "api_batches"

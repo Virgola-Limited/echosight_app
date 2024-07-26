@@ -15,6 +15,7 @@ ActiveAdmin.register UserTwitterDataUpdate do
       end
     end
     column :started_at
+    column :retry_count
     column :completed_at
     column "Error Message", :error_message do |update|
       span truncate(update.error_message, length: 300), title: update.error_message

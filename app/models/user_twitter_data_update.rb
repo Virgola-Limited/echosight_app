@@ -7,6 +7,7 @@
 #  id            :bigint           not null, primary key
 #  completed_at  :datetime
 #  error_message :text
+#  retry_count   :integer          default(0)
 #  started_at    :datetime         not null
 #  sync_class    :string
 #  created_at    :datetime         not null
@@ -28,6 +29,7 @@
 class UserTwitterDataUpdate < ApplicationRecord
   belongs_to :identity
   has_one :api_batch
+  has_many :twitter_update_attempts, dependent: :destroy
 
   scope :recent_data, ->(identity_id) { where(identity_id: identity_id).where('created_at > ?', 2.days.ago).where.not(completed_at: nil) }
 
@@ -36,6 +38,6 @@ class UserTwitterDataUpdate < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["completed_at", "created_at", "error_message", "id", "id_value", "identity_id", "started_at", "updated_at"]
+    ["completed_at", "created_at", "error_message", "id", "id_value", "identity_id", "started_at", "updated_at", "retry_count"]
   end
 end

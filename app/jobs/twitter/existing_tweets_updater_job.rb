@@ -7,11 +7,14 @@ module Twitter
     include Sidekiq::Job
     sidekiq_options unique: :until_executed, unique_args: ->(args) { args }
 
-    attr_reader :api_batch, :identity
+    attr_reader :api_batch, :identity, :user_twitter_data_update
 
     def perform(identity_id, api_batch_id)
       @identity = Identity.find(identity_id)
       @api_batch = ApiBatch.find(api_batch_id)
+      @user_twitter_data_update = UserTwitterDataUpdate.find_or_initialize_by(identity_id: identity.id, api_batch_id: api_batch.id, completed_at: nil)
+      @user_twitter_data_update.update!(started_at: Time.current, retry_count: @user_twitter_data_update.retry_count + 1)
+
       fetch_and_log_twitter_data
     end
 
@@ -19,20 +22,15 @@ module Twitter
 
     def fetch_and_log_twitter_data
       if identity.syncable?
-        user_twitter_data_update = UserTwitterDataUpdate.create!(
-          identity_id: identity.id,
-          started_at: Time.current,
-          sync_class: Twitter::ExistingTweetsUpdater,
-          api_batch_id: api_batch.id
-        )
-
         begin
           update_user
         rescue StandardError => e
+          log_attempt("failed", error_message(e))
           user_twitter_data_update.update!(error_message: error_message(e))
           raise e
         else
-          user_twitter_data_update.update!(completed_at: Time.current)
+          log_attempt("success", nil)
+          user_twitter_data_update.update!(completed_at: Time.current, error_message: nil)
         end
         if user_tweets_updatable?
           Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, identity.id, api_batch.id)
@@ -49,18 +47,19 @@ module Twitter
     end
 
     def error_message(e)
-      backtrace = e.backtrace.join("\n")  # Join the full backtrace into a single string
-      # Optionally, you could select just the first few lines to avoid overly verbose output:
-      # backtrace = e.backtrace.take(5).join("\n")
-
+      backtrace = e.backtrace.join("\n")
       user = identity&.user
-      if user
-        credentials = "user #{user.id} #{user.email}"
-      else
-        credentials = "identity #{identity.id} #{identity.handle}"
-      end
-
+      credentials = user ? "user #{user.id} #{user.email}" : "identity #{identity.id} #{identity.handle}"
       "ExistingTweetsUpdaterJob: Failed to complete update for #{credentials}: #{e.message} ApiBatch: #{api_batch.id}\nBacktrace:\n#{backtrace}"
+    end
+
+    def log_attempt(status, error_message)
+      user_twitter_data_update.twitter_update_attempts.create!(
+        status: status,
+        error_message: error_message,
+        created_at: Time.current
+      )
     end
   end
 end
+

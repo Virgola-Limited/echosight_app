@@ -2,11 +2,11 @@ module Twitter
   class TweetDataChecksQuery
     def self.incomplete_user_updates(time_ago)
       UserTwitterDataUpdate.joins(identity: :user)
-                          .merge(Identity.syncable)
-                          .where(completed_at: nil)
-                          .where('user_twitter_data_updates.created_at > ?', time_ago)
-                          .order('user_twitter_data_updates.started_at DESC')
-                          .limit(10)
+                           .merge(Identity.syncable)
+                           .where(completed_at: nil)
+                           .where('user_twitter_data_updates.created_at > ?', time_ago)
+                           .order('user_twitter_data_updates.retry_count DESC, user_twitter_data_updates.started_at DESC')
+                           .limit(10)
     end
 
     def self.problematic_tweets
