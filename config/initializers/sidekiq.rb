@@ -72,7 +72,14 @@ if !Rails.env.development? && !Rails.env.test?
           'name' => 'capture_leaderboard_job',
           'cron' => '0 * * * *',
           'class' => 'Twitter::CaptureLeaderboardJob'
+        },
+        {
+          'name' => 'identity_notifications_job',
+          'cron' => "0 10 * * *",
+          'class' => 'IdentityNotificationJob',
+          'tz' => "Australia/Sydney"
         }
+
         # Not needed in OAuth1
         # {
         #   'name' => 'Refresh OAuth Credentials - every 30 minutes',
