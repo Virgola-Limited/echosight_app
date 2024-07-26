@@ -63,6 +63,11 @@ class Identity < ApplicationRecord
       .where('users.confirmed_at IS NOT NULL OR identities.user_id IS NULL')
   }
 
+  scope :without_user, lambda {
+    left_outer_joins(:user)
+      .where(users: { id: nil })
+  }
+
   def self.find_by_handle(handle)
     Identity.where('lower(handle) = ?', handle.downcase)&.first
   end
