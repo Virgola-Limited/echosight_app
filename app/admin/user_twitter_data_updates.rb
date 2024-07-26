@@ -2,6 +2,8 @@ ActiveAdmin.register UserTwitterDataUpdate do
   actions :index, :show, :delete  # Makes the resource read-only
 
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
+  filter :error_message, as: :select, collection: [['Present', 'present'], ['Not Present', 'not_present']], label: 'Error Message'
+
 
   index do
     column :id
