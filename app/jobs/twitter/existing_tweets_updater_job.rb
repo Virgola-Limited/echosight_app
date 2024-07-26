@@ -12,6 +12,9 @@ module Twitter
     def perform(identity_id, api_batch_id)
       @identity = Identity.find(identity_id)
       @api_batch = ApiBatch.find(api_batch_id)
+
+      return unless identity.syncable?
+
       @user_twitter_data_update = UserTwitterDataUpdate.find_or_initialize_by(identity_id: identity.id, api_batch_id: api_batch.id, completed_at: nil)
       @user_twitter_data_update.update!(started_at: Time.current, retry_count: @user_twitter_data_update.retry_count + 1)
 
@@ -21,20 +24,16 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data
-      if identity.syncable?
-        begin
-          update_user
-        rescue StandardError => e
-          log_attempt("failed", error_message(e))
-          user_twitter_data_update.update!(error_message: error_message(e))
-          raise e
-        else
-          log_attempt("success", nil)
-          user_twitter_data_update.update!(completed_at: Time.current, error_message: nil)
-        end
-        if user_tweets_updatable?
-          Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, identity.id, api_batch.id)
-        end
+      begin
+        update_user
+      rescue StandardError => e
+        log_attempt("failed", error_message(e))
+        user_twitter_data_update.update!(error_message: error_message(e))
+        raise e
+      else
+        log_attempt("success", nil)
+        user_twitter_data_update.update!(completed_at: Time.current, error_message: nil)
+        schedule_updater_if_needed
       end
     end
 
@@ -44,6 +43,12 @@ module Twitter
 
     def user_tweets_updatable?
       api_batch.created_at > Tweet.max_age_for_refresh && identity.syncable?
+    end
+
+    def schedule_updater_if_needed
+      if user_tweets_updatable?
+        Twitter::ExistingTweetsUpdaterJob.perform_in(24.hours, identity.id, api_batch.id)
+      end
     end
 
     def error_message(e)
@@ -62,4 +67,3 @@ module Twitter
     end
   end
 end
-

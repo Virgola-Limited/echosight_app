@@ -25,18 +25,26 @@ RSpec.describe Twitter::NewTweetsFetcherJob do
       end
 
       it 'calls Twitter::NewTweetsFetcher and creates a UserTwitterDataUpdate record' do
+        allow(identity).to receive(:syncable?).and_return(true)
         expect { subject.perform(identity.id, api_batch.id) }.to change { UserTwitterDataUpdate.count }.by(1)
         user_twitter_data_update = UserTwitterDataUpdate.first
-        expect(user_twitter_data_update.sync_class).to eq("Twitter::NewTweetsFetcher")
+        expect(user_twitter_data_update.sync_class).to eq("Twitter::NewTweetsFetcherJob")
+      end
+
+      it 'does not create a UserTwitterDataUpdate record if identity is not syncable' do
+        allow(identity).to receive(:syncable?).and_return(false)
+        expect { subject.perform(identity.id, api_batch.id) }.not_to change { UserTwitterDataUpdate.count }
       end
 
       it 'does not enqueue ExistingTweetsUpdaterJob if no tweets exist for the user' do
+        allow(identity).to receive(:syncable?).and_return(true)
         expect(Twitter::ExistingTweetsUpdaterJob).not_to receive(:perform_in)
         subject.perform(identity.id, api_batch.id)
       end
 
       context 'when there are tweets for the user in the batch' do
         before do
+          allow(identity).to receive(:syncable?).and_return(true)
           allow(ApiBatch).to receive(:find).with(api_batch.id).and_return(api_batch)
           allow(api_batch.tweets).to receive(:exists?).with(identity_id: identity.id).and_return(true)
         end
@@ -54,6 +62,7 @@ RSpec.describe Twitter::NewTweetsFetcherJob do
       let(:error) { StandardError.new(error_message) }
 
       before do
+        allow(identity).to receive(:syncable?).and_return(true)
         allow(error).to receive(:backtrace).and_return(backtrace)
         allow_any_instance_of(Twitter::NewTweetsFetcher).to receive(:call).and_raise(error)
       end
@@ -67,6 +76,5 @@ RSpec.describe Twitter::NewTweetsFetcherJob do
         expect(user_twitter_data_update.error_message).to eq(expected_error_message)
       end
     end
-
   end
 end

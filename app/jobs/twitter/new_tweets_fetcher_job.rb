@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'sidekiq-unique-jobs'
+
 module Twitter
   class NewTweetsFetcherJob < Services::Base
     include Sidekiq::Job
@@ -6,12 +10,19 @@ module Twitter
     def perform(identity_id, api_batch_id)
       identity = Identity.find(identity_id)
       api_batch = ApiBatch.find(api_batch_id)
+
+      return unless identity.syncable?
+
       @user_twitter_data_update = UserTwitterDataUpdate.find_or_initialize_by(identity_id: identity.id, api_batch_id: api_batch.id, completed_at: nil)
-      @user_twitter_data_update.update!(started_at: Time.current, retry_count: @user_twitter_data_update.retry_count + 1)
+      @user_twitter_data_update.update!(started_at: Time.current, retry_count: @user_twitter_data_update.retry_count + 1, sync_class: self.class.name)
 
       begin
         fetch_and_log_twitter_data(identity, api_batch)
-      ensure
+      rescue StandardError => e
+        handle_error(identity, api_batch, e)
+      else
+        log_attempt("success", nil)
+        @user_twitter_data_update.update!(completed_at: Time.current, error_message: nil)
         schedule_updater_if_needed(identity, api_batch)
       end
     end
@@ -19,20 +30,17 @@ module Twitter
     private
 
     def fetch_and_log_twitter_data(identity, api_batch)
-      begin
-        update_user(identity, api_batch)
-      rescue StandardError => e
-        log_attempt("failed", error_message(e, identity, api_batch))
-        @user_twitter_data_update.update!(error_message: error_message(e, identity, api_batch))
-        raise e
-      else
-        log_attempt("success", nil)
-        @user_twitter_data_update.update!(completed_at: Time.current, error_message: nil)
-      end
+      update_user(identity, api_batch)
     end
 
     def update_user(identity, api_batch)
       Twitter::NewTweetsFetcher.new(identity: identity, api_batch_id: api_batch.id).call
+    end
+
+    def handle_error(identity, api_batch, e)
+      log_attempt("failed", error_message(e, identity, api_batch))
+      @user_twitter_data_update.update!(error_message: error_message(e, identity, api_batch))
+      raise e
     end
 
     def error_message(e, identity, api_batch)
