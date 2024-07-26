@@ -43,7 +43,7 @@ class IdentityUpdater
 
   def notify_slack(identity)
     message = "UID for user #{identity.handle} updated to #{user_data['id']}."
-    Notifications::SlackNotifier.call(message: message, channel: :general)
+    Notifications::SlackNotifier.call(message: message, channel: :errors)
   end
 
   def update_identity(identity)
