@@ -11,6 +11,8 @@ class IdentityUpdater
   def call
     identity = Identity.find_by_uid(user_data['id'])
 
+    # Temporary fix for Twitter UID being wrong in active admin import
+    # Remove this once they are all fixed
     unless identity
       identity = find_identity_by_username
       raise "Identity not found for user: #{user_data['username']} #{user_data['id']}" unless identity

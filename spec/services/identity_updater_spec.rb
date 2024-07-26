@@ -20,7 +20,7 @@ RSpec.describe IdentityUpdater do
     let(:expected_description) { "Revolutionize Your Twitter/X Strategy with Echosight https://echosight.io/" }
     let(:updater) { described_class.new(user_data) }
 
-    context 'when the identity is found' do
+    context 'when the identity is found by UID' do
       let!(:identity) { create(:identity, :with_oauth_credential, uid: '1192091185') }
 
       context 'when the 400x400 image exists' do
@@ -75,7 +75,6 @@ RSpec.describe IdentityUpdater do
           }
         end
 
-
         it 'updates the handle' do
           VCR.use_cassette('IdentityUpdater') do
             updater.call
@@ -87,10 +86,41 @@ RSpec.describe IdentityUpdater do
       end
     end
 
+    context 'when the identity is found by username' do
+      let!(:identity) { create(:identity, :with_oauth_credential, handle: 'lofwah', uid: 'old_uid') }
+
+      it 'updates the uid and notifies Slack' do
+        VCR.use_cassette('IdentityUpdater') do
+          allow(Notifications::SlackNotifier).to receive(:call)
+
+          # Ensure identity has no previous UID updates
+          identity.versions.destroy_all
+
+          updater.call
+          identity.reload
+
+          expect(identity.uid).to eq('1192091185')
+          expect(Notifications::SlackNotifier).to have_received(:call).with(message: "UID for user lofwah updated to 1192091185.", channel: :general)
+        end
+      end
+
+      context 'when the uid has been updated before' do
+        before do
+          identity.update(uid: 'old_uid')
+        end
+
+        it 'raises an error' do
+          VCR.use_cassette('IdentityUpdater') do
+            expect { updater.call }.to raise_error("Identity UID has been updated before for user: lofwah")
+          end
+        end
+      end
+    end
+
     context 'when the identity is not found' do
       it 'raises an error' do
         VCR.use_cassette('IdentityUpdater') do
-          expect { updater.call }.to raise_error
+          expect { updater.call }.to raise_error("Identity not found for user: lofwah 1192091185")
         end
       end
     end
