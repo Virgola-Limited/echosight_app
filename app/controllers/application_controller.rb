@@ -31,11 +31,9 @@ class ApplicationController < ActionController::Base
         ahoy.track "Ad Campaign Click", { campaign_id: ad_campaign.campaign_id, utm_source: ad_campaign.utm_source }
         cookies[:ad_campaign] = {
           value: ad_campaign.campaign_id,
-          expires: 1.hour.from_now
         }
         cookies[:utm_source] = {
           value: ad_campaign.utm_source,
-          expires: 1.hour.from_now
         }
       else
         error_details = {
