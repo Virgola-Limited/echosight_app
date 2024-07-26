@@ -10,8 +10,41 @@ class IdentityUpdater
 
   def call
     identity = Identity.find_by_uid(user_data['id'])
-    raise "Identity not found for user: #{user_data['username']} #{user_data['id']}" unless identity
 
+    unless identity
+      identity = find_identity_by_username
+      raise "Identity not found for user: #{user_data['username']} #{user_data['id']}" unless identity
+
+      if identity.provider == 'twitter' && identity.uid != user_data['id']
+        if identity.uid_updated_before?
+          raise "Identity UID has been updated before for user: #{user_data['username']}"
+        else
+          update_uid(identity)
+          notify_slack(identity)
+        end
+      end
+    end
+
+    update_identity(identity)
+  end
+
+  private
+
+  def find_identity_by_username
+    identities = Identity.where(handle: user_data['username'])
+    identities.count == 1 ? identities.first : nil
+  end
+
+  def update_uid(identity)
+    identity.update!(uid: user_data['id'])
+  end
+
+  def notify_slack(identity)
+    message = "UID for user #{identity.handle} updated to #{user_data['id']}."
+    Notifications::SlackNotifier.call(message: message, channel: :general)
+  end
+
+  def update_identity(identity)
     if user_data['image_url']
       transformed_image_url = transform_image_url(user_data['image_url'])
       new_image_checksum = checksum(transformed_image_url)
@@ -35,8 +68,6 @@ class IdentityUpdater
     identity.can_dm = user_data['can_dm']
     identity.save!
   end
-
-  private
 
   def download_image(url)
     URI.open(url)
