@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'sidekiq-unique-jobs'
-
 module Twitter
   class NewTweetsFetcherJob < Services::Base
     include Sidekiq::Job
