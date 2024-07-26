@@ -12,6 +12,10 @@ FactoryBot.define do
       association :identity
     end
 
+    trait :enabled_without_subscription do
+      enabled_without_subscription { true }
+    end
+
     trait :with_subscription do
       after(:create) do |user|
         create(:subscription, user:)

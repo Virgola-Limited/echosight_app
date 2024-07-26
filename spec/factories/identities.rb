@@ -62,5 +62,9 @@ FactoryBot.define do
       sync_without_user { true }
       user { nil }
     end
+
+    trait :syncable_without_subscription do
+      user { create(:user, :enabled_without_subscription) }
+    end
   end
 end
