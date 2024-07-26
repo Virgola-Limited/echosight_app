@@ -358,6 +358,9 @@ GEM
       omniauth-oauth (~> 1.1)
       rack
     orm_adapter (0.5.0)
+    paper_trail (15.1.0)
+      activerecord (>= 6.1)
+      request_store (~> 1.4)
     parallel (1.24.0)
     parser (3.3.0.0)
       ast (~> 2.4.1)
@@ -447,6 +450,8 @@ GEM
     regexp_parser (2.8.3)
     reline (0.4.0)
       io-console (~> 0.5)
+    request_store (1.7.0)
+      rack (>= 1.4)
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
@@ -626,6 +631,7 @@ DEPENDENCIES
   mini_magick
   omniauth-rails_csrf_protection
   omniauth-twitter
+  paper_trail
   pg (~> 1.1)
   pghero
   premailer-rails

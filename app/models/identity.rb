@@ -31,6 +31,9 @@ class Identity < ApplicationRecord
   include ImageUploader::Attachment(:image) # adds an 'image' virtual attribute
   include ImageUploader::Attachment(:banner) # adds a 'banner' virtual attribute
 
+  has_paper_trail
+  before_update :disable_versioning_if_uid_updated
+
   belongs_to :user, optional: true # Allow identity creation without a user
   has_many :tweets
   has_many :twitter_user_metrics
@@ -131,5 +134,19 @@ class Identity < ApplicationRecord
 
   def syncable?
     !!(sync_without_user || (user&.confirmed? && valid_identity? && (user.active_subscription? || user.enabled_without_subscription?)))
+  end
+
+  def uid_updated_before?
+    versions.any? do |version|
+      version.reify&.uid != uid
+    end
+  end
+
+  private
+
+  def disable_versioning_if_uid_updated
+    if uid_changed? && uid_updated_before?
+      self.class.paper_trail.disable
+    end
   end
 end
