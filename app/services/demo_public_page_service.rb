@@ -183,14 +183,21 @@ class DemoPublicPageService < Services::Base
         id: custom_tweet[:id]
       )
 
+      tweet_metrics = [
+        OpenStruct.new(
+          retweet_count: custom_tweet[:retweet_count],
+          like_count: custom_tweet[:like_count],
+          quote_count: custom_tweet[:quote_count],
+          impression_count: custom_tweet[:impression_count],
+          reply_count: custom_tweet[:reply_count],
+          bookmark_count: custom_tweet[:bookmark_count]
+        )
+      ]
+
       OpenStruct.new(
-        tweet: tweet,
-        retweet_count: custom_tweet[:retweet_count],
-        like_count: custom_tweet[:like_count],
-        quote_count: custom_tweet[:quote_count],
-        impression_count: custom_tweet[:impression_count],
-        reply_count: custom_tweet[:reply_count],
-        bookmark_count: custom_tweet[:bookmark_count],
+        text: custom_tweet[:text],
+        id: custom_tweet[:id],
+        tweet_metrics: tweet_metrics,
         engagement_rate_percentage: calculate_engagement_rate(
           custom_tweet[:retweet_count], custom_tweet[:like_count],
           custom_tweet[:quote_count], custom_tweet[:reply_count],
@@ -200,6 +207,7 @@ class DemoPublicPageService < Services::Base
       )
     end.sort_by { |post| -post.engagement_rate_percentage }
   end
+
 
   def calculate_engagement_rate(retweet_count, like_count, quote_count, reply_count, bookmark_count, impression_count)
     ((retweet_count + like_count + quote_count + reply_count + bookmark_count).to_f / impression_count * 100).round(2)

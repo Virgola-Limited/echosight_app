@@ -30,7 +30,7 @@
   </thead>
   <tbody>
     <% posts.each do |tweet| %>
-      <% tweet_metric = tweet.tweet_metrics.order(impression_count: :desc).first %>
+      <% tweet_metric = tweet.tweet_metrics.max_by(&:impression_count) %>
       <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
         <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white">
           <%= text_with_images(tweet.text) %>
@@ -52,7 +52,7 @@
         </td>
         <td class="hidden md:table-cell px-6 py-4 relative">
           <div class="engagement-rate-cell">
-            <%= tweet_metric.engagement_rate_percentage %>%
+            <%= tweet.engagement_rate_percentage %>%
             <div data-tooltip-target="tooltip-engagement-<%= tweet.id %>" class="ml-2">
               <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -74,8 +74,8 @@
 </table>
 
 <% posts.each do |tweet| %>
-  <% tweet_metric = tweet.tweet_metrics.order(impression_count: :desc).first %>
-  <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet_metric.engagement_rate_percentage}".html_safe %>
+  <% tweet_metric = tweet.tweet_metrics.max_by(&:impression_count) %>
+  <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet.engagement_rate_percentage}".html_safe %>
   <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet.id}", text: tooltip_text) %>
 <% end %>
 
