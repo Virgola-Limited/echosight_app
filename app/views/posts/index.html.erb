@@ -1,5 +1,16 @@
 <%= render Shared::HeadingComponent.new(text: 'My Posts', heading_type: :h1) %>
 
+<div class="flex justify-center mb-4">
+  <form action="<%= posts_path %>" method="get" class="flex space-x-2">
+    <input type="text" name="query" placeholder="Search tweets..." class="px-4 py-2 border rounded-lg" value="<%= params[:query] %>">
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">
+      Search
+    </button>
+  </form>
+</div>
+
+<br />
 <%= render PostsTableComponent.new(posts: @posts) %>
 
 <%= pagy_nav(@pagy).html_safe %>
+

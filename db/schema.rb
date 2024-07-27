@@ -266,10 +266,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_29_193641) do
     t.bigint "api_batch_id"
     t.string "status"
     t.string "source"
+    t.tsvector "searchable"
     t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
     t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
+    t.index ["searchable"], name: "index_tweets_on_searchable", using: :gin
   end
 
   create_table "twitter_update_attempts", force: :cascade do |t|

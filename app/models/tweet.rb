@@ -5,6 +5,7 @@
 # Table name: tweets
 #
 #  id                    :bigint           not null, primary key
+#  searchable            :tsvector
 #  source                :string
 #  status                :string
 #  text                  :text             not null
@@ -21,6 +22,7 @@
 #  index_tweets_on_id                     (id) UNIQUE
 #  index_tweets_on_identity_id            (identity_id)
 #  index_tweets_on_in_reply_to_status_id  (in_reply_to_status_id)
+#  index_tweets_on_searchable             (searchable) USING gin
 #
 # Foreign Keys
 #
@@ -28,6 +30,8 @@
 #  fk_rails_...  (identity_id => identities.id)
 #
 class Tweet < ApplicationRecord
+  before_save :update_searchable
+
   attr_accessor :engagement_rate_percentage
 
   belongs_to :api_batch
@@ -52,4 +56,11 @@ class Tweet < ApplicationRecord
     ["identity", "tweet_metrics"]
   end
 
+  def update_searchable
+    self.searchable = Tweet.connection.execute(
+      Tweet.sanitize_sql(["SELECT to_tsvector('english', ?)", text])
+    ).values.flatten.first
+  end
+
 end
+
