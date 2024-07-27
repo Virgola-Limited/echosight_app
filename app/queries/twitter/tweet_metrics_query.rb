@@ -5,8 +5,6 @@ module Twitter
     include TweetMetrics::MetricsCalculation
 
     def likes_count
-      return '' if insufficient_data?
-
       total_metrics_for_period('like_count', date_range[:start_time], date_range[:end_time]) || ''
     end
 

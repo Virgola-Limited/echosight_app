@@ -1,5 +1,6 @@
+# app/helpers/application_helper.rb
+
 module ApplicationHelper
-  include ActionView::Helpers::UrlHelper
   include Pagy::Frontend
 
   def pagy_nav_with_flowbite(pagy)

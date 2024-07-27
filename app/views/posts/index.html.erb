@@ -1,10 +1,7 @@
 <%= render Shared::HeadingComponent.new(text: 'My Posts', heading_type: :h1) %>
 
-
-<%= render PostsTableComponent.new(posts: @posts, rows_to_show: 100) %>
+<%= render PostsTableComponent.new(posts: @posts) %>
 
 <div class="pagination">
   <%= pagy_nav_with_flowbite(@pagy) %>
 </div>
-
-

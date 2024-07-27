@@ -2,14 +2,13 @@ class PostsTableComponent < ViewComponent::Base
   include ApplicationHelper
   include LinkHelper
 
-  def initialize(posts:, rows_to_show: 100)
-    @rows_to_show = rows_to_show
+  def initialize(posts:)
     @posts = posts
   end
 
   private
 
-  attr_reader :posts, :rows_to_show
+  attr_reader :posts
 
   def sortable(column, title = nil)
     title ||= column.titleize
