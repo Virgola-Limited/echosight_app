@@ -15,8 +15,6 @@ module Twitter
     end
 
     def top_tweets_for_user
-      Rails.logger.debug('paul' + date_range[:start_time].inspect)
-      Rails.logger.debug('paul' + date_range[:end_time].inspect)
 
       tweets_in_date_range = Tweet.where(identity_id: identity.id)
                                   .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])
@@ -33,6 +31,5 @@ module Twitter
 
       Tweet.where(id: top_tweet_ids).includes(:tweet_metrics).order('tweet_metrics.impression_count DESC')
     end
-
   end
 end
