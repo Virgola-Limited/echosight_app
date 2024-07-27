@@ -1,5 +1,4 @@
-class PostsTableComponent < ViewComponent::Base
-  include ApplicationHelper
+class PostsTableComponent < ApplicationComponent
   include LinkHelper
 
   def initialize(posts:)
