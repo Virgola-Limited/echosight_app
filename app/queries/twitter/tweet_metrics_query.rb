@@ -21,12 +21,11 @@ module Twitter
                                           .select('tweet_id, MAX(impression_count) AS max_impression_count')
                                           .group(:tweet_id)
 
-      top_tweet_ids = Tweet.joins("INNER JOIN (#{tweet_metrics_subquery.to_sql}) AS tm ON tweets.id = tm.tweet_id")
-                           .order('tm.max_impression_count DESC')
-                           .limit(10)
-                           .pluck(:id)
+      top_tweet_ids_with_order = tweet_metrics_subquery.order('max_impression_count DESC').limit(10)
 
-      Tweet.where(id: top_tweet_ids).includes(:tweet_metrics)
+      Tweet.joins("INNER JOIN (#{top_tweet_ids_with_order.to_sql}) AS tm ON tweets.id = tm.tweet_id")
+           .includes(:tweet_metrics)
+           .order('tm.max_impression_count DESC')
     end
   end
 end
