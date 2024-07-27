@@ -3,12 +3,12 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def pagy_nav_with_flowbite(pagy)
-    pagy_nav(pagy).gsub('class="page-link"', 'class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"')
-                  .gsub('class="page-item"', 'class="inline-flex -space-x-px"')
-                  .gsub('class="pagination"', 'class="flex justify-center"')
-                  .html_safe
-  end
+  # def pagy_nav_with_flowbite(pagy)
+  #   pagy_nav(pagy).gsub('class="page-link"', 'class="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"')
+  #                 .gsub('class="page-item"', 'class="inline-flex -space-x-px"')
+  #                 .gsub('class="pagination"', 'class="flex justify-center"')
+  #                 .html_safe
+  # end
 
   def html_description_with_links(description)
     description.to_s.gsub(%r{(https?://[^\s]+)}) do |url|

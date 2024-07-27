@@ -2,6 +2,4 @@
 
 <%= render PostsTableComponent.new(posts: @posts) %>
 
-<div class="pagination">
-  <%= pagy_nav_with_flowbite(@pagy) %>
-</div>
+<%= pagy_nav(@pagy).html_safe %>

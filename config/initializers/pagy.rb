@@ -2,5 +2,5 @@
 
 require 'pagy/extras/overflow'
 
-Pagy::DEFAULT[:overflow] = :last_page  # default :empty_page
-Pagy::DEFAULT[:items] = 5              # default items per page
+Pagy::DEFAULT[:limit] = 5
+Pagy::DEFAULT[:overflow] = :last_page
