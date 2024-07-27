@@ -79,9 +79,6 @@
   <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet.id}", text: tooltip_text) %>
 <% end %>
 
-<div class="flex justify-end mt-2">
-  <%= link_to 'echosight.io', root_url, class: 'text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:text-yellow-300' %>
-</div>
 <% else %>
-<p class="text-gray-700 dark:text-gray-300">We are awaiting more data to show the table.</p>
+<p class="text-gray-700 dark:text-gray-300">No results found</p>
 <% end %>
