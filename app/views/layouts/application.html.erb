@@ -28,7 +28,7 @@
             <%= render 'shared/dark_mode_toggle_button' %>
           </div>
         <% else %>
-          <%= render Shared::NavBarComponent.new(user: current_or_guest_user) %>
+          <%= render Shared::NavBarComponent.new(user: current_or_guest_user, current_admin_user: current_admin_user) %>
         <% end %>
       </div>
     </header>

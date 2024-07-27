@@ -1,34 +1,34 @@
 <% if posts.count > 0 %>
 <table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr class="h-12">
-                <th scope="col" class="p-0 md:table-cell md:p-1">
-                    Post
-                </th>
-                <th scope="col" class="hidden md:table-cell p-1">
-                    Impressions
-                </th>
-                <th scope="col" class="hidden md:table-cell p-1">
-                    Retweets
-                </th>
-                <th scope="col" class="hidden md:table-cell p-1">
-                    Quotes
-                </th>
-                <th scope="col" class="hidden md:hidden lg:table-cell p-1">
-                    Likes
-                </th>
-                <th scope="col" class="hidden md:hidden lg:table-cell p-1">
-                    Replies
-                </th>
-
-                <th scope="col" class="hidden md:table-cell p-1">
-                    Engagement Rate
-                </th>
-                <th scope="col" class="md:table-cell p-1">
-                    Actions
-                </th>
-            </tr>
+          <tr class="h-12">
+            <th scope="col" class="p-0 md:table-cell md:p-1">
+              <%= sortable 'tweet', 'Post' %>
+            </th>
+            <th scope="col" class="hidden md:table-cell p-1">
+              <%= sortable 'impression_count', 'Impressions' %>
+            </th>
+            <th scope="col" class="hidden md:table-cell p-1">
+              <%= sortable 'retweet_count', 'Retweets' %>
+            </th>
+            <th scope="col" class="hidden md:table-cell p-1">
+              <%= sortable 'quote_count', 'Quotes' %>
+            </th>
+            <th scope="col" class="hidden md:hidden lg:table-cell p-1">
+              <%= sortable 'like_count', 'Likes' %>
+            </th>
+            <th scope="col" class="hidden md:hidden lg:table-cell p-1">
+              <%= sortable 'reply_count', 'Replies' %>
+            </th>
+            <th scope="col" class="hidden md:table-cell p-1">
+              <%= sortable 'engagement_rate_percentage', 'Engagement Rate' %>
+            </th>
+            <th scope="col" class="md:table-cell p-1">
+              view
+            </th>
+          </tr>
         </thead>
+
         <tbody>
           <% posts.each_with_index do |tweet_metric, index| %>
           <% index < rows_to_show ? row_class = '' : row_class = ' hide-from-share' %>

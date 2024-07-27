@@ -37,5 +37,15 @@ module Twitter
                  .includes(:tweet)
                  .order(impression_count: :desc)
     end
+
+    def all_tweets_for_user
+      tweets_in_date_range = Tweet.where(identity_id: identity.id)
+                                  .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])
+
+      TweetMetric.where(tweet_id: tweets_in_date_range)
+                 .where.not(impression_count: nil)
+                 .includes(:tweet)
+                 .order(impression_count: :desc)
+    end
   end
 end

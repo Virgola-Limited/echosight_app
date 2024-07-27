@@ -1,9 +1,10 @@
 module Shared
   class NavBarComponent < ApplicationComponent
-    attr_reader :user
+    attr_reader :user, :current_admin_user
 
-    def initialize(user:)
+    def initialize(user:, current_admin_user:)
       @user = user
+      @current_admin_user = current_admin_user
     end
 
     def demo_or_real_public_page_link
@@ -11,12 +12,14 @@ module Shared
     end
 
     def nav_links
-      [
+      links = [
         { name: 'Dashboard', path: root_url },
         { name: 'My Public Page', path: demo_or_real_public_page_link },
         { name: 'Leaderboard', path: leaderboard_path },
         { name: 'Feature Requests', path: feature_requests_path }
       ]
+      links.insert(2, { name: 'My Posts', path: posts_path }) if current_admin_user
+      links
     end
   end
 end
