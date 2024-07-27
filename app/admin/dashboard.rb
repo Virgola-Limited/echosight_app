@@ -3,13 +3,13 @@ ActiveAdmin.register_page "Dashboard" do
   days_to_fetch = Twitter::NewTweetsFetcher.days_to_fetch
 
   content title: proc { I18n.t("active_admin.dashboard") } do
-    h2 "Tweets with More Than 1 Tweet Metric"
-    section do
-      tweets_with_multiple_metrics = Tweet.joins(:tweet_metrics)
-                                          .where("tweet_metrics.created_at >= ?", 3.days.ago)
-                                          .group("tweets.id")
-                                          .having("COUNT(tweet_metrics.id) > 1")
+    tweets_with_multiple_metrics = Tweet.joins(:tweet_metrics)
+    .where("tweet_metrics.created_at >= ?", 3.days.ago)
+    .group("tweets.id")
+    .having("COUNT(tweet_metrics.id) > 1")
 
+    h2 "Tweets with More Than 1 Tweet Metric: #{tweets_with_multiple_metrics.count}"
+    section do
       table_for tweets_with_multiple_metrics do
         column :id
         column "Created At", :created_at
