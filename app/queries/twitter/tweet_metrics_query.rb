@@ -5,6 +5,8 @@ module Twitter
     include TweetMetrics::MetricsCalculation
 
     def likes_count
+      return '' if insufficient_data?
+
       total_metrics_for_period('like_count', date_range[:start_time], date_range[:end_time]) || ''
     end
 
@@ -13,37 +15,24 @@ module Twitter
     end
 
     def top_tweets_for_user
+      Rails.logger.debug('paul' + date_range[:start_time].inspect)
+      Rails.logger.debug('paul' + date_range[:end_time].inspect)
+
       tweets_in_date_range = Tweet.where(identity_id: identity.id)
                                   .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])
 
       tweet_metrics = TweetMetric.where(tweet_id: tweets_in_date_range)
-                                 .group(:tweet_id, :pulled_at, :impression_count, :id)
                                  .where.not(impression_count: nil)
-                                 .order(impression_count: :desc)
+                                 .select('tweet_id, MAX(impression_count) AS max_impression_count')
+                                 .group(:tweet_id)
 
-      results = []
-      used_tweets = []
-      tweet_metrics.each do |tweet_metric|
-        if used_tweets.exclude?(tweet_metric.tweet_id)
-          results << tweet_metric.id
-          used_tweets << tweet_metric.tweet_id
-        end
-        break if used_tweets.count == 10
-      end
+      top_tweet_ids = TweetMetric.from("(#{tweet_metrics.to_sql}) AS tweet_metrics")
+                                 .order('max_impression_count DESC')
+                                 .limit(10)
+                                 .pluck(:tweet_id)
 
-      TweetMetric.where(id: results)
-                 .includes(:tweet)
-                 .order(impression_count: :desc)
+      Tweet.where(id: top_tweet_ids).includes(:tweet_metrics).order('tweet_metrics.impression_count DESC')
     end
 
-    def all_tweets_for_user
-      tweets_in_date_range = Tweet.where(identity_id: identity.id)
-                                  .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])
-
-      TweetMetric.where(tweet_id: tweets_in_date_range)
-                 .where.not(impression_count: nil)
-                 .includes(:tweet)
-                 .order(impression_count: :desc)
-    end
   end
 end

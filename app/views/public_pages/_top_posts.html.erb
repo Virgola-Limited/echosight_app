@@ -21,6 +21,6 @@
   <%= render(Shared::ShareToolComponent.new(modal_id: 'share-top-posts-modal', chart_id: 'top-posts-container', title: 'Share Posts Table')) %>
 
   <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
-    <%= render PostsTableComponent.new(posts: top_posts, rows_to_show: 5) %>
+    <%= render PostsTableComponent.new(posts: top_posts) %>
   </div>
 </div>
