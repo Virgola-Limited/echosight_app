@@ -41,14 +41,15 @@ class Posts::IndexComponent < ApplicationComponent
   private
 
   def fetch_posts
+    tweets = current_user.tweets.includes(:tweet_metrics)
     if query.present?
       search_query = query.split.map { |word| "#{word}:*" }.join(' & ')
       tsquery = ActiveRecord::Base.sanitize_sql_array(["to_tsquery('english', ?)", search_query])
 
-      current_user.tweets.where("searchable @@ #{tsquery}")
+      tweets.where("searchable @@ #{tsquery}")
                          .order(Arel.sql("ts_rank(searchable, #{tsquery}) DESC"))
     else
-      current_user.tweets
+      tweets
     end
   end
 
