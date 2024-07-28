@@ -100,7 +100,7 @@ RSpec.describe IdentityUpdater do
           identity.reload
 
           expect(identity.uid).to eq('1192091185')
-          expect(Notifications::SlackNotifier).to have_received(:call).with(message: "UID for user lofwah updated to 1192091185.", channel: :general)
+          expect(Notifications::SlackNotifier).to have_received(:call).with(message: "UID for user lofwah updated to 1192091185.", channel: :errors)
         end
       end
 
