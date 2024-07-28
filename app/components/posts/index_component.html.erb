@@ -1,13 +1,13 @@
- <%= render Shared::HeadingComponent.new(text: 'My Posts', heading_type: :h1) %>
+<%= alert_message %>
 
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6 mt-4">
   <div class="flex justify-center mb-4">
     <form action="<%= posts_path %>" method="get" class="flex space-x-2">
-      <input type="text" name="query" placeholder="Search posts..." class="px-4 py-2 border rounded-lg" value="<%= params[:query] %>">
+      <input type="text" name="query" placeholder="Search posts..." class="px-4 py-2 border rounded-lg" value="<%= @query %>">
       <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">
         Search
       </button>
-      <% if params[:query].present? %>
+      <% if @query.present? %>
         <a href="<%= posts_path %>" class="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400">
           Clear
         </a>
@@ -16,5 +16,5 @@
   </div>
   <%= render PostsTableComponent.new(posts: @posts) %>
   <br />
-  <%= render(PaginationComponent.new(pagy: @pagy)) %>
+<%= render_pagination %>
 </div>
