@@ -4,7 +4,7 @@ module Twitter
     def initialize
       @queries = [
         { query: Twitter::Leaderboard::LeaderChangeQuery.new, message_method: :leader_change_message },
-        { query: Twitter::Leaderboard::NewTopTenEntriesQuery.new, message_method: :new_top_ten_entries_message }
+        # { query: Twitter::Leaderboard::NewTopTenEntriesQuery.new, message_method: :new_top_ten_entries_message }
       ]
     end
 
