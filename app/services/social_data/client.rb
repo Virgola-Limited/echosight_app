@@ -2,13 +2,14 @@
 
 module SocialData
   class Client
-    attr_reader :user
+    attr_reader :user, :rate_limiter
 
     # perhaps removing this or increase it a very large amount
     MAXIMUM_TWEETS = 2000
 
     def initialize(user: nil)
       @user = user
+      @rate_limiter = ::RateLimiter.new
     end
 
     def api_key
@@ -97,6 +98,8 @@ module SocialData
     end
 
     def make_api_call(endpoint, params, _auth_type)
+      rate_limiter.throttle
+
       uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
 
       # remove params with empty values
