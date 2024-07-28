@@ -34,7 +34,7 @@ Yep 1. is perfect
         Subscribing requires a credit card, but we won't charge you until <%= ENV.fetch('TRIAL_PERIOD_DAYS') %> days have passed.<br>
       <% end %>
     </p>
-    <%= render Shared::ButtonComponent.new(text: "Subscribe", url: subscription_path, method: :get) %>
+    <%= render Shared::ButtonComponent.new(text: "Subscribe", url: subscription_path) %>
   <% end %>
 <% end %>
 

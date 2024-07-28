@@ -1,6 +1,6 @@
 module Shared
   class ButtonComponent < ApplicationComponent
-    def initialize(text:, url: nil, classes: nil, method: :post, in_form: false, no_form: false, size: :base)
+    def initialize(text:, url: nil, classes: nil, method: :get, in_form: false, no_form: false, size: :base)
       @text = text
       @url = url
       @classes = classes
@@ -39,7 +39,7 @@ module Shared
 
     def render_button
       if @no_form
-        tag.button type: 'button', class: classes, data: { controller: 'debounce', button_target: 'button', original_text: @text } do
+        link_to @url, class: classes, data: { controller: 'debounce', button_target: 'button', original_text: @text, turbo: false } do
           @text
         end
       elsif @in_form
