@@ -148,6 +148,10 @@ class DemoPublicPageService < Services::Base
     )
   end
 
+  def self.custom_tweets
+    CUSTOM_TWEETS
+  end
+
   private
 
   def engagement_rate_percentage_per_day
