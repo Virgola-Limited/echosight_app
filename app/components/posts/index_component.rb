@@ -3,53 +3,60 @@
 class Posts::IndexComponent < ApplicationComponent
   include Pagy::Backend
 
-  attr_reader :current_user, :query, :pagy, :posts
+  attr_reader :current_user, :query, :pagy_instance, :paginated_posts
 
   def initialize(current_user:, query:)
     @current_user = current_user
     @query = query
-    @pagy, @posts = posts_and_pagination
   end
 
   def alert_message
-    return unless query.present? && !current_user.active_subscription?
-
-    render(Shared::AlertComponent.new(
-      message: "Search posts doesn't work on the example posts.",
-      alert_type: :yellow
-    ))
+    if !current_user.active_subscription? && query.present?
+      render(Shared::AlertComponent.new(
+        message: "Search posts doesn't work on the example posts.",
+        alert_type: :yellow
+      ))
+    elsif current_user.active_subscription? && paginated_posts.empty?
+      render(Shared::AlertComponent.new(
+        message: "We haven't synced any posts yet. Check back later.",
+        alert_type: :yellow
+      ))
+    end
   end
 
   def posts_and_pagination
     if current_user.active_subscription?
-      pagy, results = paginated_posts
-      [pagy, results]
+      results = fetch_posts
+      pagy_instance, paginated_results = pagy(results)
+      [pagy_instance, paginated_results]
     else
       [nil, demo_data.top_posts]
     end
   end
 
   def render_pagination
-    render(PaginationComponent.new(pagy: pagy)) if pagy
+    render(PaginationComponent.new(pagy: pagy_instance)) if pagy_instance
   end
 
   private
 
-  def paginated_posts
+  def fetch_posts
     if query.present?
       search_query = query.split.map { |word| "#{word}:*" }.join(' & ')
       tsquery = ActiveRecord::Base.sanitize_sql_array(["to_tsquery('english', ?)", search_query])
 
-      results = current_user.tweets.where("searchable @@ #{tsquery}")
-                                   .order(Arel.sql("ts_rank(searchable, #{tsquery}) DESC"))
+      current_user.tweets.where("searchable @@ #{tsquery}")
+                         .order(Arel.sql("ts_rank(searchable, #{tsquery}) DESC"))
     else
-      results = current_user.tweets
+      current_user.tweets
     end
-
-    pagy(results)
   end
 
   def demo_data
     @demo_data ||= DemoPublicPageService.new.call
+  end
+
+  def before_render
+    @pagy_instance, @paginated_posts = posts_and_pagination
   end
 end
