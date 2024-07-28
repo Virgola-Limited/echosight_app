@@ -14,13 +14,15 @@ Yep 1. is perfect
 <div class="flex flex-col items-center">
 <% if show_steps_to_complete_message? %>
   <% if eligible_for_trial? %>
-  <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-green-300" role="alert">
-    We are currently offering a <%= Subscription.trial_period %> day free trial for our early adopters. Subscribe now and pay in <%= Subscription.trial_period %> days.
-  </div>
+  <%= render(Shared::AlertComponent.new(
+    message: "We are currently offering a #{Subscription.trial_period} day free trial for our early adopters. Subscribe now and pay in #{Subscription.trial_period} days.",
+    alert_type: :green
+  )) %>
   <% end %>
-  <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
-    To start leveraging the full capabilities of Echosight, please complete the steps below:
-  </div>
+  <%= render(Shared::AlertComponent.new(
+  message: "To start leveraging the full capabilities of Echosight, please complete the steps below:",
+  alert_type: :yellow
+)) %>
 <% end %>
 
 <% if show_subscription_message? %>
