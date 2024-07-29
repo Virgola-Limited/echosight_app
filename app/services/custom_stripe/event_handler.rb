@@ -46,7 +46,7 @@ module CustomStripe
       end
       Notifications::SlackNotifier.call(
         message: message,
-        channel: :stripe
+        channel: :general
       )
 
       unless update_user_subscription(user, subscription, action)
