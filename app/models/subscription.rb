@@ -25,10 +25,10 @@
 class Subscription < ApplicationRecord
   belongs_to :user
 
-  validate :only_one_active_subscription, on: :create
   validates :stripe_subscription_id, presence: true, uniqueness: true
   validates :stripe_price_id, presence: true
   validates :user, presence: true
+  validate :only_one_active_subscription, on: :create
 
   scope :active, -> { where(active: true) }
 
@@ -56,6 +56,8 @@ class Subscription < ApplicationRecord
   end
 
   def only_one_active_subscription
+    return if errors[:user].present?
+
     if user.subscriptions.active.exists?
       errors.add(:user, 'can only have one active subscription')
     end
