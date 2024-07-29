@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 module Twitter
-  class NewTweetsFetcherJob < Services::Base
+  class NewTweetsFetcherJob
     include Sidekiq::Job
-    sidekiq_options retry: false
+    sidekiq_options queue: :tweet_syncing,
+                    retry: false,
+                    unique: :until_executed,
+                    unique_across: :queue,
+                    lock_timeout: 1.hour,
+                    on_conflict: { client: :log, server: :reschedule }
+
 
     def perform(identity_id, api_batch_id)
       identity = Identity.find(identity_id)
