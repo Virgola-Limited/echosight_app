@@ -30,19 +30,7 @@ ActiveAdmin.register Identity do
     column :created_at
     column :description
     column :handle
-    column :sync_without_user
-    column :image_url do |identity|
-      if identity.image_url.present?
-        unique_id = identity.image_url.split('/').last.split('?').first
-        link_to unique_id, identity.image_url, target: '_blank'
-      end
-    end
-    column :banner_url do |identity|
-      if identity.banner_url.present?
-        unique_id = identity.banner_url.split('/').last.split('?').first
-        link_to unique_id, identity.banner_url, target: '_blank'
-      end
-    end
+    column "Sync<br>Without<br>User".html_safe, :sync_without_user
 
     column :followers_count do |identity|
       recent_metric = identity.twitter_user_metrics.order(date: :desc).first
@@ -71,6 +59,10 @@ ActiveAdmin.register Identity do
   filter :handle
   filter :sync_without_user
   filter :uid
+
+  scope :all, default: true
+  scope("With User") { |scope| scope.where.not(user_id: nil) }
+  scope("Without User") { |scope| scope.where(user_id: nil) }
 
   form do |f|
     f.semantic_errors

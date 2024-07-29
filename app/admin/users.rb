@@ -7,18 +7,20 @@ ActiveAdmin.register User do
   filter :ad_campaign_id_present, as: :boolean, label: 'Has Campaign ID'
 
   index do
+    column :id
     column :name
     column :last_name
     column :email
     column :created_at
-    column :sign_in_count
+    column "Sign<br>In<br>Count".html_safe, :sign_in_count
     column :current_sign_in_at
     column :last_sign_in_at
-    column 'Identity Handle' do |user|
+    column 'Identity<br>Handle'.html_safe do |user|
       user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
     end
-    column :vip_since
-    column :enabled_without_subscription
+    column "VIP", :vip_since
+    column 'Enabled<br>w/o<br>Sub'.html_safe, :enabled_without_subscription
+
     column :can_dm
     column 'Campaign' do |user|
       if user.ad_campaign

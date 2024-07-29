@@ -2,7 +2,7 @@ ActiveAdmin.register Tweet do
   actions :index, :show
 
   # Existing filter
-  filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
+  filter :identity_user_id, as: :select, collection: -> { User.all.order(:email).map { |u| [u.email, u.id] } }
 
   # Add filter for tweet_id
   filter :id, as: :numeric, label: 'Tweet ID'
