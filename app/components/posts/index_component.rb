@@ -16,11 +16,6 @@ class Posts::IndexComponent < ApplicationComponent
         message: "Search posts doesn't work on the example posts.",
         alert_type: :yellow
       ))
-    elsif current_user.active_subscription? && paginated_posts.empty?
-      render(Shared::AlertComponent.new(
-        message: "We haven't synced any posts yet. Check back later.",
-        alert_type: :yellow
-      ))
     end
   end
 
