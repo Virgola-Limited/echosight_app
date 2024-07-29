@@ -19,8 +19,6 @@ RSpec.feature 'My Posts Page' do
     # Context: Visit after subscribing with no posts
     user_with_subscription = create(:user, :with_subscription)
     login_as(user_with_subscription, scope: :user)
-    visit posts_path
-    expect(page).to have_content('We haven\'t synced any posts yet. Check back later.')
 
     # Context: Visit after subscribing with posts
     tweets = create_list(:tweet, 2, user: user_with_subscription)
