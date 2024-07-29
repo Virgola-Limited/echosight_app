@@ -3,6 +3,7 @@ ActiveAdmin.register UserTwitterDataUpdate do
 
   filter :identity_user_id, as: :select, collection: -> { User.all.map { |u| [u.email, u.id] } }
   filter :error_message, as: :select, collection: [['Present', 'present'], ['Not Present', 'not_present']], label: 'Error Message'
+  filter :retry_count
 
 
   index do
