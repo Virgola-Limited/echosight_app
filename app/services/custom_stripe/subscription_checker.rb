@@ -17,7 +17,6 @@ module CustomStripe
         local_sub.update(
           status: new_status,
           active: is_active
-          # Add any other fields you need to synchronize, like current_period_end, etc.
         )
       end
     end

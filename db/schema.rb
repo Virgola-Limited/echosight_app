@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_29_052420) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_29_054832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -235,6 +235,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_29_052420) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status"
+    t.datetime "current_period_end"
     t.index ["stripe_price_id"], name: "index_subscriptions_on_stripe_price_id"
     t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"

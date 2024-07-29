@@ -4,6 +4,7 @@
 #
 #  id                     :bigint           not null, primary key
 #  active                 :boolean          default(TRUE)
+#  current_period_end     :datetime
 #  status                 :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -38,7 +39,7 @@ class Subscription < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id", "status"]
+    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id", "status", "current_period_end"]
   end
 
   def self.trial_period
