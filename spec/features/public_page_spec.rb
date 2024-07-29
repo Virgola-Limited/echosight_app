@@ -16,7 +16,7 @@ RSpec.feature 'Public Page Access' do
 
     # Context: Demo page not logged in
     visit public_page_path(:demo)
-    expect(page.title).to eq("Sammy Circuit's Public Page")
+    expect(page).to have_title("Sammy Circuit's Public Page")
     within('[role="alert"]') do
       expect(page).to have_text('This is a demo page showing how your public page could look')
       expect(page).to have_text('Sign up')
@@ -29,7 +29,7 @@ RSpec.feature 'Public Page Access' do
     visit current_path
     expect(page).to have_text('Dashboard')
 
-    expect(page.title).to eq("Sammy Circuit's Public Page")
+    expect(page).to have_title("Sammy Circuit's Public Page")
     within('[role="alert"]') do
       expect(page).to have_text('for the steps to enable your public page')
     end
@@ -45,7 +45,7 @@ RSpec.feature 'Public Page Access' do
     identity.reload
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page.title).to eq("Twitter User's Public Page")
+    expect(page).to have_title("Twitter User's Public Page")
 
     within('[role="alert"]') do
       expect(page).to have_text('for the steps to enable your public page')
@@ -53,12 +53,12 @@ RSpec.feature 'Public Page Access' do
     expect_not_to_have_demo_data
     ##################################
 
-    # Context: When all the criteria are met to show the users public page
+    # Context: When all the criteria are met to show the user's public page
     subscription = create(:subscription, user: user)
     allow(identity).to receive(:enough_data_for_public_page?).and_return(true)
     visit public_page_path(user.handle)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page.title).to eq("Twitter User's Public Page")
+    expect(page).to have_title("Twitter User's Public Page")
 
     expect(page).not_to have_text('for the steps to enable your public page')
     expect(page).not_to have_text('Subscribe')
@@ -73,14 +73,14 @@ RSpec.feature 'Public Page Access' do
     subscription.destroy
     visit public_page_path(user.handle)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page.title).to eq("Twitter User's Public Page")
+    expect(page).to have_title("Twitter User's Public Page")
 
     expect(page).not_to have_text('This is a demo or inactive page showing')
 
-     # Context user is logged out and visiting a public page
-     logout(:user)
-     visit public_page_path(user.handle)
-     expect(page).not_to have_text('This is a demo or inactive page showing')
+    # Context: user is logged out and visiting a public page
+    logout(:user)
+    visit public_page_path(user.handle)
+    expect(page).not_to have_text('This is a demo or inactive page showing')
     ##################################
 
     # Context: Subscription without Twitter connection
@@ -94,10 +94,9 @@ RSpec.feature 'Public Page Access' do
     end
     ##################################
 
-    # Context user is logged out and visiting a public page
+    # Context: user is logged out and visiting a public page
     logout(:user)
     visit public_page_path(user.handle)
     # show a flash message?
   end
-
 end
