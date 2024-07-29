@@ -4,6 +4,9 @@ module CustomStripe
       Rails.logger.info "Processing event: #{event.type}"
       Rails.logger.info "Event object: #{event.data.object.to_json}"
 
+      # Send full event information to Slack
+      send_full_event_to_slack(event)
+
       case event.type
       when 'customer.subscription.created'
         handle_event(event.data.object, 'created')
@@ -22,6 +25,17 @@ module CustomStripe
 
     private
 
+    def send_full_event_to_slack(event)
+      message = "Received Stripe event: #{event.type}\n" \
+                "Event ID: #{event.id}\n" \
+                "Event Object: #{event.data.object.to_json}"
+
+      Notifications::SlackNotifier.call(
+        message: message,
+        channel: :stripe
+      )
+    end
+
     def handle_event(subscription, action)
       user = find_user(subscription)
       product_name = find_product_name(subscription)
@@ -31,10 +45,17 @@ module CustomStripe
         message += ", Follow this user: https://x.com/#{user&.handle}"
       end
       Notifications::SlackNotifier.call(
-        message: message
+        message: message,
+        channel: :stripe
       )
 
-      update_user_subscription(user, subscription, action) if user && %w[created updated resumed deleted].include?(action)
+      unless update_user_subscription(user, subscription, action)
+        error_message = "Failed to find user subscription for Stripe ID #{subscription.id}"
+        Notifications::SlackNotifier.call(
+          message: error_message,
+          channel: :errors
+        )
+      end
     end
 
     def find_user(subscription)
@@ -52,20 +73,16 @@ module CustomStripe
     end
 
     def update_user_subscription(user, subscription, action)
+      return false unless user
+
       user_subscription = user.subscriptions.find_by(stripe_subscription_id: subscription.id)
-      if user_subscription
-        is_active = (subscription.status == 'active' || subscription.status == 'trialing') && !subscription.cancel_at_period_end
-        if %w[created updated resumed].include?(action)
-          user_subscription.update(
-            status: subscription.status,
-            active: is_active,
-            current_period_end: Time.at(subscription.current_period_end).to_datetime
-          )
-        elsif action == 'deleted'
-          # review this code.. looks odd.
-          user_subscription.update(status: subscription.status, active: false, current_period_end: Time.at(subscription.current_period_end).to_datetime)
-        end
-      end
+      return false unless user_subscription
+
+      user_subscription.update(
+        status: subscription.status,
+        current_period_end: Time.at(subscription.current_period_end).to_datetime
+      )
+      true
     end
   end
 end

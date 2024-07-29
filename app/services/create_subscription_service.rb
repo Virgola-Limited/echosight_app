@@ -46,21 +46,21 @@ class CreateSubscriptionService < Services::Base
   end
 
   def deactivate_existing_subscriptions
-    user.subscriptions.active.update_all(active: false)
+    user.subscriptions.active.update_all(status: 'canceled')
   end
 
   def create_stripe_subscription(customer)
     stripe_subscription = Stripe::Subscription.create({
       customer: customer.id,
       items: [{ price: plan_id }],
-      trial_period_days: ENV.fetch('TRIAL_PERIOD_DAYS', 0),
+      trial_period_days: ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i,
       expand: ['latest_invoice.payment_intent']
     })
 
     user.subscriptions.create!(
       stripe_subscription_id: stripe_subscription.id,
       stripe_price_id: plan_id,
-      active: true
+      status: 'active'
     )
   end
 

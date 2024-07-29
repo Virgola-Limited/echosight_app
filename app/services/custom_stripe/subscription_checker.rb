@@ -8,15 +8,14 @@ module CustomStripe
     end
 
     def self.update_local_subscription(local_sub, stripe_sub)
-      # Check if subscription status or active status have changed
+      # Check if subscription status has changed
       new_status = stripe_sub.status
-      is_active = (stripe_sub.status == 'active' || stripe_sub.status == 'trialing') && !stripe_sub.cancel_at_period_end
 
-      if local_sub.status != new_status || local_sub.active != is_active
+      if local_sub.status != new_status
         # Update only if there are changes
         local_sub.update(
           status: new_status,
-          active: is_active
+          current_period_end: Time.at(stripe_sub.current_period_end).to_datetime
         )
       end
     end
