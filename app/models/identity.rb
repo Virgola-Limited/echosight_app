@@ -56,13 +56,15 @@ class Identity < ApplicationRecord
       .order('max_followers_count DESC')
   }
   scope :syncable, lambda {
-    left_outer_joins(:user)
+    active_subscription_ids = Subscription.active.select(:id)
+
+    left_outer_joins(user: :subscriptions)
       .where('identities.sync_without_user = ? OR (identities.user_id IS NOT NULL AND (users.enabled_without_subscription = ? OR EXISTS (
         SELECT 1
         FROM subscriptions
         WHERE subscriptions.user_id = identities.user_id
-        AND subscriptions.active = ?
-      )))', true, true, true)
+        AND subscriptions.id IN (?)
+      )))', true, true, active_subscription_ids)
       .where('users.confirmed_at IS NOT NULL OR identities.user_id IS NULL')
   }
 

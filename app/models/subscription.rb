@@ -3,7 +3,6 @@
 # Table name: subscriptions
 #
 #  id                     :bigint           not null, primary key
-#  active                 :boolean          default(TRUE)
 #  current_period_end     :datetime
 #  status                 :string
 #  created_at             :datetime         not null
@@ -30,33 +29,38 @@ class Subscription < ApplicationRecord
   validates :user, presence: true
   validate :only_one_active_subscription, on: :create
 
-  scope :active, -> { where(active: true) }
+  scope :active, -> { where(status: ['active', 'trialing']) }
 
-  after_save :notify_status_change, if: :saved_change_to_active?
+  after_save :notify_status_change, if: :saved_change_to_status?
 
   def self.ransackable_associations(auth_object = nil)
     ["user"]
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id", "status", "current_period_end"]
+    ["created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id", "status", "current_period_end"]
   end
 
   def self.trial_period
     ENV.fetch('TRIAL_PERIOD_DAYS', 0)
   end
 
+  def active?
+    status == 'active' || status == 'trialing'
+  end
+
   private
 
   def notify_status_change
-    message = "Subscription #{stripe_subscription_id} for user #{user.email} is now #{active? ? 'active' : 'inactive'}."
+    message = "Subscription #{stripe_subscription_id} for user #{user.email} is now #{status}."
     Notifications::SlackNotifier.call(
-      message: message
+      message: message,
+      channel: :stripe
     )
   end
 
   def only_one_active_subscription
-    return if errors[:user].present?
+    return unless user
 
     if user.subscriptions.active.exists?
       errors.add(:user, 'can only have one active subscription')

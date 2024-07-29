@@ -4,7 +4,7 @@ require 'sidekiq/testing'
 
 RSpec.describe SubscriptionSyncJob, type: :job do
   let(:user) { create(:user) }
-  let!(:active_subscription) { create(:subscription, active: true, user: user) }
+  let!(:active_subscription) { create(:subscription, user: user) }
 
   before do
     Sidekiq::Testing.inline!

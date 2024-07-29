@@ -5,7 +5,7 @@ class SubscriptionSyncJob
   sidekiq_options queue: :low_priority
 
   def perform
-    Subscription.where(active: true).find_each do |subscription|
+    Subscription.active.find_each do |subscription|
       CustomStripe::SubscriptionChecker.check_subscription(subscription)
     end
   end

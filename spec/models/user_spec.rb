@@ -104,7 +104,7 @@ RSpec.describe User, type: :model do
           context 'when the user has an active subscription' do
             let!(:identity) { create(:identity, user:) }
             let(:user) { create(:user, confirmed_at: Time.current) }
-            let!(:subscription) { create(:subscription, user:, active: true) }
+            let!(:subscription) { create(:subscription, user:) }
 
             it 'returns true' do
               expect(user.syncable?).to be_truthy

@@ -4,7 +4,9 @@ ActiveAdmin.register Subscription do
   index do
     selectable_column
     id_column
-    column :active
+    column 'Active' do |subscription|
+      subscription.active? ? 'Yes' : 'No'
+    end
     column :created_at
     column :updated_at
     # column :stripe_price_id

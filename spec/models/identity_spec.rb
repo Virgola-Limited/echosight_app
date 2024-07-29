@@ -1,30 +1,3 @@
-# == Schema Information
-#
-# Table name: identities
-#
-#  id                :bigint           not null, primary key
-#  banner_checksum   :string
-#  banner_data       :text
-#  description       :string
-#  handle            :string
-#  image_checksum    :string
-#  image_data        :text
-#  provider          :string
-#  sync_without_user :boolean
-#  uid               :string
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  user_id           :bigint
-#
-# Indexes
-#
-#  index_identities_on_handle   (handle) UNIQUE
-#  index_identities_on_user_id  (user_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (user_id => users.id)
-#
 require 'rails_helper'
 
 RSpec.describe Identity, type: :model do
@@ -32,7 +5,7 @@ RSpec.describe Identity, type: :model do
     let!(:confirmed_user_with_valid_identity_and_active_subscription) do
       user = create(:user, confirmed_at: Time.current)
       create(:identity, user: user)
-      create(:subscription, user: user, active: true)
+      create(:subscription, user: user)
       user.identity
     end
 
@@ -55,19 +28,19 @@ RSpec.describe Identity, type: :model do
     let!(:confirmed_user_with_valid_identity_but_no_active_subscription) do
       user = create(:user, confirmed_at: Time.current)
       create(:identity, user: user)
-      create(:subscription, user: user, active: false)
+      create(:subscription, :inactive, user: user)
       user.identity
     end
 
     let!(:unconfirmed_user) do
       user = create(:user, confirmed_at: nil)
       create(:identity, user: user)
-      create(:subscription, user: user, active: true)
+      create(:subscription, user: user)
       user.identity
     end
 
     let!(:identity_without_user) do
-      create(:identity, sync_without_user: true)
+      create(:identity, :syncable_without_user)
     end
 
     it 'returns only identities that are syncable' do

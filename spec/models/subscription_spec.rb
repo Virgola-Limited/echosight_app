@@ -30,8 +30,8 @@ RSpec.describe Subscription, type: :model do
     end
 
     it 'validates only one active subscription per user' do
-      create(:subscription, user: user, active: true)
-      new_subscription = build(:subscription, user: user, active: true)
+      create(:subscription, user: user, status: 'active')
+      new_subscription = build(:subscription, user: user, status: 'active')
       expect(new_subscription).not_to be_valid
       expect(new_subscription.errors[:user]).to include('can only have one active subscription')
     end
@@ -39,14 +39,14 @@ RSpec.describe Subscription, type: :model do
 
   describe 'callbacks' do
     context 'after save' do
-      it 'calls notify_status_change if saved_change_to_active?' do
-        allow(subscription).to receive(:saved_change_to_active?).and_return(true)
+      it 'calls notify_status_change if saved_change_to_status?' do
+        allow(subscription).to receive(:saved_change_to_status?).and_return(true)
         expect(subscription).to receive(:notify_status_change)
         subscription.save
       end
 
-      it 'does not call notify_status_change if not saved_change_to_active?' do
-        allow(subscription).to receive(:saved_change_to_active?).and_return(false)
+      it 'does not call notify_status_change if not saved_change_to_status?' do
+        allow(subscription).to receive(:saved_change_to_status?).and_return(false)
         expect(subscription).not_to receive(:notify_status_change)
         subscription.save
       end
@@ -54,22 +54,26 @@ RSpec.describe Subscription, type: :model do
   end
 
   describe '#notify_status_change' do
-    let(:message) { "Subscription #{subscription.stripe_subscription_id} for user #{user.email} is now #{subscription.active? ? 'active' : 'inactive'}." }
-
     before do
       allow(Notifications::SlackNotifier).to receive(:call)
     end
 
     it 'sends a notification to Slack with the correct message when activated' do
-      subscription.update!(active: false) # Set initial state
-      subscription.update!(active: true)  # Trigger activation
-      expect(Notifications::SlackNotifier).to have_received(:call).with(message: "Subscription #{subscription.stripe_subscription_id} for user #{subscription.user.email} is now active.")
+      subscription.update!(status: 'canceled') # Set initial state
+      subscription.update!(status: 'active')  # Trigger activation
+      expect(Notifications::SlackNotifier).to have_received(:call).with(
+        message: "Subscription #{subscription.stripe_subscription_id} for user #{subscription.user.email} is now active.",
+        channel: :stripe
+      )
     end
 
     it 'sends a notification to Slack with the correct message when deactivated' do
-      subscription.update!(active: true)  # Set initial state
-      subscription.update!(active: false) # Trigger deactivation
-      expect(Notifications::SlackNotifier).to have_received(:call).with(message: "Subscription #{subscription.stripe_subscription_id} for user #{subscription.user.email} is now inactive.")
+      subscription.update!(status: 'active')  # Set initial state
+      subscription.update!(status: 'canceled') # Trigger deactivation
+      expect(Notifications::SlackNotifier).to have_received(:call).with(
+        message: "Subscription #{subscription.stripe_subscription_id} for user #{subscription.user.email} is now canceled.",
+        channel: :stripe
+      )
     end
   end
 end

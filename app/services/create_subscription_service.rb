@@ -46,7 +46,7 @@ class CreateSubscriptionService < Services::Base
   end
 
   def deactivate_existing_subscriptions
-    user.subscriptions.active.update_all(active: false)
+    user.subscriptions.active.update_all(status: 'canceled')
   end
 
   def create_stripe_subscription(customer)
@@ -60,7 +60,7 @@ class CreateSubscriptionService < Services::Base
     user.subscriptions.create!(
       stripe_subscription_id: stripe_subscription.id,
       stripe_price_id: plan_id,
-      active: true
+      status: 'active'
     )
   end
 

@@ -49,7 +49,13 @@ module CustomStripe
         channel: :stripe
       )
 
-      update_user_subscription(user, subscription, action) if user && %w[created updated resumed deleted].include?(action)
+      unless update_user_subscription(user, subscription, action)
+        error_message = "Failed to find user subscription for Stripe ID #{subscription.id}"
+        Notifications::SlackNotifier.call(
+          message: error_message,
+          channel: :errors
+        )
+      end
     end
 
     def find_user(subscription)
@@ -67,19 +73,16 @@ module CustomStripe
     end
 
     def update_user_subscription(user, subscription, action)
+      return false unless user
+
       user_subscription = user.subscriptions.find_by(stripe_subscription_id: subscription.id)
-      if user_subscription
-        is_active = (subscription.status == 'active' || subscription.status == 'trialing') && !subscription.cancel_at_period_end
-        if %w[created updated resumed].include?(action)
-          user_subscription.update(
-            status: subscription.status,
-            active: is_active,
-            current_period_end: Time.at(subscription.current_period_end).to_datetime
-          )
-        elsif action == 'deleted'
-          user_subscription.update(status: subscription.status, active: false, current_period_end: Time.at(subscription.current_period_end).to_datetime)
-        end
-      end
+      return false unless user_subscription
+
+      user_subscription.update(
+        status: subscription.status,
+        current_period_end: Time.at(subscription.current_period_end).to_datetime
+      )
+      true
     end
   end
 end

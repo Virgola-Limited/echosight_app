@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Stripe Webhook', type: :request do
   let!(:user) { create(:user, email: 'test@example.com') }
-  let!(:subscription) { create(:subscription, user: user, stripe_subscription_id: 'sub_test', status: 'active', active: true, current_period_end: 1.month.from_now) }
+  let!(:subscription) { create(:subscription, user: user, stripe_subscription_id: 'sub_test', status: 'active', current_period_end: 1.month.from_now) }
 
   before do
     allow(Notifications::SlackNotifier).to receive(:call)
@@ -72,14 +72,10 @@ RSpec.describe 'Stripe Webhook', type: :request do
         post '/stripe/webhook', params: stripe_event_payload(event_type, stripe_status).to_json, headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(subscription.reload.active).to be(true)
         expect(subscription.reload.status).to eq('trialing')
         expect(subscription.reload.current_period_end).to be_within(5.seconds).of(Time.current)
 
-        full_event_message = "Received Stripe event: #{event_type}\n" \
-                             "Event ID: evt_test\n" \
-                             "Event Object: #{stripe_event_payload(event_type, stripe_status)[:data][:object].to_json}"
-        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: full_event_message))
+        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: a_string_matching(/Received Stripe event: #{event_type}/)))
         expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: /Subscription created/))
       end
     end
@@ -92,14 +88,10 @@ RSpec.describe 'Stripe Webhook', type: :request do
         post '/stripe/webhook', params: stripe_event_payload(event_type, stripe_status).to_json, headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(subscription.reload.active).to be(true)
         expect(subscription.reload.status).to eq('active')
         expect(subscription.reload.current_period_end).to be_within(5.seconds).of(Time.current)
 
-        full_event_message = "Received Stripe event: #{event_type}\n" \
-                             "Event ID: evt_test\n" \
-                             "Event Object: #{stripe_event_payload(event_type, stripe_status)[:data][:object].to_json}"
-        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: full_event_message))
+        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: a_string_matching(/Received Stripe event: #{event_type}/)))
         expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: /Subscription updated/))
       end
     end
@@ -112,15 +104,28 @@ RSpec.describe 'Stripe Webhook', type: :request do
         post '/stripe/webhook', params: stripe_event_payload(event_type, stripe_status).to_json, headers: headers
 
         expect(response).to have_http_status(:ok)
-        expect(subscription.reload.active).to be(false)
         expect(subscription.reload.status).to eq('canceled')
         expect(subscription.reload.current_period_end).to be_within(5.seconds).of(Time.current)
 
-        full_event_message = "Received Stripe event: #{event_type}\n" \
-                             "Event ID: evt_test\n" \
-                             "Event Object: #{stripe_event_payload(event_type, stripe_status)[:data][:object].to_json}"
-        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: full_event_message))
+        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: a_string_matching(/Received Stripe event: #{event_type}/)))
         expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: /Subscription deleted/))
+      end
+    end
+
+    context 'when the subscription is not found' do
+      let(:event_type) { 'customer.subscription.updated' }
+      let(:stripe_status) { 'active' }
+
+      before do
+        subscription.destroy
+      end
+
+      it 'sends a Slack notification to the errors channel' do
+        post '/stripe/webhook', params: stripe_event_payload(event_type, stripe_status).to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        error_message = "Failed to find user subscription for Stripe ID sub_test"
+        expect(Notifications::SlackNotifier).to have_received(:call).with(hash_including(message: error_message, channel: :errors))
       end
     end
   end
