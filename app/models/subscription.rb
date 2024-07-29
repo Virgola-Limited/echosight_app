@@ -38,7 +38,7 @@ class Subscription < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id"]
+    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id", "status"]
   end
 
   def self.trial_period
