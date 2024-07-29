@@ -6,6 +6,12 @@ ActiveAdmin.register User do
   filter :email
   filter :ad_campaign_id_present, as: :boolean, label: 'Has Campaign ID'
 
+  controller do
+    def scoped_collection
+      super.includes(:ad_campaign)
+    end
+  end
+
   index do
     column :id
     column :name
@@ -30,8 +36,9 @@ ActiveAdmin.register User do
       end
     end
     actions defaults: true do |user|
+      item 'Masquerade', masquerade_path(user), method: :post if user.sign_in_count > 0
       if user.otp_required_for_login
-        link_to 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
+        item 'Disable 2FA', disable_2fa_admin_user_path(user), method: :put
       end
     end
   end
@@ -47,7 +54,7 @@ ActiveAdmin.register User do
       row :current_sign_in_at
       row :last_sign_in_at
       row 'Identity Handle' do |user|
-        user.identity.try(:handle) # Assumes that the Identity model has a 'handle' attribute
+        user.identity.try(:handle)
       end
       row :vip_since
       row :enabled_without_subscription
@@ -67,29 +74,6 @@ ActiveAdmin.register User do
     f.actions
   end
 
-  controller do
-    def scoped_collection
-      if params[:q] && params[:q][:ad_campaign_id_present]
-        if params[:q][:ad_campaign_id_present] == "true"
-          super.where.not(ad_campaign_id: nil)
-        else
-          super.where(ad_campaign_id: nil)
-        end
-      else
-        super
-      end
-    end
-
-    def update
-      super do |_format|
-        if resource.valid? && resource.unconfirmed_email.present?
-          resource.confirm # Manually confirm the new email
-          redirect_to admin_user_path(resource) and return if resource.errors.blank?
-        end
-      end
-    end
-  end
-
   member_action :disable_2fa, method: :put do
     user = User.find(params[:id])
     user.update(otp_secret: nil, otp_required_for_login: false)
@@ -97,13 +81,12 @@ ActiveAdmin.register User do
   end
 
   collection_action :invite_user, method: :get do
-    @user = User.new # Initializes a new user for the form
-
+    @user = User.new
     render 'admin/users/invite_user'
   end
 
   collection_action :send_invite, method: :post do
-    user = User.invite!(email: params[:user][:email], name: params[:user][:name]) # Adjust as per your User model attributes
+    user = User.invite!(email: params[:user][:email], name: params[:user][:name])
     if user.errors.empty?
       redirect_to admin_users_path, notice: 'User has been successfully invited.'
     else

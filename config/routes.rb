@@ -23,10 +23,11 @@ Rails.application.routes.draw do
   resource :email_subscription, only: [:edit, :update]
   resources :feature_requests, only: [:index, :create]
   get 'landing', to: 'pages#landing'
+  get 'leaderboard', to: 'leaderboard#users'
+  resources :posts, only: [:index]
   get 'p/:handle', to: 'public_pages#show', as: :public_page
   get 'track/open/:tracking_id', to: 'tracker#open'
   get 'leaderboard/tweets', to: 'leaderboard#tweets'
-  get 'leaderboard', to: 'leaderboard#users'
 
   resources :single_message, only: :index
   get 'sitemap.xml', to: 'sitemap#index', defaults: { format: 'xml' }
@@ -46,10 +47,13 @@ Rails.application.routes.draw do
     omniauth_callbacks: 'users/omniauth_callbacks',
     registrations: 'users/registrations',
     confirmations: 'users/confirmations',
-    sessions: 'users/sessions'
+    sessions: 'users/sessions',
+    masquerades: "users/masquerades"
   }
   devise_scope :user do
     get 'users/otp', to: 'users/sessions#new_otp', as: :new_otp_user_session
     post 'users/verify_otp', to: 'users/sessions#verify_otp', as: :verify_otp_user_session
+    post 'masquerade', to: 'users/masquerades#show', as: :masquerade
+    post 'back_masquerade', to: 'users/masquerades#back', as: :back_masquerade
   end
 end

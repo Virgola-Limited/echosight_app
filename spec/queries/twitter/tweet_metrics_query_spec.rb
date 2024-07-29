@@ -27,8 +27,11 @@ RSpec.describe Twitter::TweetMetricsQuery do
 
     it 'returns tweets sorted by impression_count in descending order' do
       top_tweets = query.top_tweets_for_user
-      expect(top_tweets.map(&:tweet_id)).to match_array(top_tweets.map(&:tweet_id).uniq)
-      expect(top_tweets.map(&:impression_count)).to match_array([1500, 500, 300, 0])
+
+      # Fetch the max impression_count for each tweet
+      max_impressions = top_tweets.map { |tweet| tweet.tweet_metrics.maximum(:impression_count) }
+
+      expect(max_impressions).to eq([1500, 500, 300, 0])
     end
   end
 end

@@ -1,5 +1,5 @@
 # app/components/chart_component.rb
-class ChartComponent < ViewComponent::Base
+class ChartComponent < ApplicationComponent
   def initialize(chart_id:, chart_type:, series_name:, series_data:, categories:, y_suffix: '')
     @chart_id = chart_id
     @chart_type = chart_type

@@ -20,8 +20,8 @@
             </div>
             <!-- Modal footer -->
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-              <%= render Shared::ButtonComponent.new(text: "Copy", url: '', classes: 'mx-2.5 copy-button', no_form: true) %>
-              <%= render Shared::ButtonComponent.new(text: "Export", classes: 'mx-2.5 export-button', no_form: true) %>
+              <%= render Shared::ButtonComponent.new(text: "Copy", url: '', classes: 'mx-2.5 copy-button', no_form: true, method: :post) %>
+              <%= render Shared::ButtonComponent.new(text: "Export", classes: 'mx-2.5 export-button', no_form: true, method: :post) %>
             </div>
         </div>
     </div>

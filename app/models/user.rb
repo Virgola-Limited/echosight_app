@@ -64,7 +64,7 @@ class User < ApplicationRecord
 
   devise :invitable, :invitable, :registerable, :two_factor_authenticatable,
          :recoverable, :rememberable, :validatable,
-         :confirmable, :lockable, :timeoutable, :trackable, :omniauthable,
+         :confirmable, :lockable, :timeoutable, :trackable, :omniauthable, :masqueradable,
         #  omniauth_providers: [:twitter2] #oAuth 2
          omniauth_providers: [:twitter]
 

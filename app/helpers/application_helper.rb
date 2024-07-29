@@ -1,5 +1,5 @@
+# app/helpers/application_helper.rb
 module ApplicationHelper
-  include ActionView::Helpers::UrlHelper
 
   def html_description_with_links(description)
     description.to_s.gsub(%r{(https?://[^\s]+)}) do |url|

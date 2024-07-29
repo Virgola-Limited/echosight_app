@@ -8,7 +8,7 @@ module Twitter
 
     def format_label(date, index)
       case date_range[:range]
-      when '3m', '1y'
+      when '3m', '1y', 'all'
         date.day == 1 ? date.strftime('%b') : ''
       when '28d'
         index.even? ? date.strftime('%m/%d') : ''

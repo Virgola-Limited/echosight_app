@@ -6,7 +6,8 @@ module Twitter
       { value: '14d', label: '14 days' },
       { value: '28d', label: '28 days' },
       { value: '3m', label: '3 months' },
-      # { value: '1y', label: '1 year' },
+      { value: '1y', label: '1 year' },
+      { value: 'all', label: 'All time' }
     ].freeze
 
     def self.all
@@ -26,6 +27,8 @@ module Twitter
                     3.months.ago.beginning_of_day
                   when '1y'
                     1.year.ago.beginning_of_day
+                  when 'all'
+                    Time.at(0)
                   else
                     6.days.ago.beginning_of_day
                   end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Twitter
   class TweetMetricsQuery
     include TweetMetrics::MetricsCalculation
@@ -18,24 +16,16 @@ module Twitter
       tweets_in_date_range = Tweet.where(identity_id: identity.id)
                                   .where(twitter_created_at: date_range[:start_time]..date_range[:end_time])
 
-      tweet_metrics = TweetMetric.where(tweet_id: tweets_in_date_range)
-                                 .group(:tweet_id, :pulled_at, :impression_count, :id)
-                                 .where.not(impression_count: nil)
-                                 .order(impression_count: :desc)
+      tweet_metrics_subquery = TweetMetric.where(tweet_id: tweets_in_date_range)
+                                          .where.not(impression_count: nil)
+                                          .select('tweet_id, MAX(impression_count) AS max_impression_count')
+                                          .group(:tweet_id)
 
-      results = []
-      used_tweets = []
-      tweet_metrics.each do |tweet_metric|
-        if used_tweets.exclude?(tweet_metric.tweet_id)
-          results << tweet_metric.id
-          used_tweets << tweet_metric.tweet_id
-        end
-        break if used_tweets.count == 10
-      end
+      top_tweet_ids_with_order = tweet_metrics_subquery.order('max_impression_count DESC').limit(10)
 
-      TweetMetric.where(id: results)
-                 .includes(:tweet)
-                 .order(impression_count: :desc)
+      Tweet.joins("INNER JOIN (#{top_tweet_ids_with_order.to_sql}) AS tm ON tweets.id = tm.tweet_id")
+           .includes(:tweet_metrics)
+           .order('tm.max_impression_count DESC')
     end
   end
 end

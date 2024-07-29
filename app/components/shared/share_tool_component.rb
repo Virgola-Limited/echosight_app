@@ -1,5 +1,5 @@
 module Shared
-  class ShareToolComponent < ViewComponent::Base
+  class ShareToolComponent < ApplicationComponent
     attr_reader :modal_id, :chart_id, :title
 
     def initialize(modal_id:, chart_id:, title: nil)
