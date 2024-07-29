@@ -19,4 +19,14 @@
 #
 class TwitterUpdateAttempt < ApplicationRecord
   belongs_to :user_twitter_data_update
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "error_message", "id", "status", "updated_at"]
+  end
+
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[user_twitter_data_update]
+  end
+
 end
