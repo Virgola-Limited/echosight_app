@@ -53,7 +53,7 @@ class CreateSubscriptionService < Services::Base
     stripe_subscription = Stripe::Subscription.create({
       customer: customer.id,
       items: [{ price: plan_id }],
-      trial_period_days: ENV.fetch('TRIAL_PERIOD_DAYS', 0),
+      trial_period_days: ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i,
       expand: ['latest_invoice.payment_intent']
     })
 
