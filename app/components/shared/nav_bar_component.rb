@@ -12,14 +12,13 @@ module Shared
     end
 
     def nav_links
-      links = [
+      [
         { name: 'Dashboard', path: root_url },
         { name: 'My Public Page', path: demo_or_real_public_page_link },
+        { name: 'My Posts', path: posts_path },
         { name: 'Leaderboard', path: leaderboard_path },
         { name: 'Feature Requests', path: feature_requests_path }
       ]
-      links.insert(2, { name: 'My Posts', path: posts_path }) if current_admin_user
-      links
     end
   end
 end

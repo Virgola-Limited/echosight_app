@@ -69,9 +69,24 @@ Yep 1. is perfect
 <% if show_happy_message? %>
   <%= render ContentBoxComponent.new do %>
     <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h2) %>
-    <p class="paragraph-base">You are connected to Twitter/X and we are collecting data from your account to generate your public page. Check out your <%= link_to "public page", public_page_path(current_user.handle) %>.</p>
+    <p class="paragraph-base">You are connected to <%= t(:twitter_title) %> and we are collecting data for your account.</p>
+
+    <p class="paragraph-base">Check out the following:</p>
+    <ul class="space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+        <li>
+            <%= link_to "Your Public Page", public_page_path(current_user.handle), class: 'text-blue-500 hover:underline' %>
+            <span>- View and share your analytics with potential advertisers.</span>
+        </li>
+        <li>
+            <%= link_to "Your Post Page", posts_path, class: 'text-blue-500 hover:underline' %>
+            <span>- Search and analyse your posts easily.</span>
+        </li>
+    </ul>
+    </p>
+
+
     <% if show_2fa_reminder? %>
-      <p class="paragraph-base">Remember to enable <%= link_to "two-factor authentication", two_factor_authentication_path %> on your Echosight account.</p>
+      <p class="paragraph-base mt-4">Remember to enable <%= link_to "two-factor authentication", two_factor_authentication_path, class: 'text-blue-500 hover:underline' %> on your Echosight account for added security.</p>
     <% end %>
   <% end %>
 <% end %>
