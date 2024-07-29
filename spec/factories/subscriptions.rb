@@ -26,5 +26,6 @@ FactoryBot.define do
     active { true }
     stripe_subscription_id { Faker::Alphanumeric.alphanumeric(number: 10) }
     stripe_price_id { Faker::Alphanumeric.alphanumeric(number: 10) }
+    association :user
   end
 end
