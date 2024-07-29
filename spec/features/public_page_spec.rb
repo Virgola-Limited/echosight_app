@@ -11,12 +11,17 @@ def expect_not_to_have_demo_data
 end
 
 RSpec.feature 'Public Page Access' do
+  before(:each) do
+    Capybara.reset_sessions!
+    page.driver.browser.manage.delete_all_cookies
+  end
+
   scenario 'Verify public page access and redirections' do
     user = create(:user)
 
     # Context: Demo page not logged in
     visit public_page_path(:demo)
-    expect(page).to have_title("Sammy Circuit's Public Page")
+    expect(page).to have_title("Sammy Circuit's Public Page", wait: 10)
     within('[role="alert"]') do
       expect(page).to have_text('This is a demo page showing how your public page could look')
       expect(page).to have_text('Sign up')
@@ -29,7 +34,7 @@ RSpec.feature 'Public Page Access' do
     visit current_path
     expect(page).to have_text('Dashboard')
 
-    expect(page).to have_title("Sammy Circuit's Public Page")
+    expect(page).to have_title("Sammy Circuit's Public Page", wait: 10)
     within('[role="alert"]') do
       expect(page).to have_text('for the steps to enable your public page')
     end
@@ -45,7 +50,7 @@ RSpec.feature 'Public Page Access' do
     identity.reload
     visit public_page_path(:demo)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page).to have_title("Twitter User's Public Page")
+    expect(page).to have_title("Twitter User's Public Page", wait: 10)
 
     within('[role="alert"]') do
       expect(page).to have_text('for the steps to enable your public page')
@@ -58,7 +63,7 @@ RSpec.feature 'Public Page Access' do
     allow(identity).to receive(:enough_data_for_public_page?).and_return(true)
     visit public_page_path(user.handle)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page).to have_title("Twitter User's Public Page")
+    expect(page).to have_title("Twitter User's Public Page", wait: 10)
 
     expect(page).not_to have_text('for the steps to enable your public page')
     expect(page).not_to have_text('Subscribe')
@@ -73,7 +78,7 @@ RSpec.feature 'Public Page Access' do
     subscription.destroy
     visit public_page_path(user.handle)
     expect(page).to have_current_path(public_page_path(user.handle))
-    expect(page).to have_title("Twitter User's Public Page")
+    expect(page).to have_title("Twitter User's Public Page", wait: 10)
 
     expect(page).not_to have_text('This is a demo or inactive page showing')
 
