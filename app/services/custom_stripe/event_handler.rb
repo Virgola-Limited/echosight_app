@@ -1,6 +1,9 @@
 module CustomStripe
   class EventHandler
     def call(event)
+      Rails.logger.info "Processing event: #{event.type}"
+      Rails.logger.info "Event object: #{event.data.object.to_json}"
+
       case event.type
       when 'customer.subscription.created'
         handle_event(event.data.object, 'created')
@@ -31,7 +34,7 @@ module CustomStripe
         message: message
       )
 
-      update_user_subscription(user, subscription, action) if user && %w[created updated resumed].include?(action)
+      update_user_subscription(user, subscription, action) if user && %w[created updated resumed deleted].include?(action)
     end
 
     def find_user(subscription)
@@ -52,13 +55,15 @@ module CustomStripe
       user_subscription = user.subscriptions.find_by(stripe_subscription_id: subscription.id)
       if user_subscription
         is_active = (subscription.status == 'active' || subscription.status == 'trialing') && !subscription.cancel_at_period_end
-        if action == 'updated' || action == 'created' || action == 'resumed'
+        if %w[created updated resumed].include?(action)
           user_subscription.update(
+            status: subscription.status,
             active: is_active,
             current_period_end: Time.at(subscription.current_period_end).to_datetime
           )
         elsif action == 'deleted'
-          user_subscription.update(active: false)
+          # review this code.. looks odd.
+          user_subscription.update(status: subscription.status, active: false, current_period_end: Time.at(subscription.current_period_end).to_datetime)
         end
       end
     end

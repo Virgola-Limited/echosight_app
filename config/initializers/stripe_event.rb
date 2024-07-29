@@ -1,3 +1,4 @@
+# config/initializers/stripe_event.rb
 require Rails.root.join('app/services/custom_stripe/event_handler')
 
 StripeEvent.configure do |events|
