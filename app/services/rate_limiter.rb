@@ -1,5 +1,5 @@
 class RateLimiter
-  def initialize(rate: 100, per: 60)
+  def initialize(rate: 60, per: 60)
     @rate = rate
     @per = per
     @tokens = rate
