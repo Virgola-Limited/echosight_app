@@ -4,6 +4,8 @@
 #
 #  id                     :bigint           not null, primary key
 #  active                 :boolean          default(TRUE)
+#  current_period_end     :datetime
+#  status                 :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  stripe_price_id        :string
@@ -26,34 +28,18 @@ class Subscription < ApplicationRecord
   validate :only_one_active_subscription, on: :create
   validates :stripe_subscription_id, presence: true, uniqueness: true
   validates :stripe_price_id, presence: true
+  validates :user, presence: true
 
   scope :active, -> { where(active: true) }
 
-  # ActiveRecord::Base.transaction do
-  #   user.subscriptions.active.update_all(active: false) # Deactivate all active subscriptions
-  #   user.subscriptions.create!(new_subscription_params) # Create and activate the new subscription
-  # end
-
-  # You can define a method to check if the subscription is still active in Stripe
-  # def subscription_active?
-  #   stripe_subscription = Stripe::Subscription.retrieve(self.stripe_subscription_id)
-  #   stripe_subscription.status == 'active' && !stripe_subscription.cancel_at_period_end
-  # end
-
-  # Method to check for the Stripe subscription's current phase (trial, active, etc.)
-  # def current_phase
-  #   stripe_subscription = Stripe::Subscription.retrieve(self.stripe_subscription_id)
-  #   return 'trial' if stripe_subscription.trial_end.present? && Time.at(stripe_subscription.trial_end) > Time.now
-  #   return 'active' if stripe_subscription.status == 'active'
-  #   'inactive'
-  # end
+  after_save :notify_status_change, if: :saved_change_to_active?
 
   def self.ransackable_associations(auth_object = nil)
     ["user"]
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id"]
+    ["active", "created_at", "id", "stripe_price_id", "stripe_subscription_id", "updated_at", "user_id", "status", "current_period_end"]
   end
 
   def self.trial_period
@@ -61,6 +47,13 @@ class Subscription < ApplicationRecord
   end
 
   private
+
+  def notify_status_change
+    message = "Subscription #{stripe_subscription_id} for user #{user.email} is now #{active? ? 'active' : 'inactive'}."
+    Notifications::SlackNotifier.call(
+      message: message
+    )
+  end
 
   def only_one_active_subscription
     if user.subscriptions.active.exists?
