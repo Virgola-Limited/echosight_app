@@ -8,7 +8,7 @@ ActiveAdmin.register_page "Dashboard" do
     .group("tweets.id")
     .having("COUNT(tweet_metrics.id) > 1")
 
-    h2 "Tweets with More Than 1 Tweet Metric: #{tweets_with_multiple_metrics.count.size}"
+    h2 "Tweets with More Than 1 Tweet Metric in the last 3 days: #{tweets_with_multiple_metrics.count.size}"
     section do
       table_for tweets_with_multiple_metrics do
         column :id
