@@ -49,6 +49,11 @@ if !Rails.env.development? && !Rails.env.test?
     Sidekiq::Cron::Job.load_from_array!(
       [
         {
+          'name' => 'Queue Monitor - every 5 minutes',
+          'cron' => '*/5 * * * *',
+          'class' => 'QueueMonitorWorker'
+        },
+        {
           'name' => 'Fetch Tweets',
           'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
           'class' => 'Twitter::TweetsFetcherJob'
@@ -79,19 +84,13 @@ if !Rails.env.development? && !Rails.env.test?
           'class' => 'IdentityNotificationJob',
           'tz' => "Australia/Sydney"
         }
+      ]
+    )
 
-        # Not needed in OAuth1
-        # {
-        #   'name' => 'Refresh OAuth Credentials - every 30 minutes',
-        #   'cron' => '*/30 * * * *',
-        #   'class' => 'Twitter::RefreshOauthCredentialsJob'
-        # },
+  end
+end
         # {
         #   'name' => 'Remove old empty ApiBatches',
         #   'cron' => '0 0 * * *',
         #   'class' => 'RemoveOldEmptyApiBatchJob'
         # }
-      ]
-    )
-  end
-end
