@@ -9,6 +9,8 @@ ActiveAdmin.register Subscription do
     end
     column :created_at
     column :updated_at
+    # column :stripe_price_id
+    # column :stripe_subscription_id
     column :user_id
 
     column 'Identity' do |subscription|
