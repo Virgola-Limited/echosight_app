@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe QueueMonitorJob, type: :job do
   let(:queue_name) { 'default' }
-  let(:queue_size) { 150 }
+  let(:queue_size) { 31 }
 
   before do
     Sidekiq::Testing.fake!  # Use fake mode for testing
@@ -19,7 +19,7 @@ RSpec.describe QueueMonitorJob, type: :job do
   end
 
   it 'does not send an email if all queue sizes are below the threshold' do
-    allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: 50)])
+    allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: 19)])
 
     expect(QueueMailer).not_to receive(:queue_size_alert)
 
