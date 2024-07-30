@@ -1,80 +1,53 @@
 # config/initializers/sidekiq.rb
 require 'sidekiq'
 require 'sidekiq-cron'
-require_relative '../../lib/cron_expression_generator'
+require 'sidekiq-unique-jobs'
+require 'erb'
 
 Sidekiq.logger.level = Logger::DEBUG
+
+SidekiqUniqueJobs.configure do |config|
+  config.logger = Sidekiq.logger
+  config.debug_lua = true
+end
 
 Sidekiq.configure_server do |config|
   config.redis = {
     url: ENV["REDIS_URL"],
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-    connect_timeout: 2,   # Default is 1 second
-    read_timeout: 2,      # Default is 1 second
-    write_timeout: 2      # Default is 1 second
+    connect_timeout: 2,
+    read_timeout: 2,
+    write_timeout: 2
   }
 
-  # Use Sidekiq's built-in error handler
-  # if Rails.application.credentials.dig(:notify_exceptions)
-  #   config.error_handlers << proc { |ex, ctx_hash| ExceptionNotifier.notify_exception(ex, data: ctx_hash) }
-  # end
+  config.server_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Server
+  end
 
-  Sidekiq::Cron::Job.destroy_all!
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
 
-  Sidekiq::Cron::Job.load_from_array!(
-    [
-        {
-          'name' => 'Queue Monitor - every 5 minutes',
-          'cron' => '*/5 * * * *',
-          'class' => 'QueueMonitorJob'
-        },
-        {
-          'name' => 'Fetch Tweets',
-          'cron' => CronExpressionGenerator.for_interval(ApplicationConstants::TWITTER_FETCH_INTERVAL),
-          'class' => 'Twitter::TweetsFetcherJob'
-        },
-        {
-          'name' => 'Sync Subscriptions - every 1 hour',
-          'cron' => '0 * * * *',
-          'class' => 'SubscriptionSyncJob'
-        },
-        {
-          'name' => 'Regenerate User Public Page Cache - every 3 hours',
-          'cron' => '0 */3 * * *',
-          'class' => 'RegenerateUserPublicPageCacheJob'
-        },
-        {
-          'name' => 'Users Without Subscription Email - every 1 day',
-          'cron' => '0 0 * * *',
-          'class' => 'UsersWithoutSubscriptionEmailJob'
-        },
-        {
-          'name' => 'capture_leaderboard_job',
-          'cron' => '0 * * * *',
-          'class' => 'Twitter::CaptureLeaderboardJob'
-        },
-        {
-          'name' => 'identity_notifications_job',
-          'cron' => "0 10 * * *",
-          'class' => 'IdentityNotificationJob',
-          'tz' => "Australia/Sydney"
-        }
-      ]
-    )
+  config.on(:startup) do
+    schedule_file = "config/sidekiq_schedule.yml"
+    if File.exist?(schedule_file)
+      Sidekiq::Cron::Job.destroy_all!
+      schedule = YAML.load(ERB.new(File.read(schedule_file)).result)
+      Sidekiq::Cron::Job.load_from_hash(schedule)
+    end
+  end
 end
 
 Sidekiq.configure_client do |config|
   config.redis = {
     url: ENV["REDIS_URL"],
     ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-    connect_timeout: 2,   # Default is 1 second
-    read_timeout: 2,      # Default is 1 second
-    write_timeout: 2      # Default is 1 second
+    connect_timeout: 2,
+    read_timeout: 2,
+    write_timeout: 2
   }
-end
 
-        # {
-        #   'name' => 'Remove old empty ApiBatches',
-        #   'cron' => '0 0 * * *',
-        #   'class' => 'RemoveOldEmptyApiBatchJob'
-        # }
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
+end
