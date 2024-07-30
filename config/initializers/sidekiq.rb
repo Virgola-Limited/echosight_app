@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # config/initializers/sidekiq.rb
 require 'sidekiq'
 require 'sidekiq-cron'
@@ -7,47 +5,24 @@ require_relative '../../lib/cron_expression_generator'
 
 Sidekiq.logger.level = Logger::DEBUG
 
-if !Rails.env.development? && !Rails.env.test?
-  module Sidekiq
-    class ExceptionNotificationMiddleware
-      def call(_worker, msg, _queue)
-        yield
-      rescue StandardError => e
-        ExceptionNotifier.notify_exception(e, data: { sidekiq: msg })
-        raise e
-      end
-    end
-  end
+Sidekiq.configure_server do |config|
+  config.redis = {
+    url: ENV["REDIS_URL"],
+    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
+    connect_timeout: 2,   # Default is 1 second
+    read_timeout: 2,      # Default is 1 second
+    write_timeout: 2      # Default is 1 second
+  }
 
-  Sidekiq.configure_client do |config|
-    config.redis = {
-      url: ENV["REDIS_URL"],
-      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-      connect_timeout: 2,   # Default is 1 second
-      read_timeout: 2,      # Default is 1 second
-      write_timeout: 2      # Default is 1 second
-    }
-  end
+  # Use Sidekiq's built-in error handler
+  # if Rails.application.credentials.dig(:notify_exceptions)
+  #   config.error_handlers << proc { |ex, ctx_hash| ExceptionNotifier.notify_exception(ex, data: ctx_hash) }
+  # end
 
-  Sidekiq.configure_server do |config|
-    # Add your custom middleware to the Sidekiq server middleware chain
-    config.server_middleware do |chain|
-      chain.add Sidekiq::ExceptionNotificationMiddleware
-    end
+  Sidekiq::Cron::Job.destroy_all!
 
-    config.redis = {
-      url: ENV["REDIS_URL"],
-      ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
-      connect_timeout: 2,   # Default is 1 second
-      read_timeout: 2,      # Default is 1 second
-      write_timeout: 2      # Default is 1 second
-    }
-
-    Sidekiq::Cron::Job.destroy_all!
-
-    # Define your Sidekiq-Cron jobs here
-    Sidekiq::Cron::Job.load_from_array!(
-      [
+  Sidekiq::Cron::Job.load_from_array!(
+    [
         {
           'name' => 'Queue Monitor - every 5 minutes',
           'cron' => '*/5 * * * *',
@@ -86,9 +61,18 @@ if !Rails.env.development? && !Rails.env.test?
         }
       ]
     )
-
-  end
 end
+
+Sidekiq.configure_client do |config|
+  config.redis = {
+    url: ENV["REDIS_URL"],
+    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE },
+    connect_timeout: 2,   # Default is 1 second
+    read_timeout: 2,      # Default is 1 second
+    write_timeout: 2      # Default is 1 second
+  }
+end
+
         # {
         #   'name' => 'Remove old empty ApiBatches',
         #   'cron' => '0 0 * * *',
