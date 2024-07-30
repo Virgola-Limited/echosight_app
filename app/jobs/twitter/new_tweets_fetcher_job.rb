@@ -4,7 +4,6 @@ module Twitter
   class NewTweetsFetcherJob
     include Sidekiq::Job
     sidekiq_options queue: :tweet_syncing,
-                    retry: true,
                     unique: :until_executed,
                     unique_across: :queue,
                     lock_timeout: 1.hour,
