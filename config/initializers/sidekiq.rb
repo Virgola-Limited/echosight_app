@@ -51,7 +51,7 @@ if !Rails.env.development? && !Rails.env.test?
         {
           'name' => 'Queue Monitor - every 5 minutes',
           'cron' => '*/5 * * * *',
-          'class' => 'QueueMonitorWorker'
+          'class' => 'QueueMonitorJob'
         },
         {
           'name' => 'Fetch Tweets',

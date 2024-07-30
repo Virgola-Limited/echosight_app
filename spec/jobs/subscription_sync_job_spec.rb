@@ -1,6 +1,5 @@
 # spec/jobs/subscription_sync_job_spec.rb
 require 'rails_helper'
-require 'sidekiq/testing'
 
 RSpec.describe SubscriptionSyncJob, type: :job do
   let(:user) { create(:user) }
