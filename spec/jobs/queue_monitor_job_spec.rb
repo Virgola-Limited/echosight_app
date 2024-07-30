@@ -12,16 +12,17 @@ RSpec.describe QueueMonitorJob, type: :job do
     allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: queue_size)])
   end
 
-  it 'sends an email if a queue size exceeds the threshold' do
-    expect(QueueMailer).to receive(:queue_size_alert).with(queue_name, queue_size).and_return(double(deliver_now: true))
+  it 'sends a Slack message if a queue size exceeds the threshold' do
+    message = "The #{queue_name} queue has reached a size of #{queue_size}"
+    expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :errors)
 
     described_class.new.perform
   end
 
-  it 'does not send an email if all queue sizes are below the threshold' do
+  it 'does not send a Slack message if all queue sizes are below the threshold' do
     allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: 19)])
 
-    expect(QueueMailer).not_to receive(:queue_size_alert)
+    expect(Notifications::SlackNotifier).not_to receive(:call)
 
     described_class.new.perform
   end
