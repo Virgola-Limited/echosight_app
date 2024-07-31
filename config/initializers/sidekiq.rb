@@ -14,13 +14,23 @@ Sidekiq.configure_server do |config|
     write_timeout: 2      # Default is 1 second
   }
 
+  # doesnt seem to be needed - errors are reported okay
   # Use Sidekiq's built-in error handler
   # if Rails.application.credentials.dig(:notify_exceptions)
   #   config.error_handlers << proc { |ex, ctx_hash| ExceptionNotifier.notify_exception(ex, data: ctx_hash) }
   # end
 
-  Sidekiq::Cron::Job.destroy_all!
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
 
+  config.server_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Server
+  end
+
+  SidekiqUniqueJobs::Server.configure(config)
+
+  Sidekiq::Cron::Job.destroy_all!
   Sidekiq::Cron::Job.load_from_array!(
     [
         {
