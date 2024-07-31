@@ -4,10 +4,15 @@ module Twitter
   class NewTweetsFetcherJob
     include Sidekiq::Job
     sidekiq_options queue: :tweet_syncing,
-                    lock: :until_and_while_executing,
-                    unique_across_queues: true,
-                    lock_timeout: 1.hour,
-                    on_conflict: { client: :log, server: :reschedule }
+      lock: :until_and_while_executing,
+      unique_across_queues: true,
+      lock_timeout: 1.hour,
+      on_conflict: { client: :log, server: :reschedule },
+      unique_args: :unique_args
+
+    def self.unique_args(_args)
+      []
+    end
 
 
     def perform(identity_id, api_batch_id)
