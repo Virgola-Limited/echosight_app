@@ -20,13 +20,15 @@ Sidekiq.configure_server do |config|
     write_timeout: 2
   }
 
+  config.client_middleware do |chain|
+    chain.add SidekiqUniqueJobs::Middleware::Client
+  end
+
   config.server_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Server
   end
 
-  config.client_middleware do |chain|
-    chain.add SidekiqUniqueJobs::Middleware::Client
-  end
+  SidekiqUniqueJobs::Server.configure(config)
 
   config.on(:startup) do
     schedule_file = "config/sidekiq_schedule.yml"
