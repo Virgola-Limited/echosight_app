@@ -4,11 +4,12 @@ module SocialData
   class Client
     attr_reader :user, :rate_limiter
 
+    # perhaps removing this or increase it a very large amount
     MAXIMUM_TWEETS = 2000
 
     def initialize(user: nil)
       @user = user
-      @rate_limiter = ::RateLimiter.new(rate: 120, warning_threshold: 0.8, cooldown: 600)
+      @rate_limiter = ::RateLimiter.new
     end
 
     def api_key
@@ -18,6 +19,12 @@ module SocialData
     # https://github.com/igorbrigadir/twitter-advanced-search
     def search_tweets(params = {}, single_request = false)
       endpoint = 'search'
+
+      # Ensure the query includes -filter:replies
+      # if params[:query] && !params[:query].include?("-filter:replies")
+      #   params[:query] += " -filter:replies"
+      # end
+
       received_tweet_count = 0
       all_tweets = []
       while received_tweet_count < MAXIMUM_TWEETS
@@ -46,20 +53,26 @@ module SocialData
     def fetch_user_details(user_id)
       endpoint = "user/#{user_id}"
       params = {}
+
       make_api_call(endpoint, params, :oauth2)
     end
 
+
+    # TODO: Internalize the next_token handling to prevent
+    # pullling too many tweets
     def fetch_user_tweets(next_token = nil)
       endpoint = "user/#{user.identity.uid}/tweets"
       params = {
         'cursor' => next_token
       }
+
       make_api_call(endpoint, params, :oauth2)
     end
 
     def fetch_user_with_metrics
       endpoint = "user/#{user.identity.uid}"
       params = {}
+
       make_api_call(endpoint, params, :oauth2)
     end
 
@@ -78,7 +91,9 @@ module SocialData
 
     def fetch_tweet_by_id(tweet_id)
       endpoint = 'statuses/show'
-      params = { 'id' => tweet_id }
+      params = {
+        'id' => tweet_id
+      }
       make_api_call(endpoint, params, :oauth2)
     end
 
@@ -86,16 +101,22 @@ module SocialData
       rate_limiter.throttle
 
       uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
+
+      # remove params with empty values
       params = params.reject { |_k, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
+
       uri.query = URI.encode_www_form(params) unless params.nil? || params.empty?
 
+      # Set up the request
       request = Net::HTTP::Get.new(uri)
-      request['Authorization'] = "Bearer #{api_key}"
+      request['Authorization'] = "Bearer #{api_key}" # Add appropriate authorization header
 
+      # Perform the request
       response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
         http.request(request)
       end
 
+      # Handle the response
       unless response.is_a?(Net::HTTPSuccess)
         raise StandardError, "HTTP request failed: #{response.code} - #{response.message}, uri: #{uri.inspect}, params: #{params.inspect}"
       end
