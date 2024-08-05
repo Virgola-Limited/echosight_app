@@ -3,7 +3,7 @@ class QueueMonitorJob
 
   def perform
     queue_threshold = 20
-    scheduled_threshold = 300
+    scheduled_threshold = 500
 
     Sidekiq::Queue.all.each do |queue|
       if queue.size >= queue_threshold
