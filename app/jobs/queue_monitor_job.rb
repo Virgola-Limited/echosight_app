@@ -3,11 +3,17 @@ class QueueMonitorJob
 
   def perform
     queue_threshold = 20
+    enqueued_threshold = 100
     scheduled_threshold = 500
 
     Sidekiq::Queue.all.each do |queue|
       if queue.size >= queue_threshold
         message = "The #{queue.name} queue has reached a size of #{queue.size}"
+        Notifications::SlackNotifier.call(message: message, channel: :general)
+      end
+
+      if queue.size >= enqueued_threshold
+        message = "The #{queue.name} queue has #{queue.size} enqueued jobs"
         Notifications::SlackNotifier.call(message: message, channel: :general)
       end
     end
