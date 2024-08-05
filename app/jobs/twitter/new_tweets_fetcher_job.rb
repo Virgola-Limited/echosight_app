@@ -3,7 +3,7 @@
 module Twitter
   class NewTweetsFetcherJob
     include Sidekiq::Job
-    sidekiq_options queue: :tweet_syncing
+    sidekiq_options queue: :tweet_syncing, lock: :until_and_while_executing
 
 
     def perform(identity_id, api_batch_id)
