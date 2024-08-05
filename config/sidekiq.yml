@@ -1,6 +1,6 @@
 ---
 :concurrency: 1
 :queues:
-  - default
-  - low_priority
-  - tweet_syncing
+  - [default, 2]
+  - [low_priority, 1]
+  - [tweet_syncing, 3]

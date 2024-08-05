@@ -13,8 +13,6 @@ Sidekiq.configure_server do |config|
     write_timeout: 2
   }
 
-  config.options[:config_file] = Rails.root.join('config', 'sidekiq.yml')
-
   config.client_middleware do |chain|
     # Add any client middleware here if needed
   end
