@@ -17,7 +17,7 @@ RSpec.describe QueueMonitorJob, type: :job do
 
   it 'sends a Slack message if a queue size exceeds the threshold' do
     allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: queue_size)])
-    allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 300))
+    allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 500))
 
     message = "The #{queue_name} queue has reached a size of #{queue_size}"
     expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :general)
@@ -27,7 +27,7 @@ RSpec.describe QueueMonitorJob, type: :job do
 
   it 'does not send a Slack message if all queue sizes are below the threshold' do
     allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: 19)])
-    allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 300))
+    allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 500))
 
     expect(Notifications::SlackNotifier).not_to receive(:call)
 
@@ -38,7 +38,7 @@ RSpec.describe QueueMonitorJob, type: :job do
     allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: 19)])
     allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: scheduled_size))
 
-    message = "The scheduled queue has dropped below 300 with a size of #{scheduled_size}"
+    message = "The scheduled queue has dropped below 500 with a size of #{scheduled_size}"
     expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :general)
 
     described_class.new.perform
@@ -46,7 +46,7 @@ RSpec.describe QueueMonitorJob, type: :job do
 
   it 'does not send a Slack message if the scheduled queue size is above the threshold' do
     allow(Sidekiq::Queue).to receive(:all).and_return([double('queue', name: queue_name, size: 19)])
-    allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 300))
+    allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 500))
 
     expect(Notifications::SlackNotifier).not_to receive(:call)
 
