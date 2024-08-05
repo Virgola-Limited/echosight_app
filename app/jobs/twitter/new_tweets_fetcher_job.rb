@@ -1,13 +1,14 @@
-# frozen_string_literal: true
-
 module Twitter
   class NewTweetsFetcherJob
     include Sidekiq::Job
-    sidekiq_options queue: :tweet_syncing, lock: :until_and_while_executing, unique_across_queues: true
 
+    sidekiq_options queue: :tweet_syncing,
+                    lock: :until_and_while_executing,
+                    unique_across_queues: true,
+                    lock_timeout: 1.hour,
+                    on_conflict: { client: :log, server: :reschedule }
 
     def perform(identity_id, api_batch_id)
-      p 'running'
       identity = Identity.find(identity_id)
       api_batch = ApiBatch.find(api_batch_id)
       message = "Temporary logging: Starting Twitter::NewTweetsFetcherJob for api_batch: #{api_batch.id} and identity: #{identity.id}"
