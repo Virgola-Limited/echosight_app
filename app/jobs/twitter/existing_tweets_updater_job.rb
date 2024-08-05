@@ -5,16 +5,7 @@ require 'sidekiq-unique-jobs'
 module Twitter
   class ExistingTweetsUpdaterJob
     include Sidekiq::Job
-    sidekiq_options queue: :tweet_syncing,
-      lock: :until_and_while_executing,
-      unique_across_queues: true,
-      lock_timeout: 1.hour,
-      on_conflict: { client: :log, server: :reschedule },
-      unique_args: :unique_args
-
-    def self.unique_args(_args)
-      []
-    end
+    sidekiq_options queue: :tweet_syncing
 
     attr_reader :api_batch, :identity, :user_twitter_data_update
 
