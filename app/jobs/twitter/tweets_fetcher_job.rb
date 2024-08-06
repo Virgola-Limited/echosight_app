@@ -5,7 +5,7 @@ module Twitter
 
     def perform
       message = "Temporary logging: Starting Twitter::TweetsFetcherJob runs hourly"
-      Notifications::SlackNotifier.call(message: message, channel: :general)
+      Notifications::SlackNotifier.call(message: message, channel: :errors)
       return if ENV['DISABLE_TWEETS_FETCHER_JOB']
       api_batch = ApiBatch.create!(status: 'processing')
       Identity.syncable.find_each do |identity|
