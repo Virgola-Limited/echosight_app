@@ -1,5 +1,4 @@
 if defined?(ExceptionNotification)
-
   require 'exception_notification/rails'
   require 'exception_notification/sidekiq'
 
@@ -22,21 +21,23 @@ if defined?(ExceptionNotification)
       # Email notifier sends notifications by email.
       config.add_notifier :email, {
         email_prefix: "[#{Rails.env.upcase}] [ERROR] ",
-        sender_address: %{"Chris Toynbee" <chris@echosight.io>},
-        exception_recipients: %w{ctoynbee@gmail.com},
+        sender_address: %("Chris Toynbee" <chris@echosight.io>),
+        exception_recipients: %w[ctoynbee@gmail.com]
       }
+
+      slack_webhook_url = Rails.application.credentials.dig(:slack, :webhook_url, :errors) || 'dummy_webhook_url'
       config.add_notifier :slack, {
-        webhook_url: Rails.application.credentials.slack[:webhook_url][:errors],
+        webhook_url: slack_webhook_url,
         additional_parameters: {
           mrkdwn: true
-        },
+        }
       }
     end
 
     if ENV['DEVELOPMENT_EXCEPTION_NOTIFICATIONS']
       require 'terminal-notifier'
 
-      config.add_notifier :terminal_notifier, lambda { |exception, options|
+      config.add_notifier :terminal_notifier, lambda { |exception, _options|
         message = "Exception occurred: #{exception.message}"
 
         # Log the error to the Rails log
