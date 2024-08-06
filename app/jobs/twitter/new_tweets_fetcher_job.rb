@@ -7,8 +7,8 @@ module Twitter
     def perform(identity_id, api_batch_id)
       identity = Identity.find(identity_id)
       api_batch = ApiBatch.find(api_batch_id)
-      message = "Temporary logging: Starting Twitter::NewTweetsFetcherJob for api_batch: #{api_batch.id} and identity: #{identity.id}"
-      Notifications::SlackNotifier.call(message: message, channel: :errors)
+      # message = "Temporary logging: Starting Twitter::NewTweetsFetcherJob for api_batch: #{api_batch.id} and identity: #{identity.id}"
+      # Notifications::SlackNotifier.call(message: message, channel: :general)
       return unless identity.syncable?
 
       @user_twitter_data_update = UserTwitterDataUpdate.find_or_initialize_by(identity_id: identity.id, api_batch_id: api_batch.id, completed_at: nil)
