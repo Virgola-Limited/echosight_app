@@ -14,7 +14,7 @@
       <% end %>
     </form>
   </div>
-  <%= render PostsTableComponent.new(posts: @paginated_posts) %>
+  <%= render PostsTableComponent.new(posts: @paginated_posts, sort: @sort) %>
   <br />
 <%= render_pagination %>
 </div>

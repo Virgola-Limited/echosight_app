@@ -1,15 +1,13 @@
-# frozen_string_literal: true
-
 class Posts::IndexComponent < ApplicationComponent
   include Pagy::Backend
 
-  attr_reader :current_user, :query, :pagy_instance, :paginated_posts
+  attr_reader :current_user, :query, :sort, :pagy_instance, :paginated_posts
 
-  def initialize(current_user:, query:)
+  def initialize(current_user:, query:, sort:)
     @current_user = current_user
     @query = query
+    @sort = sort
   end
-
   def alert_message
     if !current_user.active_subscription? && query.present?
       render(Shared::AlertComponent.new(
@@ -37,14 +35,30 @@ class Posts::IndexComponent < ApplicationComponent
 
   def fetch_posts
     tweets = current_user.tweets.includes(:tweet_metrics)
-    if query.present?
-      search_query = query.split.map { |word| "#{word}:*" }.join(' & ')
-      tsquery = ActiveRecord::Base.sanitize_sql_array(["to_tsquery('english', ?)", search_query])
+    tweets = apply_search(tweets) if query.present?
+    apply_sorting(tweets)
+  end
 
-      tweets.where("searchable @@ #{tsquery}")
-                         .order(Arel.sql("ts_rank(searchable, #{tsquery}) DESC"))
+  def apply_search(tweets)
+    search_query = query.split.map { |word| "#{word}:*" }.join(' & ')
+    tsquery = ActiveRecord::Base.sanitize_sql_array(["to_tsquery('english', ?)", search_query])
+    tweets.where("searchable @@ #{tsquery}")
+          .order(Arel.sql("ts_rank(searchable, #{tsquery}) DESC"))
+  end
+
+  def apply_sorting(tweets)
+    return tweets.order(created_at: :desc) unless sort.present?
+
+    column, direction = sort.split
+    case column
+    when 'impression_count', 'retweet_count', 'quote_count', 'like_count', 'reply_count'
+      tweets.joins(:tweet_metrics)
+            .order("tweet_metrics.#{column} #{direction}")
+    when 'engagement_rate_percentage'
+      tweets.joins(:tweet_metrics)
+            .order("CAST(tweet_metrics.engagement_rate AS FLOAT) #{direction}")
     else
-      tweets
+      tweets.order(column => direction)
     end
   end
 
