@@ -1,9 +1,11 @@
 # app/services/identity_notification_service.rb
 class IdentityNotificationService
+  include Rails.application.routes.url_helpers
+
   def run
     identities_without_users.each do |identity|
-      if has_fourteen_days_of_data?(identity)
-        message = "Reach out to user if the public page is populated #{public_page_url(handle: identity.handle)}"
+      if has_fourteen_days_of_data?(identity) && !notification_sent?(identity)
+        message = "Reach out to user if the public page is populated #{urls(handle: identity.handle)}"
         PostSender.new(message: message, post_type: 'one_time', channel_type: 'slack').call
       end
     end
@@ -19,7 +21,12 @@ class IdentityNotificationService
     identity.twitter_user_metrics.count >= 14
   end
 
-  def public_page_url(handle:)
-    "https://x.com/#{handle}" # replace with the actual public page URL generation logic
+  def notification_sent?(identity)
+    message = "Reach out to user if the public page is populated #{urls(handle: identity.handle)}"
+    SentPost.exists?(message: message, post_type: 'one_time', channel_type: 'slack')
+  end
+
+  def urls(handle:)
+    "https://x.com/#{handle} #{public_page_url(handle: handle)}" # replace with the actual public page URL generation logic
   end
 end
