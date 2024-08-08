@@ -171,6 +171,7 @@ class User < ApplicationRecord
   end
 
   def eligible_for_trial?
+    return false
     accepted_invitation? && ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive?
   end
 
