@@ -3,14 +3,14 @@ class NumberRoundingService
     return input unless input && input.is_a?(Numeric)
     number = extract_number(input)
     sign = number.negative? ? '-' : ''
-    number = number.round.abs
+    number = number.abs
 
     rounded_number = if number < 999
-                       number
+                       number.round
                      elsif number < 1_000_000
-                       "#{(number / 1_000.0).round}K"
+                       format_thousands(number)
                      else
-                       "#{format('%.2f', number / 1_000_000.0)}M"
+                       format_millions(number)
                      end
 
     format_output(sign, rounded_number, input)
@@ -24,6 +24,20 @@ class NumberRoundingService
     else
       input
     end
+  end
+
+  def self.format_thousands(number)
+    rounded = (number / 1000.0).round(1)
+    remove_trailing_zeros("#{rounded}K")
+  end
+
+  def self.format_millions(number)
+    rounded = (number / 1_000_000.0).round(2)
+    remove_trailing_zeros("#{rounded}M")
+  end
+
+  def self.remove_trailing_zeros(number_string)
+    number_string.sub(/\.0+([KM])$/, '\1')
   end
 
   def self.format_output(sign, rounded_number, original_input)

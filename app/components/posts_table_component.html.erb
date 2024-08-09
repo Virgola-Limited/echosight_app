@@ -1,56 +1,56 @@
 <% if posts.count > 0 %>
-<table class="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+<table class="w-full text-sm text-center text-gray-500 dark:text-gray-400" data-test="top-posts-table">
   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
     <tr class="h-12">
-      <th scope="col" class="p-0 md:table-cell md:p-1">
+      <th scope="col" class="p-0 md:table-cell md:p-1" data-test="post-header">
         <%= sortable 'tweet', 'Post' %>
       </th>
-      <th scope="col" class="hidden md:table-cell p-1">
+      <th scope="col" class="hidden md:table-cell p-1" data-test="impressions-header">
         <%= sortable 'impression_count', 'Impressions' %>
       </th>
-      <th scope="col" class="hidden md:table-cell p-1">
+      <th scope="col" class="hidden md:table-cell p-1" data-test="retweets-header">
         <%= sortable 'retweet_count', 'Retweets' %>
       </th>
-      <th scope="col" class="hidden md:table-cell p-1">
+      <th scope="col" class="hidden md:table-cell p-1" data-test="quotes-header">
         <%= sortable 'quote_count', 'Quotes' %>
       </th>
-      <th scope="col" class="hidden md:hidden lg:table-cell p-1">
+      <th scope="col" class="hidden md:hidden lg:table-cell p-1" data-test="likes-header">
         <%= sortable 'like_count', 'Likes' %>
       </th>
-      <th scope="col" class="hidden md:hidden lg:table-cell p-1">
+      <th scope="col" class="hidden md:hidden lg:table-cell p-1" data-test="replies-header">
         <%= sortable 'reply_count', 'Replies' %>
       </th>
-      <th scope="col" class="hidden md:table-cell p-1">
+      <th scope="col" class="hidden md:table-cell p-1" data-test="engagement-rate-header">
         <%= sortable 'engagement_rate_percentage', 'Engagement Rate' %>
       </th>
-      <th scope="col" class="md:table-cell p-1">
+      <th scope="col" class="md:table-cell p-1" data-test="actions-header">
         Actions
       </th>
     </tr>
   </thead>
   <tbody>
-    <% posts.each do |tweet| %>
+    <% posts.each_with_index do |tweet, index| %>
       <% tweet_metric = tweet.tweet_metrics.max_by(&:impression_count) %>
-      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-        <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white">
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" data-test="post-row-<%= index %>">
+        <td class="p-0 md:table-cell md:p-1 font-medium text-gray-900 dark:text-white" data-test="post-text-<%= index %>">
           <%= text_with_images(tweet.text) %>
         </td>
-        <td class="hidden md:table-cell px-6 py-4">
+        <td class="hidden md:table-cell px-6 py-4" data-test="impressions-<%= index %>">
           <%= rounded_number(tweet_metric.impression_count) %>
         </td>
-        <td class="hidden md:table-cell p-1">
+        <td class="hidden md:table-cell p-1" data-test="retweets-<%= index %>">
           <%= rounded_number(tweet_metric.retweet_count) %>
         </td>
-        <td class="hidden md:table-cell p-1">
+        <td class="hidden md:table-cell p-1" data-test="quotes-<%= index %>">
           <%= rounded_number(tweet_metric.quote_count) %>
         </td>
-        <td class="hidden md:hidden lg:table-cell p-1">
+        <td class="hidden md:hidden lg:table-cell p-1" data-test="likes-<%= index %>">
           <%= rounded_number(tweet_metric.like_count) %>
         </td>
-        <td class="hidden md:hidden lg:table-cell p-1">
+        <td class="hidden md:hidden lg:table-cell p-1" data-test="replies-<%= index %>">
           <%= rounded_number(tweet_metric.reply_count) %>
         </td>
-        <td class="hidden md:table-cell px-6 py-4 relative">
+        <td class="hidden md:table-cell px-6 py-4 relative" data-test="engagement-rate-<%= index %>">
           <div class="engagement-rate-cell">
             <%= tweet.engagement_rate_percentage %>%
             <div data-tooltip-target="tooltip-engagement-<%= tweet.id %>" class="ml-2">
@@ -60,7 +60,7 @@
             </div>
           </div>
         </td>
-        <td class="md:table-cell px-6 py-4">
+        <td class="md:table-cell px-6 py-4" data-test="actions-<%= index %>">
           <a href="https://twitter.com/user/status/<%= tweet.id %>" target="_blank" class="text-blue-600 hover:text-blue-900">
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
               <path d="M17 0h-5.768a1 1 0 1 0 0 2h3.354L8.4 8.182A1.003 1.003 0 1 0 9.818 9.6L16 3.414v3.354a1 1 0 0 0 2 0V1a1 1 0 0 0-1-1Z"></path>

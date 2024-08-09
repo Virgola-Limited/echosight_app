@@ -31,6 +31,7 @@ FactoryBot.define do
   factory :tweet do
     id { Faker::Number.number(digits: 18) }
     text { Faker::Lorem.sentence }
+    twitter_created_at { Faker::Time.between_dates(from: 7.days.ago, to: Time.zone.now) }
     association :identity
     association :api_batch
   end
