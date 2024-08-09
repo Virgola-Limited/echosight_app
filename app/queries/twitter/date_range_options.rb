@@ -6,8 +6,8 @@ module Twitter
       { value: '14d', label: '14 days' },
       { value: '28d', label: '28 days' },
       { value: '3m', label: '3 months' },
-      { value: '1y', label: '1 year' },
-      { value: 'all', label: 'All time' }
+      # { value: '1y', label: '1 year' },
+      # { value: 'all', label: 'All time' }
     ].freeze
 
     def self.all
