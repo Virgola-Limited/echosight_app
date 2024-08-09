@@ -8,6 +8,7 @@ class Posts::IndexComponent < ApplicationComponent
     @query = query
     @sort = sort
   end
+
   def alert_message
     if !current_user.active_subscription? && query.present?
       render(Shared::AlertComponent.new(
@@ -51,12 +52,14 @@ class Posts::IndexComponent < ApplicationComponent
 
     column, direction = sort.split
     case column
-    when 'impression_count', 'retweet_count', 'quote_count', 'like_count', 'reply_count'
+    when 'impression_count', 'retweet_count', 'quote_count', 'like_count', 'reply_count', 'bookmark_count'
       tweets.joins(:tweet_metrics)
             .order("tweet_metrics.#{column} #{direction}")
     when 'engagement_rate_percentage'
       tweets.joins(:tweet_metrics)
-            .order("CAST(tweet_metrics.engagement_rate AS FLOAT) #{direction}")
+            .order(Arel.sql("(CAST((tweet_metrics.retweet_count + tweet_metrics.like_count + tweet_metrics.quote_count + tweet_metrics.reply_count + tweet_metrics.bookmark_count) AS FLOAT) / NULLIF(tweet_metrics.impression_count, 0)) * 100 #{direction}"))
+    when 'text'
+      tweets.order("LOWER(text) #{direction}")
     else
       tweets.order(column => direction)
     end
