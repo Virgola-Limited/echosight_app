@@ -82,9 +82,5 @@ test:
 #
 
 
-# Not needed by heroku
-# production:
-#   <<: *default
-#   database: echosight_app_production
-#   username: echosight_app
-#   password: <%= ENV["ECHOSIGHT_APP_DATABASE_PASSWORD"] %>
+production:
+  url: <%= ENV['DATABASE_URL'] %>
