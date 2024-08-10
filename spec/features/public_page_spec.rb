@@ -129,13 +129,13 @@ RSpec.feature 'Public Page Access' do
         reply_count: tweet_data[:replies]
       )
     end
-    visit public_page_path(user.handle)
-  end
 
+  end
 
   let(:user) { create(:user, :enabled_without_subscription, :with_identity) }
 
-  fscenario "displays top posts table with correct data" do
+  scenario "displays top posts table with correct data" do
+    visit public_page_path(user.handle)
     within('[id="top-posts-container"]') do
       expect(page).to have_css('[data-test="top-posts-table"]')
 
@@ -144,8 +144,7 @@ RSpec.feature 'Public Page Access' do
       expect(page).to have_css('[data-test="impressions-header"]', text: 'IMPRESSIONS')
       expect(page).to have_css('[data-test="retweets-header"]', text: 'RETWEETS')
       expect(page).to have_css('[data-test="quotes-header"]', text: 'QUOTES')
-      #     page.driver.browser.manage.window.resize_to(1280, 1024) didnt work
-      # expect(page).to have_css('[data-test="likes-header"]', text: 'LIKES')
+      expect(page).to have_css('[data-test="likes-header"]', text: 'LIKES')
       expect(page).to have_css('[data-test="replies-header"]', text: 'REPLIES')
       expect(page).to have_css('[data-test="engagement-rate-header"]', text: 'ENGAGEMENT RATE')
       expect(page).to have_css('[data-test="actions-header"]', text: 'ACTIONS')
@@ -168,7 +167,7 @@ RSpec.feature 'Public Page Access' do
           expect(page).to have_css("[data-test='impressions-#{index}']", text: expected_data[1])
           expect(page).to have_css("[data-test='retweets-#{index}']", text: expected_data[2])
           expect(page).to have_css("[data-test='quotes-#{index}']", text: expected_data[3])
-          # expect(page).to have_css("[data-test='likes-#{index}']", text: expected_data[4])
+          expect(page).to have_css("[data-test='likes-#{index}']", text: expected_data[4])
           expect(page).to have_css("[data-test='replies-#{index}']", text: expected_data[5])
           expect(page).to have_css("[data-test='engagement-rate-#{index}']", text: expected_data[6])
 
