@@ -20,7 +20,7 @@ RSpec.describe QueueMonitorJob, type: :job do
     allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: 500))
 
     message = "The #{queue_name} queue has reached a size of #{queue_size}"
-    expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :general)
+    expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :errors)
 
     described_class.new.perform
   end
@@ -39,7 +39,7 @@ RSpec.describe QueueMonitorJob, type: :job do
     allow(Sidekiq::ScheduledSet).to receive(:new).and_return(double('scheduled_set', size: scheduled_size))
 
     message = "The scheduled queue has dropped below 500 with a size of #{scheduled_size}"
-    expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :general)
+    expect(Notifications::SlackNotifier).to receive(:call).with(message: message, channel: :errors)
 
     described_class.new.perform
   end
