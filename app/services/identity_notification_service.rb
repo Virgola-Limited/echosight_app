@@ -27,6 +27,16 @@ class IdentityNotificationService
   end
 
   def urls(handle:)
-    "https://x.com/#{handle} #{public_page_url(handle: handle)}" # replace with the actual public page URL generation logic
+    host = Rails.application.config.action_mailer.default_url_options[:host]
+    port = Rails.application.config.action_mailer.default_url_options[:port]
+    url = public_page_url(handle: handle, host: host, port: port)
+    "https://x.com/#{handle} #{url}"
   end
 end
+
+# We've added you to Echosight, so you've already got a public page showcasing your Twitter/X analytics. Check it out and see how you stack up in the community. You can start using it fully for $5 a month.
+# Let us know what you think!
+
+#  https://app.echosight.io/p/arvidkahl
+
+# Chris.
