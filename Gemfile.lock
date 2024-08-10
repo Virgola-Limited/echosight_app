@@ -348,6 +348,7 @@ GEM
       version_gem (~> 1.1)
     oauth-tty (1.0.5)
       version_gem (~> 1.1, >= 1.1.1)
+    okcomputer (1.18.5)
     omniauth (2.1.1)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
@@ -631,6 +632,7 @@ DEPENDENCIES
   launchy
   mailkick
   mini_magick
+  okcomputer
   omniauth-rails_csrf_protection
   omniauth-twitter
   pagy

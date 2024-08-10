@@ -49,6 +49,7 @@ gem 'fastimage'
 gem 'mailkick'
 gem "mini_magick"
 gem 'devise_masquerade'
+gem 'okcomputer'
 gem 'omniauth-rails_csrf_protection'
 # gem 'omniauth-twitter2'
 gem 'omniauth-twitter'
