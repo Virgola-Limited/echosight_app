@@ -4,8 +4,9 @@ class IdentityUpdater
   require 'digest'
   attr_reader :user_data
 
-  def initialize(user_data)
+  def initialize(user_data, temp_tweet_data = nil)
     @user_data = user_data
+    @temp_tweet_data = temp_tweet_data
   end
 
   def call
@@ -15,7 +16,10 @@ class IdentityUpdater
     # Remove this once they are all fixed
     unless identity
       identity = find_identity_by_username
-      raise "Identity not found for user: #{user_data['username']} #{user_data['id']}" unless identity
+      unless identity
+        message = "Identity not found for user: #{user_data['username']} #{user_data['id']} for tweet: #{@temp_tweet_data.inspect}"
+        raise message
+      end
 
       if identity.provider == 'twitter' && identity.uid != user_data['id']
         if identity.uid_updated_before?

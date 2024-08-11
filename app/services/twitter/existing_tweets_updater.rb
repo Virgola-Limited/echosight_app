@@ -38,6 +38,7 @@ module Twitter
         end
         tweets_data['data'].each do |tweet_data|
           today_user_data ||= tweet_data['user']['data']
+          user_tweet_data = tweet_data
           result = process_tweet_data(tweet_data)
           if result[:success]
             @updated_tweets.push(result)
@@ -47,7 +48,7 @@ module Twitter
         end
 
         if today_user_data
-          IdentityUpdater.new(today_user_data).call
+          IdentityUpdater.new(today_user_data, user_tweet_data).call
           @user_metrics_updated_message = UserMetricsUpdater.new(today_user_data).call
         end
       end
