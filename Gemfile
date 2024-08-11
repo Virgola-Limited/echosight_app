@@ -103,7 +103,3 @@ group :development do
   gem 'rubocop'
   gem 'web-console'
 end
-
-group :production, :staging do
-  gem 'jemalloc'
-end
