@@ -2,16 +2,11 @@ require "shrine"
 require "shrine/storage/file_system"
 require 'shrine/plugins/store_dimensions'
 
-
-if ENV['BUCKETEER_AWS_ACCESS_KEY_ID'] && ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY']
+if Rails.application.credentials.dig(:digital_ocean_spaces, :access_key_id).present? &&
+   Rails.application.credentials.dig(:digital_ocean_spaces, :secret_access_key).present?
   require 'shrine/storage/s3'
 
-  s3_options = {
-    access_key_id:     ENV['BUCKETEER_AWS_ACCESS_KEY_ID'],
-    secret_access_key: ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY'],
-    region:            ENV['BUCKETEER_AWS_REGION'],
-    bucket:            ENV['BUCKETEER_BUCKET_NAME'],
-  }
+  s3_options = Rails.application.credentials.digital_ocean_spaces.symbolize_keys
 
   Shrine.storages = {
     cache: Shrine::Storage::S3.new(prefix: 'cache', **s3_options),
