@@ -78,5 +78,5 @@ dest_config = {
 }
 
 # Create and run the service
-sync_service = BucketSyncService.new(source_config, dest_config)
-sync_service.sync
+# sync_service = BucketSyncService.new(source_config, dest_config)
+# sync_service.sync
