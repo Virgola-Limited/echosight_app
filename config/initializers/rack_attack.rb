@@ -4,6 +4,15 @@ class Rack::Attack
     req.ip
   end
 
+  safelist('allow stripe webhook') do |req|
+    req.path == '/stripe/webhook' && req.post?
+  end
+
+    # Safelist Health Check Route
+    safelist('allow health check') do |req|
+      req.path == '/okcomputer' && req.get?
+    end
+
   ### Block Requests with Invalid MIME Types ###
   blocklist('block invalid mime type') do |req|
     req.media_type == "/"
@@ -112,6 +121,8 @@ class Rack::Attack
 
   ### Optional: Log the Tracked Requests ###
   ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, payload|
-    Rails.logger.info "[Rack::Attack] #{payload.inspect}"
+    message = "[Rack::Attack] #{payload.inspect}"
+    # Might be slow so change to a background job if we need to keep this for a long time
+    Notifications::SlackNotifier.call(message: message)
   end
 end
