@@ -1,8 +1,8 @@
 class Rack::Attack
   ### Throttle Requests to Prevent Abuse ###
-  throttle('req/ip', limit: 5, period: 1.second) do |req|
-    req.ip
-  end
+  # throttle('req/ip', limit: 5, period: 1.second) do |req|
+  #   req.ip
+  # end
 
   safelist('allow stripe webhook') do |req|
     req.path == '/stripe/webhook' && req.post?
