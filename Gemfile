@@ -57,6 +57,7 @@ gem 'pagy'
 gem 'paper_trail'
 gem 'pghero'
 gem 'premailer-rails'
+gem 'rack-attack'
 gem 'rack-cors', require: 'rack/cors'
 gem "rqrcode", "~> 2.0"
 # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
