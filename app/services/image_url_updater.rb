@@ -34,7 +34,7 @@ class ImageUrlUpdater
     attachment_data = record.send("#{attachment_name}_data")
     if attachment_data.present?
       data = JSON.parse(attachment_data)
-      if data['storage'] == 'store' && !data['url'].to_s.start_with?(@host)
+      if data['storage'] == 'store'
         new_url = "#{@host}/#{data['id']}"
         data['url'] = new_url
         record.update_column("#{attachment_name}_data", data.to_json)
@@ -46,5 +46,5 @@ class ImageUrlUpdater
   end
 end
 
-updater = ImageUrlUpdater.new('echosight-production', 'nyc3')
-updater.update_content_items
+# updater = ImageUrlUpdater.new('echosight-production', 'nyc3')
+# updater.update_content_items
