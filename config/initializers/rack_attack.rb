@@ -123,6 +123,6 @@ class Rack::Attack
   ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, payload|
     message = "[Rack::Attack] #{payload.inspect}"
     # Might be slow so change to a background job if we need to keep this for a long time
-    Notifications::SlackNotifier.call(message: message)
+    Notifications::SlackNotifier.call(message: message, channel: :errors)
   end
 end
