@@ -115,7 +115,7 @@ class Rack::Attack
   end
 
   ### Custom Response for Blocked Requests ###
-  self.blocklisted_response = lambda do |env|
+  self.blocklisted_responder = lambda do |env|
     [ 403, { 'Content-Type' => 'text/plain' }, ['Forbidden']]
   end
 
