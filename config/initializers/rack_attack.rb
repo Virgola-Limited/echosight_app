@@ -123,25 +123,28 @@ class Rack::Attack
   ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, payload|
     req = payload[:request]
 
+    rule_name = payload[:name] || "Unknown Rule"
+
     message = <<-MSG.strip_heredoc
     [Rack::Attack Alert]
     -------------------------
     Request Blocked/Tracked:
     -------------------------
-    Rule: #{payload[:name]}
+    Rule: #{rule_name}
     Path: #{req.path}
     IP: #{req.ip}
     User-Agent: #{req.user_agent || 'N/A'}
     Query Params: #{req.query_string.presence || 'None'}
     MSG
 
-    if payload[:name].to_s.include?('block')
+    if rule_name.include?('block')
       message += "\nAction Taken: Request Blocked"
-    elsif payload[:name].to_s.include?('track')
+    elsif rule_name.include?('track')
       message += "\nAction Taken: Request Tracked"
     end
 
     # Send to Slack or other logging system
     Notifications::SlackNotifier.call(message: message, channel: :errors)
   end
+
 end
