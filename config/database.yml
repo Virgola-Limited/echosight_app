@@ -81,6 +81,8 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 
+staging:
+  url: <%= ENV['DATABASE_URL'] %>
 
 production:
   url: <%= ENV['DATABASE_URL'] %>
