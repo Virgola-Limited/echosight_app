@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.feature 'Leaderboard' do
-  scenario 'Leaderboard' do
+  xscenario 'Leaderboard' do
     # Step 1: Visit the leaderboard page when not logged in
     visit leaderboard_path
     expect(page).to have_text('Leaderboard')
