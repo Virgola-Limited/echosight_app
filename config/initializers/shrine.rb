@@ -36,4 +36,4 @@ Shrine.plugin :store_dimensions
 Shrine.plugin :cached_attachment_data
 Shrine.plugin :restore_cached_data
 Shrine.plugin :determine_mime_type
-Shrine.plugin :derivation_endpoint, secret_key: Rails.application.credentials.secret_key_base
+# Shrine.plugin :derivation_endpoint, disable: true
