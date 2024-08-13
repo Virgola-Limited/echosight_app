@@ -1,8 +1,8 @@
 # class Rack::Attack
 #   ### Throttle Requests to Prevent Abuse ###
-#   throttle('req/ip', limit: 5, period: 1.second) do |req|
-#     req.ip
-#   end
+#   # throttle('req/ip', limit: 5, period: 1.second) do |req|
+#   #   req.ip
+#   # end
 
 #   safelist('allow stripe webhook') do |req|
 #     req.path == '/stripe/webhook' && req.post?
@@ -92,17 +92,17 @@
 #   end
 
 #   ### Throttle Logins to Prevent Brute-Force Attacks ###
-#   throttle('logins/ip', limit: 5, period: 20.seconds) do |req|
-#     if req.path == '/login' && req.post?
-#       req.ip
-#     end
-#   end
+#   # throttle('logins/ip', limit: 5, period: 20.seconds) do |req|
+#   #   if req.path == '/login' && req.post?
+#   #     req.ip
+#   #   end
+#   # end
 
-#   throttle('logins/email', limit: 5, period: 20.seconds) do |req|
-#     if req.path == '/login' && req.post?
-#       req.params['email'].presence
-#     end
-#   end
+#   # throttle('logins/email', limit: 5, period: 20.seconds) do |req|
+#   #   if req.path == '/login' && req.post?
+#   #     req.params['email'].presence
+#   #   end
+#   # end
 
 #   ### Block Requests with a Missing or Invalid User-Agent Header ###
 #   blocklist('block missing User-Agent') do |req|
@@ -119,10 +119,32 @@
 #     [ 403, { 'Content-Type' => 'text/plain' }, ['Forbidden']]
 #   end
 
-#   ### Optional: Log the Tracked Requests ###
+#   ### Refined Logging for Blocked/Tracked Requests ###
 #   ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, payload|
-#     message = "[Rack::Attack] #{payload.inspect}"
-#     # Might be slow so change to a background job if we need to keep this for a long time
-#     Notifications::SlackNotifier.call(message: message)
+#     req = payload[:request]
+
+#     rule_name = payload[:name] || "Unknown Rule"
+
+#     message = <<-MSG.strip_heredoc
+#     [Rack::Attack Alert]
+#     -------------------------
+#     Request Blocked/Tracked:
+#     -------------------------
+#     Rule: #{rule_name}
+#     Path: #{req.path}
+#     IP: #{req.ip}
+#     User-Agent: #{req.user_agent || 'N/A'}
+#     Query Params: #{req.query_string.presence || 'None'}
+#     MSG
+
+#     if rule_name.include?('block')
+#       message += "\nAction Taken: Request Blocked"
+#     elsif rule_name.include?('track')
+#       message += "\nAction Taken: Request Tracked"
+#     end
+
+#     # Send to Slack or other logging system
+#     Notifications::SlackNotifier.call(message: message, channel: :errors)
 #   end
+
 # end
