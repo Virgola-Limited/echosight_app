@@ -6,6 +6,7 @@
 #
 #  id                  :bigint           not null, primary key
 #  bookmark_count      :integer          default(0), not null
+#  engagement_rate     :float
 #  impression_count    :integer          default(0), not null
 #  like_count          :integer          default(0), not null
 #  pulled_at           :datetime
@@ -37,6 +38,8 @@ class TweetMetric < ApplicationRecord
 
   belongs_to :tweet
 
+  before_save :calculate_engagement_rate
+
   def self.ransackable_associations(auth_object = nil)
     ["tweet"]
   end
@@ -46,17 +49,21 @@ class TweetMetric < ApplicationRecord
   end
 
 
-  def engagement_rate_percentage
+  private
+
+  def calculate_engagement_rate
     interactions = retweet_count.to_f +
-    quote_count.to_f +
-    like_count.to_f +
-    reply_count.to_f +
-    bookmark_count.to_f
+                   quote_count.to_f +
+                   like_count.to_f +
+                   reply_count.to_f +
+                   bookmark_count.to_f
     impressions = impression_count.to_f
 
-    return 0.0 if impressions.zero?
-
-    ((interactions / impressions) * 100).round(2)
+    self.engagement_rate = if impressions.zero?
+                             0.0
+                           else
+                             ((interactions / impressions) * 100).round(2)
+                           end
   end
 
 end
