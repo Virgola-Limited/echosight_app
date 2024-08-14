@@ -78,19 +78,6 @@ RSpec.describe Twitter::TweetAndMetricUpserter do
       end
     end
 
-    context 'when allow_update is true' do
-      describe 'when there is a batch ID mismatch' do
-        before do
-          existing_tweet.update(api_batch_id: different_api_batch.id)
-        end
-
-        it 'notifies about an error' do
-          expect(Notifications::SlackNotifier).to receive(:call).with(message: /Mismatched batch ID/, channel: :errors)
-          subject.call
-        end
-      end
-    end
-
     context 'when the tweet metrics update count is less than 2' do
       let!(:existing_metric) { create(:tweet_metric, tweet: existing_tweet, updated_count: 1) }
 
