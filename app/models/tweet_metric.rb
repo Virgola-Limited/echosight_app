@@ -49,19 +49,6 @@ class TweetMetric < ApplicationRecord
   end
 
 
-  def engagement_rate_percentage
-    interactions = retweet_count.to_f +
-    quote_count.to_f +
-    like_count.to_f +
-    reply_count.to_f +
-    bookmark_count.to_f
-    impressions = impression_count.to_f
-
-    return 0.0 if impressions.zero?
-
-    ((interactions / impressions) * 100).round(2)
-  end
-
   private
 
   def calculate_engagement_rate
