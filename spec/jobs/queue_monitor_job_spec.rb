@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QueueMonitorJob, type: :job do
   let(:queue_name) { 'default' }
-  let(:queue_size) { 31 }
+  let(:queue_size) { 91 }
   let(:scheduled_size) { 299 }
 
   before do
