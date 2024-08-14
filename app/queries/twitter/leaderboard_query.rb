@@ -79,6 +79,7 @@ module Twitter
       sorted_data
     end
 
+    # TODO: Use denormalized data for this calculation
     def calculate_engagement_rate(metrics)
       total_interactions = metrics.total_retweets + metrics.total_likes + metrics.total_quotes + metrics.total_replies + metrics.total_bookmarks
       (total_interactions.to_f / metrics.total_impressions) * 100

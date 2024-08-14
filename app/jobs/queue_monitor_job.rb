@@ -2,7 +2,7 @@ class QueueMonitorJob
   include Sidekiq::Job
 
   def perform
-    queue_threshold = 20
+    queue_threshold = 90
     enqueued_threshold = 100
     scheduled_threshold = 500
 

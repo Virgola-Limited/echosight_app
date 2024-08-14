@@ -32,7 +32,7 @@
 class Tweet < ApplicationRecord
   before_save :update_searchable
 
-  attr_accessor :engagement_rate_percentage
+  attr_accessor :engagement_rate
 
   belongs_to :api_batch
   belongs_to :identity

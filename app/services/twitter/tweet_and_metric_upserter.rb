@@ -37,6 +37,7 @@ module Twitter
       if tweet.new_record?
         tweet.assign_attributes(tweet_attributes.merge(api_batch_id: @api_batch_id))
       else
+        # TODO: this is probably causing issues when we get a 500 on the tweet updater as the tweet could be in another batch
         if allow_update
           tweet.assign_attributes(tweet_attributes)
         end
