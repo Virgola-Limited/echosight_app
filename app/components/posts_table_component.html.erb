@@ -21,7 +21,7 @@
         <%= sortable_header 'reply_count', 'Replies' %>
       </th>
       <th scope="col" class="hidden md:table-cell p-1" data-test="engagement-rate-header">
-        <%= sortable_header 'engagement_rate_percentage', 'Engagement Rate' %>
+        <%= sortable_header 'engagement_rate', 'Engagement Rate' %>
       </th>
       <th scope="col" class="md:table-cell p-1" data-test="actions-header">
         Actions
@@ -75,7 +75,7 @@
 
 <% posts.each do |tweet| %>
   <% tweet_metric = tweet.tweet_metrics.max_by(&:impression_count) %>
-  <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet.engagement_rate_percentage}".html_safe %>
+  <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet.engagement_rate}".html_safe %>
   <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet.id}", text: tooltip_text) %>
 <% end %>
 

@@ -52,12 +52,9 @@ class Posts::IndexComponent < ApplicationComponent
 
     column, direction = sort.split
     case column
-    when 'impression_count', 'retweet_count', 'quote_count', 'like_count', 'reply_count', 'bookmark_count'
+    when 'impression_count', 'retweet_count', 'quote_count', 'like_count', 'reply_count', 'bookmark_count', 'engagement_rate'
       tweets.joins(:tweet_metrics)
             .order("tweet_metrics.#{column} #{direction}")
-    when 'engagement_rate_percentage'
-      tweets.joins(:tweet_metrics)
-            .order(Arel.sql("(CAST((tweet_metrics.retweet_count + tweet_metrics.like_count + tweet_metrics.quote_count + tweet_metrics.reply_count + tweet_metrics.bookmark_count) AS FLOAT) / NULLIF(tweet_metrics.impression_count, 0)) * 100 #{direction}"))
     when 'text'
       tweets.order("LOWER(text) #{direction}")
     else
