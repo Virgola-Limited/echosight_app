@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   server: {
     cors: {
-      origin: ['https://app.echosight.io', 'https://echosight-production-web-service.onrender.com'],
+      origin: '*',
       methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
       headers: ['Authorization', 'Content-Type'],
       credentials: true,

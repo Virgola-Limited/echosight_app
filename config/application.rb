@@ -87,15 +87,12 @@ module EchosightApp
     # CORS configuration
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://127.0.0.1:3000', 'http://localhost:3000', Rails.application.credentials[:host], 'https://echosight-production-web-service.onrender.com'
-
+        origins 'http://127.0.0.1:3000', 'http://localhost:3000', /\Ahttp:\/\/127\.0\.0\.1:\d+\z/, /\Ahttp:\/\/localhost:\d+\z/
         resource '*',
           headers: :any,
           methods: [:get, :post, :options, :head],
-          credentials: true,
-          expose: ['Access-Control-Allow-Origin']
+          credentials: true
       end
     end
-
   end
 end
