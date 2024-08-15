@@ -4,7 +4,6 @@ require 'sidekiq/api'
 require 'json'
 
 class SidekiqScheduledJobsImportService
-  RENDER_REDIS_URL = ENV['RENDER_REDIS_URL']
 
   def self.import(json_file_path)
     puts "Starting import process..."
@@ -13,11 +12,6 @@ class SidekiqScheduledJobsImportService
     jobs = JSON.parse(File.read(json_file_path))
     puts "Read #{jobs.size} jobs from file"
 
-    # Configure Sidekiq to use Render.com Redis
-    Sidekiq.configure_client do |config|
-      config.redis = { url: RENDER_REDIS_URL || ENV['REDIS_URL'] }
-    end
-    puts "Configured Sidekiq with Redis URL: #{RENDER_REDIS_URL || ENV['REDIS_URL']}"
 
     # Clear the existing scheduled set
     cleared_count = Sidekiq::ScheduledSet.new.clear
@@ -55,4 +49,4 @@ class SidekiqScheduledJobsImportService
   end
 end
 
-# SidekiqScheduledJobsImportService.import('./jobs.json')
+SidekiqScheduledJobsImportService.import('./jobs.json')
