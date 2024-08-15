@@ -1,17 +1,14 @@
-# app/services/sidekiq_scheduled_jobs_import_service.rb
 require 'sidekiq'
 require 'sidekiq/api'
 require 'json'
 
 class SidekiqScheduledJobsImportService
-
   def self.import(json_file_path)
     puts "Starting import process..."
 
     # Read jobs from JSON file
     jobs = JSON.parse(File.read(json_file_path))
     puts "Read #{jobs.size} jobs from file"
-
 
     # Clear the existing scheduled set
     cleared_count = Sidekiq::ScheduledSet.new.clear
@@ -22,7 +19,7 @@ class SidekiqScheduledJobsImportService
     jobs.each_with_index do |job, index|
       begin
         klass = job['klass'].constantize
-        at_time = Time.at(job['at'])
+        at_time = parse_time(job['at'])
 
         # Use perform_at to properly schedule the job
         jid = klass.perform_at(at_time, *job['args'])
@@ -46,6 +43,15 @@ class SidekiqScheduledJobsImportService
     # Verify the import
     new_count = Sidekiq::ScheduledSet.new.size
     puts "New scheduled set size: #{new_count}"
+  end
+
+  private
+
+  def self.parse_time(time_string)
+    Time.parse(time_string)
+  rescue ArgumentError
+    # If Time.parse fails, try to interpret it as a Unix timestamp
+    Time.at(time_string.to_f)
   end
 end
 
