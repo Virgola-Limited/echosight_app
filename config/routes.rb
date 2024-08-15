@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :content_items, only: [:index]
   resources :dashboard, only: :index
   resource :email_subscription, only: [:edit, :update]
+  get 'faq', to: 'pages#faq'
   resources :feature_requests, only: [:index, :create]
   get 'landing', to: 'pages#landing'
   get 'leaderboard', to: 'leaderboard#users'
