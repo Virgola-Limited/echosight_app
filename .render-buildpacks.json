@@ -1,0 +1,7 @@
+{
+  "buildpacks": [
+    "https://github.com/gaffneyc/heroku-buildpack-jemalloc.git",
+    "heroku/nodejs",
+    "heroku/ruby"
+  ]
+}
