@@ -1,5 +1,5 @@
 ActiveAdmin.register Tweet do
-  actions :index, :show
+  actions :index, :show, :destroy
 
   # Existing filter
   filter :identity_user_id, as: :select, collection: -> { User.all.order(:email).map { |u| [u.email, u.id] } }
