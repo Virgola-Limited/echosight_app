@@ -55,4 +55,4 @@ class SidekiqScheduledJobsImportService
   end
 end
 
-SidekiqScheduledJobsImportService.import('./jobs.json')
+# SidekiqScheduledJobsImportService.import('./jobs.json')
