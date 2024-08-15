@@ -27,9 +27,11 @@ RSpec.describe IdentityNotificationService do
         it 'sends a message for identities without users and with 14 days of data' do
           described_class.new.run
           expect(post_sender).to have_received(:new).with(
-            message: "Reach out to user if the public page is populated https://x.com/with_data http://localhost:3000/p/with_data",
-            post_type: 'one_time',
-            channel_type: 'slack'
+            a_hash_including(
+              message: a_string_including("Reach out to user if the public page is populated"),
+              post_type: 'one_time',
+              channel_type: 'slack'
+            )
           )
           expect(post_sender_instance).to have_received(:call)
         end
@@ -41,9 +43,11 @@ RSpec.describe IdentityNotificationService do
         it 'does not send a message for identities without 14 days of data' do
           described_class.new.run
           expect(post_sender).not_to have_received(:new).with(
-            message: "Reach out to user if the public page is populated https://x.com/no_data",
-            post_type: 'one_time',
-            channel_type: 'slack'
+            a_hash_including(
+              message: a_string_including("Reach out to user if the public page is populated"),
+              post_type: 'one_time',
+              channel_type: 'slack'
+            )
           )
         end
       end

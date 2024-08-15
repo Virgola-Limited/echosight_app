@@ -3,25 +3,25 @@
   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
     <tr class="h-12">
       <th scope="col" class="p-0 md:table-cell md:p-1" data-test="post-header">
-        <%= sortable 'tweet', 'Post' %>
+        <%= sortable_header 'text', 'Post' %>
       </th>
       <th scope="col" class="hidden md:table-cell p-1" data-test="impressions-header">
-        <%= sortable 'impression_count', 'Impressions' %>
+        <%= sortable_header 'impression_count', 'Impressions' %>
       </th>
       <th scope="col" class="hidden md:table-cell p-1" data-test="retweets-header">
-        <%= sortable 'retweet_count', 'Retweets' %>
+        <%= sortable_header 'retweet_count', 'Retweets' %>
       </th>
       <th scope="col" class="hidden md:table-cell p-1" data-test="quotes-header">
-        <%= sortable 'quote_count', 'Quotes' %>
+        <%= sortable_header 'quote_count', 'Quotes' %>
       </th>
       <th scope="col" class="hidden md:hidden lg:table-cell p-1" data-test="likes-header">
-        <%= sortable 'like_count', 'Likes' %>
+        <%= sortable_header 'like_count', 'Likes' %>
       </th>
       <th scope="col" class="hidden md:hidden lg:table-cell p-1" data-test="replies-header">
-        <%= sortable 'reply_count', 'Replies' %>
+        <%= sortable_header 'reply_count', 'Replies' %>
       </th>
       <th scope="col" class="hidden md:table-cell p-1" data-test="engagement-rate-header">
-        <%= sortable 'engagement_rate_percentage', 'Engagement Rate' %>
+        <%= sortable_header 'engagement_rate', 'Engagement Rate' %>
       </th>
       <th scope="col" class="md:table-cell p-1" data-test="actions-header">
         Actions
@@ -52,7 +52,7 @@
         </td>
         <td class="hidden md:table-cell px-6 py-4 relative" data-test="engagement-rate-<%= index %>">
           <div class="engagement-rate-cell">
-            <%= tweet_metric.engagement_rate_percentage %>%
+            <%= tweet_metric.engagement_rate %>%
             <div data-tooltip-target="tooltip-engagement-<%= tweet.id %>" class="ml-2">
               <svg class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -75,7 +75,7 @@
 
 <% posts.each do |tweet| %>
   <% tweet_metric = tweet.tweet_metrics.max_by(&:impression_count) %>
-  <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet.engagement_rate_percentage}".html_safe %>
+  <% tooltip_text = "Engagement rate is calculated as (interactions / impressions) * 100. <br>For this tweet: (#{tweet_metric.retweet_count || 0} + #{tweet_metric.quote_count || 0} + #{tweet_metric.like_count || 0} + #{tweet_metric.reply_count || 0} + #{tweet_metric.bookmark_count || 0}) / #{tweet_metric.impression_count || 0} * 100 = #{tweet.engagement_rate}".html_safe %>
   <%= render Shared::TooltipComponent.new(id: "tooltip-engagement-#{tweet.id}", text: tooltip_text) %>
 <% end %>
 

@@ -57,8 +57,15 @@ module Twitter
       expected_tweet_ids = expected_tweets.map(&:id)
       missing_tweet_ids = expected_tweet_ids - received_tweet_ids
       extra_tweet_ids = received_tweet_ids - expected_tweet_ids
-      message = "Tweet count mismatch for identity #{identity.handle}. \n\nExpected: #{expected_tweet_ids},  \n\nActual: #{received_tweet_ids},  \n\nMissing: #{missing_tweet_ids},  \n\nExtra: #{extra_tweet_ids}"
-      Notifications::SlackNotifier.call(message: message, channel: :errors) if extra_tweet_ids.any?
+
+      # Check if the extra tweet IDs are present in our app
+      extra_tweet_ids_in_app = Tweet.where(id: extra_tweet_ids).pluck(:id)
+      extra_tweet_ids_missing_from_app = extra_tweet_ids - extra_tweet_ids_in_app
+
+      if extra_tweet_ids_missing_from_app.any?
+        message = "Tweet count mismatch for identity #{identity.handle}. \n\nExpected: #{expected_tweet_ids},  \n\nActual: #{received_tweet_ids},  \n\nMissing: #{missing_tweet_ids},  \n\nExtra (missing from app): #{extra_tweet_ids_missing_from_app}"
+        Notifications::SlackNotifier.call(message: message, channel: :errors)
+      end
 
       mark_tweets_as_potentially_deleted(missing_tweet_ids)
     end

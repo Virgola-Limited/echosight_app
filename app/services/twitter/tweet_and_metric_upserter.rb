@@ -37,16 +37,9 @@ module Twitter
       if tweet.new_record?
         tweet.assign_attributes(tweet_attributes.merge(api_batch_id: @api_batch_id))
       else
+        # TODO: this is probably causing issues when we get a 500 on the tweet updater as the tweet could be in another batch
         if allow_update
-          unless tweet.api_batch_id == @api_batch_id
-            @message = "Mismatched batch ID for existing tweet. https://app.echosight.io/admin/tweets/#{tweet.id} for batch https://app.echosight.io/admin/api_batches/#{api_batch_id}, tweet_data: #{tweet_data.inspect}"
-            Notifications::SlackNotifier.call(message: @message, channel: :errors)
-            return
-          end
-
           tweet.assign_attributes(tweet_attributes)
-        else
-          # Notifications::SlackNotifier.call(message: "Trying to update an existing tweet when updates are not allowed. https://app.echosight.io/admin/tweets/#{tweet.id} for batch https://app.echosight.io/admin/api_batches/#{api_batch_id}, tweet_data: #{tweet_data.inspect}", channel: :errors)
         end
       end
 
