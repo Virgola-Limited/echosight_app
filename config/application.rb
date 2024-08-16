@@ -94,5 +94,7 @@ module EchosightApp
           credentials: true
       end
     end
+
+    config.active_record.yaml_column_permitted_classes = [Symbol, Date, Time, ActiveSupport::TimeWithZone, ActiveSupport::TimeZone]
   end
 end
