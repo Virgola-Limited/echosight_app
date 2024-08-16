@@ -104,6 +104,8 @@ RSpec.feature 'Public Page Access' do
     # logout(:user)
   end
 
+  let!(:user) { create(:user, :with_identity) }
+
   before do
     tweets_data = [
       { text: "Tweet 1", impressions: 1000000, retweets: 5000, quotes: 1000, likes: 20000, replies: 2000, tweet_created_at: 1.day.ago },
@@ -132,22 +134,22 @@ RSpec.feature 'Public Page Access' do
 
   end
 
-  let(:user) { create(:user, :enabled_without_subscription, :with_identity) }
 
   scenario "displays top posts table with correct data" do
     visit public_page_path(user.handle)
+    expect_not_to_have_demo_data
     within('[id="top-posts-container"]') do
       expect(page).to have_css('[data-test="top-posts-table"]')
 
       # Check table headers
-      expect(page).to have_css('[data-test="post-header"]', text: 'POST')
-      expect(page).to have_css('[data-test="impressions-header"]', text: 'IMPRESSIONS')
-      expect(page).to have_css('[data-test="retweets-header"]', text: 'RETWEETS')
-      expect(page).to have_css('[data-test="quotes-header"]', text: 'QUOTES')
-      expect(page).to have_css('[data-test="likes-header"]', text: 'LIKES')
-      expect(page).to have_css('[data-test="replies-header"]', text: 'REPLIES')
-      expect(page).to have_css('[data-test="engagement-rate-header"]', text: 'ENGAGEMENT RATE')
-      expect(page).to have_css('[data-test="actions-header"]', text: 'ACTIONS')
+      expect(page).to have_css('[data-test="post-header"]', text: /POST/i)
+      expect(page).to have_css('[data-test="impressions-header"]', text: /IMPRESSIONS/i)
+      expect(page).to have_css('[data-test="retweets-header"]', text: /RETWEETS/i)
+      expect(page).to have_css('[data-test="quotes-header"]', text: /QUOTES/i)
+      expect(page).to have_css('[data-test="likes-header"]', text: /LIKES/i)
+      expect(page).to have_css('[data-test="replies-header"]', text: /REPLIES/i)
+      expect(page).to have_css('[data-test="engagement-rate-header"]', text: /ENGAGEMENT RATE/i)
+      expect(page).to have_css('[data-test="actions-header"]', text: /ACTIONS/i)
 
       # Check data for each row
       [

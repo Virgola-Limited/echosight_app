@@ -1,21 +1,28 @@
 require "shrine"
 require "shrine/storage/file_system"
+require 'shrine/storage/s3'
 require 'shrine/plugins/store_dimensions'
 
+if Rails.application.credentials.dig(:digital_ocean_spaces, :access_key_id).present? &&
+   Rails.application.credentials.dig(:digital_ocean_spaces, :secret_access_key).present?
 
-if ENV['BUCKETEER_AWS_ACCESS_KEY_ID'] && ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY']
-  require 'shrine/storage/s3'
-
-  s3_options = {
-    access_key_id:     ENV['BUCKETEER_AWS_ACCESS_KEY_ID'],
-    secret_access_key: ENV['BUCKETEER_AWS_SECRET_ACCESS_KEY'],
-    region:            ENV['BUCKETEER_AWS_REGION'],
-    bucket:            ENV['BUCKETEER_BUCKET_NAME'],
-  }
+  s3_options = Rails.application.credentials.digital_ocean_spaces.symbolize_keys
 
   Shrine.storages = {
-    cache: Shrine::Storage::S3.new(prefix: 'cache', **s3_options),
-    store: Shrine::Storage::S3.new(prefix: 'store', **s3_options),
+    cache: Shrine::Storage::S3.new(
+      prefix: 'cache',
+      public: true,
+      **s3_options
+    ),
+    store: Shrine::Storage::S3.new(
+      prefix: 'store',
+      public: true,
+      **s3_options
+    ),
+  }
+
+  Shrine.plugin :url_options, store: {
+    host: "https://#{s3_options[:bucket]}.#{s3_options[:region]}.digitaloceanspaces.com"
   }
 else
   Shrine.storages = {
@@ -24,12 +31,9 @@ else
   }
 end
 
-Shrine.plugin :activerecord # loads ActiveRecord integration
+Shrine.plugin :activerecord
 Shrine.plugin :store_dimensions
-
-# :cached_attachment_data Plugin: This plugin is particularly useful if your users might need to re-display forms due to validation errors or other reasons. It enables your application to retain the uploaded file in the cache, so the user doesn't have to re-upload it if the form needs to be redisplayed. This can significantly improve the user experience, especially when dealing with large files.
-
-# :restore_cached_data Plugin: This plugin complements the :cached_attachment_data plugin by extracting and retaining the metadata for the cached files when a form is re-displayed. This means that all the file metadata (like size, type, filename, etc.) is preserved and available in your application even before the file is permanently stored. This can be useful for validation or displaying file information back to the user in the case of form errors.
-
-Shrine.plugin :cached_attachment_data # enables retaining cached file across form redisplays
-Shrine.plugin :restore_cached_data    # extracts metadata for assigned cached files
+Shrine.plugin :cached_attachment_data
+Shrine.plugin :restore_cached_data
+Shrine.plugin :determine_mime_type
+# Shrine.plugin :derivation_endpoint, secret_key: Rails.application.credentials.secret_key_base

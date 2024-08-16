@@ -27,9 +27,15 @@ class IdentityNotificationService
   end
 
   def urls(handle:)
-    host = Rails.application.config.action_mailer.default_url_options[:host]
+    host = Rails.application.config.action_mailer.default_url_options[:host] || 'localhost'
     port = Rails.application.config.action_mailer.default_url_options[:port]
-    url = public_page_url(handle: handle, host: host, port: port)
+
+    url = if port
+      public_page_url(handle: handle, host: host, port: port)
+    else
+      public_page_url(handle: handle, host: host)
+    end
+
     "https://x.com/#{handle} #{url}"
   end
 end
