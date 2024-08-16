@@ -83,7 +83,9 @@ RSpec.configure do |config|
     options.add_argument('--disable-dev-shm-usage')
 
     # Set the path to Google Chrome for Testing
-    options.binary = ENV['CHROME_BINARY_PATH']
+    if ENV['CHROME_BINARY_PATH']
+      options.binary = ENV['CHROME_BINARY_PATH']
+    end
 
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end
@@ -98,7 +100,9 @@ RSpec.configure do |config|
   Capybara.default_driver = driver
 
   Webdrivers::Chromedriver.required_version = '127.0.6533.119'  # This should match your Chrome for Testing version
-  Selenium::WebDriver::Chrome.path = ENV['CHROME_BINARY_PATH']
+  if ENV['CHROME_BINARY_PATH']
+    Selenium::WebDriver::Chrome.path = ENV['CHROME_BINARY_PATH']
+  end
   #######################
 
   config.include Capybara::DSL, type: :feature
