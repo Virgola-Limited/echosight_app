@@ -9,4 +9,8 @@ class PagesController < ApplicationController
   def faq
     # Here you can add any logic if needed for the FAQ page.
   end
+
+  def engagement
+    # Blah
+  end
 end

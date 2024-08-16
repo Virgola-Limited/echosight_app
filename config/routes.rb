@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :feature_requests, only: %i[index create]
   get 'landing', to: 'pages#landing'
   get 'faq', to: 'pages#faq'
+  get 'engagement', to: 'pages#engagement'
   get 'leaderboard', to: 'leaderboard#users'
   resources :posts, only: [:index]
   get 'p/:handle', to: 'public_pages#show', as: :public_page

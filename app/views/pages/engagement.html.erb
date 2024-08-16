@@ -1,0 +1,94 @@
+<!-- app/views/engagement/index.html.erb -->
+
+<div class="container mx-auto p-6 bg-gray-100 dark:bg-gray-900">
+  <!-- Header -->
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-300 mb-6">Engagement Tool</h1>
+
+  <!-- Search Form -->
+  <div class="mb-8">
+    <form action="#" method="get" class="flex mb-4">
+      <input type="text" name="query" placeholder="Search X by keyword..." class="input flex-1 p-2 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-300 rounded-l-md">
+      <button type="submit" class="btn bg-blue-600 text-white p-2 rounded-r-md">Search Posts</button>
+    </form>
+
+    <form action="#" method="get" class="flex">
+      <input type="text" name="username" placeholder="Search X user by username..." class="input flex-1 p-2 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-300 rounded-l-md">
+      <button type="submit" class="btn bg-green-600 text-white p-2 rounded-r-md">Search User</button>
+    </form>
+  </div>
+
+  <!-- Search Results -->
+  <div class="space-y-4">
+    <!-- Example Tweet Results -->
+    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-300">Search Results for Posts</h2>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md flex">
+      <img src="https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_400x400.jpg" alt="Loftwah" class="w-12 h-12 rounded-full mr-4">
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-300">@loftwah</h2>
+        <p class="text-gray-700 dark:text-gray-400">Just launched my new analytics platform! 🚀 Check it out at echosight.io #Tech #Analytics</p>
+        <div class="mt-2 flex space-x-4">
+          <a href="https://x.com/loftwah/status/1234567890" class="text-blue-600 dark:text-blue-400" target="_blank">View Post</a>
+          <a href="https://x.com/loftwah" class="text-blue-600 dark:text-blue-400" target="_blank">View Profile</a>
+          <a href="#" class="text-blue-600 dark:text-blue-400">Placeholder for Send Message</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md flex">
+      <img src="https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_400x400.jpg" alt="Loftwah" class="w-12 h-12 rounded-full mr-4">
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-300">@loftwah</h2>
+        <p class="text-gray-700 dark:text-gray-400">Is it just me, or is the new X layout confusing? #UX #Design</p>
+        <div class="mt-2 flex space-x-4">
+          <a href="https://x.com/loftwah/status/0987654321" class="text-blue-600 dark:text-blue-400" target="_blank">View Post</a>
+          <a href="https://x.com/loftwah" class="text-blue-600 dark:text-blue-400" target="_blank">View Profile</a>
+          <a href="#" class="text-blue-600 dark:text-blue-400">Placeholder for Send Message</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example User Profile -->
+    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-300 mt-8">User Profile</h2>
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md flex">
+      <img src="https://pbs.twimg.com/profile_images/1756873036220059648/zc13kjbX_400x400.jpg" alt="Loftwah" class="w-16 h-16 rounded-full mr-4">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-300">Loftwah The Beatsmiff (@loftwah)</h2>
+        <p class="text-gray-700 dark:text-gray-400">Music producer and tech enthusiast. Creator of Echosight.</p>
+        <p class="text-gray-700 dark:text-gray-400">Followers: 5,000 | Following: 1,000 | Posts: 2,500</p>
+        <div class="mt-2 flex space-x-4">
+          <a href="https://x.com/loftwah" class="text-blue-600 dark:text-blue-400" target="_blank">View Profile</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interaction History -->
+  <div class="mt-8">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-300">Interaction History</h2>
+    <div class="space-y-4">
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-300">@loftwah</h3>
+        <p class="text-gray-700 dark:text-gray-400">Just launched my new analytics platform! 🚀 Check it out at echosight.io #Tech #Analytics</p>
+        <div class="mt-2 flex space-x-4">
+          <a href="https://x.com/loftwah/status/1234567890" class="text-blue-600 dark:text-blue-400" target="_blank">View Post</a>
+          <a href="https://x.com/loftwah" class="text-blue-600 dark:text-blue-400" target="_blank">View Profile</a>
+        </div>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-md shadow-md">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-300">@loftwah</h3>
+        <p class="text-gray-700 dark:text-gray-400">Is it just me, or is the new X layout confusing? #UX #Design</p>
+        <div class="mt-2 flex space-x-4">
+          <a href="https://x.com/loftwah/status/0987654321" class="text-blue-600 dark:text-blue-400" target="_blank">View Post</a>
+          <a href="https://x.com/loftwah" class="text-blue-600 dark:text-blue-400" target="_blank">View Profile</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder for Future Enhancements -->
+  <div class="mt-8">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-300">Future Enhancements</h2>
+    <p class="text-gray-700 dark:text-gray-400">Placeholders for retweeting, messaging, and more advanced interactions will be added when the X API is integrated.</p>
+  </div>
+</div>
