@@ -1,46 +1,45 @@
 # config/initializers/jemalloc.rb
 
-puts "==== Runtime Environment ===="
-puts "Rails.root: #{Rails.root}"
-puts "PWD: #{Dir.pwd}"
-puts "HOME: #{ENV['HOME']}"
-puts "RENDER_PROJECT_DIR: #{ENV['RENDER_PROJECT_DIR']}"
+def debug_print(message)
+  puts "JEMALLOC_DEBUG: #{message}"
+end
 
-jemalloc_path = '/opt/render/project/src/jemalloc/lib/libjemalloc.so'
+debug_print "==== Jemalloc Initializer Start ===="
+debug_print "Rails.root: #{Rails.root}"
+debug_print "PWD: #{Dir.pwd}"
+debug_print "HOME: #{ENV['HOME']}"
 
-puts "Debug: Checking for jemalloc at: #{jemalloc_path}"
-puts "Debug: LD_PRELOAD = #{ENV['LD_PRELOAD']}"
-puts "Debug: LD_LIBRARY_PATH = #{ENV['LD_LIBRARY_PATH']}"
+jemalloc_path = File.join(Dir.pwd, 'jemalloc', 'lib', 'libjemalloc.so')
 
+debug_print "Checking for jemalloc at: #{jemalloc_path}"
 if File.exist?(jemalloc_path)
-  puts "jemalloc library found at #{jemalloc_path}"
+  debug_print "jemalloc library found at #{jemalloc_path}"
   if ENV['LD_PRELOAD'] == jemalloc_path
-    puts "jemalloc is correctly preloaded"
+    debug_print "jemalloc is correctly preloaded"
     begin
-      require jemalloc_path
-      puts "Successfully loaded jemalloc"
-    rescue LoadError => e
-      puts "Failed to load jemalloc: #{e.message}"
+      require 'fiddle'
+      je_malloc = Fiddle::Function.new(
+        Fiddle::Handle::DEFAULT['je_malloc'],
+        [Fiddle::TYPE_SIZE_T],
+        Fiddle::TYPE_VOIDP
+      )
+      debug_print "jemalloc successfully detected (je_malloc function found)"
+    rescue => e
+      debug_print "Failed to detect jemalloc: #{e.message}"
+      debug_print "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
     end
   else
-    warn "jemalloc is installed but not correctly preloaded. Current LD_PRELOAD: #{ENV['LD_PRELOAD']}"
+    debug_print "Warning: jemalloc is installed but not correctly preloaded. Current LD_PRELOAD: #{ENV['LD_PRELOAD']}"
   end
 else
-  warn "jemalloc library not found at #{jemalloc_path}. Performance may be affected."
+  debug_print "Warning: jemalloc library not found at #{jemalloc_path}. Performance may be affected."
 end
 
-# Try to detect if jemalloc is being used
-begin
-  require 'fiddle'
-  je_malloc = Fiddle::Function.new(
-    Fiddle::Handle::DEFAULT['je_malloc'],
-    [Fiddle::TYPE_SIZE_T],
-    Fiddle::TYPE_VOIDP
-  )
-  puts "jemalloc seems to be in use (je_malloc function found)"
-rescue => e
-  puts "Could not detect jemalloc usage: #{e.message}"
-end
+debug_print "==== File System Check ===="
+debug_print `ls -l #{File.dirname(jemalloc_path)} 2>&1`
 
-puts "==== All Environment Variables ===="
-ENV.sort.each { |key, value| puts "#{key}: #{value}" }
+debug_print "==== Environment Variables ===="
+debug_print "LD_PRELOAD: #{ENV['LD_PRELOAD']}"
+debug_print "LD_LIBRARY_PATH: #{ENV['LD_LIBRARY_PATH']}"
+
+debug_print "==== Jemalloc Initializer End ===="
