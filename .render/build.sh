@@ -3,7 +3,7 @@ set -o errexit
 
 # Install jemalloc in a persistent directory
 JEMALLOC_VERSION=5.3.0
-JEMALLOC_DIR=$HOME/jemalloc
+JEMALLOC_DIR=$PWD/jemalloc
 
 if [ ! -d "$JEMALLOC_DIR" ]; then
   mkdir -p $JEMALLOC_DIR
@@ -14,11 +14,9 @@ if [ ! -d "$JEMALLOC_DIR" ]; then
   make install
 fi
 
-# Add jemalloc to LD_PRELOAD and update library path
-echo "export LD_PRELOAD=$JEMALLOC_DIR/lib/libjemalloc.so" >> $HOME/.bashrc
-echo "export LD_PRELOAD=$JEMALLOC_DIR/lib/libjemalloc.so" >> $HOME/.profile
-echo "export LD_LIBRARY_PATH=$JEMALLOC_DIR/lib:$LD_LIBRARY_PATH" >> $HOME/.bashrc
-echo "export LD_LIBRARY_PATH=$JEMALLOC_DIR/lib:$LD_LIBRARY_PATH" >> $HOME/.profile
+# Print the location of libjemalloc.so for verification
+echo "libjemalloc.so location: $JEMALLOC_DIR/lib/libjemalloc.so"
+echo "Please set LD_PRELOAD to this path in your Render dashboard"
 
 # Run the rest of your build process
 cd $HOME/project/src  # Adjust this path if necessary

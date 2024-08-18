@@ -1,12 +1,19 @@
 # config/initializers/jemalloc.rb
 
-jemalloc_path = File.join(ENV['RENDER_APP_DIR'], 'jemalloc', 'lib', 'libjemalloc.so')
+potential_paths = [
+  ENV['LD_PRELOAD'],
+  '/opt/render/project/src/jemalloc/lib/libjemalloc.so',
+  '/opt/render/project/jemalloc/lib/libjemalloc.so',
+  File.join(Rails.root, 'jemalloc', 'lib', 'libjemalloc.so')
+]
 
-puts "Debug: Checking for jemalloc at: #{jemalloc_path}"
+jemalloc_path = potential_paths.find { |path| path && File.exist?(path) }
+
+puts "Debug: Checking for jemalloc"
 puts "Debug: LD_PRELOAD = #{ENV['LD_PRELOAD']}"
 puts "Debug: LD_LIBRARY_PATH = #{ENV['LD_LIBRARY_PATH']}"
 
-if File.exist?(jemalloc_path)
+if jemalloc_path
   puts "jemalloc library found at #{jemalloc_path}"
   if ENV['LD_PRELOAD']&.include?('libjemalloc.so')
     puts "jemalloc is preloaded"
@@ -14,7 +21,7 @@ if File.exist?(jemalloc_path)
     warn "jemalloc is installed but not preloaded. Performance may be affected."
   end
 else
-  warn "jemalloc library not found at #{jemalloc_path}. Performance may be affected."
+  warn "jemalloc library not found. Performance may be affected."
 end
 
 puts "Debug: Current environment variables:"
