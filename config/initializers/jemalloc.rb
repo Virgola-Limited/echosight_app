@@ -9,48 +9,32 @@ debug_print "Rails.root: #{Rails.root}"
 debug_print "PWD: #{Dir.pwd}"
 debug_print "HOME: #{ENV['HOME']}"
 
-jemalloc_path = "/opt/render/project/src/jemalloc/lib/libjemalloc.so"
+jemalloc_path = ENV['LD_PRELOAD']
 
 debug_print "Checking for jemalloc at: #{jemalloc_path}"
-if File.exist?(jemalloc_path)
+if File.exist?(jemalloc_path.to_s)
   debug_print "jemalloc library found at #{jemalloc_path}"
-  debug_print "File permissions: #{File.stat(jemalloc_path).mode.to_s(8)}"
-  if ENV['LD_PRELOAD'] == jemalloc_path
-    debug_print "jemalloc is correctly preloaded"
-    begin
-      require 'fiddle'
-      je_malloc = Fiddle::Function.new(
-        Fiddle::Handle::DEFAULT['je_malloc'],
-        [Fiddle::TYPE_SIZE_T],
-        Fiddle::TYPE_VOIDP
-      )
-      debug_print "jemalloc successfully detected (je_malloc function found)"
-    rescue => e
-      debug_print "Failed to detect jemalloc: #{e.message}"
-      debug_print "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
-    end
-  else
-    debug_print "Warning: jemalloc is installed but not correctly preloaded. Current LD_PRELOAD: #{ENV['LD_PRELOAD']}"
+  begin
+    require 'fiddle'
+    je_malloc = Fiddle::Function.new(
+      Fiddle::Handle::DEFAULT['je_malloc'],
+      [Fiddle::TYPE_SIZE_T],
+      Fiddle::TYPE_VOIDP
+    )
+    debug_print "jemalloc successfully detected (je_malloc function found)"
+  rescue => e
+    debug_print "Failed to detect jemalloc: #{e.message}"
+    debug_print "Backtrace:\n\t#{e.backtrace.join("\n\t")}"
   end
 else
   debug_print "Warning: jemalloc library not found at #{jemalloc_path}. Performance may be affected."
 end
 
 debug_print "==== File System Check ===="
-debug_print "Contents of /opt/render/project/src:"
-debug_print `ls -la /opt/render/project/src 2>&1`
-debug_print "Contents of /opt/render/project/src/jemalloc:"
-debug_print `ls -la /opt/render/project/src/jemalloc 2>&1`
-debug_print "Contents of /opt/render/project/src/jemalloc/lib:"
-debug_print `ls -la /opt/render/project/src/jemalloc/lib 2>&1`
+debug_print `ls -l /usr/lib/*jemalloc* 2>&1`
 
 debug_print "==== Environment Variables ===="
 debug_print "LD_PRELOAD: #{ENV['LD_PRELOAD']}"
 debug_print "LD_LIBRARY_PATH: #{ENV['LD_LIBRARY_PATH']}"
-
-debug_print "==== Process Information ===="
-debug_print "Process ID: #{Process.pid}"
-debug_print "Parent Process ID: #{Process.ppid}"
-debug_print "Process Command Line: #{File.read("/proc/#{Process.pid}/cmdline").gsub("\0", ' ')}"
 
 debug_print "==== Jemalloc Initializer End ===="
