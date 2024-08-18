@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# Install jemalloc
+# Install jemalloc in a persistent directory
 JEMALLOC_VERSION=5.3.0
-curl -L https://github.com/jemalloc/jemalloc/releases/download/${JEMALLOC_VERSION}/jemalloc-${JEMALLOC_VERSION}.tar.bz2 | tar xjf -
-cd jemalloc-${JEMALLOC_VERSION}
-./configure --prefix=$HOME/.jemalloc
-make
-make install
+JEMALLOC_DIR=$HOME/jemalloc
+
+if [ ! -d "$JEMALLOC_DIR" ]; then
+  mkdir -p $JEMALLOC_DIR
+  curl -L https://github.com/jemalloc/jemalloc/releases/download/${JEMALLOC_VERSION}/jemalloc-${JEMALLOC_VERSION}.tar.bz2 | tar xjf - -C $JEMALLOC_DIR --strip-components=1
+  cd $JEMALLOC_DIR
+  ./configure --prefix=$JEMALLOC_DIR
+  make
+  make install
+fi
 
 # Add jemalloc to LD_PRELOAD and update library path
-echo "export LD_PRELOAD=$HOME/.jemalloc/lib/libjemalloc.so" >> $HOME/.bashrc
-echo "export LD_PRELOAD=$HOME/.jemalloc/lib/libjemalloc.so" >> $HOME/.profile
-echo "export LD_LIBRARY_PATH=$HOME/.jemalloc/lib:$LD_LIBRARY_PATH" >> $HOME/.bashrc
-echo "export LD_LIBRARY_PATH=$HOME/.jemalloc/lib:$LD_LIBRARY_PATH" >> $HOME/.profile
-
-# Return to project directory
-cd ..
+echo "export LD_PRELOAD=$JEMALLOC_DIR/lib/libjemalloc.so" >> $HOME/.bashrc
+echo "export LD_PRELOAD=$JEMALLOC_DIR/lib/libjemalloc.so" >> $HOME/.profile
+echo "export LD_LIBRARY_PATH=$JEMALLOC_DIR/lib:$LD_LIBRARY_PATH" >> $HOME/.bashrc
+echo "export LD_LIBRARY_PATH=$JEMALLOC_DIR/lib:$LD_LIBRARY_PATH" >> $HOME/.profile
 
 # Run the rest of your build process
+cd $HOME/project/src  # Adjust this path if necessary
 bundle install
 yarn install
 bundle exec rake db:migrate
