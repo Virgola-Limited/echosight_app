@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# Install jemalloc in a persistent directory
-JEMALLOC_VERSION=5.3.0
-JEMALLOC_DIR=$PWD/jemalloc
+echo "==== Build Environment ===="
+echo "PWD: $PWD"
+echo "HOME: $HOME"
+echo "RENDER_PROJECT_DIR: $RENDER_PROJECT_DIR"
 
-echo "Current working directory: $PWD"
-echo "JEMALLOC_DIR: $JEMALLOC_DIR"
+# Install jemalloc in the correct directory
+JEMALLOC_VERSION=5.3.0
+JEMALLOC_DIR=/opt/render/project/src/jemalloc
 
 if [ ! -d "$JEMALLOC_DIR" ]; then
   echo "Installing jemalloc..."
@@ -16,26 +18,26 @@ if [ ! -d "$JEMALLOC_DIR" ]; then
   ./configure --prefix=$JEMALLOC_DIR
   make
   make install
-  echo "jemalloc installation completed"
+  echo "jemalloc installation completed."
 else
-  echo "jemalloc already installed"
+  echo "jemalloc directory already exists, skipping installation."
 fi
 
 # Print the location of libjemalloc.so for verification
-JEMALLOC_LIB="$JEMALLOC_DIR/lib/libjemalloc.so"
-echo "Expected libjemalloc.so location: $JEMALLOC_LIB"
+echo "libjemalloc.so location: $JEMALLOC_DIR/lib/libjemalloc.so"
+ls -l $JEMALLOC_DIR/lib/libjemalloc.so
 
-if [ -f "$JEMALLOC_LIB" ]; then
-  echo "libjemalloc.so exists at the expected location"
-else
-  echo "ERROR: libjemalloc.so not found at the expected location"
-fi
+echo "Content of JEMALLOC_DIR:"
+ls -R $JEMALLOC_DIR
 
-echo "Please set LD_PRELOAD to this path in your Render dashboard: $JEMALLOC_LIB"
+echo "Please ensure LD_PRELOAD is set to /opt/render/project/src/jemalloc/lib/libjemalloc.so in your Render dashboard"
 
 # Run the rest of your build process
-cd $HOME/project/src  # Adjust this path if necessary
+cd /opt/render/project/src
 bundle install
 yarn install
 bundle exec rake db:migrate
 RAILS_ENV=production bin/rails assets:precompile
+
+echo "==== Final Build Directory Structure ===="
+ls -R /opt/render/project/src
