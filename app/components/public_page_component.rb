@@ -121,7 +121,9 @@ class PublicPageComponent < ApplicationComponent
   end
 
   def date_range_label
-    Twitter::DateRangeOptions.all.find { |range| range[:value] == public_page_data.date_range }[:label]
+    parsed_range = Twitter::DateRangeOptions.parse_date_range(public_page_data.date_range)
+
+    Twitter::DateRangeOptions.all.find { |range| range[:value] == parsed_range[:range] }[:label]
   end
 
   def low_data_message
