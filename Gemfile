@@ -46,7 +46,6 @@ gem 'devise-two-factor'
 gem 'email_validator'
 gem 'exception_notification'
 gem 'fastimage'
-gem 'gemalloc'
 gem 'mailkick'
 gem "mini_magick"
 gem 'devise_masquerade'
@@ -104,4 +103,8 @@ group :development do
   gem 'rack-mini-profiler'
   gem 'rubocop'
   gem 'web-console'
+end
+
+group :production do
+  gem 'gemalloc', git: 'https://github.com/jtperreault/gemalloc'
 end
