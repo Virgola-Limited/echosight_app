@@ -1,7 +1,6 @@
 class PublicPageData
   attr_accessor :days_of_data_in_difference_count,
                 :days_of_data_in_recent_count,
-                :date_range,
                 :engagement_rate_percentage_per_day,
                 :followers_comparison_days,
                 :followers_count,
@@ -22,6 +21,7 @@ class PublicPageData
                 :tweets_change_over_available_time_period,
                 :user
 
+  attr_reader :date_range
   attr_writer :demo
 
   ROUNDABLE_METRICS = %i[
@@ -38,6 +38,10 @@ class PublicPageData
     end
   end
 
+  def date_range=(value)
+    @date_range = sanitize_date_range(value)
+  end
+
   ROUNDABLE_METRICS.each do |metric|
     define_method(metric) do
       rounded_value = instance_variable_get("@#{metric}")
@@ -47,5 +51,12 @@ class PublicPageData
 
   def demo?
     @demo
+  end
+
+  private
+
+  def sanitize_date_range(range)
+    valid_ranges = Twitter::DateRangeOptions.all.map { |r| r[:value] }
+    valid_ranges.include?(range) ? range : '7d'
   end
 end
