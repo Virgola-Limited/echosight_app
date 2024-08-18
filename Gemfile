@@ -104,7 +104,3 @@ group :development do
   gem 'rubocop'
   gem 'web-console'
 end
-
-group :production do
-  gem 'gemalloc', git: 'https://github.com/jtperreault/gemalloc'
-end
