@@ -333,7 +333,7 @@ Devise.setup do |config|
   #               scope: 'tweet.read tweet.write users.read follows.read follows.write space.read offline.access'
   ############################
 config.omniauth :twitter, Rails.application.credentials.dig(:twitter, :consumer_api_key), Rails.application.credentials.dig(:twitter, :consumer_api_secret),
-                  callback_path: '/users/auth/twitter/callback'
+                  callback_path: '/users/auth/twitter/callback', scope: 'tweet.read tweet.write'
 
   # Twitter App Info
   # Callback url http://localhost:3000/users/auth/twitter/callback
