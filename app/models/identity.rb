@@ -148,7 +148,7 @@ class Identity < ApplicationRecord
 
   def disable_versioning_if_uid_updated
     if uid_changed? && uid_updated_before?
-      self.class.paper_trail.disable
+      PaperTrail.request.disable_model(self.class)
     end
   end
 end

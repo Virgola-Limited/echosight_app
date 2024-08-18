@@ -51,4 +51,48 @@ RSpec.describe Identity, type: :model do
       ])
     end
   end
+
+  describe '#disable_versioning_if_uid_updated' do
+    let(:identity) { create(:identity, uid: 'old_uid') }
+
+    context 'when uid is changed and has been updated before' do
+      before do
+        allow(identity).to receive(:uid_updated_before?).and_return(true)
+        allow(PaperTrail.request).to receive(:disable_model)
+      end
+
+      it 'disables versioning for the model' do
+        identity.uid = 'new_uid'
+        identity.save
+
+        expect(PaperTrail.request).to have_received(:disable_model).with(Identity)
+      end
+    end
+
+    context 'when uid is not changed' do
+      before do
+        allow(PaperTrail.request).to receive(:disable_model)
+      end
+
+      it 'does not disable versioning' do
+        identity.save
+
+        expect(PaperTrail.request).not_to have_received(:disable_model)
+      end
+    end
+
+    context 'when uid is changed but has not been updated before' do
+      before do
+        allow(identity).to receive(:uid_updated_before?).and_return(false)
+        allow(PaperTrail.request).to receive(:disable_model)
+      end
+
+      it 'does not disable versioning' do
+        identity.uid = 'new_uid'
+        identity.save
+
+        expect(PaperTrail.request).not_to have_received(:disable_model)
+      end
+    end
+  end
 end

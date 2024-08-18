@@ -1,4 +1,6 @@
 # Not used with x gem
+# Not used with x gem
+# Not used with x gem
 
 module Twitter
   class Oauth
