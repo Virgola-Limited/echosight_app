@@ -9,9 +9,11 @@ cd jemalloc-${JEMALLOC_VERSION}
 make
 make install
 
-# Add jemalloc to LD_PRELOAD
+# Add jemalloc to LD_PRELOAD and update library path
 echo "export LD_PRELOAD=$HOME/.jemalloc/lib/libjemalloc.so" >> $HOME/.bashrc
 echo "export LD_PRELOAD=$HOME/.jemalloc/lib/libjemalloc.so" >> $HOME/.profile
+echo "export LD_LIBRARY_PATH=$HOME/.jemalloc/lib:$LD_LIBRARY_PATH" >> $HOME/.bashrc
+echo "export LD_LIBRARY_PATH=$HOME/.jemalloc/lib:$LD_LIBRARY_PATH" >> $HOME/.profile
 
 # Return to project directory
 cd ..
