@@ -35,7 +35,8 @@ class Identity < ApplicationRecord
   before_update :disable_versioning_if_uid_updated
 
   belongs_to :user, optional: true # Allow identity creation without a user
-  has_many :tweets
+  has_many :leaderboard_entries
+  has_many :tweets # Dont add dependent destroy, we want to keep the tweets
   has_many :twitter_user_metrics
   has_many :user_twitter_data_updates, dependent: :destroy
   has_one :oauth_credential, dependent: :destroy
