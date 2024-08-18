@@ -46,6 +46,7 @@ gem 'devise-two-factor'
 gem 'email_validator'
 gem 'exception_notification'
 gem 'fastimage'
+gem 'gemalloc'
 gem 'mailkick'
 gem "mini_magick"
 gem 'devise_masquerade'
