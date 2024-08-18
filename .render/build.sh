@@ -11,6 +11,7 @@ make install
 
 # Add jemalloc to LD_PRELOAD
 echo "export LD_PRELOAD=$HOME/.jemalloc/lib/libjemalloc.so" >> $HOME/.bashrc
+echo "export LD_PRELOAD=$HOME/.jemalloc/lib/libjemalloc.so" >> $HOME/.profile
 
 # Return to project directory
 cd ..
@@ -20,4 +21,3 @@ bundle install
 yarn install
 bundle exec rake db:migrate
 RAILS_ENV=production bin/rails assets:precompile
-bin/vite build
