@@ -27,8 +27,10 @@ module SocialData
 
       received_tweet_count = 0
       all_tweets = []
+      request_log = nil
+
       while received_tweet_count < MAXIMUM_TWEETS
-        response = make_api_call(endpoint, params, :oauth2)
+        response, request_log = make_api_call(endpoint, params, :oauth2)
         break unless response['tweets'] && !response['tweets'].empty?
 
         tweets_with_user_data = response['tweets'].map do |tweet|
@@ -47,8 +49,9 @@ module SocialData
         ExceptionNotifier.notify_exception(StandardError.new("Maximum tweets limit reached"), data: error_details)
       end
 
-      { 'tweets' => all_tweets }
+      { 'tweets' => all_tweets, 'request_log' => request_log }
     end
+
 
     def fetch_user_details(user_id)
       endpoint = "user/#{user_id}"
@@ -102,9 +105,8 @@ module SocialData
 
       uri = URI("https://api.socialdata.tools/twitter/#{endpoint}")
 
-      # remove params with empty values
+      # Remove params with empty values
       params = params.reject { |_k, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
-
       uri.query = URI.encode_www_form(params) unless params.nil? || params.empty?
 
       # Set up the request
@@ -116,12 +118,34 @@ module SocialData
         http.request(request)
       end
 
+      # Log the request
+      request_log = log_request(endpoint, params, response)
+
       # Handle the response
       unless response.is_a?(Net::HTTPSuccess)
         raise StandardError, "HTTP request failed: #{response.code} - #{response.message}, uri: #{uri.inspect}, params: #{params.inspect}"
       end
 
-      JSON.parse(response.body)
+      [JSON.parse(response.body), request_log]
     end
+
+    def log_request(endpoint, params, response)
+      RequestLog.create(
+        endpoint: endpoint,
+        params: params,
+        response: parse_response(response),
+        metadata: {
+          status: response.code,
+          message: response.message,
+          request_time: Time.current
+        }
+      )
+    end
+
+    def parse_response(response)
+      # Parse and return the response body safely, fallback to nil if parsing fails
+      JSON.parse(response.body) rescue nil
+    end
+
   end
 end
