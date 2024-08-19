@@ -59,7 +59,12 @@ Sidekiq.configure_server do |config|
         'cron' => "0 10 * * *",
         'class' => 'IdentityNotificationJob',
         'tz' => "Australia/Sydney"
-      }
+      },
+      # {
+      #   'name' => 'Request Log Cleanup - weekly',
+      #   'cron' => '0 0 * * 0',  # Run every Sunday at midnight
+      #   'class' => 'RequestLogCleanupJob'
+      # }
     ]
   )
 end
