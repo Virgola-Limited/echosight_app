@@ -57,6 +57,76 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  fdescribe 'Scopes' do
+    let!(:user_with_subscription) { create(:user) }
+    let!(:active_subscription) { create(:subscription, user: user_with_subscription, status: 'active') }
+
+    let!(:user_without_subscription) { create(:user) }
+    let!(:inactive_subscription) { create(:subscription, :inactive, user: user_without_subscription) }
+
+    let!(:user_no_subscription) { create(:user) }
+
+    let!(:user_with_identity) { create(:user) }
+    let!(:identity) { create(:identity, user: user_with_identity) }
+
+    let!(:user_without_identity) { create(:user) }
+
+    let!(:user_trialing) { create(:user) }
+    let!(:trialing_subscription) { create(:subscription, :trialing, user: user_trialing) }
+
+    # Test for with_subscription scope
+    describe '.with_subscription' do
+      it 'includes users with active subscriptions' do
+        expect(User.with_subscription).to include(user_with_subscription)
+      end
+
+      it 'does not include users without active subscriptions' do
+        expect(User.with_subscription).not_to include(user_without_subscription)
+        expect(User.with_subscription).not_to include(user_no_subscription)
+      end
+    end
+
+    # Test for without_subscription scope
+    describe '.without_subscription' do
+      it 'includes users without any subscriptions' do
+        expect(User.without_subscription).to include(user_no_subscription)
+      end
+
+      it 'includes users with non-active subscriptions' do
+        expect(User.without_subscription).to include(user_without_subscription)
+      end
+
+      it 'does not include users with active subscriptions' do
+        expect(User.without_subscription).not_to include(user_with_subscription)
+      end
+    end
+
+    # Test for without_identity scope
+    describe '.without_identity' do
+      it 'includes users without identity' do
+        expect(User.without_identity).to include(user_without_identity)
+      end
+
+      it 'does not include users with identity' do
+        expect(User.without_identity).not_to include(user_with_identity)
+      end
+    end
+
+    # Test for trialing scope
+    describe '.trialing' do
+      it 'includes users with trialing subscriptions' do
+        expect(User.trialing).to include(user_trialing)
+      end
+
+      it 'does not include users without trialing subscriptions' do
+        expect(User.trialing).not_to include(user_with_subscription)
+        expect(User.trialing).not_to include(user_without_subscription)
+        expect(User.trialing).not_to include(user_no_subscription)
+      end
+    end
+  end
+
+
   context 'create user' do
     it 'creates a user with an otp_secret' do
       user = create(:user)
