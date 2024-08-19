@@ -63,6 +63,7 @@ gem "rqrcode", "~> 2.0"
 # Needed for activeadmin as we dont use webpacker #https://github.com/activeadmin/activeadmin/issues/6636
 gem 'sassc'
 gem 'shrine'
+gem 'shrimp'
 gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'slack-notifier'

@@ -1,5 +1,6 @@
   <% content_for :title, "#{page_user_name || page_user_handle}'s Public Page" %>
 
+ <!-- start of social graph image -->
   <div class="relative">
     <!-- Header Photo -->
     <% if hide_profile_banner? %>
@@ -48,6 +49,8 @@
 
   </div>
 
+
+
   <% if show_date_range_selector? %>
   <div class="flex justify-center items-center">
     <%= render Shared::DateRangeSelector.new(
@@ -61,6 +64,7 @@
   <div class="flex flex-wrap">
     <%= count_cards %>
   </div>
+  <!-- end of social graph image -->
 
   <%= render partial:"public_pages/impressions_over_time", locals: {
     page_user_name: page_user_name,

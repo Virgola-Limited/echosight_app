@@ -516,6 +516,8 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     shellany (0.0.1)
+    shrimp (0.0.6)
+      json
     shrine (3.5.0)
       content_disposition (~> 1.0)
       down (~> 5.1)
@@ -652,6 +654,7 @@ DEPENDENCIES
   rspec-rails (~> 6.1.0)
   rubocop
   sassc
+  shrimp
   shrine
   sidekiq
   sidekiq-cron
