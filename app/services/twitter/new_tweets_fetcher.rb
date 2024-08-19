@@ -28,8 +28,8 @@ module Twitter
       today_user_data = nil
 
       tweets['data'].each do |tweet_data|
-        today_user_data ||= tweet_data['user']['data']
-        process_tweet_data(tweet_data)
+        result = process_tweet_data(tweet_data)
+        today_user_data ||= tweet_data['user']['data'] if result[:success] == true
       end
 
       if today_user_data
