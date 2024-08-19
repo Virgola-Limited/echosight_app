@@ -52,7 +52,7 @@
   <div class="flex justify-center items-center">
     <%= render Shared::DateRangeSelector.new(
       page_user_handle: page_user_handle,
-      date_range: @date_range,
+      date_range: date_range,
       url_helper: ->(date_range) { public_page_path(handle: @page_user.handle, date_range: date_range) }
     ) %>
   </div>
