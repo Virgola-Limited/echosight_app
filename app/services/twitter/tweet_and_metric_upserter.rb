@@ -10,19 +10,21 @@ module Twitter
     end
 
     def call
-      tweet = initialize_or_update_tweet
-      if tweet
-        tweet_metric = find_or_initialize_tweet_metric(tweet)
-
-        result = update_tweet_metric(tweet_metric)
-        {
-          tweet_id: tweet.id,
-          success: result.saved_changes?,
-          tweet_metric: result,
-          identity: @identity,
-          tweet_data: tweet_data,
-        }
+      if tweet_belongs_to_identity?
+        tweet = initialize_or_update_tweet
+        if tweet
+          tweet_metric = find_or_initialize_tweet_metric(tweet)
+          result = update_tweet_metric(tweet_metric)
+          return {
+            tweet_id: tweet.id,
+            success: result.saved_changes?,
+            tweet_metric: result,
+            identity: @identity,
+            tweet_data: tweet_data,
+          }
+        end
       end
+
       {
         success: false,
         api_batch_id: api_batch_id,
@@ -31,6 +33,10 @@ module Twitter
     end
 
     private
+
+    def tweet_belongs_to_identity?
+      tweet_data.dig('user', 'data', 'id') == identity.uid
+    end
 
     def initialize_or_update_tweet
       tweet = Tweet.find_or_initialize_by(id: tweet_data['id'])
