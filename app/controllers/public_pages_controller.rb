@@ -17,9 +17,13 @@ class PublicPagesController < ApplicationController
     set_flash_message
     @page_updated_at = @public_page_data.last_cache_update
 
-    render PublicPageComponent.new(public_page_data: @public_page_data, current_user: current_or_guest_user)
+    # Render only specific parts if 'only' is present, or render the full component
+    render PublicPageComponent.new(
+      public_page_data: @public_page_data,
+      current_user: current_or_guest_user,
+      only: params[:only]
+    ), layout: (params[:only] ? 'minimal' : 'application')
   end
-
 
   private
 

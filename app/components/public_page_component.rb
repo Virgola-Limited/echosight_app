@@ -1,10 +1,19 @@
 class PublicPageComponent < ApplicationComponent
-  attr_reader :public_page_data, :page_user, :current_user
+  attr_reader :public_page_data, :page_user, :current_user, :only
 
-  def initialize(public_page_data:, current_user:)
+  def initialize(public_page_data:, current_user:, only: nil)
     @public_page_data = public_page_data
     @current_user = current_user
     @page_user = public_page_data.user
+    @only = only
+  end
+
+  # This method determines whether a particular section should be rendered
+  def render_section?(section)
+    # If 'only' is nil, render all sections
+    return true if only.nil?
+    # If 'only' matches the section, render that section
+    only == section
   end
 
   def page_user_handle
