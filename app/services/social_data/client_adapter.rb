@@ -26,7 +26,12 @@ module SocialData
 
     def search_tweets(params = {}, single_request = false)
       response = social_data_client.search_tweets(params, single_request)
-      adapt_tweets_response_format(response)
+
+      adapted_tweets = adapt_tweets_response_format(response)
+      {
+        'tweets' => adapted_tweets,
+        'request_log' => response['request_log'] # Include the request log
+      }
     end
 
     private

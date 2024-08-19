@@ -48,7 +48,7 @@ module SocialData
         error_details = { error: "Reached maximum tweet count of #{MAXIMUM_TWEETS} for endpoint: #{endpoint}, params: #{params.to_s}" }
         ExceptionNotifier.notify_exception(StandardError.new("Maximum tweets limit reached"), data: error_details)
       end
-
+       needs to return all the request logs (for multiple requests)
       { 'tweets' => all_tweets, 'request_log' => request_log }
     end
 

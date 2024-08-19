@@ -36,14 +36,19 @@ RSpec.describe SocialData::ClientAdapter do
       it 'returns adapted social data in the expected format' do
         VCR.use_cassette('SocialData__Client') do
           adapted_data = client_adapter.search_tweets(params)
-          expect(adapted_data['data'].size).to eq(80)
-          adapted_data['data'].each do |tweet|
+
+          # Check the 'tweets' key
+          expect(adapted_data).to have_key('tweets')
+          expect(adapted_data['tweets']['data'].size).to eq(80)
+
+          # Check the tweets themselves
+          adapted_data['tweets']['data'].each do |tweet|
             tweet_time = id_to_time(tweet['id'].to_i)
             expect(tweet_time).to be >= since_time
             expect(tweet_time).to be <= until_time
           end
 
-          first_tweet = adapted_data['data'].first
+          first_tweet = adapted_data['tweets']['data'].first
           keys_to_test = first_tweet_expected_results.keys.excluding('created_at')
           keys_to_test.each do |key|
             if first_tweet[key].is_a?(Hash)
@@ -52,9 +57,12 @@ RSpec.describe SocialData::ClientAdapter do
               expect(first_tweet[key]).to eq(first_tweet_expected_results[key]), "Expected value for key '#{key}' in first_tweet to be '#{first_tweet_expected_results[key]}', but got '#{first_tweet[key]}'"
             end
           end
+
+          # Check the 'request_log' key (new check)
+          expect(adapted_data).to have_key('request_log')
+          expect(adapted_data['request_log']).to be_a(RequestLog)
         end
       end
-
 
       let(:tweet_user_data) do
         {
