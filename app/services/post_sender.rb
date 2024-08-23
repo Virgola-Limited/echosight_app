@@ -87,7 +87,7 @@ class PostSender
   end
 
   def notify_failure
-    PostMailer.post_failed_email(@message, @failure_reasons).deliver_now
+    # PostMailer.post_failed_email(@message, @failure_reasons).deliver_now
   end
 
   def send_to_channel
