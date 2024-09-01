@@ -1,12 +1,19 @@
-
 #!/bin/bash
 
 set -e  # Exit immediately if a command exits with a non-zero status.
 
-# Set your Render API key and service ID
-RENDER_API_KEY="xxx"
-RENDER_SERVICE_ID="xxx"
+# Check for required environment variables
+if [ -z "$RENDER_API_KEY" ]; then
+    echo "Error: RENDER_API_KEY environment variable is not set."
+    exit 1
+fi
 
+if [ -z "$RENDER_DATABASE_ID" ]; then
+    echo "Error: RENDER_DATABASE_ID environment variable is not set."
+    echo "Please set this to your database ID, which can be found in the URL of your database in the Render dashboard."
+    echo "Example: For URL https://dashboard.render.com/d/dpg-cquognbv2p9s73e4gsj0-a, the ID is dpg-cquognbv2p9s73e4gsj0-a"
+    exit 1
+fi
 
 # Function to check if a command exists
 command_exists() {
@@ -31,10 +38,12 @@ if [ "$USE_EXISTING_DUMP" != "true" ]; then
   # Ensure we are starting fresh
   [ -e latest.dump ] && rm latest.dump
 
+  API_URL="https://api.render.com/v1/backups?limit=1"
   echo "Fetching latest backup URL from Render..."
+  echo "API URL: $API_URL"
+
   # Get the latest backup URL from Render
-  API_RESPONSE=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-    "https://api.render.com/v1/services/$RENDER_SERVICE_ID/backups")
+  API_RESPONSE=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" "$API_URL")
 
   echo "API Response:"
   echo "$API_RESPONSE"
@@ -42,21 +51,30 @@ if [ "$USE_EXISTING_DUMP" != "true" ]; then
   # Check if the response is valid JSON
   if ! echo "$API_RESPONSE" | jq empty > /dev/null 2>&1; then
     echo "Error: Invalid JSON response from Render API."
+    echo "Please check your API key and ensure you have the correct permissions."
+    echo "API Key (first 4 characters): ${RENDER_API_KEY:0:4}..."
+    echo "If the issue persists, please contact Render support for assistance with API access."
     exit 1
   fi
 
   # Try to extract the backup URL
-  BACKUP_URL=$(echo "$API_RESPONSE" | jq -r '.[0].url // empty')
+  BACKUP_URL=$(echo "$API_RESPONSE" | jq -r '.results[0].url // empty')
 
   if [ -z "$BACKUP_URL" ]; then
-    echo "Error: Failed to retrieve backup URL from Render. Please check your API key and service ID."
+    echo "Error: Failed to retrieve backup URL from Render."
+    echo "API Response:"
+    echo "$API_RESPONSE" | jq '.'
+    echo "If the response is empty, ensure that you have backups enabled for your database and that at least one backup exists."
     exit 1
   fi
 
+  echo "Backup URL: $BACKUP_URL"
+
   echo "Downloading backup from Render..."
   # Download the backup
-  if ! curl -o latest.dump "$BACKUP_URL"; then
+  if ! curl -L -o latest.dump "$BACKUP_URL"; then
     echo "Error: Failed to download the backup from Render."
+    echo "Please check your network connection and try again."
     exit 1
   fi
 fi
