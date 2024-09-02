@@ -25,8 +25,8 @@
           </a>
           <div class="flex items-center space-x-3">
             <div class="hidden md:block"><%= render(PrimaryActionButtonComponent.new(user: current_or_guest_user, request: request)) %>
-              <%= render 'shared/dark_mode_toggle_button' %>
             </div>
+            <div class="hidden md:block"><%= render 'shared/dark_mode_toggle_button' %></div>
           </div>
         <% else %>
           <%= render Shared::NavBarComponent.new(user: current_or_guest_user, current_admin_user: current_admin_user) %>
