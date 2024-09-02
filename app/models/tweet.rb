@@ -15,6 +15,7 @@
 #  api_batch_id          :bigint
 #  identity_id           :bigint           not null
 #  in_reply_to_status_id :bigint
+#  search_id             :bigint
 #
 # Indexes
 #
@@ -22,12 +23,14 @@
 #  index_tweets_on_id                     (id) UNIQUE
 #  index_tweets_on_identity_id            (identity_id)
 #  index_tweets_on_in_reply_to_status_id  (in_reply_to_status_id)
+#  index_tweets_on_search_id              (search_id)
 #  index_tweets_on_searchable             (searchable) USING gin
 #
 # Foreign Keys
 #
 #  fk_rails_...  (api_batch_id => api_batches.id)
 #  fk_rails_...  (identity_id => identities.id)
+#  fk_rails_...  (search_id => searches.id)
 #
 class Tweet < ApplicationRecord
   before_save :update_searchable
@@ -39,7 +42,7 @@ class Tweet < ApplicationRecord
   has_one :user, through: :identity
   has_many :tweet_metrics, dependent: :destroy
 
-  validates :identity_id, presence: true
+  validate :identity_or_search_present
   validates :text, presence: true
 
   scope :empty_status, -> { where(status: nil) }
@@ -60,6 +63,14 @@ class Tweet < ApplicationRecord
     self.searchable = Tweet.connection.execute(
       Tweet.sanitize_sql(["SELECT to_tsvector('english', ?)", text])
     ).values.flatten.first
+  end
+
+  private
+
+  def identity_or_search_present
+    if identity_id.blank? && search_id.blank?
+      errors.add(:base, "Either identity or search must be present")
+    end
   end
 
 end
