@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_02_043013) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -190,6 +190,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
   end
 
+  create_table "searches", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "keywords", null: false
+    t.string "platform", default: "twitter", null: false
+    t.datetime "last_searched_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_searches_on_user_id"
+  end
+
   create_table "sent_emails", force: :cascade do |t|
     t.string "recipient", null: false
     t.string "subject", null: false
@@ -268,10 +278,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.string "status"
     t.string "source"
     t.tsvector "searchable"
+    t.bigint "search_id"
     t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
     t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
+    t.index ["search_id"], name: "index_tweets_on_search_id"
     t.index ["searchable"], name: "index_tweets_on_searchable", using: :gin
   end
 
@@ -394,11 +406,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
   add_foreign_key "leaderboard_entries", "identities"
   add_foreign_key "leaderboard_entries", "leaderboard_snapshots"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "searches", "users"
   add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
+  add_foreign_key "tweets", "searches"
   add_foreign_key "twitter_update_attempts", "user_twitter_data_updates"
   add_foreign_key "twitter_user_metrics", "identities"
   add_foreign_key "user_settings", "users"
