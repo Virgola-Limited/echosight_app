@@ -21,6 +21,7 @@
 # app/models/search.rb
 class Search < ApplicationRecord
   belongs_to :user
+  has_and_belongs_to_many :tweets
 
   validates :keywords, presence: true
   validates :platform, presence: true, inclusion: { in: %w[twitter threads] }
@@ -28,7 +29,7 @@ class Search < ApplicationRecord
   enum platform: { twitter: 'twitter', threads: 'threads' }
 
   def self.ransackable_associations(auth_object = nil)
-    %w[user]
+    %w[user tweets]
   end
 
   def self.ransackable_attributes(auth_object = nil)

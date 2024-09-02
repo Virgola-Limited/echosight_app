@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_02_043013) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_02_044551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -200,6 +200,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_02_043013) do
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
+  create_table "searches_tweets", id: false, force: :cascade do |t|
+    t.bigint "tweet_id", null: false
+    t.bigint "search_id", null: false
+    t.index ["search_id", "tweet_id"], name: "index_searches_tweets_on_search_id_and_tweet_id"
+    t.index ["tweet_id", "search_id"], name: "index_searches_tweets_on_tweet_id_and_search_id"
+  end
+
   create_table "sent_emails", force: :cascade do |t|
     t.string "recipient", null: false
     t.string "subject", null: false
@@ -278,12 +285,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_02_043013) do
     t.string "status"
     t.string "source"
     t.tsvector "searchable"
-    t.bigint "search_id"
     t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
     t.index ["id"], name: "index_tweets_on_id", unique: true
     t.index ["identity_id"], name: "index_tweets_on_identity_id"
     t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
-    t.index ["search_id"], name: "index_tweets_on_search_id"
     t.index ["searchable"], name: "index_tweets_on_searchable", using: :gin
   end
 
@@ -412,7 +417,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_02_043013) do
   add_foreign_key "tweet_metrics", "tweets"
   add_foreign_key "tweets", "api_batches"
   add_foreign_key "tweets", "identities"
-  add_foreign_key "tweets", "searches"
   add_foreign_key "twitter_update_attempts", "user_twitter_data_updates"
   add_foreign_key "twitter_user_metrics", "identities"
   add_foreign_key "user_settings", "users"
