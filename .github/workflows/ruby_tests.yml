@@ -16,7 +16,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: rails_template_app_test
+          POSTGRES_DB: echosight_app_test
         ports:
           - 5432:5432
         options: >-
@@ -81,7 +81,7 @@ jobs:
     - name: Set up test database
       env:
         RAILS_ENV: test
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_template_app_test
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/echosight_app_test
         RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
         DISABLE_SPRING: 1
       run: |

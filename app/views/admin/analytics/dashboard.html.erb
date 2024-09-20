@@ -1,0 +1,38 @@
+    <%= render Shared::HeadingComponent.new(text: 'Campaign Analytics', heading_type: :h1) %>
+<div id="campaign_sign_ups_chart"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        let seriesData = <%= @series_data.to_json.html_safe %>;
+        let categories = <%= @categories.to_json.html_safe %>;
+
+        console.log('Series Data:', seriesData);
+        console.log('Categories:', categories);
+
+        let options = {
+          chart: {
+            height: '400px',
+            maxWidth: "100%",
+            type: 'line',
+          },
+          series: seriesData,
+          xaxis: {
+            categories: categories,
+          },
+          legend: {
+            show: true, // Ensure the legend is explicitly shown
+            position: 'top',
+            horizontalAlign: 'center',
+          }
+        };
+
+        console.log('Chart Options:', options);
+
+        if (document.getElementById("campaign_sign_ups_chart") && typeof ApexCharts !== 'undefined') {
+          const chart = new ApexCharts(document.getElementById("campaign_sign_ups_chart"), options);
+          chart.render();
+        } else {
+          console.error("ApexCharts is not defined or the chart element is missing");
+        }
+      });
+    </script>

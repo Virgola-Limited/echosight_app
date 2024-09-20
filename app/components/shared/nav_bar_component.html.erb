@@ -1,0 +1,72 @@
+    <nav class="z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 py-3 px-4">
+        <div class="flex justify-between items-center max-w-screen-2xl mx-auto">
+            <div class="flex justify-start items-center">
+                <a href="<%= root_url %>" class="flex mr-14">
+                    <%= vite_image_tag("images/logo.png", height: '32', width: '32', alt: "Echosight") %>
+                    <span class="self-center hidden sm:flex text-2xl font-semibold whitespace-nowrap dark:text-white">&nbsp;Echosight</span>
+                </a>
+                <!-- Desktop menu -->
+                <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
+                    <ul class="flex flex-col mt-4 space-x-6 text-sm font-medium lg:flex-row xl:space-x-8 lg:mt-0">
+                    <% nav_links.each do |link| %>
+                    <li>
+                      <%= link_to link[:name], link[:path], class: 'block text-gray-700 hover:text-primary-700 dark:text-gray-400 dark:hover:text-white' %>
+                    </li>
+                    <% end %>
+                    </ul>
+                </div>
+                <!-- End Desktop menu -->
+            </div>
+            <div class="flex justify-between items-center lg:order-2">
+                <%# render 'layouts/notifications' %>
+                <%= render 'shared/dark_mode_toggle_button' %>
+                <button type="button" class="flex mx-3 text-sm bg-gray-800 rounded-full md:mr-0 flex-shrink-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="userMenuDropdownButton" aria-expanded="false" data-dropdown-toggle="userMenuDropdown">
+                    <span class="sr-only">Open user menu</span>
+                    <% if user.identity && user.identity.image_url.present? %>
+                      <img class="w-8 h-8 rounded-full" src="<%= user.identity.image_url %>" alt="User Avatar">
+                    <% else %>
+                      <%= vite_image_tag("images/default-avatar.png", alt: "User Avatar", class: "w-8 h-8 rounded-full") %>
+                    <% end %>
+
+                </button>
+                <!-- User Menu Dropdown menu -->
+                <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="userMenuDropdown">
+                    <div class="py-3 px-4">
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white"><%= user.name %></span>
+                        <span class="block text-sm font-light text-gray-500 truncate dark:text-gray-400"><%= user.email %></span>
+                    </div>
+                    <% link_classes = 'block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' %>
+                    <ul class="py-1 font-light text-gray-500 dark:text-gray-400" aria-labelledby="userMenuDropdownButton">
+                        <li><%= link_to 'Two-Factor Authentication', two_factor_authentication_path, class: link_classes %></li>
+                        <li><a href="<%= edit_email_subscription_path %>" class="<%= link_classes %>">Notifications</a></li>
+                        <li><a href="<%= edit_user_registration_path %>" class="<%= link_classes %>">Profile</a></li>
+
+                                                <li><a href="<%= edit_user_settings_path %>" class="<%= link_classes %>">Settings</a></li>
+                        <li>
+                          <%= link_to 'Subscription & Billing', subscription_path, class: link_classes %>
+                        </li>
+                        <li>
+                            <%= link_to 'Sign out', destroy_user_session_path, method: :delete, class: link_classes %>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End User Menu menu -->
+
+                <button type="button" id="toggleMobileMenuButton" data-collapse-toggle="toggleMobileMenu" class="items-center p-2 text-gray-500 rounded-lg md:ml-2 lg:hidden hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <span class="sr-only">Open menu</span>
+                    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <nav class="bg-white dark:bg-gray-900">
+        <!-- Mobile menu -->
+        <ul id="toggleMobileMenu" class="hidden flex-col mt-0 pt-16 w-full text-sm font-medium lg:hidden">
+                      <% nav_links.each do |link| %>
+                    <li class="block border-b dark:border-gray-700">
+                      <%= link_to link[:name], link[:path], class: 'block py-3 px-4 text-gray-900 lg:py-0 dark:text-white lg:hover:underline lg:px-0' %>
+                    </li>
+                    <% end %>
+        </ul>
+        <!-- End Mobile menu -->
+    </nav>

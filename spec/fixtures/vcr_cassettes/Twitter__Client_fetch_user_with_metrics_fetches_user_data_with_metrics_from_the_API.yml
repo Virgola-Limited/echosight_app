@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.twitter.com/2/users/1691930809756991488?user.fields=public_metrics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      Host:
+      - api.twitter.com
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - X-Client/0.14.1 ruby/3.2.2 (x86_64-darwin22)
+      Authorization:
+      - Bearer ekV3ZDhkQm9UbEV1ZDVLcWpjSlhLbk0yYXVFVjJ0WWphTTVKU1h2eW9ta245OjE3MDkxMDQyOTI3MjA6MToxOmF0OjE
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Cache-Control:
+      - no-cache, no-store, max-age=0
+      Content-Length:
+      - '410'
+      X-Transaction-Id:
+      - 4acee2c6a1b5694e
+      X-Response-Time:
+      - '142'
+      X-Connection-Hash:
+      - db697058d5ab6e4dfba7fd2d88d7644170cdab82a0de94cddfcf5bb8e66e88e6
+      Date:
+      - Fri, 01 Mar 2024 01:45:37 GMT
+      Server:
+      - tsa_r
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "data": {
+            "id": "1691930809756991488",
+            "name": "Twitter Dev",
+            "username": "TwitterDev",
+            "public_metrics": {
+              "followers_count": 512,
+              "following_count": 165,
+              "tweet_count": 3210,
+              "listed_count": 14
+            }
+          }
+        }
+  recorded_at: Fri, 01 Mar 2024 01:45:37 GMT

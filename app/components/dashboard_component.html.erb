@@ -1,0 +1,94 @@
+<!--
+
+Would the steps be:
+Choose subscription: monthly / yearly (small print request trial)
+After payment connect twitter
+Await email confirming we have enough data or check back later?
+
+
+Yep 1. is perfect
+2. is perfect
+3. Do both? Email and a notice to say check back (with an explanation or link to how it works and what to expect).
+
+-->
+<div class="flex flex-col items-center">
+<% if show_steps_to_complete_message? %>
+  <% if eligible_for_trial? %>
+  <%= render(Shared::AlertComponent.new(
+    message: "We are currently offering a #{Subscription.trial_period} day free trial for our early adopters. Subscribe now and pay in #{Subscription.trial_period} days.",
+    alert_type: :green
+  )) %>
+  <% end %>
+  <%= render(Shared::AlertComponent.new(
+  message: "To start leveraging the full capabilities of Echosight, please complete the steps below:",
+  alert_type: :yellow
+)) %>
+<% end %>
+
+<% if show_subscription_message? %>
+  <%= render ContentBoxComponent.new do %>
+    <%= render Shared::HeadingComponent.new(text: 'Subscribe', heading_type: :h2) %>
+    <p class="paragraph-base">
+      Subscribe to allow us to collect your Twitter data each day in order to show your aggregated Twitter metrics.
+      <% if ENV.fetch('TRIAL_PERIOD_DAYS', 0).to_i.positive? %>
+        Subscribing requires a credit card, but we won't charge you until <%= ENV.fetch('TRIAL_PERIOD_DAYS') %> days have passed.<br>
+      <% end %>
+    </p>
+    <%= render Shared::ButtonComponent.new(text: "Subscribe", url: subscription_path) %>
+  <% end %>
+<% end %>
+
+<% if show_waiting_message? %>
+  <%= render ContentBoxComponent.new do %>
+    <%= render Shared::HeadingComponent.new(text: 'When can I see my public page?', heading_type: :h2) %>
+    <p class="paragraph-base">Your public page will start to show data after 1 day. It will look it's best after 14 days when we can compare this week to the previous one.</p>
+    <p class="paragraph-base">Regardless of this you are welcome to take a look at your <%= link_to "public page", public_page_path(handle: current_user.handle) %> at any time.</p>
+    </p>
+    <% if show_2fa_reminder? %>
+      <p class="paragraph-base">Remember to enable <%= link_to "two-factor authentication", two_factor_authentication_path %> on your Echosight account.</p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if show_connect_to_twitter_message? %>
+<%= render ContentBoxComponent.new do %>
+  <%= render Shared::HeadingComponent.new(text: 'Connect to Twitter/X', heading_type: :h2) %>
+    <p class="paragraph-base">To start collecting data from Twitter/X to generate your public page, please connect your Twitter/X account.</p>
+    <p>
+
+
+      <%= button_to helpers.omniauth_authorize_path(:user, :twitter), data: { turbo: false } do %>
+        <button type="submit" class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 me-2 mb-2">
+          Connect to <%= t(:twitter_title) %>
+        </button>
+      <% end %>
+    </p>
+<% end %>
+<% end %>
+
+<% if show_happy_message? %>
+  <%= render ContentBoxComponent.new do %>
+    <%= render Shared::HeadingComponent.new(text: 'Welcome to Echosight', heading_type: :h2) %>
+    <p class="paragraph-base">You are connected to <%= t(:twitter_title) %> and we are collecting data for your account.</p>
+
+    <p class="paragraph-base">Check out the following:</p>
+    <ul class="space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+        <li>
+            <%= link_to "Your Public Page", public_page_path(current_user.handle), class: 'text-blue-500 hover:underline' %>
+            <span>- View and share your analytics with potential advertisers.</span>
+        </li>
+        <li>
+            <%= link_to "Your Post Page", posts_path, class: 'text-blue-500 hover:underline' %>
+            <span>- Search and analyse your posts easily.</span>
+        </li>
+    </ul>
+    </p>
+
+
+    <% if show_2fa_reminder? %>
+      <p class="paragraph-base mt-4">Remember to enable <%= link_to "two-factor authentication", two_factor_authentication_path, class: 'text-blue-500 hover:underline' %> on your Echosight account for added security.</p>
+    <% end %>
+  <% end %>
+<% end %>
+
+</div>

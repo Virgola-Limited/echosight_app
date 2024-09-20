@@ -1,0 +1,32 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.twitter.com/2/users/1691930809756991488/tweets?max_results=100&tweet.fields=created_at,public_metrics,non_public_metrics
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      Host:
+      - api.twitter.com
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - X-Client/0.14.1 ruby/3.2.2 (x86_64-darwin22)
+      Authorization:
+      - Bearer ekV3ZDhkQm9UbEV1ZDVLcWpjSlhLbk0yYXVFVjJ0WWphTTVKU1h2eW9ta245OjE3MDkxMDQyOTI3MjA6MToxOmF0OjE
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"id":"1234567890","text":"This is an example tweet #1","created_at":"2024-02-28T08:00:00.000Z","public_metrics":{"retweet_count":10,"reply_count":5,"like_count":100,"quote_count":1}},{"id":"0987654321","text":"This is another example tweet #2","created_at":"2024-02-28T09:00:00.000Z","public_metrics":{"retweet_count":20,"reply_count":10,"like_count":150,"quote_count":2}}]}'
+  recorded_at: Wed, 28 Feb 2024 08:14:53 GMT

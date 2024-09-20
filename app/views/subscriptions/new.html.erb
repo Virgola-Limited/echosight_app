@@ -1,0 +1,105 @@
+<div class="flex flex-col items-center px-6 pt-8 mx-auto md:h-screen lg:mt-0 dark:bg-gray-900">
+    <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
+      <%= render Shared::HeadingComponent.new(text: 'Subscription', heading_type: :h2) %>
+
+      <p class="paragraph-base">Subscribing allows us to collect your Twitter data each day in order to show your aggregated Twitter metrics.</p>
+    </div>
+    <br>
+    <div class="w-full max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow dark:bg-gray-800">
+        <%= render Shared::HeadingComponent.new(text: 'Choose Your Subscription Plan', heading_type: :h3) %>
+              <%= form_with url: subscription_path, id: 'payment-form', method: :post do |form| %>
+
+        <% @products.each do |product| %>
+            <% product.prices.each do |price| %>
+                <% next if price.unit_amount == 0 && !current_admin_user %>
+                <div class="p-4 border border-gray-200 rounded dark:border-gray-700">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white"><%= product.name %></h3>
+                    <label class="flex items-center mt-3 space-x-3">
+                        <input type="radio" name="plan_id" value="<%= price.id %>" class="form-radio h-5 w-5 text-primary-600 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:check:border-white" <%='checked' if @auto_select_product && @auto_select_product.id == product.id %>>
+                        <% if price.recurring.present? %>
+                            <span class="text-gray-900 dark:text-white"><%= "#{price.unit_amount / 100.0} #{price.currency.upcase} / #{price.recurring.interval}" %></span>
+                        <% else %>
+                            <span class="text-gray-900 dark:text-white">One-time / Free</span>
+                        <% end %>
+                    </label>
+                </div>
+            <% end %>
+        <% end %>
+
+
+        <!-- Include Stripe.js -->
+        <script src="https://js.stripe.com/v3/"></script>
+
+        <!--form id="payment-form" class="space-y-6"-->
+
+            <div>
+                <label for="card-element" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Credit or Debit Card
+                </label>
+                <div id="card-element" class="p-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert" class="mt-2 text-sm text-red-600 dark:text-red-400"></div>
+            </div>
+
+         <%= render Shared::ButtonComponent.new(text: 'Subscribe', url: '', classes: 'w-full', in_form: true, method: :post) %>
+<% end %>
+    </div>
+</div>
+
+<script>
+  var stripe = Stripe('<%= Rails.application.credentials.dig(:stripe, :publishable_key) %>');
+  var elements = stripe.elements();
+
+
+  card = elements.create('card', {
+  style: {
+    base: {
+      fontSize: '14px', // Tailwind's text-sm
+      fontWeight: '500', // Tailwind's font-medium
+      color: 'var(--stripe-color)', // Using CSS variable for text color
+      '::placeholder': {
+        color: 'var(--stripe-placeholder-color)' // Using CSS variable for placeholder color
+      },
+      // Add any other styles you need
+    },
+  },
+});
+
+  card.mount('#card-element');
+
+  card.on('change', function(event) {
+    var displayError = document.getElementById('card-errors');
+    if (event.error) {
+      displayError.textContent = event.error.message;
+    } else {
+      displayError.textContent = '';
+    }
+  });
+
+  var form = document.getElementById('payment-form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    stripe.createToken(card).then(function(result) {
+      if (result.error) {
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        stripeTokenHandler(result.token);
+      }
+    });
+  });
+
+  function stripeTokenHandler(token) {
+    var form = document.getElementById('payment-form');
+    var hiddenInput = document.createElement('input');
+    hiddenInput.setAttribute('type', 'hidden');
+    hiddenInput.setAttribute('name', 'stripeToken');
+    hiddenInput.setAttribute('value', token.id);
+    form.appendChild(hiddenInput);
+
+    // Submit the form
+    form.submit();
+  }
+</script>
