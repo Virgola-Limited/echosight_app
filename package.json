@@ -1,5 +1,5 @@
 {
-  "name": "echosight_app",
+  "name": "rails_template_app",
   "version": "1.0.0",
   "description": "Echosight App: A Twitter analytics dashboard providing insights on user engagement and content performance.",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Virgola-Limited/echosight_app.git"
+    "url": "git@github.com:Virgola-Limited/rails_template_app.git"
   },
   "author": "",
   "license": "MIT",

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_20_025421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -92,13 +92,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
   end
 
-  create_table "api_batches", force: :cascade do |t|
-    t.datetime "completed_at"
-    t.string "status", default: "pending"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "bug_reports", force: :cascade do |t|
     t.text "description"
     t.datetime "created_at", null: false
@@ -126,47 +119,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.string "title"
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_feature_requests_on_user_id"
-  end
-
-  create_table "identities", force: :cascade do |t|
-    t.string "provider"
-    t.string "uid"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "description"
-    t.string "handle"
-    t.text "image_data"
-    t.text "banner_data"
-    t.string "image_checksum"
-    t.string "banner_checksum"
-    t.boolean "sync_without_user"
-    t.boolean "can_dm"
-    t.index ["handle"], name: "index_identities_on_handle", unique: true
-    t.index ["uid", "provider"], name: "index_identities_on_uid_and_provider", unique: true
-    t.index ["user_id"], name: "index_identities_on_user_id"
-  end
-
-  create_table "leaderboard_entries", force: :cascade do |t|
-    t.bigint "leaderboard_snapshot_id", null: false
-    t.bigint "identity_id", null: false
-    t.integer "rank", null: false
-    t.integer "impressions", null: false
-    t.integer "retweets"
-    t.integer "likes"
-    t.integer "quotes"
-    t.integer "replies"
-    t.integer "bookmarks"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["identity_id"], name: "index_leaderboard_entries_on_identity_id"
-    t.index ["leaderboard_snapshot_id"], name: "index_leaderboard_entries_on_leaderboard_snapshot_id"
-  end
-
-  create_table "leaderboard_snapshots", force: :cascade do |t|
-    t.date "captured_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "mailkick_subscriptions", force: :cascade do |t|
@@ -240,61 +192,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
-  create_table "tweet_metrics", force: :cascade do |t|
-    t.integer "retweet_count", default: 0, null: false
-    t.integer "like_count", default: 0, null: false
-    t.integer "quote_count", default: 0, null: false
-    t.integer "impression_count", default: 0, null: false
-    t.integer "reply_count", default: 0, null: false
-    t.integer "bookmark_count", default: 0, null: false
-    t.datetime "pulled_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_profile_clicks"
-    t.integer "updated_count", default: 0, null: false
-    t.bigint "tweet_id"
-    t.float "engagement_rate"
-    t.index ["tweet_id"], name: "index_tweet_metrics_on_tweet_id"
-  end
-
-  create_table "tweets", id: :bigint, default: nil, force: :cascade do |t|
-    t.text "text", null: false
-    t.bigint "identity_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "twitter_created_at"
-    t.bigint "in_reply_to_status_id"
-    t.bigint "api_batch_id"
-    t.string "status"
-    t.string "source"
-    t.tsvector "searchable"
-    t.index ["api_batch_id"], name: "index_tweets_on_api_batch_id"
-    t.index ["id"], name: "index_tweets_on_id", unique: true
-    t.index ["identity_id"], name: "index_tweets_on_identity_id"
-    t.index ["in_reply_to_status_id"], name: "index_tweets_on_in_reply_to_status_id"
-    t.index ["searchable"], name: "index_tweets_on_searchable", using: :gin
-  end
-
-  create_table "twitter_update_attempts", force: :cascade do |t|
-    t.bigint "user_twitter_data_update_id"
-    t.string "status"
-    t.text "error_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_twitter_data_update_id"], name: "index_twitter_update_attempts_on_user_twitter_data_update_id"
-  end
-
-  create_table "twitter_user_metrics", force: :cascade do |t|
-    t.integer "followers_count"
-    t.bigint "identity_id", null: false
-    t.date "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "following_count"
-    t.integer "listed_count"
-    t.index ["identity_id"], name: "index_twitter_user_metrics_on_identity_id"
-  end
-
   create_table "user_settings", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "key"
@@ -302,21 +199,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_settings_on_user_id"
-  end
-
-  create_table "user_twitter_data_updates", force: :cascade do |t|
-    t.bigint "identity_id", null: false
-    t.datetime "started_at", null: false
-    t.datetime "completed_at"
-    t.text "error_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "sync_class"
-    t.bigint "api_batch_id"
-    t.integer "retry_count", default: 0
-    t.index ["api_batch_id"], name: "index_user_twitter_data_updates_on_api_batch_id"
-    t.index ["identity_id"], name: "index_user_twitter_data_updates_on_identity_id"
-    t.index ["started_at"], name: "index_user_twitter_data_updates_on_started_at"
   end
 
   create_table "users", force: :cascade do |t|
@@ -390,20 +272,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
   add_foreign_key "bug_reports", "users"
   add_foreign_key "content_items", "users"
   add_foreign_key "feature_requests", "users"
-  add_foreign_key "identities", "users"
-  add_foreign_key "leaderboard_entries", "identities"
-  add_foreign_key "leaderboard_entries", "leaderboard_snapshots"
-  add_foreign_key "oauth_credentials", "identities"
   add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "users"
-  add_foreign_key "tweet_metrics", "tweets"
-  add_foreign_key "tweets", "api_batches"
-  add_foreign_key "tweets", "identities"
-  add_foreign_key "twitter_update_attempts", "user_twitter_data_updates"
-  add_foreign_key "twitter_user_metrics", "identities"
   add_foreign_key "user_settings", "users"
-  add_foreign_key "user_twitter_data_updates", "api_batches"
-  add_foreign_key "user_twitter_data_updates", "identities"
   add_foreign_key "users", "ad_campaigns"
   add_foreign_key "votes", "users"
 end

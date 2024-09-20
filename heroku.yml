@@ -1,9 +1,0 @@
-build:
-  buildpacks:
-    - url: heroku/nodejs
-    - url: heroku/ruby
-  commands:
-    - npm install
-    - bundle exec rake assets:precompile
-run:
-  web: bundle exec puma -C config/puma.rb
