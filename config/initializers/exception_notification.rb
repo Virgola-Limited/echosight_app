@@ -23,7 +23,7 @@ if defined?(ExceptionNotification)
       config.add_notifier :email, {
         email_prefix: "[#{Rails.env.upcase}] [ERROR] ",
         sender_address: %{"Chris Toynbee" <chris@echosight.io>},
-        exception_recipients: %w{ctoynbee@gmail.com},
+        exception_recipients: %w{developer@echosight.io},
       }
       config.add_notifier :slack, {
         webhook_url: Rails.application.credentials.slack[:webhook_url][:errors],
