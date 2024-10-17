@@ -30,6 +30,7 @@ class Subscription < ApplicationRecord
   validate :only_one_active_subscription, on: :create
 
   scope :active, -> { where(status: ['active', 'trialing']) }
+  scope :trialing, -> { where(status: 'trialing') }
 
   after_save :notify_status_change, if: :saved_change_to_status?
 

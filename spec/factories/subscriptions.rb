@@ -24,11 +24,15 @@ FactoryBot.define do
   factory :subscription do
     stripe_subscription_id { Faker::Alphanumeric.alphanumeric(number: 10) }
     stripe_price_id { Faker::Alphanumeric.alphanumeric(number: 10) }
-    status { 'active' } # or 'trialing' if needed
+    status { 'active' }
     association :user
 
     trait :inactive do
       status { 'canceled' }
+    end
+
+    trait :trialing do
+      status { 'trialing' }
     end
   end
 end

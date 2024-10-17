@@ -93,6 +93,15 @@ class User < ApplicationRecord
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
+  scope :with_subscription, -> { joins(:subscriptions).merge(Subscription.active) }
+  scope :without_subscription, -> {
+    left_outer_joins(:subscriptions)
+    .where(subscriptions: { id: nil })
+    .or(left_outer_joins(:subscriptions).where.not(subscriptions: { status: ['active', 'trialing'] }))
+  }
+  scope :trialing, -> { joins(:subscriptions).merge(Subscription.trialing) }
+  scope :without_identity, -> { left_outer_joins(:identity).where(identities: { id: nil }) }
+
   validates :stripe_customer_id, uniqueness: true, allow_nil: true
   validates :email, email: {mode: :strict, require_fqdn: true}
 
