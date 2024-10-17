@@ -60,6 +60,12 @@ Sidekiq.configure_server do |config|
           'cron' => "0 10 * * *",
           'class' => 'IdentityNotificationJob',
           'tz' => "Australia/Sydney"
+        },
+        {
+          'name' => 'search_social_media_job',
+          'cron' => "0 */6 * * *",
+          'class' => 'SearchSocialMediaJob'
+
         }
       ]
     )

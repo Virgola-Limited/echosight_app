@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_02_044551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -188,6 +188,23 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
     t.datetime "updated_at", null: false
     t.string "secret"
     t.index ["identity_id"], name: "index_oauth_credentials_on_identity_id", unique: true
+  end
+
+  create_table "searches", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "keywords", null: false
+    t.string "platform", default: "twitter", null: false
+    t.datetime "last_searched_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_searches_on_user_id"
+  end
+
+  create_table "searches_tweets", id: false, force: :cascade do |t|
+    t.bigint "tweet_id", null: false
+    t.bigint "search_id", null: false
+    t.index ["search_id", "tweet_id"], name: "index_searches_tweets_on_search_id_and_tweet_id"
+    t.index ["tweet_id", "search_id"], name: "index_searches_tweets_on_tweet_id_and_search_id"
   end
 
   create_table "sent_emails", force: :cascade do |t|
@@ -394,6 +411,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_13_232010) do
   add_foreign_key "leaderboard_entries", "identities"
   add_foreign_key "leaderboard_entries", "leaderboard_snapshots"
   add_foreign_key "oauth_credentials", "identities"
+  add_foreign_key "searches", "users"
   add_foreign_key "sent_emails", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "tweet_metrics", "tweets"

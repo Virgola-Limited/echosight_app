@@ -38,8 +38,9 @@ class Tweet < ApplicationRecord
   belongs_to :identity
   has_one :user, through: :identity
   has_many :tweet_metrics, dependent: :destroy
+  has_and_belongs_to_many :searches
 
-  validates :identity_id, presence: true
+  validate :identity_or_search_present
   validates :text, presence: true
 
   scope :empty_status, -> { where(status: nil) }
@@ -60,6 +61,14 @@ class Tweet < ApplicationRecord
     self.searchable = Tweet.connection.execute(
       Tweet.sanitize_sql(["SELECT to_tsvector('english', ?)", text])
     ).values.flatten.first
+  end
+
+  private
+
+  def identity_or_search_present
+    if identity_id.blank? && searches.blank?
+      errors.add(:base, "Either identity or search must be present")
+    end
   end
 
 end
