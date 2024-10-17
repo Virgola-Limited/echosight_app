@@ -78,17 +78,32 @@ RSpec.configure do |config|
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument('--window-size=1280,1024') #
+    options.add_argument('--window-size=1280,1024')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+
+    # Set the path to Google Chrome for Testing
+    if ENV['CHROME_BINARY_PATH']
+      options.binary = ENV['CHROME_BINARY_PATH']
+    end
+
     Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end
+
   if ENV['HEADLESS']
     driver = :selenium_chrome_headless
   else
     driver = :selenium_chrome
   end
+
   Capybara.javascript_driver = driver
   Capybara.default_driver = driver
-  # Capybara.default_driver = :selenium
+
+  Webdrivers::Chromedriver.required_version = '127.0.6533.119'  # This should match your Chrome for Testing version
+  if ENV['CHROME_BINARY_PATH']
+    Selenium::WebDriver::Chrome.path = ENV['CHROME_BINARY_PATH']
+  end
+  #######################
 
   config.include Capybara::DSL, type: :feature
   config.include Devise::Test::IntegrationHelpers, type: :feature
